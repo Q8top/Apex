@@ -855,6 +855,43 @@
           toast('浏览器不支持 Passkey', 'error');
         }
       });
+      // ========== 忘记密码方式选择 ==========
+      on('pick-forgot-password', function () { switchTo('forgot-form'); });
+      on('pick-forgot-passkey', function () {
+        if (!window.__apexPasskey || !window.__apexPasskey.isSupported || !window.__apexPasskey.isSupported()) {
+          toast('浏览器不支持 Passkey', 'error');
+          return;
+        }
+        switchTo('passkey-recover-form');
+      });
+      on('forgot-picker-back', function () { switchTo('login-method-picker'); });
+      on('forgot-back', function () { switchTo('forgot-method-picker'); });
+      on('passkey-recover-back', function () { switchTo('forgot-method-picker'); });
+
+      // 找回发码按钮
+      var btnRecover = document.getElementById('btn-recover-send-code');
+      if (btnRecover) {
+        btnRecover.addEventListener('click', function () {
+          if (window.__apexPasskey && window.__apexPasskey.recoverSendCode) {
+            window.__apexPasskey.recoverSendCode();
+          } else {
+            toast('功能未加载', 'error');
+          }
+        });
+      }
+
+      // 找回 Passkey 按钮
+      var btnRecoverVerify = document.getElementById('btn-passkey-recover');
+      if (btnRecoverVerify) {
+        btnRecoverVerify.addEventListener('click', function () {
+          if (window.__apexPasskey && window.__apexPasskey.recoverVerify) {
+            window.__apexPasskey.recoverVerify();
+          } else {
+            toast('功能未加载', 'error');
+          }
+        });
+      }
+
       on('pick-register-password', function () {
         if (!checkAgreement('reg-agreement', '请先阅读并同意用户协议与隐私政策')) return;
         switchTo('register-form');

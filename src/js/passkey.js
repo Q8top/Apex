@@ -249,6 +249,141 @@
     }
   }
 
+  // ============ Passkey 找回（发码）============
+  async function recoverSendCode() {
+    const emailEl = document.getElementById('recover-email');
+    const captchaEl = document.getElementById('recover-captcha');
+    const btn = document.getElementById('btn-recover-send-code');
+    if (!emailEl || !captchaEl) return;
+
+    const email = emailEl.value.trim().toLowerCase();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) { toast('请输入邮箱'); emailEl.focus(); return; }
+    if (!emailRe.test(email)) { toast('邮箱格式错误'); emailEl.focus(); return; }
+    if (captchaEl.dataset.status !== 'success') { toast('请先完成人机验证'); return; }
+    const captchaToken = captchaEl.dataset.token || '';
+    if (!captchaToken) { toast('请先完成人机验证'); return; }
+
+    if (btn) { btn.disabled = true; btn.textContent = '发送中...'; }
+
+    try {
+      const res = await window.apiClient.post('/api/passkey/recover-challenge', {
+        email: email,
+        captchaToken: captchaToken,
+      });
+      if (!res || !res.success) {
+        toast((res && res.message) || '发送失败');
+        if (btn) { btn.disabled = false; btn.textContent = '发送验证码'; }
+        return;
+      }
+      window.__recoverChallenge = {
+        challengeId: res.challengeId,
+        challenge: res.challenge,
+        email: email,
+      };
+      toast('验证码已发送', 'success');
+      let c = 60;
+      btn.disabled = true;
+      btn.textContent = c + '秒后重发';
+      const timer = setInterval(function () {
+        c -= 1;
+        btn.textContent = c + '秒后重发';
+        if (c <= 0) {
+          clearInterval(timer);
+          btn.textContent = '发送验证码';
+          btn.disabled = false;
+        }
+      }, 1000);
+    } catch (e) {
+      console.error('[Passkey] recoverSendCode:', e);
+      toast('发送失败：' + friendlyError(e));
+      if (btn) { btn.disabled = false; btn.textContent = '发送验证码'; }
+    }
+  }
+
+  // ============ Passkey 找回（重新绑定）============
+  async function recoverVerify() {
+    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+
+    const emailEl = document.getElementById('recover-email');
+    if (!emailEl) return;
+    const email = emailEl.value.trim().toLowerCase();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) { toast('请输入邮箱'); emailEl.focus(); return; }
+    if (!emailRe.test(email)) { toast('邮箱格式错误'); emailEl.focus(); return; }
+
+    let code = '';
+    document.querySelectorAll('#recover-code-boxes input').forEach(function (i) { code += i.value; });
+    if (code.length !== 6) {
+      if (window.showCodeBoxError) {
+        window.showCodeBoxError(document.getElementById('recover-code-boxes'), '请输入 6 位验证码');
+      } else {
+        toast('请输入 6 位验证码');
+      }
+      return;
+    }
+
+    const stored = window.__recoverChallenge;
+    if (!stored || !stored.challengeId || !stored.challenge || stored.email !== email) {
+      toast('请先点击发送验证码');
+      return;
+    }
+
+    const btn = document.getElementById('btn-passkey-recover');
+    if (btn) { btn.disabled = true; btn.textContent = '处理中...'; }
+
+    try {
+      const host = location.hostname;
+      const publicKey = {
+        challenge: b64uToBuf(stored.challenge),
+        rp: { id: host, name: 'Apex Entertainment' },
+        user: {
+          id: new TextEncoder().encode('recover-' + stored.challengeId),
+          name: email,
+          displayName: email,
+        },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+        timeout: 60000,
+        attestation: 'none',
+        authenticatorSelection: { residentKey: 'preferred', userVerification: 'preferred' },
+        excludeCredentials: [],
+      };
+
+      const credential = await navigator.credentials.create({ publicKey });
+      if (!credential) { toast('操作已取消'); return; }
+
+      const att = credential.response;
+      const payload = {
+        email: email,
+        code: code,
+        challengeId: stored.challengeId,
+        rawId: bufToB64u(credential.rawId),
+        response: {
+          clientDataJSON: bufToB64u(att.clientDataJSON),
+          attestationObject: bufToB64u(att.attestationObject),
+        },
+        transports: att.getTransports ? att.getTransports() : [],
+        deviceName: detectDeviceName(),
+      };
+
+      const vr = await window.apiClient.post('/api/passkey/recover-verify', payload);
+      if (vr && vr.success) {
+        toast('找回成功', 'success');
+        window.__recoverChallenge = null;
+        setTimeout(function () {
+          if (window.showHomepage) window.showHomepage(vr.user);
+        }, 600);
+      } else {
+        toast((vr && vr.message) || '找回失败');
+      }
+    } catch (e) {
+      console.error('[Passkey] recoverVerify:', e);
+      toast('找回失败：' + friendlyError(e));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '🔐 用新设备重新绑定 Passkey'; }
+    }
+  }
+
   // ============ 列出 + 删除 ============
   async function load() {
     const listEl = document.getElementById('passkey-list');
@@ -313,6 +448,8 @@
     register: register,
     login: login,
     signup: signup,
+    recoverSendCode: recoverSendCode,
+    recoverVerify: recoverVerify,
     load: load,
   };
 
