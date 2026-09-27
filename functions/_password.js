@@ -1,9 +1,15 @@
 // Apex 密码哈希/校验单一实现
 // 只依赖标准 Web Crypto API（浏览器 / Cloudflare Workers / Node 18+ 均可用）
-// 禁止引入任何 env / context / D1 相关依赖，确保 Node 脚本也能直接 import
+//
+// ⚠️ 重要：Cloudflare Workers 的 Web Crypto PBKDF2 iterations 上限是 100000。
+// 超过会在 Workers 运行时抛 NotSupportedError。
+// 因此 PBKDF2_ITERATIONS 必须保持 <= 100000。
+// 历史遗留的 v1:600000:... 格式 hash 在 Workers 里无法验证，
+// verifyPassword 会捕获异常并返回 false（视为需要重置密码）。
 
-const PBKDF2_ITERATIONS = 600000;
+const PBKDF2_ITERATIONS = 100000;
 const PBKDF2_LEGACY_ITERATIONS = 100000;
+const PBKDF2_WORKERS_MAX = 100000;
 
 function toHex(buffer) {
   return Array.from(new Uint8Array(buffer))
@@ -70,16 +76,27 @@ export async function verifyPassword(password, stored) {
   if (!/^[0-9a-f]+$/i.test(saltHex) || saltHex.length % 2 !== 0) return false;
   if (!/^[0-9a-f]+$/i.test(hashHex) || hashHex.length % 2 !== 0) return false;
 
+  // Cloudflare Workers 限制：iterations > 100000 会抛异常，直接拒绝
+  if (iterations > PBKDF2_WORKERS_MAX) {
+    console.error('[password] iterations 超过 Workers 上限，视为待重置:', iterations);
+    return false;
+  }
+
   const salt = fromHex(saltHex);
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
-  );
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
-    keyMaterial,
-    256
-  );
-  return constantTimeEqual(toHex(bits), hashHex);
+  try {
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+      keyMaterial,
+      256
+    );
+    return constantTimeEqual(toHex(bits), hashHex);
+  } catch (err) {
+    console.error('[password] deriveBits 失败:', err && err.message ? err.message : err);
+    return false;
+  }
 }
 
 export function needsRehash(stored) {
@@ -87,5 +104,7 @@ export function needsRehash(stored) {
   if (!stored.startsWith('v1:')) return true;
   const parts = stored.split(':');
   const iterations = Number.parseInt(parts[1], 10);
-  return !Number.isFinite(iterations) || iterations < PBKDF2_ITERATIONS;
+  if (!Number.isFinite(iterations)) return true;
+  // 低于标准或高于 Workers 上限，都需要重新哈希
+  return iterations < PBKDF2_ITERATIONS || iterations > PBKDF2_WORKERS_MAX;
 }
