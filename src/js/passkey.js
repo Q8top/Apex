@@ -569,7 +569,7 @@
   async function __disablePasskeyCards() {
     var ok = await isPlatformAvailable();
     if (ok) return;
-    ['pick-login-passkey', 'pick-register-passkey'].forEach(function (id) {
+    ['pick-login-passkey', 'pick-register-passkey', 'pick-forgot-passkey'].forEach(function (id) {
       var card = document.getElementById(id);
       if (!card) return;
       card.classList.add('disabled');
