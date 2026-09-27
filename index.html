@@ -166,19 +166,19 @@
     .form-retry-box.show { display: block; }
     .form-retry-box button { margin-top: 8px; padding: 6px 16px; background: #e63946; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
       /* ============ 方式选择卡片 ============ */
-    .method-card { display:flex; align-items:center; gap:14px; padding:16px 18px; background:linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(0,0,0,0.3) 100%); border:1px solid rgba(212,175,55,0.25); border-radius:12px; cursor:pointer; transition:all 0.25s; margin-bottom:12px; }
+    .method-card { display:flex; align-items:center; gap:14px; padding:16px 18px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:12px; cursor:pointer; transition:all 0.25s; margin-bottom:12px; }
     .method-card:last-child { margin-bottom:0; }
-    .method-card:hover, .method-card:focus-visible { border-color:rgba(212,175,55,0.6); background:linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(0,0,0,0.4) 100%); transform:translateY(-1px); box-shadow:0 6px 20px rgba(212,175,55,0.15); outline:none; }
+    .method-card:hover, .method-card:focus-visible { border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.06); transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,0.4); outline:none; }
     .method-icon { width:44px; height:44px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-    .method-icon svg { width:28px; height:28px; stroke:#d4af37; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .method-icon svg { width:28px; height:28px; stroke:#ffffff; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
     .method-text { flex:1; min-width:0; }
     .method-title { font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px; }
     .method-desc { font-size:11px; color:#888; }
     .method-arrow { color:#555; font-size:20px; transition:color 0.25s; }
-    .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#d4af37; }
+    .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#ffffff; }
     #login-method-picker, #register-method-picker { margin-top:6px; }
     #passkey-signup-back { color:#888; font-size:12px; text-decoration:none; }
-    #passkey-signup-back:hover { color:#d4af37; }
+    #passkey-signup-back:hover { color:#ffffff; }
 </style>
 
 <!-- APEX-PRELOAD-START -->
@@ -677,17 +677,18 @@
         });
         clearCodeBoxError(document.getElementById('code-boxes'));
       } catch (e) {}
-      ['login-form','register-form','forgot-form'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const show = (id === formId);
-        el.style.display = show ? 'block' : 'none';
-        if (show) {
-          el.classList.remove('form-fade-in');
-          void el.offsetWidth;
-          el.classList.add('form-fade-in');
-        }
-      });
+      var _allSectionIds = ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-form'];
+      for (var _i = 0; _i < _allSectionIds.length; _i += 1) {
+        var _el = document.getElementById(_allSectionIds[_i]);
+        if (_el) _el.style.display = 'none';
+      }
+      var _target = document.getElementById(formId);
+      if (_target) {
+        _target.style.display = 'block';
+        _target.classList.remove('form-fade-in');
+        void _target.offsetWidth;
+        _target.classList.add('form-fade-in');
+      }
       const sp = document.getElementById('apex-success-page');
       if (sp) sp.style.display = 'none';
       const tabs = document.getElementById('auth-tabs');
@@ -777,6 +778,22 @@
         });
       }
     })();
+
+// ========== 初始状态（硬保险）==========
+function __apexInitPicker() {
+  var all = ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-form'];
+  for (var i = 0; i < all.length; i += 1) {
+    var el = document.getElementById(all[i]);
+    if (el) el.style.display = 'none';
+  }
+  var target = document.getElementById('login-method-picker');
+  if (target) target.style.display = 'block';
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', __apexInitPicker);
+} else {
+  __apexInitPicker();
+}
 
 window.__apex = { toast, showSuccess, switchTo };
   })();
