@@ -112,29 +112,81 @@
   }
 
   // ============ 登录 ============
+  // 防抖：避免用户反复点击触发限流
+  var _passkeyLoginInProgress = false;
+
   async function login() {
-    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+    if (_passkeyLoginInProgress) { toast('正在处理，请稍候', 'error'); return; }
+    if (!isSupported()) { toast('当前浏览器不支持 Passkey，请使用账号密码登录', 'error'); return; }
+    _passkeyLoginInProgress = true;
 
     const accEl = document.getElementById('login-account');
     const account = accEl ? accEl.value.trim() : '';
 
     try {
       const res = await window.apiClient.post('/api/passkey/login-challenge', { account: account });
-      if (!res || !res.success) { toast((res && res.message) || '获取挑战失败'); return; }
+
+      // ============ A) 获取 challenge 失败 ============
+      if (!res || !res.success) {
+        const code = res && res.code;
+        if (code === 'rate_limited') {
+          toast('操作过于频繁，请稍等 60 秒后重试', 'error');
+        } else if (code === 'csrf_invalid') {
+          toast('页面已过期，请刷新后重试', 'error');
+        } else if (code === 'internal_error' || code === 'config_invalid') {
+          toast('服务器繁忙，请稍后重试', 'error');
+        } else {
+          toast((res && res.message) || '获取挑战失败，请重试', 'error');
+        }
+        return;
+      }
 
       const pk = res.publicKey;
+      const allowCreds = pk.allowCredentials || [];
+
+      // ============ B) 输入了账号但该账号未绑定 Passkey ============
+      if (account && allowCreds.length === 0) {
+        toast('该账号未绑定 Passkey，请使用账号密码登录', 'error');
+        return;
+      }
+
       const publicKey = {
         challenge: b64uToBuf(pk.challenge),
         rpId: pk.rpId,
         timeout: pk.timeout || 60000,
         userVerification: pk.userVerification || 'preferred',
-        allowCredentials: (pk.allowCredentials || []).map(function (c) {
+        allowCredentials: allowCreds.map(function (c) {
           return { type: c.type, id: b64uToBuf(c.id), transports: c.transports };
         }),
       };
 
-      const assertion = await navigator.credentials.get({ publicKey });
-      if (!assertion) { toast('登录已取消'); return; }
+      // ============ C) 弹指纹/面容 ============
+      let assertion;
+      try {
+        assertion = await navigator.credentials.get({ publicKey: publicKey });
+      } catch (err) {
+        const name = err && err.name;
+        if (name === 'NotAllowedError') {
+          if (!account) {
+            toast('未检测到已绑定的 Passkey，请先用账号密码登录并绑定', 'error');
+          } else {
+            toast('操作已取消', 'error');
+          }
+        } else if (name === 'AbortError') {
+          toast('操作超时，请重试', 'error');
+        } else if (name === 'NotSupportedError') {
+          toast('当前设备不支持 Passkey', 'error');
+        } else if (name === 'SecurityError') {
+          toast('安全校验失败，请用 HTTPS 打开页面', 'error');
+        } else if (name === 'InvalidStateError') {
+          toast('设备状态异常，请重试', 'error');
+        } else {
+          toast('登录失败：' + friendlyError(err), 'error');
+        }
+        return;
+      }
+
+      if (!assertion) { toast('操作已取消', 'error'); return; }
 
       const a = assertion.response;
       const payload = {
@@ -148,6 +200,7 @@
         },
       };
 
+      // ============ D) 后端验证 ============
       const vr = await window.apiClient.post('/api/passkey/login-verify', payload);
       if (vr && vr.success) {
         toast('登录成功', 'success');
@@ -155,11 +208,31 @@
           if (window.showHomepage) window.showHomepage(vr.user);
         }, 600);
       } else {
-        toast((vr && vr.message) || '登录失败');
+        const vcode = vr && vr.code;
+        if (vcode === 'credential_not_found') {
+          toast('该设备未注册到此账号，请使用账号密码登录', 'error');
+        } else if (vcode === 'invalid_signature') {
+          toast('验证失败，请重试或使用账号密码登录', 'error');
+        } else if (vcode === 'counter_regression') {
+          toast('安全校验失败，请删除后重新绑定', 'error');
+        } else if (vcode === 'account_disabled') {
+          toast('账号已被禁用', 'error');
+        } else if (vcode === 'invalid_challenge') {
+          toast('操作超时，请重新点击', 'error');
+        } else {
+          toast((vr && vr.message) || '登录失败', 'error');
+        }
       }
     } catch (e) {
       console.error('[Passkey] login:', e);
-      toast('登录失败：' + friendlyError(e));
+      const msg = (e && e.message) ? e.message : '';
+      if (msg.indexOf('网络') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('timeout') !== -1) {
+        toast('网络异常，请检查网络后重试', 'error');
+      } else {
+        toast('登录失败：' + friendlyError(e), 'error');
+      }
+    } finally {
+      _passkeyLoginInProgress = false;
     }
   }
 

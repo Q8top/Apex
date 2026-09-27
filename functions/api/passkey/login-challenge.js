@@ -10,7 +10,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
 
-  const limited = await enforceIpRateLimit(env, request, 'passkey-login-challenge-ip', 20, 60);
+  const limited = await enforceIpRateLimit(env, request, 'passkey-login-challenge-ip', 60, 60);
   if (limited) return limited;
 
   const parsed = await parseJsonBody(request, 2048);
@@ -48,6 +48,7 @@ export async function onRequestPost(context) {
   return jsonResponse({
     success: true,
     challengeId,
+    hasCredentials: allowCredentials.length > 0,
     publicKey: {
       challenge,
       rpId,
