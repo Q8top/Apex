@@ -1,6 +1,6 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../_response.js';
 import { parseJsonBody } from '../_validation.js';
-import { getClientIP, hashIP, redactSensitive } from '../_security.js';
+import { getClientIP, hashIP, redactSensitive, stripControlChars, sanitizeLogUrl } from '../_security.js';
 import { enforceIpRateLimit } from '../_rateLimit.js';
 
 const TYPE_ALLOWLIST = new Set([
@@ -29,11 +29,12 @@ export async function onRequestPost(context) {
 
   const body = parsed.data || {};
 
-  let type = String(body.type || 'unknown').trim().toLowerCase();
+  let type = stripControlChars(body.type, 32).toLowerCase() || 'unknown';
   if (!TYPE_ALLOWLIST.has(type)) type = 'unknown';
 
-  const message = redactSensitive(String(body.message || '')).substring(0, MSG_MAX);
-  const url = String(body.url || '').substring(0, URL_MAX);
+  // P11-E: 先 redact 敏感信息，再移除控制字符，再限制长度
+  const message = stripControlChars(redactSensitive(body.message), MSG_MAX);
+  const url = sanitizeLogUrl(body.url, URL_MAX);
   const ua = String(request.headers.get('User-Agent') || '').substring(0, UA_MAX);
   const ip = getClientIP(request);
   const ipHash = await hashIP(ip, env.AUDIT_SALT || env.CAPTCHA_SECRET || '');

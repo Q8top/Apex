@@ -63,12 +63,47 @@ export function randomToken(bytes = 32) {
 
 export function redactSensitive(input) {
   return String(input || '')
-    .replace(/password[=:][^\s,}]*/gi, 'password=[REDACTED]')
-    .replace(/token[=:][^\s,}]*/gi, 'token=[REDACTED]')
-    .replace(/Bearer\s+[A-Za-z0-9_\-]+/g, 'Bearer [REDACTED]')
-    .replace(/cookie[=:][^\s,}]*/gi, 'cookie=[REDACTED]')
-    .replace(/code[=:][^\s,}]*/gi, 'code=[REDACTED]')
-    .replace(/secret[=:][^\s,}]*/gi, 'secret=[REDACTED]');
+    .replace(/password["']?\s*[=:]\s*[^\s,;}"]+/gi, 'password=[REDACTED]')
+    .replace(/token["']?\s*[=:]\s*[^\s,;}"]+/gi, 'token=[REDACTED]')
+    .replace(/api[_-]?key["']?\s*[=:]\s*[^\s,;}"]+/gi, 'api_key=[REDACTED]')
+    .replace(/access[_-]?token["']?\s*[=:]\s*[^\s,;}"]+/gi, 'access_token=[REDACTED]')
+    .replace(/refresh[_-]?token["']?\s*[=:]\s*[^\s,;}"]+/gi, 'refresh_token=[REDACTED]')
+    .replace(/authorization["']?\s*[=:]\s*[^\s,;}"]+/gi, 'authorization=[REDACTED]')
+    .replace(/secret["']?\s*[=:]\s*[^\s,;}"]+/gi, 'secret=[REDACTED]')
+    .replace(/cookie["']?\s*[=:]\s*[^\s,;}"]+/gi, 'cookie=[REDACTED]')
+    .replace(/code["']?\s*[=:]\s*[^\s,;}"]+/gi, 'code=[REDACTED]')
+    .replace(/"password"\s*:\s*"[^"]*"/gi, '"password":"[REDACTED]"')
+    .replace(/"token"\s*:\s*"[^"]*"/gi, '"token":"[REDACTED]"')
+    .replace(/"api[_-]?key"\s*:\s*"[^"]*"/gi, '"api_key":"[REDACTED]"')
+    .replace(/"access[_-]?token"\s*:\s*"[^"]*"/gi, '"access_token":"[REDACTED]"')
+    .replace(/"refresh[_-]?token"\s*:\s*"[^"]*"/gi, '"refresh_token":"[REDACTED]"')
+    .replace(/"authorization"\s*:\s*"[^"]*"/gi, '"authorization":"[REDACTED]"')
+    .replace(/"secret"\s*:\s*"[^"]*"/gi, '"secret":"[REDACTED]"')
+    .replace(/"cookie"\s*:\s*"[^"]*"/gi, '"cookie":"[REDACTED]"')
+    .replace(/Bearer\s+[A-Za-z0-9_.\-]+/g, 'Bearer [REDACTED]')
+    .replace(/\bsk-[A-Za-z0-9_\-]{16,}/g, 'sk-[REDACTED]')
+    .replace(/\bpk-[A-Za-z0-9_\-]{16,}/g, 'pk-[REDACTED]')
+    .replace(/\bre_[A-Za-z0-9_]{16,}/g, 're_[REDACTED]')
+    .replace(/\bam_us_[A-Za-z0-9_]+/g, 'am_us_[REDACTED]');
+}
+
+// P11-E: 移除控制字符，防止日志注入 / 伪造多行
+export function stripControlChars(input, maxLen = 500) {
+  const s = String(input == null ? '' : input)
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/ {2,}/g, ' ')
+    .trim();
+  return s.length > maxLen ? s.slice(0, maxLen) : s;
+}
+
+// P11-E: 日志用 URL 白名单（仅 http/https/相对路径）
+export function sanitizeLogUrl(input, maxLen = 300) {
+  const s = stripControlChars(input, maxLen);
+  if (!s) return '';
+  if (s.startsWith('/')) return s;
+  if (/^https?:\/\//i.test(s)) return s;
+  return '[invalid-url]';
 }
 
 export function safeJsonParse(text) {
