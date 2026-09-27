@@ -136,11 +136,11 @@ export async function onRequestPost(context) {
   // 9) 创建用户（password_hash 用哨兵值，无法用密码登录）
   let userId;
   try {
-    let ins;
+    let result;
 
     try {
 
-      await env.apex_db.prepare(
+      result = await env.apex_db.prepare(
       `INSERT INTO users (username, email, password_hash, email_verified, status, created_at, updated_at)
        VALUES (?, ?, ?, 0, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
     ).bind(username, email, PASSKEY_ONLY_SENTINEL).run();
@@ -158,7 +158,7 @@ export async function onRequestPost(context) {
       throw e;
 
     }
-    userId = ins.meta && ins.meta.last_row_id;
+    userId = result && result.meta && result.meta.last_row_id;
   } catch (e) {
     if (String(e.message || '').indexOf('UNIQUE') !== -1) {
       return errorResponse('账号或邮箱已被使用', 409, 'user_exists', requestId);
