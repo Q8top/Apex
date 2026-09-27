@@ -56,3 +56,7 @@ tmp/
 
 # 部署产物目录（由 scripts/build-dist.sh 生成）
 dist/
+# 补充：形如 xxx.js.bak.1700000000 的时间戳备份
+*.bak.*
+# 上游工具不支持的配置文件（本地保留，不部署）
+*.not-supported-by-pages
