@@ -1,20 +1,55 @@
+# ==== Git 忽略规则（同时反映部署排除）====
+
+# 源码导出/备份
+Apex_*.txt
+Apex_*.md
+*.bak
+*.bak_*
+*.backup
+*.orig
+
+# 备份
 backups/*.sql
 backups/*.sql.gz
 backups/*.sha256
-.wrangler/
+backups/*.dump
+
+# 本地环境
 .dev.vars
 .env
 .env.local
+.env.*.local
+!.env.example
+
+# Wrangler
+.wrangler/
+
+# 测试缓存 / 覆盖率
 tests/.cache/
 coverage/
-*.log
+
+# 依赖
 node_modules/
-*.bak_*
 
-# ===== Apex 项目专属规则 =====
+# 日志
+*.log
 
-# 源码打包临时文件（本地备份用，不应提交到 git）
-Apex_*.txt
+# 系统文件
+.DS_Store
+Thumbs.db
+*.swp
+*~
 
-# 显式放行示例环境变量文件（含敏感字段的 .env 已在上面忽略）
-!.env.example
+# 临时
+tmp/
+.cache/
+
+# 大图片备份（本地优化前的原图，不部署）
+*.orig.png
+*.orig.jpeg
+*-full.jpeg
+*-full.png
+*.removed
+
+# 恢复测试临时目录
+.restore-work/
