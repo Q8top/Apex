@@ -17,6 +17,18 @@ async function verifyTotpSafe(secret, code) {
   }
 }
 
+// P11-J: 返回 { ok, counter }，用于重放保护
+async function verifyTotpDetailedSafe(secret, code) {
+  if (!secret || !code) return { ok: false, counter: 0 };
+  try {
+    const mod = await import('../../_totp.js');
+    return await mod.verifyTotpDetailed(secret, code);
+  } catch (error) {
+    console.error('[AdminLogin] totp error:', error.message);
+    return { ok: false, counter: 0 };
+  }
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
@@ -42,7 +54,7 @@ export async function onRequestPost(context) {
   if (accLimited) return accLimited;
 
   const admin = await env.apex_db.prepare(
-    'SELECT id, username, password_hash, role, totp_secret, totp_enabled, status FROM admin_users WHERE username = ? LIMIT 1'
+    'SELECT id, username, password_hash, role, totp_secret, totp_enabled, status, last_totp_counter FROM admin_users WHERE username = ? LIMIT 1'
   ).bind(username).first();
 
   if (!admin) {
@@ -88,11 +100,20 @@ export async function onRequestPost(context) {
     if (!totpCode) {
       return errorResponse('请输入 MFA 验证码', 401, 'need_mfa', requestId);
     }
-    const mfaOk = await verifyTotpSafe(admin.totp_secret, totpCode);
-    if (!mfaOk) {
+    const mfaRes = await verifyTotpDetailedSafe(admin.totp_secret, totpCode);
+    if (!mfaRes.ok) {
       await audit(env, { action: 'admin_mfa_failed', actorId: admin.id, actorType: 'admin' }, request);
       return errorResponse('MFA 验证码错误', 401, 'invalid_mfa', requestId);
     }
+    // P11-J: TOTP 重放保护——本次匹配的 counter 必须严格大于已记录值
+    const lastCounter = Number(admin.last_totp_counter || 0);
+    if (mfaRes.counter <= lastCounter) {
+      await audit(env, { action: 'admin_mfa_replay_detected', actorId: admin.id, actorType: 'admin' }, request);
+      return errorResponse('MFA 验证码错误', 401, 'invalid_mfa', requestId);
+    }
+    await env.apex_db.prepare(
+      'UPDATE admin_users SET last_totp_counter = ? WHERE id = ?'
+    ).bind(mfaRes.counter, admin.id).run();
   }
 
   const session = await createAdminSession(env, admin.id, request);

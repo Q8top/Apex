@@ -47,13 +47,25 @@ async function generateTotp(secret, timestamp = Date.now()) {
 }
 
 export async function verifyTotp(secret, code) {
-  if (!secret || !code || String(code).length !== 6 || !/^\d{6}$/.test(String(code))) return false;
+  const r = await verifyTotpDetailed(secret, code);
+  return r.ok;
+}
+
+// P11-J: 返回匹配的时间步（counter）以便调用方实现重放保护
+// counter = floor(unix_ms / 30000)，用 Math.trunc 保持正数语义
+export async function verifyTotpDetailed(secret, code) {
+  if (!secret || !code || String(code).length !== 6 || !/^\d{6}$/.test(String(code))) {
+    return { ok: false, counter: 0 };
+  }
   const now = Date.now();
   for (const offset of [-30000, 0, 30000]) {
-    const expected = await generateTotp(secret, now + offset);
-    if (expected === code) return true;
+    const ts = now + offset;
+    const expected = await generateTotp(secret, ts);
+    if (expected === code) {
+      return { ok: true, counter: Math.trunc(ts / 30000) };
+    }
   }
-  return false;
+  return { ok: false, counter: 0 };
 }
 
 export function generateTotpSecret() {
