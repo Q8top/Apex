@@ -433,7 +433,7 @@
           <div class="field-error" role="alert" aria-live="polite"></div>
         </div>
 
-        <div class="apex-captcha-box" id="signup-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="register" class="apex-captcha-box" id="signup-captcha" onclick="window.startCaptcha(this)">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -472,7 +472,7 @@
         </div>
 
         <!-- 人机验证 -->
-        <div class="apex-captcha-box" id="login-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="login" class="apex-captcha-box" id="login-captcha" onclick="window.startCaptcha(this)">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -529,7 +529,7 @@
         </div>
 
         <!-- 人机验证 -->
-        <div class="apex-captcha-box" id="reg-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="register" class="apex-captcha-box" id="reg-captcha" onclick="window.startCaptcha(this)">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -602,7 +602,7 @@
           <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
         </div>
 
-        <div class="apex-captcha-box" id="recover-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="reset-password" class="apex-captcha-box" id="recover-captcha" onclick="window.startCaptcha(this)">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -663,7 +663,7 @@
           <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
         </div>
 
-        <div class="apex-captcha-box" id="forgot-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="reset-password" class="apex-captcha-box" id="forgot-captcha" onclick="window.startCaptcha(this)">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
