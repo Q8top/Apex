@@ -177,9 +177,11 @@
     .method-arrow { color:#555; font-size:20px; transition:color 0.25s; }
     .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#ffffff; }
     /* ============ 不支持的设备：卡片变灰 ============ */
-    .method-card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
+    .method-card.disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06); }
+    .method-card.disabled .method-icon svg { stroke: #666; }
+    .method-card.disabled .method-title { color: #888; }
     .method-card.disabled .method-arrow { display: none; }
-    .method-card .method-warn { display: none; color: #e63946; font-size: 11px; margin-top: 6px; line-height: 1.4; }
+    .method-card .method-warn { display: none; color: #ff4d5e; font-size: 12px; font-weight: bold; margin-top: 6px; line-height: 1.4; letter-spacing: 0.2px; }
     .method-card.disabled .method-warn { display: block; }
     .method-card.disabled .method-desc { display: none; }
     /* ============ 卡片内联提示 ============ */
