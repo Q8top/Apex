@@ -25,7 +25,6 @@ import { spawnSync } from 'node:child_process';
 
 const VALID_ROLES = new Set(['super_admin', 'admin', 'support', 'analyst', 'viewer']);
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,32}$/;
-const PBKDF2_ITERATIONS = 600000;
 
 // SQL 字面量安全转义（单引号加倍，符合 SQLite 标准）
 function sqlEscape(v) {
@@ -81,7 +80,6 @@ function readPasswordHidden(prompt) {
     stdin.on('data', onData);
   });
 }
-
 
 function checkPasswordPolicy(pwd) {
   if (typeof pwd !== 'string') return '密码必须是字符串';
