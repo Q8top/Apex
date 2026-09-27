@@ -353,6 +353,16 @@
           </div>
           <div class="method-arrow">›</div>
         </div>
+
+        <div class="link-row" style="margin-top:16px;">
+          <a href="#" id="online-support"><span style="margin-right:4px;">💬</span><span data-i18n="link.onlineSupport">在线客服</span></a>
+          <a href="#" id="forgot-pwd"><span style="margin-right:4px;">🔑</span><span data-i18n="link.forgotPassword">忘记密码？</span></a>
+        </div>
+
+        <div class="checkbox-group" style="margin-top:12px;">
+          <input type="checkbox" id="login-agreement" checked>
+          <label for="login-agreement">我已阅读并同意 <a href="#">《用户协议》</a> 与 <a href="#">《隐私政策》</a></label>
+        </div>
       </div>
 
       <!-- 注册方式选择 -->
@@ -376,6 +386,11 @@
             <div class="method-desc">使用面容 / 指纹 / PIN（无需密码）</div>
           </div>
           <div class="method-arrow">›</div>
+        </div>
+
+        <div class="checkbox-group" style="margin-top:16px;">
+          <input type="checkbox" id="reg-agreement" checked>
+          <label for="reg-agreement">我已阅读并同意 <a href="#">《用户协议》</a> 与 <a href="#">《隐私政策》</a></label>
         </div>
       </div>
 
@@ -421,6 +436,8 @@
       </div>
 
       <div id="login-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="login-back">← 返回</a></div>
+
         <div class="input-group">
           <label>账号</label>
           <div class="input-wrap">
@@ -449,22 +466,13 @@
           <div class="apex-captcha-footer">Apex 安全防护</div>
         </div>
 
-        <!-- 在线客服 / 忘记密码 -->
-        <div class="link-row">
-          <a href="#" id="online-support"><span style="margin-right:4px;">💬</span><span data-i18n="link.onlineSupport">在线客服</span></a>
-          <a href="#" id="forgot-pwd"><span style="margin-right:4px;">🔑</span><span data-i18n="link.forgotPassword">忘记密码？</span></a>
-        </div>
-
-                  <div class="checkbox-group">
-          <input type="checkbox" id="login-agreement" checked>
-          <label for="login-agreement">我已阅读并同意 <a href="#">《用户协议》</a> 与 <a href="#">《隐私政策》</a></label>
-        </div>
-
         <button class="btn-primary" id="btn-login" data-i18n="btn.login">登 录</button>
       </div>
 
       <!-- ============ 注册表单 ============ -->
       <div id="register-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="register-back">← 返回</a></div>
+
         <div class="input-group">
           <label>账号</label>
           <div class="input-wrap">
@@ -515,10 +523,6 @@
           <div class="apex-captcha-footer">Apex 安全防护</div>
         </div>
 
-        <div class="checkbox-group">
-          <input type="checkbox" id="reg-agreement" checked>
-          <label for="reg-agreement">我已阅读并同意 <a href="#">《用户协议》</a> 与 <a href="#">《隐私政策》</a></label>
-        </div>
 
         <button class="btn-primary" id="btn-register" data-i18n="btn.register">注 册</button>
       </div>
@@ -742,16 +746,44 @@
         });
       }
 
-      on('pick-login-password', function () { switchTo('login-form'); });
+      // 返回键
+      on('login-back', function () { switchTo('login-method-picker'); });
+      on('register-back', function () { switchTo('register-method-picker'); });
+      on('passkey-signup-back', function () { switchTo('register-method-picker'); });
+
+      function checkAgreement(id, label) {
+        var cb = document.getElementById(id);
+        if (!cb) return true;
+        if (!cb.checked) {
+          if (typeof window.showCheckboxError === 'function') {
+            window.showCheckboxError(cb, label);
+          } else {
+            toast('请先阅读并同意用户协议与隐私政策', 'error');
+          }
+          return false;
+        }
+        if (typeof window.clearCheckboxError === 'function') window.clearCheckboxError(cb);
+        return true;
+      }
+
+      on('pick-login-password', function () {
+        if (!checkAgreement('login-agreement', '请先阅读并同意用户协议与隐私政策')) return;
+        switchTo('login-form');
+      });
       on('pick-login-passkey', function () {
+        if (!checkAgreement('login-agreement', '请先阅读并同意用户协议与隐私政策')) return;
         if (window.__apexPasskey && window.__apexPasskey.login) {
           window.__apexPasskey.login();
         } else {
           toast('浏览器不支持 Passkey', 'error');
         }
       });
-      on('pick-register-password', function () { switchTo('register-form'); });
+      on('pick-register-password', function () {
+        if (!checkAgreement('reg-agreement', '请先阅读并同意用户协议与隐私政策')) return;
+        switchTo('register-form');
+      });
       on('pick-register-passkey', function () {
+        if (!checkAgreement('reg-agreement', '请先阅读并同意用户协议与隐私政策')) return;
         if (!window.__apexPasskey || !window.__apexPasskey.isSupported || !window.__apexPasskey.isSupported()) {
           toast('浏览器不支持 Passkey', 'error');
           return;
