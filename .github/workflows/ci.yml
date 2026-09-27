@@ -30,7 +30,10 @@ jobs:
           cache: 'npm'
 
       - name: Install deps
-        run: npm ci --ignore-scripts || npm install --ignore-scripts
+        # 不再回退到 npm install：
+        #   npm ci 失败 = lockfile 与 package.json 不一致，
+        #   必须修 lockfile，不能绕过可复现性
+        run: npm ci --ignore-scripts
 
       - name: Syntax check
         run: bash scripts/syntax-check.sh
