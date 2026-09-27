@@ -1,0 +1,49 @@
+# ============================================================
+# Cloudflare Pages 部署排除列表
+# 目的：阻止源码 / 配置 / 测试 / 脚本 / 备份 被部署为静态资源
+# 语法：gitignore 风格
+# ============================================================
+
+# === Node / npm ===
+node_modules/
+package.json
+package-lock.json
+.npmrc
+npm-debug.log*
+
+# === Wrangler / Cloudflare ===
+.wrangler/
+wrangler.toml
+.dev.vars
+.dev.vars.*
+
+# === Git / CI ===
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# === 项目源码目录（禁止直接 HTTP 暴露）===
+functions/
+migrations/
+scripts/
+tests/
+docs/
+src/
+backups/
+
+# === 环境变量（保留示例）===
+.env
+.env.*
+!.env.example
+
+# === 源码导出 / 备份 ===
+Apex_*.txt
+Apex_*.md
+.archive/
+.restore-work/
+
+# === Cloudflare 内部文件 ===
+_headers
+_routes.json
+.assetsignore
