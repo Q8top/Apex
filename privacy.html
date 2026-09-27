@@ -3,111 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>隐私政策 · Apex</title>
+<title>隐私政策 · Apex Global Entertainment</title>
+<meta name="description" content="Apex Global Entertainment 平台隐私政策">
+<link rel="canonical" href="https://apex-8rg.pages.dev/privacy.html">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, system-ui, sans-serif; background: #050505; color: #e0e0e0; min-height: 100vh; padding: 24px; line-height: 1.7; }
-  .container { max-width: 720px; margin: 0 auto; }
-  h1 { color: #d4af37; font-size: 24px; letter-spacing: 2px; margin-bottom: 8px; }
-  .updated { color: #666; font-size: 12px; margin-bottom: 32px; }
-  h2 { color: #d4af37; font-size: 16px; margin-top: 28px; margin-bottom: 12px; }
-  p, li { font-size: 14px; color: #b0b0b0; margin-bottom: 10px; }
-  ul { padding-left: 20px; }
-  a { color: #d4af37; text-decoration: none; }
-  .footer { text-align: center; color: #555; font-size: 11px; margin-top: 40px; padding: 20px 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: #050505;
+    color: #d0d0d0;
+    min-height: 100vh;
+    padding: 28px 20px 60px;
+    line-height: 1.85;
+    font-size: 14.5px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  h1 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .updated {
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .intro {
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  h2 {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 36px;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 3px solid #555;
+  }
+  h3 {
+    color: #e0e0e0;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  p { color: #b8b8b8; margin-bottom: 12px; text-align: justify; }
+  ul, ol { padding-left: 22px; margin-bottom: 12px; }
+  li { color: #b8b8b8; margin-bottom: 8px; }
+  li strong { color: #e8e8e8; font-weight: 600; }
+  strong { color: #e8e8e8; font-weight: 600; }
+  code {
+    background: #141414;
+    color: #d0d0d0;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid #1f1f1f;
+    padding: 10px 12px;
+    text-align: left;
+    color: #b8b8b8;
+  }
+  th { background: #0d0d0d; color: #e8e8e8; font-weight: 600; }
+  .callout {
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
+    border-left: 3px solid #666;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    color: #aaa;
+    font-size: 13.5px;
+  }
+  a { color: #ffffff; text-decoration: none; border-bottom: 1px dotted #555; }
+  a:hover { color: #fff; border-bottom-color: #fff; }
+  .footer {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid #1a1a1a;
+  }
+  .footer a { color: #888; border-bottom: none; margin: 0 8px; }
+  .footer a:hover { color: #fff; }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>隐私政策</h1>
-<div class="updated">最后更新：2026 年 9 月</div>
 
-<h2>1. 我们收集的信息</h2>
-<p>当您使用 Apex Entertainment 平台时，我们可能收集以下信息：</p>
-<ul>
-<li>账号信息：用户名、邮箱地址</li>
-<li>登录凭证：加密后的密码哈希（PBKDF2-SHA256，600,000 次迭代；我们无法读取您的明文密码）</li>
-<li>技术信息：IP 地址（仅保存加盐哈希形式）、User-Agent、设备类型</li>
-<li>行为数据：用于人机验证的鼠标 / 触摸行为信号（仅用于判定，原始信号不长期保存）</li>
-<li>日志数据：登录时间、API 请求记录、错误信息、请求 ID</li>
-</ul>
+  <h1>隐私政策</h1>
+  <div class="updated">版本 v2.0 · 生效日期：2026 年 9 月 27 日</div>
+  <div class="intro">本政策说明 Apex Global Entertainment 如何收集、使用、存储、共享和保护您的个人信息，以及您对个人信息享有的权利。</div>
 
-<h2>2. 信息使用方式</h2>
-<p>我们收集的信息仅用于：</p>
-<ul>
-<li>提供、维护和改进我们的服务</li>
-<li>验证您的身份并保护账号安全</li>
-<li>防止欺诈、滥用和机器人攻击</li>
-<li>遵守法律和监管要求</li>
-</ul>
+  <h2>第一条 · 引言与适用范围</h2>
+  <p>1.1 本政策适用于 Apex Global Entertainment 平台（下称"本平台"）向您提供的全部服务。</p>
+  <p>1.2 本平台高度重视您的个人信息与隐私保护，将按照适用法律、法规以及本政策的规定处理您的个人信息。</p>
+  <p>1.3 在使用本平台服务前，请您仔细阅读并充分理解本政策。您使用本平台服务，即表示您已同意本政策所述的信息处理方式。</p>
+  <p>1.4 本政策中，"个人信息"指以电子或其他方式记录的、能够单独或与其他信息结合识别特定自然人身份或反映特定自然人活动情况的各种信息。</p>
 
-<h2>3. 信息存储与保护</h2>
-<p>您的数据存储在 Cloudflare 全球分布式网络（D1 数据库）中，采用以下安全措施：</p>
-<ul>
-<li>密码使用 PBKDF2-SHA256 加盐哈希（600,000 次迭代）</li>
-<li>Session Token 在服务端仅存储 SHA-256 哈希；原始 Token 只存在于您浏览器的 HttpOnly Cookie 中</li>
-<li>IP 地址在数据库中仅以加盐哈希形式保存，不保存明文</li>
-<li>全站 HTTPS 加密传输（HSTS 强制，includeSubDomains + preload）</li>
-<li>严格的 CSP、CORS 及安全响应头（X-Frame-Options、Permissions-Policy 等）</li>
-<li>CSRF 防护（双重 Cookie 模式，恒定时间比较）</li>
-<li>敏感操作使用 PBKDF2 + 恒定时间比较，防时序攻击</li>
-</ul>
+  <h2>第二条 · 我们收集的信息</h2>
+  <p>为向您提供安全、稳定、优质的服务，我们可能收集以下类别的信息：</p>
 
-<h2>4. 信息共享</h2>
-<p>我们不会出售、交易或出租您的个人信息。仅在以下情况下可能共享：</p>
-<ul>
-<li>法律要求或合法请求</li>
-<li>保护用户或公众的安全</li>
-<li>与以下第三方服务商共享必要信息：
+  <h3>2.1 您主动提供的信息</h3>
   <ul>
-    <li><strong>Cloudflare</strong>（托管与 D1 数据库）</li>
-    <li><strong>Resend</strong>（主邮件服务，用于发送验证邮件）</li>
-    <li><strong>AgentMail</strong>（备用邮件服务）</li>
-    <li><strong>Google Fonts</strong>（网页字体加载）</li>
-    <li><strong>Unsplash</strong>（首页图片加载）</li>
+    <li><strong>账号信息</strong>：用户名、邮箱地址。</li>
+    <li><strong>认证凭证</strong>：加密后的密码哈希（我们采用 PBKDF2-SHA256 算法，迭代次数 600,000 次，并附加随机盐值；我们无法读取您的明文密码）；无密码登录方式所对应的公钥凭证（您的私钥永远不会离开您的设备）。</li>
+    <li><strong>联系信息</strong>：您通过安全中心或站内反馈渠道与我们联系时提供的信息。</li>
   </ul>
-</li>
-</ul>
 
-<h2>5. 您的权利</h2>
-<p>您有权：</p>
-<ul>
-<li>访问、更正或删除您的个人信息</li>
-<li>随时删除您的账号（通过安全中心）</li>
-<li>退出所有登录设备</li>
-<li>联系我们了解数据使用情况</li>
-</ul>
+  <h3>2.2 您使用服务时自动收集的信息</h3>
+  <ul>
+    <li><strong>网络技术信息</strong>：访问时的 IP 地址（我们仅以加盐哈希形式保存，不保存明文）、浏览器类型与版本、操作系统、设备类型与语言设置。</li>
+    <li><strong>账号活动信息</strong>：登录时间、登录设备、登录状态、登录失败次数、账号重要操作记录。</li>
+    <li><strong>行为验证信息</strong>：用于人机验证的鼠标轨迹、触摸行为等信号（仅用于实时判定，原始信号不长期保存）。</li>
+    <li><strong>日志信息</strong>：API 请求记录、错误信息、请求标识符（Request ID）、响应耗时等。</li>
+  </ul>
 
-<h2>6. Cookie 使用</h2>
-<p>我们使用以下 Cookie：</p>
-<ul>
-<li><strong>__Host-apex_session</strong>：登录状态（HttpOnly + Secure + SameSite=Strict）</li>
-<li><strong>apex_csrf</strong>：CSRF 防护 Token（非 HttpOnly，供前端读取后附加到请求头）</li>
-</ul>
-<p>我们不使用第三方追踪 Cookie。前端 localStorage 仅用于保存界面偏好（如语言选择），不用于认证。</p>
+  <h3>2.3 我们不会收集的信息</h3>
+  <div class="callout">
+    我们不会收集您的明文密码、生物特征原始数据（指纹/面容图像）、通讯录、短信、通话记录、精确地理位置、相册或麦克风数据。我们也不会从第三方数据经纪商处购买您的个人信息。
+  </div>
 
-<h2>7. 数据保留期限</h2>
-<ul>
-<li>账号数据：在您的账号存续期间保留；删除账号后立即永久删除。</li>
-<li>登录 Session：最长 7 天（自动过期）；登出或修改密码后立即失效。</li>
-<li>审计日志：90 天。</li>
-<li>客户端错误日志：30 天。</li>
-<li>限流记录：按窗口期自动清理（最长不超过 1 小时）。</li>
-<li>人机验证 Token：5 分钟（一次性使用，服务端只保存哈希）。</li>
-<li>密码重置验证码：10 分钟（一次性使用，服务端只保存 SHA-256 哈希）。</li>
-<li>邮箱验证链接：24 小时（一次性使用）。</li>
-</ul>
+  <h2>第三条 · 信息的使用目的与法律依据</h2>
 
-<h2>8. 政策更新</h2>
-<p>我们可能不时更新本政策。重大变更会通过邮件或站内通知告知您。</p>
+  <h3>3.1 使用目的</h3>
+  <p>我们收集的信息将用于下列目的：</p>
+  <ul>
+    <li><strong>提供核心服务</strong>：注册、登录、身份认证、账号找回、安全中心等功能。</li>
+    <li><strong>保障账号安全</strong>：检测异常登录、防止账号被盗、识别可疑活动。</li>
+    <li><strong>防范滥用与欺诈</strong>：识别机器人攻击、批量注册、异常请求等风险行为。</li>
+    <li><strong>改进服务质量</strong>：分析服务性能、定位故障、优化用户体验。</li>
+    <li><strong>履行法律义务</strong>：配合监管机关、司法机关的合法要求。</li>
+  </ul>
 
-<h2>9. 联系我们</h2>
-<p>如有疑问，请联系：<a href="mailto:privacy@apex-entertainment.com">privacy@apex-entertainment.com</a></p>
+  <h3>3.2 法律依据</h3>
+  <p>我们处理个人信息的法律依据包括：</p>
+  <ul>
+    <li><strong>合同履行</strong>：为履行您与我们之间的服务协议所必需；</li>
+    <li><strong>法律义务</strong>：为遵守我们所承担的法律义务所必需；</li>
+    <li><strong>合法权益</strong>：为保障平台安全、防范欺诈、改进服务等合法商业利益所必需；</li>
+    <li><strong>您的同意</strong>：在适用法律要求取得同意的情况下，我们将另行取得您的同意。</li>
+  </ul>
 
-<div class="footer">
-<a href="/">← 返回首页</a> · <a href="/terms.html">用户协议</a>
-<br><br>© 2026 Apex Global Entertainment
-</div>
+  <h2>第四条 · Cookie 与本地存储</h2>
+  <p>我们使用以下 Cookie 与浏览器本地存储技术：</p>
+  <table>
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>类型</th>
+        <th>用途</th>
+        <th>有效期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>__Host-apex_session</code></td>
+        <td>严格必要</td>
+        <td>保存您的登录会话标识（HttpOnly + Secure + SameSite=Strict）</td>
+        <td>最长 7 天</td>
+      </tr>
+      <tr>
+        <td><code>apex_csrf</code></td>
+        <td>严格必要</td>
+        <td>跨站请求伪造（CSRF）防护令牌</td>
+        <td>最长 30 天</td>
+      </tr>
+      <tr>
+        <td>浏览器本地存储（localStorage）</td>
+        <td>偏好</td>
+        <td>保存界面偏好（如语言、表单草稿）。<strong>不用于身份认证</strong></td>
+        <td>直至您清除或 90 天</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>我们<strong>不使用</strong>任何第三方追踪 Cookie、广告 Cookie 或数据分析 Cookie。您可通过浏览器设置管理或删除上述 Cookie，但这可能影响服务功能的正常使用。</p>
+
+  <h2>第五条 · 信息的共享与披露</h2>
+
+  <h3>5.1 共享原则</h3>
+  <p>我们<strong>不会出售、出租或交易</strong>您的个人信息。仅在下列必要情形下，我们才可能共享您的信息：</p>
+
+  <h3>5.2 共享情形</h3>
+  <ul>
+    <li><strong>服务提供商</strong>：为提供基础设施、邮件投递、内容分发等服务，我们可能与经过严格筛选并签署保密协议的服务提供商共享必要的技术信息（如收件邮箱地址、请求负载）。这些服务提供商仅能在为我们提供服务的必要范围内使用信息。</li>
+    <li><strong>法律要求</strong>：为遵守法律、法规、司法或行政机关的强制性要求，或为保护我们、用户或公众的合法权益，我们可能披露必要的信息。</li>
+    <li><strong>业务转让</strong>：若发生合并、收购、资产转让或类似交易，您的个人信息可能作为交易资产的一部分予以转移。我们将通过适当方式提前告知，并要求受让方继续遵守本政策。</li>
+    <li><strong>您的明确同意</strong>：在取得您明确同意的情况下，我们可能向第三方共享您指定的信息。</li>
+  </ul>
+
+  <h3>5.3 不共享的信息</h3>
+  <p>我们不会与任何第三方共享您的明文密码、密码哈希、会话令牌、身份验证私钥或其他仅用于验证您身份的敏感凭证。</p>
+
+  <h2>第六条 · 信息的跨境传输</h2>
+  <p>6.1 为向全球用户提供稳定服务，我们的基础设施分布于多个司法辖区的数据中心，您的信息可能被传输至您所在国家/地区以外的服务器进行存储与处理。</p>
+  <p>6.2 在进行跨境数据传输时，我们将采取适用法律要求的适当保障措施（如标准合同条款、加密传输、访问控制等），以确保您的信息在传输和存储过程中得到充分保护。</p>
+
+  <h2>第七条 · 信息的存储与保护</h2>
+
+  <h3>7.1 存储地点</h3>
+  <p>您的信息主要存储于我们分布式的数据存储系统中。具体存储地点将根据服务的部署架构、负载均衡与备份策略而动态分布。</p>
+
+  <h3>7.2 安全措施</h3>
+  <p>我们采取符合行业标准的技术与管理措施保护您的信息，包括但不限于：</p>
+  <ul>
+    <li><strong>传输加密</strong>：全站采用 HTTPS/TLS 加密传输，并通过 HSTS 强制启用。</li>
+    <li><strong>存储加密</strong>：密码采用 PBKDF2-SHA256 加盐哈希；会话令牌与一次性验证码在服务端仅保存不可逆哈希值。</li>
+    <li><strong>隐私强化</strong>：IP 地址仅以加盐哈希形式保存；用户凭证（如私钥）永不离开用户设备。</li>
+    <li><strong>访问控制</strong>：严格的内部权限管理、最小权限原则与操作审计。</li>
+    <li><strong>安全防护</strong>：启用严格的内容安全策略（CSP）、跨站请求伪造（CSRF）防护、限流机制和异常检测。</li>
+    <li><strong>漏洞管理</strong>：持续进行安全扫描、依赖更新与渗透测试。</li>
+  </ul>
+
+  <h3>7.3 安全事件响应</h3>
+  <p>若发生个人信息安全事件，我们将依照法律要求及时启动应急响应机制，采取补救措施，并以适当方式（如站内通知或电子邮件）向您告知事件的基本情况、可能的影响以及我们已采取的处置措施。</p>
+
+  <h2>第八条 · 信息的保留期限</h2>
+  <p>我们仅在实现本政策所述目的所必需的最短期限内保留您的个人信息，法律另有规定的除外。具体保留期限如下：</p>
+  <table>
+    <thead>
+      <tr>
+        <th>信息类别</th>
+        <th>保留期限</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>账号信息（用户名、邮箱）</td><td>账号存续期间；账号注销后立即删除</td></tr>
+      <tr><td>密码哈希</td><td>账号存续期间；账号注销后立即删除</td></tr>
+      <tr><td>无密码登录凭证（公钥）</td><td>用户主动删除凭证或账号注销后立即删除</td></tr>
+      <tr><td>登录会话</td><td>最长 7 天，或登出/改密后立即失效并删除</td></tr>
+      <tr><td>审计日志</td><td>90 天</td></tr>
+      <tr><td>客户端错误日志</td><td>30 天</td></tr>
+      <tr><td>限流记录</td><td>最长 1 小时（按窗口自动清理）</td></tr>
+      <tr><td>人机验证令牌</td><td>5 分钟（一次性消费）</td></tr>
+      <tr><td>密码重置验证码</td><td>10 分钟（一次性消费）</td></tr>
+      <tr><td>邮箱验证链接</td><td>24 小时（一次性消费）</td></tr>
+    </tbody>
+  </table>
+  <p>超出保留期限后，我们将对相关数据进行删除或匿名化处理。</p>
+
+  <h2>第九条 · 您的权利</h2>
+  <p>在适用法律允许的范围内，您对自己的个人信息享有以下权利：</p>
+  <ul>
+    <li><strong>知情权</strong>：了解我们如何处理您的个人信息；</li>
+    <li><strong>访问权</strong>：查询我们持有的关于您的个人信息；</li>
+    <li><strong>更正权</strong>：要求我们更正不准确或不完整的信息；</li>
+    <li><strong>删除权</strong>：要求我们删除您的个人信息，或注销账号；</li>
+    <li><strong>撤回同意权</strong>：对基于同意处理的信息，您可随时撤回同意；</li>
+    <li><strong>限制处理权</strong>：要求我们限制对您信息的处理；</li>
+    <li><strong>反对权</strong>：反对我们基于合法权益处理您的信息；</li>
+    <li><strong>数据可携带权</strong>：以结构化、通用、机器可读的格式获取您的信息副本；</li>
+    <li><strong>投诉权</strong>：向您所在辖区的监管机关提出投诉。</li>
+  </ul>
+  <div class="callout">
+    行使上述权利时，请通过本平台"安全中心"或站内反馈渠道提交请求。我们将在法定期限内予以答复。为保障您的账号安全，我们可能先核实您的身份。
+  </div>
+
+  <h2>第十条 · 未成年人保护</h2>
+  <p>10.1 本平台服务面向年满 18 周岁（或您所在司法辖区规定的法定成年年龄）的用户。我们不会有意收集未成年人的个人信息。</p>
+  <p>10.2 若您是未成年人，请在法定监护人的陪同下阅读本政策，并在取得监护人同意后方可使用本平台服务。</p>
+  <p>10.3 若我们发现在未事先取得监护人同意的情况下收集了未成年人的个人信息，将尽快删除相关数据。</p>
+  <p>10.4 若您是未成年人的监护人，发现未成年人在未经您同意的情况下使用了本平台服务，请通过安全中心联系我们，我们将协助处理。</p>
+
+  <h2>第十一条 · 政策更新</h2>
+  <p>11.1 我们可能根据业务发展、法律变更或运营需要，适时修订本政策。</p>
+  <p>11.2 若修订涉及您的重大权益，我们将通过站内通知、页面公告或注册邮箱等方式提前告知，并重新取得您的同意（如适用法律要求）。</p>
+  <p>11.3 本政策的版本号与生效日期将在页面顶部予以公示，您可通过查看"最后更新"日期了解本政策的最新版本。</p>
+
+  <h2>第十二条 · 联系我们</h2>
+  <p>如您对本政策有任何疑问、意见或投诉，或希望行使本政策所述权利，请通过本平台"安全中心"或站内反馈渠道与我们取得联系。</p>
+  <p>我们将尽快处理您的请求，并在法律规定的期限内予以答复。</p>
+
+  <div class="footer">
+    <a href="/">← 返回首页</a> · <a href="/terms.html">用户协议</a> · <a href="/status.html">系统状态</a>
+    <br><br>© 2026 Apex Global Entertainment. All rights reserved.
+  </div>
+
 </div>
 </body>
 </html>

@@ -4,41 +4,118 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>系统状态 · Apex Global Entertainment</title>
-<meta name="description" content="Apex Entertainment 系统状态页面：网站、API、数据库、邮件服务的实时可用性。">
-<link rel="canonical" href="https://apex-8rg.pages.dev/status.html">
+<meta name="description" content="Apex Global Entertainment 系统状态页面">
 <style>
-  :root { --bg:#050505; --card:#0f0f0f; --border:#2a2a2a; --text:#fff; --muted:#888; --ok:#4ade80; --warn:#d4af37; --err:#e63946; --gold:#d4af37; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:-apple-system,system-ui,sans-serif; min-height:100vh; padding:24px; }
-  .container { max-width:520px; margin:0 auto; }
-  .header { text-align:center; margin-bottom:24px; }
-  .header h1 { font-size:20px; letter-spacing:1px; color:var(--gold); margin-bottom:6px; }
-  .header p { font-size:12px; color:var(--muted); }
-  .overall { display:flex; align-items:center; gap:12px; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin-bottom:20px; }
-  .dot { width:12px; height:12px; border-radius:50%; background:var(--muted); flex-shrink:0; }
-  .dot.ok { background:var(--ok); box-shadow:0 0 12px var(--ok); }
-  .dot.warn { background:var(--warn); box-shadow:0 0 12px var(--warn); }
-  .dot.err { background:var(--err); box-shadow:0 0 12px var(--err); }
-  .dot.loading { background:#555; }
-  .overall-text { flex:1; }
-  .overall-text .title { font-size:14px; font-weight:bold; }
-  .overall-text .meta { font-size:11px; color:var(--muted); margin-top:2px; }
-  .service { display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:10px; }
-  .service .name { font-size:13px; font-weight:bold; }
-  .service .desc { font-size:11px; color:var(--muted); margin-top:2px; }
-  .service .status { margin-left:auto; font-size:11px; padding:4px 10px; border-radius:20px; white-space:nowrap; }
-  .status.ok { background:rgba(74,222,128,0.1); color:var(--ok); }
-  .status.warn { background:rgba(212,175,55,0.1); color:var(--warn); }
-  .status.err { background:rgba(230,57,70,0.1); color:var(--err); }
-  .status.loading { background:rgba(255,255,255,0.05); color:var(--muted); }
-  .refresh { text-align:center; margin-top:16px; }
-  .refresh button { padding:10px 20px; background:transparent; color:var(--gold); border:1px solid var(--gold); border-radius:20px; cursor:pointer; font-size:12px; }
-  .footer { text-align:center; margin-top:24px; padding-top:16px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); }
-  .footer a { color:var(--gold); text-decoration:none; }
+  :root {
+    --bg: #050505;
+    --card: #0f0f0f;
+    --border: #2a2a2a;
+    --text: #ffffff;
+    --muted: #888888;
+    --ok: #4ade80;
+    --warn: #d4af37;
+    --err: #e63946;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 28px 20px;
+    line-height: 1.6;
+  }
+  .container { max-width: 520px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 24px; }
+  .header h1 {
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #ffffff;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .header p { font-size: 12px; color: var(--muted); }
+
+  .overall {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+  }
+  .dot.ok { background: var(--ok); box-shadow: 0 0 12px var(--ok); }
+  .dot.warn { background: var(--warn); box-shadow: 0 0 12px var(--warn); }
+  .dot.err { background: var(--err); box-shadow: 0 0 12px var(--err); }
+  .dot.loading { background: #555; }
+  .overall-text { flex: 1; }
+  .overall-text .title { font-size: 14px; font-weight: 600; }
+  .overall-text .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .service {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .service .name { font-size: 13px; font-weight: 600; }
+  .service .desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .service .status {
+    margin-left: auto;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .status.ok { background: rgba(74,222,128,0.1); color: var(--ok); }
+  .status.warn { background: rgba(212,175,55,0.1); color: var(--warn); }
+  .status.err { background: rgba(230,57,70,0.1); color: var(--err); }
+  .status.loading { background: rgba(255,255,255,0.05); color: var(--muted); }
+
+  .refresh { text-align: center; margin-top: 20px; }
+  .refresh button {
+    padding: 10px 22px;
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #444;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .refresh button:hover { border-color: #888; background: rgba(255,255,255,0.03); }
+  .refresh button:active { transform: scale(0.97); }
+
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .footer a { color: #aaa; text-decoration: none; }
+  .footer a:hover { color: #fff; }
 </style>
 </head>
 <body>
 <div class="container">
+
   <div class="header">
     <h1>APEX 系统状态</h1>
     <p>实时可用性监控</p>
@@ -54,43 +131,44 @@
 
   <div class="service">
     <div>
-      <div class="name">Website · 网站前端</div>
-      <div class="desc">Cloudflare Pages · 静态资源</div>
+      <div class="name">网站前端</div>
+      <div class="desc">静态资源分发</div>
     </div>
     <div class="status loading" id="status-website">检查中</div>
   </div>
 
   <div class="service">
     <div>
-      <div class="name">API · 后端接口</div>
-      <div class="desc">Pages Functions · 边缘计算</div>
+      <div class="name">后端接口</div>
+      <div class="desc">边缘计算 · API 网关</div>
     </div>
     <div class="status loading" id="status-api">检查中</div>
   </div>
 
   <div class="service">
     <div>
-      <div class="name">Database · 数据库</div>
-      <div class="desc">D1 · SQLite 边缘存储</div>
+      <div class="name">数据库</div>
+      <div class="desc">分布式数据存储</div>
     </div>
     <div class="status loading" id="status-db">检查中</div>
   </div>
 
   <div class="service">
     <div>
-      <div class="name">Email · 邮件服务</div>
-      <div class="desc" id="email-provider-desc">Resend 主 · AgentMail 备</div>
+      <div class="name">邮件服务</div>
+      <div class="desc" id="email-provider-desc">验证邮件投递</div>
     </div>
     <div class="status loading" id="status-email">检查中</div>
   </div>
 
   <div class="refresh">
-    <button onclick="checkAll()">🔄 刷新状态</button>
+    <button id="btn-refresh">刷新状态</button>
   </div>
 
   <div class="footer">
     <a href="/">← 返回首页</a> &nbsp;·&nbsp; © 2026 Apex Global Entertainment
   </div>
+
 </div>
 
 <script>
@@ -106,9 +184,11 @@
 
   function setOverall(state, title, meta) {
     var dot = document.getElementById('overall-dot');
-    dot.className = 'dot ' + state;
-    document.getElementById('overall-title').textContent = title;
-    document.getElementById('overall-meta').textContent = meta;
+    if (dot) dot.className = 'dot ' + state;
+    var t = document.getElementById('overall-title');
+    if (t) t.textContent = title;
+    var m = document.getElementById('overall-meta');
+    if (m) m.textContent = meta;
   }
 
   function mapState(state) {
@@ -134,7 +214,7 @@
     var errCount = 0;
     var warnCount = 0;
 
-    // 1) Website
+    // 1) 前端
     try {
       var t0 = performance.now();
       var r = await fetch('/', { method: 'HEAD', cache: 'no-store' });
@@ -150,16 +230,16 @@
       errCount++;
     }
 
-    // 2) API + DB + Email（统一走 /api/status）
+    // 2) API + DB + Email
     try {
       var t1 = performance.now();
       var res = await fetch('/api/status', { cache: 'no-store' });
       var ms2 = Math.round(performance.now() - t1);
       var data = await res.json();
-
       var checks = (data && data.checks) || {};
 
       setStatus('status-api', res.ok ? 'ok' : 'err', '正常 ' + ms2 + 'ms');
+      if (!res.ok) errCount++;
 
       var dbState = checks.db && checks.db.state;
       setStatus('status-db', mapState(dbState), mapLabel(dbState));
@@ -171,17 +251,14 @@
       var providers = Array.isArray(email.providers) ? email.providers : [];
       var descEl = document.getElementById('email-provider-desc');
       if (descEl) {
-        if (providers.length === 0) {
-          descEl.textContent = '未配置';
-        } else if (providers.length === 1) {
-          descEl.textContent = providers[0] + '（单通道）';
-        } else {
-          descEl.textContent = providers[0] + ' 主 · ' + providers.slice(1).join(' / ') + ' 备';
-        }
+        if (providers.length === 0) descEl.textContent = '未配置';
+        else if (providers.length === 1) descEl.textContent = '主通道正常';
+        else descEl.textContent = '主通道正常 · 备用通道就绪';
       }
       setStatus('status-email', mapState(emailState), mapLabel(emailState));
       if (emailState === 'error') errCount++;
       else if (emailState === 'warn') warnCount++;
+
     } catch (e) {
       setStatus('status-api', 'err', '不可达');
       setStatus('status-db', 'err', '不可达');
@@ -189,8 +266,14 @@
       errCount += 3;
     }
 
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    var ss = String(now.getSeconds()).padStart(2, '0');
+    var stamp = hh + ':' + mm + ':' + ss;
+
     if (errCount === 0 && warnCount === 0) {
-      setOverall('ok', '所有系统正常', '最后检查：' + new Date().toLocaleString());
+      setOverall('ok', '所有系统正常', '最后检查：' + stamp);
     } else if (errCount === 0) {
       setOverall('warn', '部分服务降级', warnCount + ' 项降级');
     } else {
@@ -198,8 +281,25 @@
     }
   }
 
-  checkAll();
-  setInterval(checkAll, 60000);
+  // 关键：暴露到全局，让 HTML 的 onclick 能找到
+  window.checkAll = checkAll;
+  window.__apexStatusCheck = checkAll;
+
+  // 绑定刷新按钮
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('btn-refresh');
+    if (btn) btn.addEventListener('click', checkAll);
+    checkAll();
+    setInterval(checkAll, 60000);
+  });
+
+  // 兜底：DOM 已加载就直接跑
+  if (document.readyState !== 'loading') {
+    var btn2 = document.getElementById('btn-refresh');
+    if (btn2) btn2.addEventListener('click', checkAll);
+    checkAll();
+    setInterval(checkAll, 60000);
+  }
 })();
 </script>
 </body>
