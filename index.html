@@ -1814,66 +1814,81 @@ window.__apex = { toast, showSuccess, switchTo };
   </script>
   
   
-<div id="apex-homepage" style="display:none;">
-  <div style="max-width:480px;margin:0 auto;padding:16px;">
+<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#f5f5f5; overflow-y:auto; z-index:100; -webkit-overflow-scrolling:touch;">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #2a2a2a;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#d4af37,#8b6508);display:flex;align-items:center;justify-content:center;color:#000;font-weight:bold;font-size:16px;" id="user-avatar">A</div>
-        <div>
-          <div style="font-size:13px;font-weight:bold;color:#fff;" id="user-name">用户</div>
-          <div style="font-size:10px;color:#888;" id="user-email">email@example.com</div>
+  <!-- 顶部白底导航栏 -->
+  <div style="background:#ffffff; border-bottom:1px solid #e8e8e8; padding:14px 16px; position:sticky; top:0; z-index:10;">
+    <div style="max-width:480px; margin:0 auto; display:flex; align-items:center; gap:12px;">
+      <img src="/logo-home.png" alt="Apex" style="height:38px; width:auto; display:block;">
+      <span style="font-size:15px; font-weight:700; color:#111111; letter-spacing:0.3px;">apextop.cc.cd</span>
+    </div>
+  </div>
+
+  <div style="max-width:480px; margin:0 auto; padding:16px;">
+
+    <!-- 用户信息卡 -->
+    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+        <div id="user-avatar" style="width:44px; height:44px; border-radius:50%; background:#111111; color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0;">A</div>
+        <div style="min-width:0;">
+          <div id="user-name" style="font-size:14px; font-weight:700; color:#111111;">用户</div>
+          <div id="user-email" style="font-size:11px; color:#888888; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">email@example.com</div>
         </div>
       </div>
-      <button onclick="window.apexLogout && window.apexLogout()" style="background:transparent;border:1px solid #333;color:#888;padding:6px 12px;border-radius:20px;font-size:11px;cursor:pointer;">登出</button>
+      <button onclick="window.apexLogout && window.apexLogout()" style="background:#ffffff; border:1px solid #d8d8d8; color:#333333; padding:6px 14px; border-radius:20px; font-size:12px; cursor:pointer; font-family:inherit; flex-shrink:0;">登出</button>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-      <a href="#" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:16px;text-decoration:none;color:#fff;display:flex;flex-direction:column;gap:6px;">
-        <span style="font-size:24px;">🎮</span>
-        <span style="font-size:13px;font-weight:bold;">游戏大厅</span>
-        <span style="font-size:10px;color:#888;">即将开放</span>
+    <!-- 4 个功能卡片 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
+        <span style="font-size:26px;">🎮</span>
+        <span style="font-size:14px; font-weight:700; color:#111111;">游戏大厅</span>
+        <span style="font-size:11px; color:#999999;">即将开放</span>
       </a>
-      <a href="#" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:16px;text-decoration:none;color:#fff;display:flex;flex-direction:column;gap:6px;">
-        <span style="font-size:24px;">💰</span>
-        <span style="font-size:13px;font-weight:bold;">我的钱包</span>
-        <span style="font-size:10px;color:#888;">即将开放</span>
+      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
+        <span style="font-size:26px;">💰</span>
+        <span style="font-size:14px; font-weight:700; color:#111111;">我的钱包</span>
+        <span style="font-size:11px; color:#999999;">即将开放</span>
       </a>
-      <a href="#" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:16px;text-decoration:none;color:#fff;display:flex;flex-direction:column;gap:6px;">
-        <span style="font-size:24px;">🎁</span>
-        <span style="font-size:13px;font-weight:bold;">活动中心</span>
-        <span style="font-size:10px;color:#888;">即将开放</span>
+      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
+        <span style="font-size:26px;">🎁</span>
+        <span style="font-size:14px; font-weight:700; color:#111111;">活动中心</span>
+        <span style="font-size:11px; color:#999999;">即将开放</span>
       </a>
-      <a href="#" id="security-center-link" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:16px;text-decoration:none;color:#fff;display:flex;flex-direction:column;gap:6px;">
-        <span style="font-size:24px;">🛡️</span>
-        <span style="font-size:13px;font-weight:bold;">安全中心</span>
-        <span style="font-size:10px;color:#4ade80;">查看设备</span>
+      <a href="#" id="security-center-link" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
+        <span style="font-size:26px;">🛡️</span>
+        <span style="font-size:14px; font-weight:700; color:#111111;">安全中心</span>
+        <span style="font-size:11px; color:#16a34a; font-weight:600;">查看设备</span>
       </a>
     </div>
 
-    <div style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:12px;padding:16px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+    <!-- 系统公告 -->
+    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
         <span style="font-size:16px;">📢</span>
-        <span style="font-size:13px;font-weight:bold;color:#fff;">系统公告</span>
+        <span style="font-size:14px; font-weight:700; color:#111111;">系统公告</span>
       </div>
-      <p style="font-size:12px;color:#888;line-height:1.6;">欢迎使用 Apex Entertainment。我们的游戏平台正在开发中，即将上线。</p>
+      <p style="font-size:12.5px; color:#666666; line-height:1.7; margin:0;">欢迎使用 Apex Entertainment。我们的游戏平台正在开发中，即将上线。</p>
     </div>
 
-    <div style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:12px;padding:16px;margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:bold;color:#fff;margin-bottom:12px;">账户信息</div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;">
-        <span style="color:#888;">邮箱状态</span>
-        <span style="color:#4ade80;">已验证</span>
+    <!-- 账户信息 -->
+    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px;">
+      <div style="font-size:14px; font-weight:700; color:#111111; margin-bottom:12px;">账户信息</div>
+      <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:13px;">
+        <span style="color:#888888;">邮箱状态</span>
+        <span style="color:#16a34a; font-weight:600;">已验证</span>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;">
-        <span style="color:#888;">账户等级</span>
-        <span style="color:#d4af37;">标准用户</span>
+      <div style="display:flex; justify-content:space-between; padding:10px 0; font-size:13px;">
+        <span style="color:#888888;">账户等级</span>
+        <span style="color:#111111; font-weight:600;">标准用户</span>
       </div>
     </div>
 
-    <div style="text-align:center;color:#555;font-size:11px;padding:20px 0;">
+    <!-- 页脚 -->
+    <div style="text-align:center; color:#aaaaaa; font-size:11px; padding:20px 0;">
       © 2026 Apex Global Entertainment
     </div>
+
   </div>
 </div>
 
