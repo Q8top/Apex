@@ -305,6 +305,9 @@
     if (!userRe.test(username)) { toast('账号需 6-20 位，仅限字母、数字、下划线'); uEl.focus(); return; }
     if (!email) { toast('请输入邮箱'); eEl.focus(); return; }
     if (!emailRe.test(email)) { toast('邮箱格式错误'); eEl.focus(); return; }
+    // 读取 captchaToken（优先全局，其次 dataset，兜底空串）
+    var captchaToken = window.__captchaToken || cEl.dataset.token || '';
+
     const btn = document.getElementById('btn-passkey-signup');
     if (btn) { btn.disabled = true; btn.textContent = '处理中...'; }
 
