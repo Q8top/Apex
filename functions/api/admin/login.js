@@ -72,7 +72,7 @@ export async function onRequestPost(context) {
 
     const vres = await verifyPasswordDetailed(password, admin.password_hash);
     if (vres === VERIFY_RESULT.NEEDS_RESET) {
-      await audit(env, { action: 'admin_login_needs_reset', actorType: 'admin', ip, userAgent: ua, metadata: { username } });
+      await audit(env, { action: 'admin_login_needs_reset', actorType: 'admin', metadata: { username } }, request);
       return errorResponse('该管理员账号需要重新设置密码，请联系系统管理员', 409, 'password_requires_reset', requestId);
     }
     if (vres !== VERIFY_RESULT.MATCH) {
