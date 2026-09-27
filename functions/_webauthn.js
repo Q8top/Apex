@@ -55,7 +55,7 @@ export function parseAuthenticatorData(rawBytes) {
 
   const rpIdHash = bytes.slice(0, 32);
   const flags = bytes[32];
-  const signCount = (bytes[33] << 24) | (bytes[34] << 16) | (bytes[35] << 8) | bytes[36];
+  const signCount = ((bytes[33] << 24) | (bytes[34] << 16) | (bytes[35] << 8) | bytes[36]) >>> 0;
 
   let offset = 37;
   let aaguid = null;
