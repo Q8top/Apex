@@ -567,6 +567,7 @@
             </div>
             <button class="btn-send-code" id="btn-send-code" data-i18n="btn.sendCode">发送验证码</button>
           </div>
+          <div class="field-error" id="code-boxes-error" role="alert" aria-live="polite"></div>
           <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
         </div>
 
@@ -962,6 +963,7 @@ window.__apex = { toast, showSuccess, switchTo };
     const codeInputs = document.querySelectorAll('#code-boxes input');
     codeInputs.forEach((input, i) => {
       input.addEventListener('input', () => {
+        if (window.clearCodeBoxError) window.clearCodeBoxError(document.getElementById('code-boxes'));
         if (input.value && i < codeInputs.length - 1) codeInputs[i + 1].focus();
       });
       input.addEventListener('keydown', (e) => {
@@ -1205,12 +1207,20 @@ window.__apex = { toast, showSuccess, switchTo };
       if (!containerEl) return;
       containerEl.classList.add('error');
       shakeElement(containerEl);
-      toast(msg, 'error');
+      var errEl = document.getElementById('code-boxes-error');
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.classList.add('show');
+      } else {
+        toast(msg, 'error');
+      }
     }
 
     window.clearCodeBoxError = function clearCodeBoxError(containerEl) {
       if (!containerEl) return;
       containerEl.classList.remove('error');
+      var errEl = document.getElementById('code-boxes-error');
+      if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
     }
 
     window.attachCapsLockWarn = function attachCapsLockWarn(inputEl) {
