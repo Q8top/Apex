@@ -72,8 +72,10 @@ export function parseCookies(request) {
 }
 
 export async function checkRateLimit(env, ip, action, maxCount, windowSec) {
+  // P11-J: IP 先加盐哈希再作为 rate-limit key，避免明文 IP 落入数据库
+  const ipHash = await _hashIP(ip || 'unknown', env.RATE_LIMIT_SALT || env.CAPTCHA_SECRET || '');
   const result = await consumeRateLimit(env, {
-    key: `ip:${ip || 'unknown'}`,
+    key: `ip:${ipHash}`,
     action: String(action),
     max: Number(maxCount),
     windowSec: Number(windowSec),

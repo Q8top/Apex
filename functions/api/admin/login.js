@@ -4,6 +4,7 @@ import { verifyPasswordDetailed, VERIFY_RESULT } from '../../_password.js';
 import { buildAdminCookie, buildClearLegacyAdminCookie, createAdminSession, audit } from '../../_admin.js';
 import { getConfig } from '../../_config.js';
 import { enforceIpRateLimit, enforceKeyRateLimit } from '../../_rateLimit.js';
+import { sha256Hex } from '../../_security.js';
 
 async function verifyTotpSafe(secret, code) {
   if (!secret || !code) return false;
@@ -35,7 +36,9 @@ export async function onRequestPost(context) {
     return errorResponse('账号和密码不能为空', 400, 'missing_fields', requestId);
   }
 
-  const accLimited = await enforceKeyRateLimit(env, 'admin-login-account', `admin:${username}`, 10, 900);
+  // P11-J: admin username 加盐哈希后再作为 rate-limit key，避免明文落库
+  const usernameHash = await sha256Hex('apex_admin_login_v1:' + username);
+  const accLimited = await enforceKeyRateLimit(env, 'admin-login-account', `admin:${usernameHash}`, 10, 900);
   if (accLimited) return accLimited;
 
   const admin = await env.apex_db.prepare(
