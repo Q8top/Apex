@@ -178,7 +178,7 @@ export async function onRequestPost(context) {
       emailVerified: Boolean(user.email_verified),
     },
   }, 200, requestId, {
-    'Set-Cookie': buildSessionCookie(session.token, cfg.sessionMaxAge, env),
+    'Set-Cookie': buildSessionCookie(session.token, config.sessionMaxAge, env),
   });
 }
 
