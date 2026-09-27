@@ -29,7 +29,7 @@ const USERNAME_RE = /^[a-zA-Z0-9_]{3,32}$/;
 // SQL 字面量安全转义（单引号加倍，符合 SQLite 标准）
 function sqlEscape(v) {
   if (typeof v !== "string") throw new Error("sqlEscape 只接受字符串");
-  return " + v.replace(/'/g, ) + ";
+  return "'" + v.replace(/'/g, "''") + "'";
 }
 
 function usage() {
