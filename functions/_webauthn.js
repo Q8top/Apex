@@ -215,6 +215,7 @@ export function verifyClientData(clientDataJSON, opts) {
 
   if (data.type !== expectedType) throw new Error('clientdata_wrong_type');
   if (data.challenge !== expectedChallenge) throw new Error('clientdata_wrong_challenge');
+  if (data.crossOrigin === true) throw new Error('clientdata_cross_origin');
 
   const origins = Array.isArray(expectedOrigins) ? expectedOrigins : [expectedOrigins];
   const cleanOrigin = String(data.origin || '').replace(/\/+$/, '');
