@@ -84,6 +84,7 @@ const LINE_WHITELIST = [
 const FILE_WHITELIST = {
   'send-reset-code.js':   new Set(['devCode']),
   'send-verify-email.js': new Set(['devToken']),
+  'recover-challenge.js': new Set(['devCode']),
   '_headers':             new Set(['devCode', 'devToken', 'wildcardCors']),
 };
 
