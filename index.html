@@ -176,6 +176,12 @@
     .method-desc { font-size:11px; color:#888; }
     .method-arrow { color:#555; font-size:20px; transition:color 0.25s; }
     .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#ffffff; }
+    /* ============ 卡片内联提示 ============ */
+    .inline-msg { display:none; margin:12px 0 0 0; padding:10px 14px; border-radius:8px; font-size:13px; text-align:center; line-height:1.5; box-sizing:border-box; }
+    .inline-msg.show { display:block; animation: inlineMsgFadeIn 0.25s ease-in-out; }
+    .inline-msg.error { background: rgba(230,57,70,0.12); border: 1px solid rgba(230,57,70,0.4); color: #ff6b7a; }
+    .inline-msg.success { background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.4); color: #4ade80; }
+    @keyframes inlineMsgFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     #login-method-picker, #register-method-picker { margin-top:6px; }
     #passkey-signup-back { color:#888; font-size:12px; text-decoration:none; }
     #passkey-signup-back:hover { color:#ffffff; }
@@ -756,6 +762,14 @@
         });
         clearCodeBoxError(document.getElementById('code-boxes'));
         clearCodeBoxError(document.getElementById('recover-code-boxes'));
+        // 清空所有内联提示
+        ['login-method-picker','register-method-picker','passkey-signup-form','passkey-recover-form','forgot-method-picker','forgot-form','login-form','register-form'].forEach(function (sid) {
+          var sel = document.getElementById(sid);
+          if (sel) {
+            var msgs = sel.querySelectorAll('.inline-msg');
+            msgs.forEach(function (m) { m.classList.remove('show'); m.textContent = ''; });
+          }
+        });
       } catch (e) {}
       var _allSectionIds = ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-method-picker','passkey-recover-form','forgot-form'];
       for (var _i = 0; _i < _allSectionIds.length; _i += 1) {

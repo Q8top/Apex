@@ -47,8 +47,44 @@
     return (e && e.message) || '操作失败';
   }
 
+  // 优先显示到当前可见的 picker/form 内联位置
   function toast(msg, type) {
-    try { if (window.__apex && window.__apex.toast) window.__apex.toast(msg, type || 'error'); }
+    type = type || 'error';
+    try {
+      var targetIds = [
+        'login-method-picker',
+        'register-method-picker',
+        'passkey-signup-form',
+        'passkey-recover-form',
+        'forgot-method-picker',
+        'forgot-form',
+        'login-form',
+        'register-form'
+      ];
+      var target = null;
+      for (var i = 0; i < targetIds.length; i += 1) {
+        var el = document.getElementById(targetIds[i]);
+        if (el && el.offsetHeight > 0) {
+          target = el;
+          break;
+        }
+      }
+      if (target) {
+        var msgEl = target.querySelector('.inline-msg');
+        if (!msgEl) {
+          msgEl = document.createElement('div');
+          msgEl.className = 'inline-msg';
+          target.appendChild(msgEl);
+        }
+        msgEl.textContent = msg;
+        msgEl.className = 'inline-msg show ' + (type === 'success' ? 'success' : 'error');
+        clearTimeout(msgEl._timer);
+        msgEl._timer = setTimeout(function () { msgEl.classList.remove('show'); }, 5000);
+        return;
+      }
+    } catch (e) {}
+    // Fallback: 屏幕中央 toast
+    try { if (window.__apex && window.__apex.toast) window.__apex.toast(msg, type); }
     catch (e) {}
   }
 
