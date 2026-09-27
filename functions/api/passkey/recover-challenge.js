@@ -9,6 +9,7 @@ import { sendEmail, emailTemplate } from '../../_email.js';
 import { getConfig } from '../../_config.js';
 import { verifyCaptchaTokenV2 } from '../../_utils.js';
 import { writeAudit } from '../../_audit.js';
+import { storeChallenge } from '../../_passkey.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -41,7 +42,24 @@ export async function onRequestPost(context) {
   const emailLimited = await enforceKeyRateLimit(env, 'passkey-recover-email', `email:${email}`, 3, 600);
   if (emailLimited) return emailLimited;
 
-  const genericOk = jsonResponse({ success: true, message: '若该邮箱已绑定 Passkey，验证码已发送' }, 200, requestId);
+  // 先生成 challenge（无论邮箱是否绑定 Passkey，都返回相同结构，防枚举）
+  let challengeId = null;
+  let challenge = null;
+  try {
+    const stored = await storeChallenge(env, { type: 'registration', userId: null });
+    challengeId = stored.challengeId;
+    challenge = stored.challenge;
+  } catch (e) {
+    console.error('[Passkey recover] challenge gen failed:', e && e.message ? e.message : e);
+    return errorResponse('服务器内部错误', 500, 'challenge_failed', requestId);
+  }
+
+  const genericOk = jsonResponse({
+    success: true,
+    message: '若该邮箱已绑定 Passkey，验证码已发送',
+    challengeId: challengeId,
+    challenge: challenge,
+  }, 200, requestId);
 
   const user = await env.apex_db.prepare(
     'SELECT u.id FROM users u WHERE u.email = ? AND EXISTS (SELECT 1 FROM passkeys p WHERE p.user_id = u.id) LIMIT 1'
