@@ -45,6 +45,8 @@ jobs:
       - name: Install deps
         run: npm ci --ignore-scripts || npm install --ignore-scripts
 
+      - name: Add node_modules/.bin to PATH
+        run: echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Pre-deploy safety check
         run: |
           set -e
