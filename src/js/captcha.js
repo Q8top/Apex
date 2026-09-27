@@ -66,10 +66,11 @@
 
       if (verifyRes.success) {
         if (percent) percent.textContent = '100%';
+        // 立即设置 status 和 token（防止用户点得快，200ms 延迟内读到旧值）
+        box.dataset.token = verifyRes.token;
+        window.__captchaToken = verifyRes.token;
+        box.dataset.status = 'success';
         setTimeout(() => {
-          box.dataset.token = verifyRes.token;
-          window.__captchaToken = verifyRes.token;
-          box.dataset.status = 'success';
           box.classList.remove('verifying');
           box.classList.add('success');
           if (percent) percent.textContent = '验证成功';

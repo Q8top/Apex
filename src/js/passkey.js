@@ -307,7 +307,7 @@
     if (!emailRe.test(email)) { toast('邮箱格式错误'); eEl.focus(); return; }
     if (cEl.dataset.status !== 'success') { toast('请先完成人机验证'); return; }
     const captchaToken = cEl.dataset.token || '';
-    if (!captchaToken) { toast('请先完成人机验证'); return; }
+    if (!captchaToken) { toast('人机验证未完成，请重新点击人机验证框'); return; }
     if (aEl && !aEl.checked) { toast('请先阅读并同意用户协议与隐私政策'); return; }
 
     const btn = document.getElementById('btn-passkey-signup');
