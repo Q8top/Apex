@@ -71,17 +71,6 @@ export function parseCookies(request) {
   return cookies;
 }
 
-export function buildSessionCookie(token, maxAgeSec = 7 * 24 * 60 * 60, env = {}) {
-  const config = getConfig(env);
-  return `${config.sessionCookie}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAgeSec}`;
-}
-
-export function buildClearCookie(env = {}) {
-  const config = getConfig(env);
-  return `${config.sessionCookie}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
-}
-
-// ---------- Rate Limit（兼容旧接口，内部走新系统） ----------
 export async function checkRateLimit(env, ip, action, maxCount, windowSec) {
   const result = await consumeRateLimit(env, {
     key: `ip:${ip || 'unknown'}`,
