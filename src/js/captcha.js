@@ -42,7 +42,8 @@
 
     try {
       // Step 1: 获取挑战
-      const challengeRes = await window.apiClient.post('/api/captcha/challenge', {});
+      var purpose = box.dataset.purpose || 'register';
+      const challengeRes = await window.apiClient.post('/api/captcha/challenge', { purpose: purpose });
       if (!challengeRes.success) throw new Error(challengeRes.message || '无法获取验证挑战');
 
       // Step 2: 汇总信号
@@ -60,6 +61,7 @@
         signals: payload,
         challenge: challengeRes.challenge,
         signature: challengeRes.signature,
+        purpose: purpose,
       });
 
       clearInterval(progressInterval);
@@ -67,8 +69,9 @@
       if (verifyRes.success) {
         if (percent) percent.textContent = '100%';
         // 立即设置 status 和 token（防止用户点得快，200ms 延迟内读到旧值）
-        box.dataset.token = verifyRes.token;
-        window.__captchaToken = verifyRes.token;
+        console.log('[Captcha] verify 响应:', verifyRes);
+        box.dataset.token = verifyRes.token || '';
+        window.__captchaToken = verifyRes.token || '';
         box.dataset.status = 'success';
         setTimeout(() => {
           box.classList.remove('verifying');
