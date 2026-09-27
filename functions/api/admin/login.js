@@ -1,7 +1,7 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
 import { parseJsonBody, sanitize } from '../../_validation.js';
 import { verifyPassword } from '../../_utils.js';
-import { buildAdminCookie, buildClearAllAdminCookies, createAdminSession, audit } from '../../_admin.js';
+import { buildAdminCookie, buildClearLegacyAdminCookie, createAdminSession, audit } from '../../_admin.js';
 import { getConfig } from '../../_config.js';
 import { enforceIpRateLimit, enforceKeyRateLimit } from '../../_rateLimit.js';
 
@@ -107,7 +107,7 @@ export async function onRequestPost(context) {
     message: '登录成功',
     admin: { id: admin.id, username: admin.username, role: admin.role },
   }, 200, requestId, {
-    'Set-Cookie': [buildAdminCookie(token, env), ...buildClearAllAdminCookies(env)],
+    'Set-Cookie': [buildClearLegacyAdminCookie(env), buildAdminCookie(token, env)],
   });
 }
 
