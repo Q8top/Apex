@@ -26,19 +26,18 @@ export async function storeChallenge(env, { type, userId = null }) {
 // 消费 challenge（一次性），返回 { challenge, userId } 或 null
 export async function consumeChallenge(env, challengeId, expectedType) {
   if (!challengeId) return null;
+
+  // 原子操作：DELETE ... RETURNING
+  // - 并发安全：数据库保证只有一个请求能删除并返回数据
+  // - 类型不匹配 / 过期 / 不存在 / 已消费：RETURNING 无结果 → 返回 null
+  // - 避免 SELECT + DELETE 两步之间的 TOCTOU 重放窗口
   const row = await env.apex_db.prepare(
-    'SELECT id, challenge, type, user_id, expires_at FROM passkey_challenges WHERE id = ?'
-  ).bind(challengeId).first();
+    `DELETE FROM passkey_challenges
+     WHERE id = ? AND type = ? AND expires_at > datetime('now')
+     RETURNING challenge, user_id`
+  ).bind(challengeId, expectedType).first();
 
   if (!row) return null;
-  if (row.type !== expectedType) return null;
-  if (new Date(row.expires_at) < new Date()) {
-    await env.apex_db.prepare('DELETE FROM passkey_challenges WHERE id = ?').bind(challengeId).run();
-    return null;
-  }
-
-  // 一次性消费：立即删除
-  await env.apex_db.prepare('DELETE FROM passkey_challenges WHERE id = ?').bind(challengeId).run();
 
   return { challenge: row.challenge, userId: row.user_id };
 }
