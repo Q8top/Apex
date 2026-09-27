@@ -5,12 +5,12 @@
 
     // 首屏预热 CSRF cookie：若首次访问没有 cookie，主动 GET 一次让服务端下发
     (function warmupCsrf() {
-      if (readApexCookie('apex_csrf')) return;
+      if (readApexCookie('__Host-apex_csrf') || readApexCookie('apex_csrf')) return;
       fetch('/api/health', { credentials: 'include', cache: 'no-store' }).catch(function(){});
     })();
 
     // ========== API 客户端 ==========
-    // ========== 统一 Cookie 读取（仅非 HttpOnly 的 apex_csrf） ==========
+    // ========== 统一 Cookie 读取（仅非 HttpOnly 的 CSRF cookie） ==========
     function readApexCookie(name) {
       try {
         const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
@@ -22,13 +22,13 @@
 
     // ========== 统一 API POST 客户端 ==========
     //  - 自动 credentials: include
-    //  - 自动附加 X-CSRF-Token（从 apex_csrf cookie 读取）
+    //  - 自动附加 X-CSRF-Token（优先 __Host-apex_csrf，回退 apex_csrf）
     //  - 只解析 application/json
     //  - 网络/解析错误统一返回 { success:false, message }
     async function apiPost(url, data, _retryCount) {
       _retryCount = _retryCount || 0;
       const headers = { 'Content-Type': 'application/json' };
-      const csrf = readApexCookie('apex_csrf');
+      const csrf = readApexCookie('__Host-apex_csrf') || readApexCookie('apex_csrf');
       if (csrf) headers['X-CSRF-Token'] = csrf;
 
       let res;

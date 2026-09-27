@@ -5,14 +5,17 @@
     return match ? match[2] : null;
   };
 
+  // P11-J: 优先读 __Host-apex_csrf（防子域污染），回退 apex_csrf（过渡期兼容）
+  const getCsrf = () => getCookie('__Host-apex_csrf') || getCookie('apex_csrf');
+
   async function request(method, url, data, options = {}, _retryCount = 0) {
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
-    // CSRF Token 自动附加
-    const csrfToken = getCookie('apex_csrf');
+    // CSRF Token 自动附加（优先新名，回退旧名）
+    const csrfToken = getCsrf();
     if (csrfToken) {
       headers['X-CSRF-Token'] = csrfToken;
     }
@@ -77,7 +80,7 @@
 
   // 首屏预热：若首次访问没有 CSRF cookie，主动 GET 一次让 middleware 下发
   async function ensureCsrf() {
-    if (getCookie('apex_csrf')) return;
+    if (getCsrf()) return;
     try {
       await fetch('/api/health', { credentials: 'include', cache: 'no-store' });
     } catch (e) { /* 静默失败，后续请求的重试逻辑会兜底 */ }
