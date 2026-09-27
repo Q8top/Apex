@@ -200,7 +200,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://images.unsplash.com">
   <link rel="preload" href="/logo.png" as="image">
-  <link rel="preload" href="/splash-top.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="/splash-top.webp" as="image" type="image/webp" fetchpriority="high">
 <!-- APEX-PRELOAD-END -->
 <!-- APEX-SEO-START -->
 <!--
@@ -221,14 +221,14 @@
   <meta property="og:title" content="Apex - Global Entertainment">
   <meta property="og:description" content="全球娱乐游戏平台 · 一站式体验·玩法丰富·公平公正·极速存取">
   <meta property="og:url" content="https://apextop.cc.cd/">
-  <meta property="og:image" content="https://apextop.cc.cd/splash-top.webp">
+  <meta property="og:image" content="https://apextop.cc.cd/splash-top.jpeg">
   <meta property="og:locale" content="zh_CN">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Apex - Global Entertainment">
   <meta name="twitter:description" content="全球娱乐游戏平台">
-  <meta name="twitter:image" content="https://apextop.cc.cd/splash-top.webp">
+  <meta name="twitter:image" content="https://apextop.cc.cd/splash-top.jpeg">
   
   <!-- JSON-LD 结构化数据 -->
   <script type="application/ld+json">
@@ -278,7 +278,10 @@
 
   <!-- ============ 加载页 ============ -->
   <div id="apex-splash-screen">
-    <img src="./splash-top.webp" alt="Splash" class="splash-top-img" fetchpriority="high" loading="eager" decoding="async">
+    <picture>
+      <source srcset="./splash-top.webp" type="image/webp">
+      <img src="./splash-top.jpeg" alt="Splash" class="splash-top-img" fetchpriority="high" loading="eager" decoding="async">
+    </picture>
     <div class="splash-welcome">欢迎来到 APEX ENTERTAINMENT</div>
     <!-- 老虎机滚动 A-P-E-X -->
     <div class="splash-terminal-box">
