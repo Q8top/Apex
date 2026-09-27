@@ -56,8 +56,8 @@ jobs:
             echo "$BAD"
             exit 1
           fi
-          if [ ! -f .cfignore ]; then
-            echo "[FATAL] 缺少 .cfignore"
+          if [ ! -f .assetsignore ]; then
+            echo "[FATAL] 缺少 .assetsignore"
             exit 1
           fi
           echo "[OK] 部署前安全检查通过"
