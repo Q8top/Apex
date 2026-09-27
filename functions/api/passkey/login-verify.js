@@ -30,7 +30,6 @@ export async function onRequestPost(context) {
   const clientDataJSON = String(response.clientDataJSON || '');
   const authenticatorData = String(response.authenticatorData || '');
   const signature = String(response.signature || '');
-  const userHandle = response.userHandle ? String(response.userHandle) : null;
 
   if (!challengeId || !rawId || !clientDataJSON || !authenticatorData || !signature) {
     return errorResponse('缺少必要参数', 400, 'missing_params', requestId);
@@ -71,7 +70,12 @@ export async function onRequestPost(context) {
   }
 
   // 4) 解析 authData
-  const authDataBytes = b64uDecode(authenticatorData);
+  let authDataBytes;
+  try {
+    authDataBytes = b64uDecode(authenticatorData);
+  } catch (e) {
+    return errorResponse('authData 编码无效', 400, 'authdata_invalid', requestId);
+  }
   let authData;
   try {
     authData = parseAuthenticatorData(authDataBytes);
@@ -102,7 +106,12 @@ export async function onRequestPost(context) {
   }
 
   // 8) 验证签名
-  const sigBytes = b64uDecode(signature);
+  let sigBytes;
+  try {
+    sigBytes = b64uDecode(signature);
+  } catch (e) {
+    return errorResponse('签名编码无效', 400, 'signature_invalid', requestId);
+  }
   const signatureBase = await buildSignatureBase(authDataBytes, new TextDecoder().decode(b64uDecode(clientDataJSON)));
 
   let valid = false;
@@ -156,7 +165,6 @@ export async function onRequestPost(context) {
 
   // 12) 创建 session
   const session = await createUserSession(env, user.id, request);
-  const cfg = getConfig(env);
 
   await env.apex_db.prepare(
     'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
