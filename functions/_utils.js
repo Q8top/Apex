@@ -5,8 +5,7 @@
 import {
   constantTimeEqual,
   randomToken,
-  generateNumericCode,
-  hashIP as _hashIP,
+hashIP as _hashIP,
   safeJsonParse,
 } from './_security.js';
 
@@ -40,10 +39,6 @@ export { errorResponse };
 // ---------- Token / Code ----------
 export function generateToken() {
   return randomToken(32);
-}
-
-export function generateCode() {
-  return generateNumericCode(6);
 }
 
 // ---------- 输入清理 ----------

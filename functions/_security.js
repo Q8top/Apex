@@ -48,11 +48,22 @@ export function getClientIP(request) {
   return 'unknown';
 }
 
+// P11-F: CSPRNG + rejection sampling，消除 modulo bias
+// 参数 length 限制为 1..9，避免 10**length 超出 Uint32 范围
 export function generateNumericCode(length = 6) {
+  if (!Number.isInteger(length) || length < 1 || length > 9) {
+    throw new RangeError('generateNumericCode: length must be integer in [1, 9]');
+  }
   const max = 10 ** length;
-  const random = new Uint32Array(1);
-  crypto.getRandomValues(random);
-  return String(random[0] % max).padStart(length, '0');
+  // 4294967296 是 Uint32 上限 + 1；limit 是 max 的整数倍，用于拒绝采样
+  const limit = Math.floor(4294967296 / max) * max;
+  const buf = new Uint32Array(1);
+  let v;
+  do {
+    crypto.getRandomValues(buf);
+    v = buf[0];
+  } while (v >= limit);
+  return String(v % max).padStart(length, '0');
 }
 
 export function randomToken(bytes = 32) {
