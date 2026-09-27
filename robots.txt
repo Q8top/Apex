@@ -1,5 +1,13 @@
 User-agent: *
 Allow: /
-Disallow: /api/
 
-Sitemap: https://apex-8rg.pages.dev/sitemap.xml
+# 禁止索引 API 与内部路径
+Disallow: /api/
+Disallow: /src/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /migrations/
+Disallow: /backups/
+
+# 保持与 wrangler.toml PUBLIC_BASE_URL / _headers CSP 一致
+Sitemap: https://apextop.cc.cd/sitemap.xml

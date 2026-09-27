@@ -71,7 +71,7 @@ export async function onRequestPost(context) {
 
   // 使该邮箱旧的未使用验证码失效
   await env.apex_db.prepare(
-    'UPDATE password_resets SET used_at = CURRENT_TIMESTAMP WHERE email = ? AND used_at IS NULL'
+    'UPDATE password_resets SET used_at = CURRENT_TIMESTAMP WHERE LOWER(email) = ? AND used_at IS NULL'
   ).bind(email).run();
 
   await env.apex_db.prepare(

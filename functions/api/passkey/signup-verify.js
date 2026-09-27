@@ -93,6 +93,10 @@ export async function onRequestPost(context) {
   let authData;
   try {
     authData = parseAuthenticatorData(authDataBytes);
+    // WebAuthn §7.1：User Present 标志必须为 true
+    if (!authData.userPresent) {
+      return errorResponse('缺少用户在场验证', 400, 'user_present_failed', requestId);
+    }
   } catch (e) {
     return errorResponse('authData 解析失败', 400, 'authdata_invalid', requestId);
   }
@@ -118,7 +122,9 @@ export async function onRequestPost(context) {
   try {
     jwk = coseKeyToJwk(coseKey);
   } catch (e) {
-    return errorResponse('公钥不受支持: ' + e.message, 400, 'cose_key_unsupported', requestId);
+    // 不暴露内部 CBOR/COSE 解析错误（避免攻击者探测实现细节）
+    console.error('[Passkey] cose parse failed:', e && e.message ? e.message : e);
+    return errorResponse('设备公钥格式不受支持', 400, 'cose_key_unsupported', requestId);
   }
 
   // 8) credentialId 校验
@@ -130,10 +136,28 @@ export async function onRequestPost(context) {
   // 9) 创建用户（password_hash 用哨兵值，无法用密码登录）
   let userId;
   try {
-    const ins = await env.apex_db.prepare(
+    let ins;
+
+    try {
+
+      await env.apex_db.prepare(
       `INSERT INTO users (username, email, password_hash, email_verified, status, created_at, updated_at)
        VALUES (?, ?, ?, 0, 'active', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
     ).bind(username, email, PASSKEY_ONLY_SENTINEL).run();
+
+    } catch (e) {
+
+      const msg = String(e && e.message || '');
+
+      if (/UNIQUE|constraint/i.test(msg)) {
+
+        return errorResponse('账号或邮箱已被注册', 409, 'already_exists_race', requestId);
+
+      }
+
+      throw e;
+
+    }
     userId = ins.meta && ins.meta.last_row_id;
   } catch (e) {
     if (String(e.message || '').indexOf('UNIQUE') !== -1) {

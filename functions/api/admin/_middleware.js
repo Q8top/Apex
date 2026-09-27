@@ -21,6 +21,13 @@ function unauthenticatedResponse(env, requestId, message, code) {
   }), { status: 401, headers });
 }
 
+// Legacy admin cookie 淘汰：超过此日期后不再接受 apex_admin_session 旧名
+// 与 _auth.js 的 LEGACY_SESSION_SUNSET_MS 保持一致
+const LEGACY_ADMIN_SUNSET_MS = Date.parse('2026-12-31T23:59:59Z');
+function legacyAdminCookieAcceptable() {
+  return Date.now() < LEGACY_ADMIN_SUNSET_MS;
+}
+
 const PUBLIC_PATHS = new Set([
   '/api/admin/login',
 ]);
@@ -37,7 +44,8 @@ export async function onRequest(context) {
   }
 
   const cookies = parseCookies(request);
-  const token = cookies[config.adminCookie] || cookies[config.legacyAdminCookie];
+  const token = cookies[config.adminCookie] ||
+    (legacyAdminCookieAcceptable() ? cookies[config.legacyAdminCookie] : undefined);
   if (!token) {
     return unauthenticatedResponse(env, requestId, '未登录', 'unauthenticated');
   }
@@ -47,7 +55,7 @@ export async function onRequest(context) {
   let session;
   try {
     session = await env.apex_db.prepare(
-      `SELECT s.id, s.expires_at, s.revoked_at,
+      `SELECT s.id, s.expires_at, s.revoked_at, s.last_seen_at,
               a.id as admin_id, a.username, a.role, a.status
        FROM admin_sessions s
        JOIN admin_users a ON s.admin_id = a.id
@@ -67,6 +75,13 @@ export async function onRequest(context) {
   }
   if (new Date(session.expires_at) < new Date()) {
     return unauthenticatedResponse(env, requestId, '登录已过期', 'session_expired');
+  }
+  if (session.last_seen_at) {
+    const idleMs = Date.now() - new Date(session.last_seen_at).getTime();
+    if (Number.isFinite(idleMs) && idleMs > config.adminSessionIdleTimeout * 1000) {
+      await env.apex_db.prepare('DELETE FROM admin_sessions WHERE id = ?').bind(tokenHash).run().catch(() => {});
+      return unauthenticatedResponse(env, requestId, '管理端会话已超时', 'session_idle_timeout');
+    }
   }
   if (session.status && session.status !== 'active') {
     return errorResponse('管理员账号已禁用', 403, 'admin_disabled', requestId);

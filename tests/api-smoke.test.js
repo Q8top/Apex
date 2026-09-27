@@ -160,6 +160,46 @@ function assert(cond, msg) {
     const acao = res.headers.get('access-control-allow-origin');
     assert(acao !== '*', 'ACAO 是 *（应改为固定同源）');
   });
+  // ---- 10. XSS 编码测试 ----
+  await test('POST /api/login XSS 载荷不应回显未编码', async () => {
+    const payload = { account: '<script>alert(1)</script>', password: 'x' };
+    const res = await fetchWithTimeout(BASE_URL + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const text = await res.text();
+    assert(text.indexOf('<script>alert(1)</script>') === -1, '响应体未编码回显 XSS 载荷');
+  });
+
+  // ---- 11. SQL 注入尝试 ----
+  await test('POST /api/login SQL 注入载荷不应 500', async () => {
+    const res = await fetchWithTimeout(BASE_URL + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ account: "' OR 1=1 --", password: "' OR 1=1 --", captchaToken: 'x' }),
+    });
+    assert([400, 401, 429].includes(res.status), 'HTTP ' + res.status + '（预期 400/401/429，500 代表可能注入）');
+  });
+
+  // ---- 12. 超大 Body ----
+  await test('POST /api/login 超大 Body 应 413 或 400', async () => {
+    const big = 'x'.repeat(100000); // 100KB 超过 4KB 限制
+    const res = await fetchWithTimeout(BASE_URL + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ account: big, password: big }),
+    });
+    assert([400, 413, 429].includes(res.status), 'HTTP ' + res.status + '（预期 400/413/429）');
+  });
+
+  // ---- 13. 404 不泄露版本 ----
+  await test('GET /api/health 不泄露 version', async () => {
+    const res = await fetchWithTimeout(BASE_URL + '/api/health');
+    const data = await res.json();
+    assert(!data.version, '响应仍含 version 字段');
+  });
+
 
   console.log('\n📊 测试结果：' + passed + ' 通过，' + failed + ' 失败\n');
   process.exit(failed === 0 ? 0 : 1);

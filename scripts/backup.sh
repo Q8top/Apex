@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Apex D1 备份脚本
 # - 自动生成带时间戳的文件
 # - 计算 SHA256
@@ -40,9 +40,9 @@ SUM_FILE="${GZ_FILE}.sha256"
 echo "[BACKUP] mode=$MODE output=$RAW_FILE"
 
 if [ "$MODE" = "--remote" ]; then
-  wrangler d1 export apex-db --remote --output="$RAW_FILE" --no-schema
+  wrangler d1 export apex-db --remote --output="$RAW_FILE"
 else
-  wrangler d1 export apex-db --local --output="$RAW_FILE" --no-schema
+  wrangler d1 export apex-db --local --output="$RAW_FILE"
 fi
 
 if [ ! -f "$RAW_FILE" ]; then
@@ -58,6 +58,43 @@ if [ "$SIZE" -lt 100 ]; then
 fi
 
 gzip -f "$RAW_FILE"
+# ============================================================
+# 备份完整性校验（gzip + SQLite integrity + 表数量）
+# 任何一步失败都删除备份并退出，防止生成无效备份
+# ============================================================
+if ! gunzip -t "$GZ_FILE" 2>/dev/null; then
+  echo "[FATAL] gzip 损坏，删除 $GZ_FILE"
+  rm -f "$GZ_FILE"
+  exit 1
+fi
+TMP_SQL=$(mktemp)
+TMP_DB=$(mktemp)
+rm -f "$TMP_DB"
+gunzip -c "$GZ_FILE" > "$TMP_SQL"
+if command -v sqlite3 >/dev/null 2>&1; then
+  if ! sqlite3 "$TMP_DB" < "$TMP_SQL" 2>/dev/null; then
+    echo "[FATAL] SQL 导入临时 SQLite 失败，备份可能损坏"
+    rm -f "$TMP_SQL" "$TMP_DB" "$GZ_FILE"
+    exit 1
+  fi
+  INTEG=$(sqlite3 "$TMP_DB" "PRAGMA integrity_check;" 2>/dev/null || echo "fail")
+  if [ "$INTEG" != "ok" ]; then
+    echo "[FATAL] SQLite integrity_check != ok：$INTEG"
+    rm -f "$TMP_SQL" "$TMP_DB" "$GZ_FILE"
+    exit 1
+  fi
+  TBL_COUNT=$(sqlite3 "$TMP_DB" ".tables" 2>/dev/null | tr -s ' \t\n' '\n' | grep -c . || echo 0)
+  if [ "$TBL_COUNT" -lt 5 ]; then
+    echo "[FATAL] 表数量异常（$TBL_COUNT < 5）"
+    rm -f "$TMP_SQL" "$TMP_DB" "$GZ_FILE"
+    exit 1
+  fi
+  echo "[BACKUP] integrity_check=ok, tables=$TBL_COUNT"
+else
+  echo "[WARN] 缺少 sqlite3，仅校验 gzip 完整性"
+fi
+rm -f "$TMP_SQL" "$TMP_DB"
+
 sha256sum "$GZ_FILE" > "$SUM_FILE"
 
 echo "[OK] $GZ_FILE ($SIZE B)"

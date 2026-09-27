@@ -14,6 +14,10 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
 
+  // 密码学流程虽然本身自保护，但请求也应限流（防 IPC/DB 写放大）
+  const limited = await enforceIpRateLimit(env, request, 'passkey-signup-challenge', 30, 60);
+  if (limited) return limited;
+
   // 无 IP 限流：challenge 是一次性随机数，不敏感
 
   const parsed = await parseJsonBody(request, 4096);
@@ -44,7 +48,7 @@ export async function onRequestPost(context) {
   }
 
   const existing = await env.apex_db.prepare(
-    'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1'
+    'SELECT id FROM users WHERE username = ? OR LOWER(email) = ? LIMIT 1'
   ).bind(username, email).first();
   if (existing) {
     return errorResponse('账号或邮箱已被使用', 409, 'user_exists', requestId);
@@ -61,7 +65,11 @@ export async function onRequestPost(context) {
 
   await writeAudit(env, {
     action: 'passkey_signup_challenge',
-    metadata: { username, email },
+    metadata: {
+      username,
+      emailDomain: String(email || '').split('@')[1] || '',
+      emailRedacted: String(email || '').replace(/^(.{0,2}).*?(@.*)$/, '$1***$2'),
+    },
   }, request);
 
   return jsonResponse({

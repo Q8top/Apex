@@ -18,6 +18,10 @@ import { consumeToken as _consumeCaptchaToken } from './_captcha.js';
 
 import { getConfig } from './_config.js';
 
+// 密码哈希/校验：单一实现见 ./_password.js
+// 这里只做重导出，保持旧调用点兼容
+export { hashPassword, verifyPassword, needsRehash } from './_password.js';
+
 // ---------- 响应 ----------
 export function jsonResponse(data, status = 200, requestIdOrExtra = null, maybeExtra = null) {
   let requestId = '';
@@ -40,66 +44,6 @@ export function generateToken() {
 
 export function generateCode() {
   return generateNumericCode(6);
-}
-
-// ---------- 密码 ----------
-const PBKDF2_ITERATIONS = 600000;
-const PBKDF2_LEGACY_ITERATIONS = 100000;
-
-function toHex(buffer) {
-  return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-export async function hashPassword(password) {
-  const enc = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
-    keyMaterial,
-    256
-  );
-  return `v1:${PBKDF2_ITERATIONS}:${toHex(salt)}:${toHex(bits)}`;
-}
-
-export async function verifyPassword(password, stored) {
-  if (!stored) return false;
-  const enc = new TextEncoder();
-  let iterations;
-  let saltHex;
-  let hashHex;
-
-  if (stored.startsWith('v1:')) {
-    const parts = stored.split(':');
-    if (parts.length !== 4) return false;
-    iterations = Number.parseInt(parts[1], 10);
-    saltHex = parts[2];
-    hashHex = parts[3];
-  } else {
-    const parts = stored.split(':');
-    if (parts.length !== 2) return false;
-    iterations = PBKDF2_LEGACY_ITERATIONS;
-    saltHex = parts[0];
-    hashHex = parts[1];
-  }
-
-  const salt = new Uint8Array(saltHex.match(/.{1,2}/g).map((b) => Number.parseInt(b, 16)));
-  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
-    keyMaterial,
-    256
-  );
-  const newHex = toHex(bits);
-  return constantTimeEqual(newHex, hashHex);
-}
-
-export function needsRehash(stored) {
-  if (!stored) return true;
-  if (!stored.startsWith('v1:')) return true;
-  const parts = stored.split(':');
-  const iterations = Number.parseInt(parts[1], 10);
-  return !Number.isFinite(iterations) || iterations < PBKDF2_ITERATIONS;
 }
 
 // ---------- 输入清理 ----------

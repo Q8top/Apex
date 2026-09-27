@@ -2,62 +2,72 @@ name: Daily Database Backup
 
 on:
   schedule:
-    # 每天凌晨 3 点（UTC）执行，对应北京时间 11 点
+    # 每天 UTC 03:00（北京时间 11:00）
     - cron: '0 3 * * *'
-  workflow_dispatch: # 支持手动触发
+  workflow_dispatch:  # 支持手动触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-backup
+  cancel-in-progress: false
 
 jobs:
   backup:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: backups
-          fetch-depth: 1
-        continue-on-error: true
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout main branch code
-        run: |
-          git fetch origin main
-          git checkout origin/main -- scripts/
-          git checkout origin/main -- wrangler.toml
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
 
       - name: Install Wrangler
-        run: npm install -g wrangler
+        run: npm install -g wrangler@3
 
-      - name: Create backup
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # ============================================================
+      # 双通道备份：GitHub Release + Cloudflare KV
+      # ============================================================
+      - name: Run backup-remote.sh
+        run: bash scripts/backup-remote.sh
+
+      # ============================================================
+      # 独立校验：确保备份可恢复
+      # ============================================================
+      - name: Verify backup via restore dry-run
         run: |
-          mkdir -p backups
-          DATE=$(date +%Y%m%d_%H%M%S)
-          BACKUP_FILE="backups/apex-db-${DATE}.sql"
-          wrangler d1 export apex-db --remote --output="${BACKUP_FILE}" --no-schema
-          gzip "${BACKUP_FILE}"
-          sha256sum "${BACKUP_FILE}.gz" > "${BACKUP_FILE}.gz.sha256"
-          echo "Backup created: ${BACKUP_FILE}.gz"
-          ls -lh backups/
+          set -euo pipefail
+          bash scripts/restore-from-remote.sh --from-kv --dry-run
 
+      # ============================================================
+      # 保底：备份也提交到 backups 分支（历史兼容）
+      # ============================================================
       - name: Commit to backups branch
         run: |
-          git config user.name "github-actions[bot]"
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # backups/ 目录被 .gitignore 忽略（防止污染 main 分支）
-          # 本工作流专门推送到 backups 分支，用 -f 强制添加
           git add -f backups/
-          git commit -m "chore: daily backup $(date +%Y-%m-%d)" || echo "No changes"
-          git push origin HEAD:backups || echo "Push failed, retrying..."
+          git diff --cached --quiet && { echo "[SKIP] 无变化"; exit 0; }
+          git commit -m "chore: daily backup $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin HEAD:backups
-        continue-on-error: true
 
-      - name: Cleanup old backups (keep 30 days)
+      # ============================================================
+      # 校验备份分支同步成功
+      # ============================================================
+      - name: Verify backups branch updated
         run: |
-          find backups/ -name "*.sql.gz" -mtime +30 -delete
-          find backups/ -name "*.sha256" -mtime +30 -delete
+          git ls-remote origin backups | grep -q backups && echo "[OK] backups 分支存在"

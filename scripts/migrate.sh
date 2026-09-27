@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Apex 迁移系统
 # 用法：bash scripts/migrate.sh [--local|--remote] [--dry-run]
 set -uo pipefail

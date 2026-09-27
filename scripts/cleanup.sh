@@ -1,11 +1,11 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # 清理过期数据：rate_limit_buckets / captcha_tokens / logs
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MODE="${1:---local}"
 
-LOG_RETENTION_DAYS=90
+LOG_RETENTION_DAYS=30
 
 run_sql() {
   if [ "$MODE" = "--remote" ]; then

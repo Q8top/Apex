@@ -1,5 +1,5 @@
 import { getClientIP, hashIP } from './_security.js';
-import { errorResponse } from './_response.js';
+import { errorResponse, jsonResponse } from './_response.js';
 
 export async function consumeRateLimit(env, { key, action, max, windowSec, cost = 1 }) {
   const now = Date.now();
@@ -37,7 +37,13 @@ export async function enforceIpRateLimit(env, request, action, max, windowSec, s
   const key = `ip:${ipHash}${suffix ? ':' + suffix : ''}`;
   const result = await consumeRateLimit(env, { key, action, max, windowSec });
   if (!result.allowed) {
-    return errorResponse('请求过于频繁，请稍后再试', 429, 'rate_limited');
+    // 429 响应带 Retry-After，让客户端知道何时重试
+    return jsonResponse(
+      { success: false, message: '请求过于频繁，请稍后再试', code: 'rate_limited' },
+      429,
+      '',
+      { 'Retry-After': String(Math.max(1, result.retryAfter || 60)) }
+    );
   }
   return null;
 }
@@ -45,7 +51,13 @@ export async function enforceIpRateLimit(env, request, action, max, windowSec, s
 export async function enforceKeyRateLimit(env, action, key, max, windowSec) {
   const result = await consumeRateLimit(env, { key, action, max, windowSec });
   if (!result.allowed) {
-    return errorResponse('请求过于频繁，请稍后再试', 429, 'rate_limited');
+    // 429 响应带 Retry-After，让客户端知道何时重试
+    return jsonResponse(
+      { success: false, message: '请求过于频繁，请稍后再试', code: 'rate_limited' },
+      429,
+      '',
+      { 'Retry-After': String(Math.max(1, result.retryAfter || 60)) }
+    );
   }
   return null;
 }

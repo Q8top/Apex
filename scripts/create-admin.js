@@ -15,6 +15,7 @@
 //
 // 依赖：Node 20+，wrangler 或 npx
 
+import { hashPassword } from '../functions/_password.js';
 import readline from 'node:readline';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -81,19 +82,6 @@ function readPasswordHidden(prompt) {
   });
 }
 
-async function hashPassword(password) {
-  const enc = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
-  );
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
-    keyMaterial, 256
-  );
-  const hex = (b) => Array.from(b).map((x) => x.toString(16).padStart(2, '0')).join('');
-  return `v1:${PBKDF2_ITERATIONS}:${hex(salt)}:${hex(new Uint8Array(bits))}`;
-}
 
 function checkPasswordPolicy(pwd) {
   if (typeof pwd !== 'string') return '密码必须是字符串';

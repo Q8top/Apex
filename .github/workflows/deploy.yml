@@ -1,36 +1,93 @@
 name: Deploy to Cloudflare Pages
 
+# 仅在 CI 成功后触发部署
+# 防止：CI 失败但代码仍被部署到生产
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI - Test & Security Scan"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # 手动触发 OR CI 成功
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          # workflow_run 时 checkout 对应的 commit
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Install Wrangler
-        run: npm install -g wrangler@3
+      - name: Install deps
+        run: npm ci --ignore-scripts || npm install --ignore-scripts
 
-      # 生产 D1 schema 同步：失败必须停止部署，避免代码和 schema 不一致
+      - name: Pre-deploy safety check
+        run: |
+          set -e
+          BAD=$(find . -maxdepth 1 -type f \
+            \( -name 'Apex_*.txt' -o -name '*.bak*' -o -name '*.sql' -o -name '*.sql.gz' \) \
+            2>/dev/null || true)
+          if [ -n "$BAD" ]; then
+            echo "[FATAL] 检测到不应部署的文件："
+            echo "$BAD"
+            exit 1
+          fi
+          if [ ! -f .cfignore ]; then
+            echo "[FATAL] 缺少 .cfignore"
+            exit 1
+          fi
+          echo "[OK] 部署前安全检查通过"
+
       - name: Apply D1 migrations (remote)
         run: bash scripts/migrate.sh --remote
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy . --project-name=apex --branch=main
+
+      - name: Post-deploy health check
+        run: |
+          set -e
+          BASE="${{ vars.DEPLOY_BASE_URL }}"
+          if [ -z "$BASE" ]; then
+            echo "[SKIP] DEPLOY_BASE_URL 未配置"
+            exit 0
+          fi
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/api/health" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "[OK] /api/health 返回 200"
+              exit 0
+            fi
+            echo "[WAIT] 第 $i 次尝试，HTTP $code"
+            sleep 10
+          done
+          echo "[FATAL] 部署后健康检查失败"
+          exit 1

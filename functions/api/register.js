@@ -45,16 +45,27 @@ export async function onRequestPost(context) {
   if (emailLimited) return emailLimited;
 
   const existing = await env.apex_db.prepare(
-    'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1'
+    'SELECT id FROM users WHERE username = ? OR LOWER(email) = ? LIMIT 1'
   ).bind(username, email).first();
   if (existing) {
     return errorResponse('账号或邮箱已被注册', 409, 'already_exists', requestId);
   }
 
   const hash = await hashPassword(password);
-  const result = await env.apex_db.prepare(
-    'INSERT INTO users (username, email, password_hash, password_changed_at, status, email_verified) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, 0)'
-  ).bind(username, email, hash, 'active').run();
+  let result;
+  try {
+    result = await env.apex_db.prepare(
+      'INSERT INTO users (username, email, password_hash, password_changed_at, status, email_verified) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, 0)'
+    ).bind(username, email, hash, 'active').run();
+  } catch (e) {
+    // 并发场景：另一请求已抢先插入相同 username/email
+    // UNIQUE 约束触发 SQLITE_CONSTRAINT_UNIQUE，应返回 409 而非 500
+    const msg = String(e && e.message || '');
+    if (/UNIQUE|constraint/i.test(msg)) {
+      return errorResponse('账号或邮箱已被注册', 409, 'already_exists_race', requestId);
+    }
+    throw e;
+  }
 
   const userId = result && result.meta ? result.meta.last_row_id : null;
   await writeAudit(env, { action: 'register_success', actorId: userId, actorType: 'user', metadata: { username } }, request);
@@ -62,7 +73,7 @@ export async function onRequestPost(context) {
   return jsonResponse({
     success: true,
     message: '注册成功',
-    userId,
+
   }, 200, requestId);
 }
 

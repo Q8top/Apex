@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # 迁移辅助函数（被 migrate.sh 引入）
 # 关键：--local 模式优先使用 sqlite3 直连本地 D1 sqlite 文件，绕开 Termux 下无法运行的 wrangler local。
 set -uo pipefail

@@ -103,7 +103,28 @@ function isRecoverable(reason) {
   return reason === 'timeout' || reason === 'network_error' || reason === 'server_error';
 }
 
+// 收件人格式校验：防止非法字符注入 JSON / URL
+// 拒绝：CR/LF（SMTP 头注入）、控制字符、超长、无 @ 的串
+function _validateRecipient(to) {
+  if (typeof to !== 'string') return false;
+  if (to.length < 3 || to.length > 254) return false;
+  // 拒绝 CR/LF/NUL/控制字符
+  if (/[\r\n\x00-\x1f\x7f]/.test(to)) return false;
+  // 必须是一个 @，且前后非空
+  const parts = to.split('@');
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return false;
+  // 简单格式校验
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return false;
+  return true;
+}
+
 export async function sendEmail(env, to, subject, text, html, idempotencyKey) {
+  if (!_validateRecipient(to)) {
+    return { ok: false, reason: 'invalid_recipient' };
+  }
+  if (typeof subject !== 'string' || subject.length > 200 || /[\r\n]/.test(subject)) {
+    return { ok: false, reason: 'invalid_subject' };
+  }
   const config = getConfig(env);
   const providers = config.emailProviders;
   const attemptsLog = [];

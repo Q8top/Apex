@@ -5,195 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050505">
   <title>Apex - Global Entertainment</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <style>
-    :root { --bg:#050505; --card-bg:#0f0f0f; --gold:#d4af37; --text:#ffffff; --text-muted:#888888; --border:#2a2a2a; --green:#4ade80; --red:#e63946; }
-    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-    body { font-family:'Inter',system-ui,-apple-system,sans-serif; background-color:var(--bg); color:var(--text); display:flex; flex-direction:column; min-height:100vh; }
-    /* ============ 顶部导航 ============ */
-    .header { position:absolute; top:16px; right:16px; z-index:100; }
-    .lang-selector { position:relative; }
-    .lang-btn { background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; backdrop-filter:blur(5px); }
-    .lang-menu { display:none; position:absolute; right:0; top:calc(100% + 6px); width:150px; max-height:220px; overflow-y:auto; background:rgba(10,10,10,0.95); border:1px solid var(--border); border-radius:8px; z-index:200; backdrop-filter:blur(10px); }
-    .lang-menu.show { display:block; }
-    .lang-item { padding:10px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:var(--text-muted); border-bottom:1px solid #1a1a1a; }
-    .lang-item:hover { background:rgba(255,255,255,0.05); color:#fff; }
-    /* ============ Hero 区 ============ */
-    .hero { position:relative; width:100%; height:36vh; min-height:280px; background:url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=1200&q=90') center/cover no-repeat; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
-    .hero::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(180deg, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.95) 100%); }
-    .hero-content { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
-    .hero .logo-img { width:90px; height:90px; object-fit:contain; mix-blend-mode:screen; margin-bottom:12px; }
-    .hero .main-title { font-size:16px; font-weight:bold; color:#fff; margin-bottom:4px; }
-    .hero .sub-title { font-size:11px; color:#ccc; }
-    /* ============ 卡片容器 ============ */
-    .card-section { max-width:480px; margin:0 auto; padding:0 16px; width:100%; margin-top:-20px; position:relative; z-index:3; }
-    .auth-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px 20px 14px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
-    .tabs { display:flex; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:20px; }
-    .tab { flex:1; padding:12px; text-align:center; cursor:pointer; font-weight:bold; color:var(--text-muted); background:transparent; border:none; border-radius:8px; font-size:14px; transition:0.3s; }
-    .tab.active { background:#fff; color:#000; }
-    /* ============ 输入框 ============ */
-    .input-group { margin-bottom:16px; }
-    .input-group label { display:block; font-size:12px; color:var(--text-muted); margin-bottom:6px; }
-    .input-wrap { position:relative; display:flex; align-items:center; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:10px; transition:0.3s; }
-    .input-wrap:focus-within { border-color:#fff; }
-    .input-wrap.error { border-color:var(--red); }
-    .input-wrap.success { border-color:var(--green); }
-    .input-wrap .icon { padding-left:14px; color:var(--text-muted); display:flex; align-items:center; }
-    .input-wrap input { flex:1; padding:14px 14px 14px 10px; background:transparent; border:none; color:#fff; font-size:14px; outline:none; }
-    .pwd-actions { position:absolute; right:14px; display:flex; gap:8px; color:var(--text-muted); cursor:pointer; z-index:10; }
-    .pwd-actions span { padding:8px; margin:-8px; display:flex; align-items:center; }
-    .form-tip { font-size:10px; color:var(--text-muted); margin-top:4px; }
-    .field-error { font-size:10px; color:var(--red); margin-top:4px; display:none; }
-    .field-error.show { display:block; }
-    .pwd-strength { display:flex; gap:4px; margin-top:6px; }
-    .pwd-strength .bar { flex:1; height:3px; background:#333; border-radius:2px; transition:0.3s; }
-    .pwd-strength .bar.active-weak { background:var(--red); }
-    .pwd-strength .bar.active-medium { background:var(--gold); }
-    .pwd-strength .bar.active-strong { background:var(--green); }
-    /* ============ 人机验证 ============ */
-    .apex-captcha-box { background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin:16px 0; cursor:pointer; }
-    .apex-captcha-content { display:flex; align-items:center; gap:12px; }
-    .apex-captcha-checkbox { width:20px; height:20px; border:2px solid #555; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-    .apex-captcha-box.verifying .apex-captcha-checkbox { border-color:var(--green); }
-    .apex-captcha-box.success .apex-captcha-checkbox { background:var(--green); border-color:var(--green); }
-    .apex-checkmark { width:10px; height:10px; stroke:#000; stroke-width:3; fill:none; display:none; }
-    .apex-captcha-box.success .apex-checkmark { display:block; }
-    .apex-captcha-text { font-size:13px; color:#ccc; }
-    .apex-captcha-percent { font-size:13px; color:var(--green); font-weight:bold; display:none; }
-    .apex-captcha-box.verifying .apex-captcha-text, .apex-captcha-box.success .apex-captcha-text { display:none; }
-    .apex-captcha-box.verifying .apex-captcha-percent, .apex-captcha-box.success .apex-captcha-percent { display:block; }
-    .apex-captcha-footer { font-size:10px; color:#555; }
-    /* ============ 复选框 & 按钮 ============ */
-    .checkbox-group { display:flex; align-items:flex-start; gap:8px; margin:16px 0; font-size:12px; color:var(--text-muted); }
-    .checkbox-group input { accent-color:#fff; width:16px; height:16px; margin-top:2px; }
-    .checkbox-group a { color:#fff; text-decoration:none; }
-    .btn-primary { width:100%; padding:14px; background:#fff; color:#000; font-weight:700; font-size:15px; border:none; border-radius:10px; cursor:pointer; transition:0.3s; box-shadow:0 4px 12px rgba(255,255,255,0.1); }
-    .btn-primary:hover { background:#e0e0e0; }
-    .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
-    /* ============ 底部链接 ============ */
-    .link-row { display:flex; justify-content:space-between; margin-top:12px; margin-bottom:8px; }
-    .link-row a { color:#ffffff; font-size:14px; text-decoration:none; }
-    .link-row a:hover { color:#fff; }
-    .forgot-top { display:flex; justify-content:flex-start; margin-bottom:16px; }
-    .forgot-top a { color:var(--text-muted); font-size:12px; text-decoration:none; }
-    /* ============ 验证码 6 位框 ============ */
-    .code-row { display:flex; gap:10px; align-items:center; }
-    .code-boxes { display:flex; gap:6px; flex:1; }
-    .code-boxes input { width:100%; height:44px; text-align:center; font-size:18px; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:8px; color:#fff; outline:none; }
-    .code-boxes input:focus { border-color:#fff; }
-    .btn-send-code { padding:0 12px; height:44px; background:transparent; border:1px solid var(--border); color:var(--text-muted); border-radius:8px; font-size:12px; cursor:pointer; white-space:nowrap; }
-    .btn-send-code:disabled { opacity:0.5; }
-    /* ============ 加载页 ============ */
-    #apex-splash-screen { position:fixed; top:0; left:0; right:0; bottom:0; width:100vw; height:100vh; height:100dvh; min-height:100vh; min-height:100dvh; background:#050505; z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:flex-start; padding:8px 0 10px 0; gap:6px; box-sizing:border-box; overflow:hidden; overscroll-behavior:none; touch-action:none; }
-    #apex-splash-screen.hide { opacity:0; visibility:hidden; transition:opacity 0.5s, visibility 0.5s; }
-    .splash-top-img { width:100%; height:30vh; object-fit:contain; margin-bottom:2px; background-color:#050505; }
-    .splash-welcome { font-family:'Cinzel','Times New Roman',serif; font-size:16px; font-weight:700; letter-spacing:1px; background:linear-gradient(to bottom, #ffffff 0%, #d4af37 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:2px; text-align:center; }
-    .splash-terminal-box { width:95%; height:36vh; display:flex; border:1px solid #444; border-radius:8px; background:#0a0a0a; margin-bottom:4px; overflow:hidden; }
-    /* ============ 老虎机 A-P-E-X ============ */
-    .apex-slot { display:flex; gap:14px; justify-content:center; align-items:center; width:100%; height:100%; padding:16px; }
-    .apex-reel { width:64px; height:100px; overflow:hidden; position:relative; border:1px solid rgba(212,175,55,0.35); border-radius:10px; background:linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(30,22,0,0.85) 50%, rgba(0,0,0,0.7) 100%); box-shadow: inset 0 6px 14px rgba(0,0,0,0.85), 0 0 24px rgba(212,175,55,0.15); }
-    .apex-reel::before, .apex-reel::after { content:''; position:absolute; left:0; right:0; height:26px; z-index:2; pointer-events:none; }
-    .apex-reel::before { top:0; background:linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%); }
-    .apex-reel::after { bottom:0; background:linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%); }
-    .apex-reel-strip { position:absolute; top:0; left:0; right:0; display:flex; flex-direction:column; animation: apex-reel-spin 4.2s cubic-bezier(0.15, 0.85, 0.25, 1) forwards; animation-delay: var(--delay, 0s); }
-    .apex-reel-strip span { flex:0 0 100px; height:100px; line-height:100px; text-align:center; font-family:'Cinzel', 'Times New Roman', serif; font-weight:700; font-size:42px; letter-spacing:2px; color:#ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.55); }
-    @keyframes apex-reel-spin { 0% { transform: translateY(-4800px); } 100% { transform: translateY(0); } }
-    /* 每列背景不同色（字母统一亮白）*/
-    .apex-reel:nth-child(1) { background: linear-gradient(180deg, #3a2f0f 0%, #1a1405 50%, #3a2f0f 100%); border-color: rgba(212,175,55,0.55); box-shadow: inset 0 6px 14px rgba(0,0,0,0.85), 0 0 24px rgba(212,175,55,0.35); }
-    .apex-reel:nth-child(2) { background: linear-gradient(180deg, #3a0f14 0%, #1a0508 50%, #3a0f14 100%); border-color: rgba(230,57,70,0.55); box-shadow: inset 0 6px 14px rgba(0,0,0,0.85), 0 0 24px rgba(230,57,70,0.35); }
-    .apex-reel:nth-child(3) { background: linear-gradient(180deg, #0f3a1e 0%, #051a0e 50%, #0f3a1e 100%); border-color: rgba(74,222,128,0.55); box-shadow: inset 0 6px 14px rgba(0,0,0,0.85), 0 0 24px rgba(74,222,128,0.35); }
-    .apex-reel:nth-child(4) { background: linear-gradient(180deg, #0f2a3a 0%, #05141a 50%, #0f2a3a 100%); border-color: rgba(34,211,238,0.55); box-shadow: inset 0 6px 14px rgba(0,0,0,0.85), 0 0 24px rgba(34,211,238,0.35); }
-    .splash-code-area { flex:1.5; padding:8px; overflow-y:auto; font-family:'Courier New',monospace; font-size:11px; line-height:1.5; color:#4ade80; white-space:pre-wrap; word-break:break-all; border-right:1px solid #222; }
-    .splash-code-area::-webkit-scrollbar { display:none; }
-    .code-keyword { color:#c678dd; }
-    .code-string { color:#98c379; }
-    .code-success { color:#4ade80; font-weight:bold; }
-    .splash-system-list { flex:1; padding:8px 12px 8px 8px; display:flex; flex-direction:column; justify-content:space-around; align-items:flex-end; font-size:11px; color:#777; white-space:nowrap; }
-    .splash-system-item { display:flex; align-items:center; gap:6px; transition:0.3s; }
-    .splash-system-item.active { color:#fff; }
-    .sys-dot { width:6px; height:6px; border-radius:50%; border:1px solid #666; transition:0.3s; flex-shrink:0; }
-    .splash-system-item.active .sys-dot { background:var(--green); border-color:var(--green); }
-    .splash-system-item.checked::after { content:'✓'; color:var(--green); font-weight:bold; margin-left:auto; }
-    .splash-progress-container { width:95%; margin-bottom:4px; }
-    .splash-progress-text { font-size:11px; color:#ccc; margin-bottom:4px; display:flex; justify-content:space-between; }
-    .splash-progress-bar-bg { width:100%; height:5px; background:#222; border-radius:3px; overflow:hidden; }
-    .splash-progress-bar { width:0%; height:100%; background:#fff; transition:width 0.1s linear; box-shadow:0 0 10px rgba(255,255,255,0.8); }
-    .splash-features-wrapper { display:flex; justify-content:space-between; align-items:center; width:95%; }
-    .feature-col { display:flex; flex-direction:column; gap:6px; flex:1; }
-    .feature-col.left { align-items:flex-start; }
-    .feature-col.right { align-items:flex-end; }
-    .center-deco { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:0 0 60px; }
-    .deco-line { width:40px; height:1px; background:var(--red); }
-    .deco-text { font-family:'Cinzel',serif; font-size:14px; font-weight:700; color:var(--red); letter-spacing:2px; margin:4px 0; }
-    .splash-feature-item { display:flex; align-items:center; gap:8px; }
-    .splash-feature-icon { width:30px; height:30px; border-radius:50%; background:rgba(230,57,70,0.1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .splash-feature-icon svg { width:16px; height:16px; }
-    .splash-feature-text { display:flex; flex-direction:column; }
-    .feature-title { font-size:12px; font-weight:bold; color:#fff; }
-    .feature-desc { font-size:9px; color:#888; }
-    /* ============ 页脚 & Toast ============ */
-    .footer { text-align:center; color:var(--text-muted); font-size:11px; margin-top:20px; padding-bottom:16px; }
-    #apex-toast { position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); padding:14px 28px; border-radius:12px; font-size:14px; z-index:999999; transition:opacity 0.3s; max-width:85%; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.6); line-height:1.5; }
-    /* ============ 字段错误增强 ============ */
-    @keyframes apex-shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-    .shake { animation: apex-shake 0.4s ease-in-out; }
-    .apex-captcha-box.error { border-color: var(--red); background: rgba(230,57,70,0.08); }
-    .apex-captcha-box.error .apex-captcha-text { color: var(--red); }
-    .captcha-error { font-size: 11px; color: var(--red); margin: 6px 0 0 0; display: none; }
-    .captcha-error.show { display: block; }
-    .code-boxes.error input { border-color: var(--red); background: rgba(230,57,70,0.08); }
-    .checkbox-group.error label { color: var(--red); }
-    .checkbox-group .checkbox-error { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
-    .checkbox-group .checkbox-error.show { display: block; }
-    .capslock-warn { font-size: 11px; color: #e6a817; margin-top: 4px; display: none; }
-    .capslock-warn.show { display: block; }
-    .form-fade-in { animation: apexFadeIn 0.25s ease-in-out; }
-    @keyframes apexFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    @media (prefers-reduced-motion: reduce) { .form-fade-in, .shake { animation: none !important; } }
-    .pwd-checklist { font-size: 11px; color: #888; margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
-    .pwd-checklist .item { display: inline-flex; align-items: center; gap: 3px; transition: color 0.2s; }
-    .pwd-checklist .item::before { content: "\25CB"; color: #555; }
-    .pwd-checklist .item.ok { color: #4ade80; }
-    .pwd-checklist .item.ok::before { content: "\2713"; color: #4ade80; }
-    .pwd-checklist .item.err { color: #e63946; }
-    .pwd-checklist .item.err::before { content: "\2717"; color: #e63946; }
-    .form-retry-box { display: none; margin-top: 10px; padding: 10px; background: rgba(230,57,70,0.08); border: 1px solid rgba(230,57,70,0.3); border-radius: 8px; font-size: 12px; color: #e63946; text-align: center; }
-    .form-retry-box.show { display: block; }
-    .form-retry-box button { margin-top: 8px; padding: 6px 16px; background: #e63946; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; }
-      /* ============ 方式选择卡片 ============ */
-    .method-card { display:flex; align-items:center; gap:14px; padding:16px 18px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); border-radius:12px; cursor:pointer; transition:all 0.25s; margin-bottom:12px; }
-    .method-card:last-child { margin-bottom:0; }
-    .method-card:hover, .method-card:focus-visible { border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.06); transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,0,0,0.4); outline:none; }
-    .method-icon { width:44px; height:44px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-    .method-icon svg { width:28px; height:28px; stroke:#ffffff; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-    .method-text { flex:1; min-width:0; }
-    .method-title { font-size:14px; font-weight:bold; color:#fff; margin-bottom:3px; }
-    .method-desc { font-size:11px; color:#888; }
-    .method-arrow { color:#555; font-size:20px; transition:color 0.25s; }
-    .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#ffffff; }
-    /* ============ 不支持的设备：卡片变灰 ============ */
-    .method-card.disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06); }
-    .method-card.disabled .method-icon svg { stroke: #666; }
-    .method-card.disabled .method-title { color: #888; }
-    .method-card.disabled .method-arrow { display: none; }
-    .method-card .method-warn { display: none; color: #ff4d5e; font-size: 11px; font-weight: 600; margin-top: 6px; line-height: 1.4; letter-spacing: 0.1px; white-space: nowrap; overflow: visible; }
-    .method-card.disabled .method-warn { display: block; }
-    .method-card.disabled .method-desc { display: none; }
-    /* ============ 卡片内联提示 ============ */
-    .inline-msg { display:none; margin:12px 0 0 0; padding:10px 14px; border-radius:8px; font-size:13px; text-align:center; line-height:1.5; box-sizing:border-box; }
-    .inline-msg.show { display:block; animation: inlineMsgFadeIn 0.25s ease-in-out; }
-    .inline-msg.error { background: rgba(230,57,70,0.12); border: 1px solid rgba(230,57,70,0.4); color: #ff6b7a; }
-    .inline-msg.success { background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.4); color: #4ade80; }
-    @keyframes inlineMsgFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    #login-method-picker, #register-method-picker { margin-top:6px; }
-    #passkey-signup-back { color:#888; font-size:12px; text-decoration:none; }
-    #passkey-signup-back:hover { color:#ffffff; }
-</style>
+  <link rel="stylesheet" href="/src/css/main.css">
 
 <!-- APEX-PRELOAD-START -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -221,14 +37,17 @@
   <meta property="og:title" content="Apex - Global Entertainment">
   <meta property="og:description" content="全球娱乐游戏平台 · 一站式体验·玩法丰富·公平公正·极速存取">
   <meta property="og:url" content="https://apextop.cc.cd/">
-  <meta property="og:image" content="https://apextop.cc.cd/splash-top.jpeg">
+  <meta property="og:image" content="https://apextop.cc.cd/splash-top.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/webp">
   <meta property="og:locale" content="zh_CN">
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Apex - Global Entertainment">
   <meta name="twitter:description" content="全球娱乐游戏平台">
-  <meta name="twitter:image" content="https://apextop.cc.cd/splash-top.jpeg">
+  <meta name="twitter:image" content="https://apextop.cc.cd/splash-top.webp">
   
   <!-- JSON-LD 结构化数据 -->
   <script type="application/ld+json">
@@ -252,24 +71,12 @@
 <!-- apex-refresh-banner: 提示用户清理旧 SW -->
 <div id="apex-refresh-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#d4af37;color:#000;padding:10px 16px;text-align:center;font-size:13px;z-index:9999999;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
   <strong>🔄 检测到旧版本缓存</strong> — 请点击
-  <button onclick="(function(){ if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister();}));}).then(function(){if(window.caches){return caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k);}));});}}).then(function(){location.reload(true);});} else { location.reload(true); } })();"
+  <button  data-apex-action="sw-reset"
     style="background:#000;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;cursor:pointer;margin-left:8px;">
     立即刷新
   </button>
 </div>
-<script>
-(function(){
-  // 如果检测到有 Service Worker 注册，显示提示
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(rs){
-      if (rs && rs.length > 0) {
-        var b = document.getElementById('apex-refresh-banner');
-        if (b) b.style.display = 'block';
-      }
-    });
-  }
-})();
-</script>
+<script src="/src/js/inline/block-01.js"></script>
 
   <script src="/src/js/apiClient.js?v=20260927b"></script>
   <script src="/src/js/passwordPolicy.js?v=20260927b"></script>
@@ -334,7 +141,7 @@
   <!-- ============ Hero 区 ============ -->
   <div class="hero">
     <div class="hero-content">
-      <img src="./logo.png" alt="Apex Logo" class="logo-img">
+      <img src="./logo.png" alt="Apex Logo" class="logo-img" width="90" height="90" decoding="async" fetchpriority="high">
       <div class="main-title" data-i18n="hero.title">全球娱乐游戏平台</div>
       <div class="sub-title" data-i18n="hero.subtitle">一站式体验·玩法丰富·公平公正·极速存取</div>
     </div>
@@ -375,7 +182,7 @@
 
         <div class="checkbox-group" style="margin-top:12px;margin-bottom:0;font-size:12px;">
           <input type="checkbox" id="login-agreement" checked>
-          <label for="login-agreement">我已阅读并同意 <a href="/terms.html" onclick="event.stopPropagation();">《用户协议》</a> 与 <a href="/privacy.html" onclick="event.stopPropagation();">《隐私政策》</a></label>
+          <label for="login-agreement">我已阅读并同意 <a href="/terms.html"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy.html"  data-apex-action="stop-prop">《隐私政策》</a></label>
         </div>
       </div>
 
@@ -405,7 +212,7 @@
 
         <div class="checkbox-group" style="margin-top:16px;margin-bottom:0;font-size:12px;">
           <input type="checkbox" id="reg-agreement" checked>
-          <label for="reg-agreement">我已阅读并同意 <a href="/terms.html" onclick="event.stopPropagation();">《用户协议》</a> 与 <a href="/privacy.html" onclick="event.stopPropagation();">《隐私政策》</a></label>
+          <label for="reg-agreement">我已阅读并同意 <a href="/terms.html"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy.html"  data-apex-action="stop-prop">《隐私政策》</a></label>
         </div>
       </div>
 
@@ -433,7 +240,7 @@
           <div class="field-error" role="alert" aria-live="polite"></div>
         </div>
 
-        <div data-purpose="register" class="apex-captcha-box" id="signup-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="register" class="apex-captcha-box" id="signup-captcha"  data-apex-action="start-captcha">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -444,7 +251,7 @@
 
         <div class="checkbox-group">
           <input type="checkbox" id="signup-agreement" checked>
-          <label for="signup-agreement">我已阅读并同意 <a href="/terms.html" onclick="event.stopPropagation();">《用户协议》</a> 与 <a href="/privacy.html" onclick="event.stopPropagation();">《隐私政策》</a></label>
+          <label for="signup-agreement">我已阅读并同意 <a href="/terms.html"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy.html"  data-apex-action="stop-prop">《隐私政策》</a></label>
         </div>
 
         <button class="btn-primary" id="btn-passkey-signup">🔐 使用 Passkey 创建账号</button>
@@ -466,13 +273,13 @@
           <div class="input-wrap">
             <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <input type="password" id="login-password" autocomplete="current-password" spellcheck="false" data-i18n-placeholder="placeholder.password" placeholder="请输入密码">
-            <div class="pwd-actions"><span class="btn-toggle" onpointerdown="event.preventDefault(); window.togglePwd(this)"></span></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
           </div>
           <div class="field-error" role="alert" aria-live="polite"></div>
         </div>
 
         <!-- 人机验证 -->
-        <div data-purpose="login" class="apex-captcha-box" id="login-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="login" class="apex-captcha-box" id="login-captcha"  data-apex-action="start-captcha">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -511,7 +318,7 @@
           <div class="input-wrap">
             <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <input type="password" id="reg-password" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.password" placeholder="请输入密码">
-            <div class="pwd-actions"><span class="btn-toggle" onpointerdown="event.preventDefault(); window.togglePwd(this)"></span></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
           </div>
           <div class="pwd-strength" id="reg-strength"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
             <div class="pwd-checklist" id="reg-pwd-checklist"></div>
@@ -523,13 +330,13 @@
           <div class="input-wrap">
             <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <input type="password" id="reg-confirm" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.confirmPassword" placeholder="请再次输入密码">
-            <div class="pwd-actions"><span class="btn-toggle" onpointerdown="event.preventDefault(); window.togglePwd(this)"></span></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
           </div>
           <div class="field-error" role="alert" aria-live="polite"></div>
         </div>
 
         <!-- 人机验证 -->
-        <div data-purpose="register" class="apex-captcha-box" id="reg-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="register" class="apex-captcha-box" id="reg-captcha"  data-apex-action="start-captcha">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -593,8 +400,8 @@
           <label>邮箱验证码</label>
           <div class="code-row">
             <div class="code-boxes" id="recover-code-boxes">
-              <input type="text" maxlength="1"><input type="text" maxlength="1"><input type="text" maxlength="1">
-              <input type="text" maxlength="1"><input type="text" maxlength="1"><input type="text" maxlength="1">
+              <input aria-label="验证码第 1 位"  type="text" maxlength="1"><input aria-label="验证码第 2 位"  type="text" maxlength="1"><input aria-label="验证码第 3 位"  type="text" maxlength="1">
+              <input aria-label="验证码第 4 位"  type="text" maxlength="1"><input aria-label="验证码第 5 位"  type="text" maxlength="1"><input aria-label="验证码第 6 位"  type="text" maxlength="1">
             </div>
             <button class="btn-send-code" id="btn-recover-send-code">发送验证码</button>
           </div>
@@ -602,7 +409,7 @@
           <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
         </div>
 
-        <div data-purpose="reset-password" class="apex-captcha-box" id="recover-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="reset-password" class="apex-captcha-box" id="recover-captcha"  data-apex-action="start-captcha">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -634,7 +441,7 @@
             <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <input type="password" id="forgot-newpwd" data-i18n-placeholder="placeholder.newPassword" placeholder="请输入新密码">
             <div class="pwd-checklist" id="forgot-pwd-checklist"></div>
-            <div class="pwd-actions"><span class="btn-toggle" onpointerdown="event.preventDefault(); window.togglePwd(this)"></span></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
           </div>
           <div class="form-tip">至少 12 位，含大小写字母、数字和特殊字符</div>
           <div class="field-error" role="alert" aria-live="polite"></div>
@@ -645,7 +452,7 @@
           <div class="input-wrap">
             <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
             <input type="password" id="forgot-confirm" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.confirmPassword" placeholder="请再次输入新密码">
-            <div class="pwd-actions"><span class="btn-toggle" onpointerdown="event.preventDefault(); window.togglePwd(this)"></span></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
           </div>
           <div class="field-error" role="alert" aria-live="polite"></div>
         </div>
@@ -654,8 +461,8 @@
           <label>邮箱验证码</label>
           <div class="code-row">
             <div class="code-boxes" id="code-boxes">
-              <input type="text" maxlength="1"><input type="text" maxlength="1"><input type="text" maxlength="1">
-              <input type="text" maxlength="1"><input type="text" maxlength="1"><input type="text" maxlength="1">
+              <input aria-label="验证码第 7 位"  type="text" maxlength="1"><input aria-label="验证码第 8 位"  type="text" maxlength="1"><input aria-label="验证码第 9 位"  type="text" maxlength="1">
+              <input aria-label="验证码第 10 位"  type="text" maxlength="1"><input aria-label="验证码第 11 位"  type="text" maxlength="1"><input aria-label="验证码第 12 位"  type="text" maxlength="1">
             </div>
             <button class="btn-send-code" id="btn-send-code" data-i18n="btn.sendCode">发送验证码</button>
           </div>
@@ -663,7 +470,7 @@
           <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
         </div>
 
-        <div data-purpose="reset-password" class="apex-captcha-box" id="forgot-captcha" onclick="window.startCaptcha(this)">
+        <div data-purpose="reset-password" class="apex-captcha-box" id="forgot-captcha"  data-apex-action="start-captcha">
           <div class="apex-captcha-content">
             <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
             <div class="apex-captcha-text">点击进行人机验证</div>
@@ -691,1127 +498,29 @@
     <div style="margin-top:10px;">© 2026 Apex Global Entertainment</div>
   </div></div>
 
-  <script>
-  (function() {
-    'use strict';
+  <script src="/src/js/inline/block-02.js"></script>
 
-    // ========== 1. 小眼睛 ==========
-    const EYE_OPEN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    const EYE_CLOSED = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-    window.togglePwd = function(el) {
-      const p = el.closest('.input-wrap').querySelector('input');
-      if (!p) return;
-      p.type = p.type === 'password' ? 'text' : 'password';
-      el.innerHTML = p.type === 'password' ? EYE_OPEN : EYE_CLOSED;
-    };
+  <script src="/src/js/inline/block-03.js"></script>
 
-    // ========== 2. 人机验证 ==========
-    window.startCaptcha = function(box) {
-      if (box.dataset.status === 'success' || box.dataset.status === 'verifying') return;
-      box.dataset.status = 'verifying';
-      box.classList.add('verifying');
-      let progress = 0;
-      const percent = box.querySelector('.apex-captcha-percent');
-      percent.textContent = '0%';
-      const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5;
-        if (progress > 100) progress = 100;
-        percent.textContent = progress < 100 ? progress + '%' : '验证成功';
-        if (progress === 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            box.classList.remove('verifying');
-            box.classList.add('success');
-            box.dataset.status = 'success';
-          }, 300);
-        }
-      }, 100);
-    };
+  <script src="/src/js/inline/block-04.js"></script>
 
-    // ========== 3. Toast ==========
-    function toast(msg, type) {
-      let t = document.getElementById('apex-toast');
-      if (!t) { t = document.createElement('div'); t.id = 'apex-toast'; document.body.appendChild(t); }
-      t.textContent = msg;
-      t.style.background = type === 'error' ? '#e63946' : '#4ade80';
-      t.style.color = type === 'error' ? '#fff' : '#000';
-      t.style.opacity = '1';
-      clearTimeout(t._timer);
-      t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
-    }
+  <script src="/src/js/inline/block-05.js"></script>
 
-    // ========== 4. 成功页 ==========
-    function showSuccess(title, desc) {
-      ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-form'].forEach(id => {
-        const el = document.getElementById(id); if (el) el.style.display = 'none';
-      });
-      const tabs = document.getElementById('auth-tabs');
-      if (tabs) tabs.style.display = 'none';
-      let page = document.getElementById('apex-success-page');
-      if (!page) {
-        page = document.createElement('div');
-        page.id = 'apex-success-page';
-        page.style.cssText = 'text-align:center;padding:20px 0;';
-        document.querySelector('.auth-card').appendChild(page);
-      }
-      page.innerHTML = '<div style="width:64px;height:64px;margin:0 auto 16px;background:rgba(74,222,128,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
-        '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>' +
-        '<h3 style="color:#fff;margin-bottom:8px;font-size:18px;">' + title + '</h3>' +
-        '<p style="color:#888;font-size:13px;margin-bottom:24px;">' + desc + '</p>' +
-        '<button class="btn-primary" id="apex-success-btn">立即登录</button>';
-      page.style.display = 'block';
-      document.getElementById('apex-success-btn').onclick = () => { page.style.display = 'none'; switchTo('login-form'); };
-    }
-
-    // ========== 5. 表单切换 ==========
-    function switchTo(formId) {
-      // 切换表单时清空所有错误状态
-      try {
-        clearAllFieldErrors(null);
-        ['login-captcha','reg-captcha','forgot-captcha','recover-captcha'].forEach(function (id) {
-          clearCaptchaError(document.getElementById(id));
-        });
-        ['login-agreement','reg-agreement'].forEach(function (id) {
-          clearCheckboxError(document.getElementById(id));
-        });
-        clearCodeBoxError(document.getElementById('code-boxes'));
-        clearCodeBoxError(document.getElementById('recover-code-boxes'));
-        // 清空所有内联提示
-        ['login-method-picker','register-method-picker','passkey-signup-form','passkey-recover-form','forgot-method-picker','forgot-form','login-form','register-form'].forEach(function (sid) {
-          var sel = document.getElementById(sid);
-          if (sel) {
-            var msgs = sel.querySelectorAll('.inline-msg');
-            msgs.forEach(function (m) { m.classList.remove('show'); m.textContent = ''; });
-          }
-        });
-      } catch (e) {}
-      var _allSectionIds = ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-method-picker','passkey-recover-form','forgot-form'];
-      for (var _i = 0; _i < _allSectionIds.length; _i += 1) {
-        var _el = document.getElementById(_allSectionIds[_i]);
-        if (_el) _el.style.display = 'none';
-      }
-      var _target = document.getElementById(formId);
-      if (_target) {
-        _target.style.display = 'block';
-        _target.classList.remove('form-fade-in');
-        void _target.offsetWidth;
-        _target.classList.add('form-fade-in');
-      }
-      const sp = document.getElementById('apex-success-page');
-      if (sp) sp.style.display = 'none';
-      const tabs = document.getElementById('auth-tabs');
-      var _isForgotSide = (formId === 'forgot-form' || formId === 'forgot-method-picker' || formId === 'passkey-recover-form');
-      if (tabs) tabs.style.display = _isForgotSide ? 'none' : 'flex';
-      var _isLoginSide = (formId === 'login-form' || formId === 'login-method-picker' || formId === 'forgot-method-picker' || formId === 'passkey-recover-form' || formId === 'forgot-form');
-      var _isRegSide = (formId === 'register-form' || formId === 'register-method-picker' || formId === 'passkey-signup-form');
-      document.getElementById('tab-login').classList.toggle('active', _isLoginSide);
-      document.getElementById('tab-register').classList.toggle('active', _isRegSide);
-    }
-
-    document.getElementById('tab-login').addEventListener('click', () => switchTo('login-method-picker'));
-    document.getElementById('tab-register').addEventListener('click', () => switchTo('register-method-picker'));
-    document.getElementById('forgot-pwd').addEventListener('click', (e) => { e.preventDefault(); switchTo('forgot-method-picker'); });
-
-
-    // ========== Enter 提交（各表单字段 → 对应按钮）==========
-    [["login-account","btn-login"],["login-password","btn-login"],
-     ["reg-username","btn-register"],["reg-email","btn-register"],
-     ["reg-password","btn-register"],["reg-confirm","btn-register"],
-     ["forgot-email","btn-send-code"],["forgot-newpwd","btn-reset"],
-     ["forgot-confirm","btn-reset"]].forEach(function (pair) {
-      var inp = document.getElementById(pair[0]);
-      var btn = document.getElementById(pair[1]);
-      if (!inp || !btn) return;
-      inp.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); btn.click(); }
-      });
-    });
-
-    // ========== 多标签同步登出 ==========
-    try {
-      if (window.BroadcastChannel) {
-        var apexBC = new BroadcastChannel('apex_auth');
-        apexBC.addEventListener('message', function (e) {
-          if (e.data && e.data.type === 'logout') {
-            try { location.reload(); } catch (x) {}
-          }
-        });
-        window.__apexBroadcast = apexBC;
-      }
-    } catch (e) {}
-    // ========== 方式选择卡片事件 ==========
-    (function () {
-      function on(id, fn) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('click', fn);
-        el.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
-        });
-      }
-
-      // 返回键
-      on('login-back', function () { switchTo('login-method-picker'); });
-      on('register-back', function () { switchTo('register-method-picker'); });
-      on('passkey-signup-back', function () { switchTo('register-method-picker'); });
-
-      function checkAgreement(id, label) {
-        var cb = document.getElementById(id);
-        if (!cb) return true;
-        if (!cb.checked) {
-          if (typeof window.showCheckboxError === 'function') {
-            window.showCheckboxError(cb, label);
-          } else {
-            toast('请先阅读并同意用户协议与隐私政策', 'error');
-          }
-          return false;
-        }
-        if (typeof window.clearCheckboxError === 'function') window.clearCheckboxError(cb);
-        return true;
-      }
-
-      on('pick-login-password', function () {
-        if (!checkAgreement('login-agreement', '请先阅读并同意用户协议与隐私政策')) return;
-        switchTo('login-form');
-      });
-      on('pick-login-passkey', function () {
-        if (!checkAgreement('login-agreement', '请先阅读并同意用户协议与隐私政策')) return;
-        if (window.__apexPasskey && window.__apexPasskey.login) {
-          window.__apexPasskey.login();
-        } else {
-          toast('浏览器不支持 Passkey', 'error');
-        }
-      });
-      // ========== 忘记密码方式选择 ==========
-      on('pick-forgot-password', function () { switchTo('forgot-form'); });
-      on('pick-forgot-passkey', function () {
-        if (!window.__apexPasskey || !window.__apexPasskey.isSupported || !window.__apexPasskey.isSupported()) {
-          toast('浏览器不支持 Passkey', 'error');
-          return;
-        }
-        switchTo('passkey-recover-form');
-      });
-      on('forgot-picker-back', function () { switchTo('login-method-picker'); });
-      on('forgot-back', function () { switchTo('forgot-method-picker'); });
-      on('passkey-recover-back', function () { switchTo('forgot-method-picker'); });
-
-      // 找回发码按钮
-      var btnRecover = document.getElementById('btn-recover-send-code');
-      if (btnRecover) {
-        btnRecover.addEventListener('click', function () {
-          if (window.__apexPasskey && window.__apexPasskey.recoverSendCode) {
-            window.__apexPasskey.recoverSendCode();
-          } else {
-            toast('功能未加载', 'error');
-          }
-        });
-      }
-
-      // 找回 Passkey 按钮
-      var btnRecoverVerify = document.getElementById('btn-passkey-recover');
-      if (btnRecoverVerify) {
-        btnRecoverVerify.addEventListener('click', function () {
-          if (window.__apexPasskey && window.__apexPasskey.recoverVerify) {
-            window.__apexPasskey.recoverVerify();
-          } else {
-            toast('功能未加载', 'error');
-          }
-        });
-      }
-
-      on('pick-register-password', function () {
-        if (!checkAgreement('reg-agreement', '请先阅读并同意用户协议与隐私政策')) return;
-        switchTo('register-form');
-      });
-      on('pick-register-passkey', function () {
-        if (!checkAgreement('reg-agreement', '请先阅读并同意用户协议与隐私政策')) return;
-        if (!window.__apexPasskey || !window.__apexPasskey.isSupported || !window.__apexPasskey.isSupported()) {
-          toast('浏览器不支持 Passkey', 'error');
-          return;
-        }
-        switchTo('passkey-signup-form');
-      });
-
-      var back = document.getElementById('passkey-signup-back');
-      if (back) {
-        back.addEventListener('click', function (e) {
-          e.preventDefault();
-          switchTo('register-method-picker');
-        });
-      }
-
-      var btnSu = document.getElementById('btn-passkey-signup');
-      if (btnSu) {
-        btnSu.addEventListener('click', function () {
-          if (window.__apexPasskey && window.__apexPasskey.signup) {
-            window.__apexPasskey.signup();
-          } else {
-            toast('浏览器不支持 Passkey', 'error');
-          }
-        });
-      }
-    })();
-
-// ========== 初始状态（硬保险）==========
-function __apexInitPicker() {
-  var all = ['login-method-picker','register-method-picker','passkey-signup-form','login-form','register-form','forgot-form'];
-  for (var i = 0; i < all.length; i += 1) {
-    var el = document.getElementById(all[i]);
-    if (el) el.style.display = 'none';
-  }
-  var target = document.getElementById('login-method-picker');
-  if (target) target.style.display = 'block';
-}
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', __apexInitPicker);
-} else {
-  __apexInitPicker();
-}
-
-window.__apex = { toast, showSuccess, switchTo };
-  })();
-  </script>
-
-  <script>
-  (function() {
-    'use strict';
-
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const userRe = /^[a-zA-Z0-9_]{6,20}$/;
-    const strongPwdRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{12,}$/;
-
-    function setErr(input, msg) {
-      const wrap = input.closest('.input-wrap');
-      wrap.classList.add('error'); wrap.classList.remove('success');
-      const err = input.closest('.input-group').querySelector('.field-error');
-      if (err) { err.textContent = msg; err.classList.add('show'); }
-    }
-    function setOk(input) {
-      const wrap = input.closest('.input-wrap');
-      wrap.classList.remove('error'); wrap.classList.add('success');
-      const err = input.closest('.input-group').querySelector('.field-error');
-      if (err) err.classList.remove('show');
-    }
-    function clearState(input) {
-      const wrap = input.closest('.input-wrap');
-      wrap.classList.remove('error', 'success');
-      const err = input.closest('.input-group').querySelector('.field-error');
-      if (err) err.classList.remove('show');
-    }
-
-    // 注册账号
-    const regUser = document.getElementById('reg-username');
-    if (regUser) regUser.addEventListener('input', function() {
-      if (!this.value) return clearState(this);
-      userRe.test(this.value) ? setOk(this) : setErr(this, '账号需 6-20 位，仅限字母、数字、下划线');
-    });
-
-    // 注册邮箱
-    const regEmail = document.getElementById('reg-email');
-    if (regEmail) regEmail.addEventListener('input', function() {
-      if (!this.value) return clearState(this);
-      emailRe.test(this.value) ? setOk(this) : setErr(this, '请输入有效的邮箱地址');
-    });
-
-    // 注册密码 + 强度条
-    // ========== 草稿自动保存 ==========
-    var _draftKeys = {
-      'login-account': 'apex_draft_login_account',
-      'reg-username': 'apex_draft_reg_username',
-      'reg-email': 'apex_draft_reg_email'
-    };
-    (function () {
-      Object.keys(_draftKeys).forEach(function (id) {
-        var el = document.getElementById(id);
-        if (!el) return;
-        try {
-          var v = localStorage.getItem(_draftKeys[id]);
-          if (v && !el.value) el.value = v;
-        } catch (e) {}
-        el.addEventListener('input', function () {
-          try { localStorage.setItem(_draftKeys[id], el.value); } catch (e) {}
-        });
-      });
-    })();
-    function clearDrafts() {
-      try {
-        Object.keys(_draftKeys).forEach(function (id) { localStorage.removeItem(_draftKeys[id]); });
-      } catch (e) {}
-    }
-    window.clearDrafts = clearDrafts;
-
-    const regPwd = document.getElementById('reg-password');
-    if (regPwd) regPwd.addEventListener('input', function() {
-      const bars = document.querySelectorAll('#reg-strength .bar');
-      bars.forEach(b => b.className = 'bar');
-      renderPwdChecklist('reg-pwd-checklist', this.value);
-      if (!this.value) return clearState(this);
-      const regUserName = document.getElementById('reg-username');
-      const ident = regUserName ? regUserName.value.trim() : '';
-      const policy = window.ApexPasswordPolicy;
-      const result = policy
-        ? policy.scorePassword(this.value, ident)
-        : { level: strongPwdRe.test(this.value) ? 3 : (this.value.length >= 8 ? 2 : 1), valid: strongPwdRe.test(this.value), message: '需至少 12 位，含大小写字母、数字和特殊字符' };
-      bars.forEach((b, i) => {
-        if (i < result.level) b.classList.add(result.level === 1 ? 'active-weak' : (result.level === 2 ? 'active-medium' : 'active-strong'));
-      });
-      if (result.valid) setOk(this);
-      else setErr(this, result.message || '密码强度不足');
-      renderPwdChecklist('reg-pwd-checklist', this.value);
-    });
-
-    // 确认密码
-    const regConfirm = document.getElementById('reg-confirm');
-    if (regConfirm) regConfirm.addEventListener('input', function() {
-      const pwd = document.getElementById('reg-password').value;
-      if (!this.value) return clearState(this);
-      this.value === pwd ? setOk(this) : setErr(this, '两次输入的密码不一致');
-    });
-
-    // 忘记密码 - 邮箱
-    const forgotEmail = document.getElementById('forgot-email');
-    if (forgotEmail) forgotEmail.addEventListener('input', function() {
-      if (!this.value) return clearState(this);
-      emailRe.test(this.value) ? setOk(this) : setErr(this, '请输入有效的邮箱地址');
-    });
-
-    // 忘记密码 - 新密码
-    const forgotNew = document.getElementById('forgot-newpwd');
-    if (forgotNew) forgotNew.addEventListener('input', function() {
-      renderPwdChecklist('forgot-pwd-checklist', this.value);
-      if (!this.value) return clearState(this);
-      const forgotEmailEl = document.getElementById('forgot-email');
-      const ident = forgotEmailEl ? forgotEmailEl.value.trim() : '';
-      const policy = window.ApexPasswordPolicy;
-      const r = policy ? policy.validatePassword(this.value, ident)
-                       : { valid: strongPwdRe.test(this.value), message: '需至少 12 位，含大小写字母、数字和特殊字符' };
-      r.valid ? setOk(this) : setErr(this, r.message || '密码强度不足');
-      renderPwdChecklist('forgot-pwd-checklist', this.value);
-    });
-
-    // 忘记密码 - 确认密码
-    const forgotConfirm = document.getElementById('forgot-confirm');
-    if (forgotConfirm) forgotConfirm.addEventListener('input', function() {
-      const pwd = document.getElementById('forgot-newpwd').value;
-      if (!this.value) return clearState(this);
-      this.value === pwd ? setOk(this) : setErr(this, '两次输入的密码不一致');
-    });
-
-    // 6 位验证码自动跳转
-    const codeInputs = document.querySelectorAll('#code-boxes input');
-    codeInputs.forEach((input, i) => {
-      input.addEventListener('input', () => {
-        if (window.clearCodeBoxError) window.clearCodeBoxError(document.getElementById('code-boxes'));
-        if (input.value && i < codeInputs.length - 1) codeInputs[i + 1].focus();
-      });
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !input.value && i > 0) codeInputs[i - 1].focus();
-      });
-    });
-
-    // ========== Caps Lock 提示（所有密码框）==========
-    ['login-password','reg-password','reg-confirm','forgot-newpwd','forgot-confirm'].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && typeof window.attachCapsLockWarn === 'function') window.attachCapsLockWarn(el);
-    });
-
-        console.log('[Apex] 表单验证已加载');
-  })();
-  </script>
-
-  <script>
-  (function() {
-    'use strict';
-
-    const { toast, showSuccess } = window.__apex;
-
-    // 首屏预热 CSRF cookie：若首次访问没有 cookie，主动 GET 一次让服务端下发
-    (function warmupCsrf() {
-      if (readApexCookie('apex_csrf')) return;
-      fetch('/api/health', { credentials: 'include', cache: 'no-store' }).catch(function(){});
-    })();
-
-    // ========== API 客户端 ==========
-    // ========== 统一 Cookie 读取（仅非 HttpOnly 的 apex_csrf） ==========
-    function readApexCookie(name) {
-      try {
-        const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
-        return m ? decodeURIComponent(m[1]) : '';
-      } catch (e) {
-        return '';
-      }
-    }
-
-    // ========== 统一 API POST 客户端 ==========
-    //  - 自动 credentials: include
-    //  - 自动附加 X-CSRF-Token（从 apex_csrf cookie 读取）
-    //  - 只解析 application/json
-    //  - 网络/解析错误统一返回 { success:false, message }
-    async function apiPost(url, data, _retryCount) {
-      _retryCount = _retryCount || 0;
-      const headers = { 'Content-Type': 'application/json' };
-      const csrf = readApexCookie('apex_csrf');
-      if (csrf) headers['X-CSRF-Token'] = csrf;
-
-      let res;
-      try {
-        res = await fetch(url, {
-          method: 'POST',
-          credentials: 'include',
-          headers,
-          body: JSON.stringify(data)
-        });
-      } catch (err) {
-        return { success: false, message: '网络异常，请检查连接后重试' };
-      }
-
-      const ct = res.headers.get('Content-Type') || '';
-      let payload = null;
-      if (ct.indexOf('application/json') !== -1) {
-        try {
-          payload = await res.json();
-        } catch (e) {
-          payload = null;
-        }
-      }
-      // CSRF 自愈：403 + csrf_invalid 时重试一次（服务端已 Set-Cookie 新 token）
-      if (
-        res.status === 403 &&
-        _retryCount < 1 &&
-        payload && typeof payload === 'object' && payload.code === 'csrf_invalid'
-      ) {
-        return apiPost(url, data, _retryCount + 1);
-      }
-
-      if (!payload || typeof payload !== 'object') {
-        if (res.status === 403) return { success: false, message: 'CSRF 校验失败，请刷新页面后重试' };
-        if (res.status === 429) return { success: false, message: '请求过于频繁，请稍后再试' };
-        if (res.status >= 500) return { success: false, message: '服务器繁忙，请稍后再试' };
-        return { success: false, message: '服务器响应异常' };
-      }
-      if (typeof payload.success !== 'boolean') payload.success = false;
-      return payload;
-    }
-
-    // ========== 字段级错误显示 ==========
-    // ========== 密码清单渲染 ==========
-    function renderPwdChecklist(containerId, password) {
-      var el = document.getElementById(containerId);
-      if (!el) return;
-      var v = String(password || '');
-      var items = [
-        { label: '12 位以上',    ok: v.length >= 12 && v.length <= 128 },
-        { label: '含小写',       ok: /[a-z]/.test(v) },
-        { label: '含大写',       ok: /[A-Z]/.test(v) },
-        { label: '含数字',       ok: /[0-9]/.test(v) },
-        { label: '含特殊字符',   ok: /[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/.test(v) }
-      ];
-      var html = items.map(function (it) {
-        var cls = !v ? 'item' : (it.ok ? 'item ok' : 'item err');
-        return '<span class="' + cls + '">' + it.label + '</span>';
-      }).join('');
-      el.innerHTML = html;
-    }
-    window.renderPwdChecklist = renderPwdChecklist;
-
-    // ========== 网络错误重试框 ==========
-    function showRetryBox(formSelector, retryFn) {
-      try {
-        var form = document.querySelector(formSelector);
-        if (!form) return;
-        var box = form.querySelector('.form-retry-box');
-        if (!box) {
-          box = document.createElement('div');
-          box.className = 'form-retry-box';
-          form.appendChild(box);
-        }
-        box.innerHTML = '网络异常，请检查后重试 <button type="button">重试</button>';
-        box.classList.add('show');
-        box.querySelector('button').onclick = function () {
-          box.classList.remove('show');
-          try { retryFn(); } catch (e) {}
-        };
-      } catch (e) {}
-    }
-    window.showRetryBox = showRetryBox;
-
-    function clearRetryBox(formSelector) {
-      try {
-        var form = document.querySelector(formSelector);
-        if (!form) return;
-        var box = form.querySelector('.form-retry-box');
-        if (box) box.classList.remove('show');
-      } catch (e) {}
-    }
-    window.clearRetryBox = clearRetryBox;
-
-    window.showFieldError = function showFieldError(inputEl, msg, skipFocus) {
-      if (!inputEl) return;
-      const wrap = inputEl.closest ? inputEl.closest('.input-wrap') : null;
-      const grp = inputEl.closest ? inputEl.closest('.input-group') : null;
-      if (wrap) {
-        wrap.classList.add('error');
-        wrap.classList.remove('success');
-      }
-      if (grp) {
-        const errEl = grp.querySelector('.field-error');
-        if (errEl) {
-          errEl.textContent = msg;
-          errEl.classList.add('show');
-        }
-      }
-      try { inputEl.setAttribute('aria-invalid', 'true'); } catch (e) {}
-      if (!skipFocus) {
-        try { inputEl.focus(); } catch (e) {}
-      }
-    }
-
-    window.clearAllFieldErrors = function clearAllFieldErrors(rootEl) {
-      const scope = rootEl || document;
-      try {
-        scope.querySelectorAll('.input-group').forEach(function (g) {
-          g.querySelectorAll('.field-error').forEach(function (el) {
-            el.classList.remove('show');
-            el.textContent = '';
-          });
-        });
-        scope.querySelectorAll('.input-wrap').forEach(function (w) {
-          w.classList.remove('error', 'success');
-        });
-        scope.querySelectorAll('input[aria-invalid]').forEach(function (i) {
-          i.removeAttribute('aria-invalid');
-        });
-      } catch (e) {}
-    }
-
-    window.shakeElement = function shakeElement(el) {
-      if (!el) return;
-      el.classList.remove('shake');
-      void el.offsetWidth;
-      el.classList.add('shake');
-      setTimeout(function () { el.classList.remove('shake'); }, 500);
-    }
-
-    window.showCaptchaError = function showCaptchaError(boxEl, msg) {
-      if (!boxEl) return;
-      boxEl.classList.add('error');
-      shakeElement(boxEl);
-      var errEl = boxEl.nextElementSibling;
-      if (!errEl || !errEl.classList.contains('captcha-error')) {
-        errEl = document.createElement('div');
-        errEl.className = 'captcha-error';
-        boxEl.parentNode.insertBefore(errEl, boxEl.nextSibling);
-      }
-      errEl.textContent = msg;
-      errEl.classList.add('show');
-    }
-
-    window.clearCaptchaError = function clearCaptchaError(boxEl) {
-      if (!boxEl) return;
-      boxEl.classList.remove('error');
-      var errEl = boxEl.nextElementSibling;
-      if (errEl && errEl.classList.contains('captcha-error')) {
-        errEl.classList.remove('show');
-        errEl.textContent = '';
-      }
-    }
-
-    window.showCheckboxError = function showCheckboxError(cbEl, msg) {
-      if (!cbEl) return;
-      var grp = cbEl.closest('.checkbox-group');
-      if (!grp) return;
-      grp.classList.add('error');
-      var errEl = grp.querySelector('.checkbox-error');
-      if (!errEl) {
-        errEl = document.createElement('div');
-        errEl.className = 'checkbox-error';
-        grp.appendChild(errEl);
-      }
-      errEl.textContent = msg;
-      errEl.classList.add('show');
-      try { cbEl.focus(); } catch (e) {}
-    }
-
-    window.clearCheckboxError = function clearCheckboxError(cbEl) {
-      if (!cbEl) return;
-      var grp = cbEl.closest('.checkbox-group');
-      if (!grp) return;
-      grp.classList.remove('error');
-      var errEl = grp.querySelector('.checkbox-error');
-      if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
-    }
-
-    window.showCodeBoxError = function showCodeBoxError(containerEl, msg) {
-      if (!containerEl) return;
-      containerEl.classList.add('error');
-      shakeElement(containerEl);
-      var errEl = document.getElementById('code-boxes-error');
-      if (errEl) {
-        errEl.textContent = msg;
-        errEl.classList.add('show');
-      } else {
-        toast(msg, 'error');
-      }
-    }
-
-    window.clearCodeBoxError = function clearCodeBoxError(containerEl) {
-      if (!containerEl) return;
-      containerEl.classList.remove('error');
-      var errEl = document.getElementById('code-boxes-error');
-      if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
-    }
-
-    window.attachCapsLockWarn = function attachCapsLockWarn(inputEl) {
-      if (!inputEl) return;
-      var wrap = inputEl.closest('.input-wrap');
-      if (!wrap) return;
-      var warn = wrap.parentNode.querySelector('.capslock-warn');
-      if (!warn) {
-        warn = document.createElement('div');
-        warn.className = 'capslock-warn';
-        warn.textContent = '⚠️ 大写锁定已开启';
-        wrap.parentNode.insertBefore(warn, wrap.nextSibling);
-      }
-      function check(e) {
-        try {
-          if (e.getModifierState && e.getModifierState('CapsLock')) warn.classList.add('show');
-          else warn.classList.remove('show');
-        } catch (err) {}
-      }
-      inputEl.addEventListener('keydown', check);
-      inputEl.addEventListener('keyup', check);
-      inputEl.addEventListener('blur', function () { warn.classList.remove('show'); });
-    }
-
-    function setLoading(btn, loading) {
-      if (loading) {
-        btn.dataset.orig = btn.textContent;
-        btn.textContent = '处理中...';
-        btn.disabled = true;
-      } else {
-        btn.textContent = btn.dataset.orig;
-        btn.disabled = false;
-      }
-      try {
-        var form = btn.closest('#login-form, #register-form, #forgot-form') || btn.closest('.auth-card');
-        if (form) {
-          form.querySelectorAll('input, textarea, select').forEach(function (el) {
-            if (el === btn) return;
-            el.disabled = !!loading;
-          });
-        }
-      } catch (e) {}
-    }
-
-    // ========== 登录 ==========
-    document.getElementById('btn-login').addEventListener('click', async function() {
-      const loginForm = document.getElementById('login-form');
-      clearAllFieldErrors(loginForm);
-      var _formErr = false, _formFirst = null;
-      const accEl = document.getElementById('login-account');
-      const pwdEl = document.getElementById('login-password');
-      const account = accEl.value.trim();
-      const password = pwdEl.value;
-      if (!account) { showFieldError(accEl, '请输入账号', true); _formErr = true; if (!_formFirst) _formFirst = accEl; }
-      if (!password) { showFieldError(pwdEl, '请输入密码', true); _formErr = true; if (!_formFirst) _formFirst = pwdEl; }
-      if (!document.getElementById('login-agreement').checked) {
-        showCheckboxError(document.getElementById('login-agreement'), '请先阅读并同意用户协议与隐私政策');
-        return;
-      }
-      if (document.getElementById('login-captcha').dataset.status !== 'success') {
-        showCaptchaError(document.getElementById('login-captcha'), '请先完成人机验证');
-        return;
-      }
-
-      const captchaToken = document.getElementById('login-captcha').dataset.token || '';
-      if (!captchaToken) { showCaptchaError(document.getElementById('forgot-captcha'), '请先完成人机验证'); return; }
-      if (_formErr) return;
-      setLoading(this, true);
-      const result = await apiPost('/api/login', { account, password, captchaToken });
-      setLoading(this, false);
-
-      if (result.success) {
-        // 认证状态唯一可信来源：Session Cookie + /api/me
-        // 此处不再写入 localStorage（避免「本地显示已登录，但 Session 已过期」错位）
-        toast('登录成功', 'success');
-        setTimeout(() => {
-          window.showHomepage && window.showHomepage(result.user);
-        clearCaptchaError(document.getElementById('login-captcha'));
-        clearCheckboxError(document.getElementById('login-agreement'));
-        }, 800);
-      } else {
-        const code = result.code || '';
-        const msg = result.message || '登录失败';
-        if (code === 'invalid_credentials' || code === 'invalid_account' || /账号|用户名|密码|account|username|password/i.test(msg)) {
-          showFieldError(accEl, msg);
-        } else {
-          toast(msg, 'error');
-        }
-      }
-    });
-
-    // ========== 注册 ==========
-    document.getElementById('btn-register').addEventListener('click', async function() {
-      clearAllFieldErrors(null);
-      var _formErr = false, _formFirst = null;
-      const userEl = document.getElementById('reg-username');
-      const emailEl = document.getElementById('reg-email');
-      const regPwdEl = document.getElementById('reg-password');
-      const confirmEl = document.getElementById('reg-confirm');
-      const username = userEl.value.trim();
-      const email = emailEl.value.trim();
-      const password = regPwdEl.value;
-      const confirm = confirmEl.value;
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const userRe = /^[a-zA-Z0-9_]{6,20}$/;
-      const strongPwdRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{12,}$/;
-      if (!username) { showFieldError(userEl, '请输入账号', true); _formErr = true; if (!_formFirst) _formFirst = userEl; }
-      if (!userRe.test(username)) { showFieldError(userEl, '账号需 6-20 位，仅限字母、数字、下划线', true); _formErr = true; if (!_formFirst) _formFirst = userEl; }
-      if (!email) { showFieldError(emailEl, '请输入邮箱', true); _formErr = true; if (!_formFirst) _formFirst = emailEl; }
-      if (!emailRe.test(email)) { showFieldError(emailEl, '邮箱格式错误', true); _formErr = true; if (!_formFirst) _formFirst = emailEl; }
-      if (!password) { showFieldError(regPwdEl, '请输入密码', true); _formErr = true; if (!_formFirst) _formFirst = regPwdEl; }
-      const policy = window.ApexPasswordPolicy;
-      const pwdCheck = policy
-        ? policy.validatePassword(password, username)
-        : { valid: strongPwdRe.test(password), message: '密码强度不足' };
-      if (!pwdCheck.valid) { showFieldError(regPwdEl, pwdCheck.message || '密码强度不足'); return; }
-      if (!confirm) { showFieldError(confirmEl, '请再次输入密码', true); _formErr = true; if (!_formFirst) _formFirst = confirmEl; }
-      else if (password !== confirm) { showFieldError(confirmEl, '两次密码不一致', true); _formErr = true; if (!_formFirst) _formFirst = confirmEl; }
-      if (_formErr) return;
-      if (!document.getElementById('reg-agreement').checked) {
-        showCheckboxError(document.getElementById('reg-agreement'), '请先阅读并同意用户协议与隐私政策');
-        return;
-      }
-      if (document.getElementById('reg-captcha').dataset.status !== 'success') {
-        showCaptchaError(document.getElementById('reg-captcha'), '请先完成人机验证');
-        return;
-      }
-
-      const captchaToken = document.getElementById('reg-captcha').dataset.token || '';
-      if (!captchaToken) { showCaptchaError(document.getElementById('reg-captcha'), '请先完成人机验证'); return; }
-      setLoading(this, true);
-      const result = await apiPost('/api/register', { username, email, password, captchaToken });
-      setLoading(this, false);
-
-      if (result.success) {
-        showSuccess('注册成功', '欢迎加入 Apex，您的账号已创建成功。');
-      } else {
-        const code = result.code || '';
-        const msg = result.message || '注册失败';
-        if (code === 'invalid_email' || /邮箱/i.test(msg)) {
-          showFieldError(emailEl, msg);
-        } else if (code === 'weak_password' || /密码/i.test(msg)) {
-          showFieldError(regPwdEl, msg);
-        } else if (code === 'invalid_username' || /账号|用户名/i.test(msg)) {
-          showFieldError(userEl, msg);
-        } else {
-          toast(msg, 'error');
-        }
-      }
-    });
-
-    // ========== 发送验证码 ==========
-    document.getElementById('btn-send-code').addEventListener('click', async function() {
-      const forgotEmailEl2 = document.getElementById('forgot-email');
-      const email = forgotEmailEl2.value.trim();
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email) { showFieldError(forgotEmailEl2, '请输入邮箱'); return; }
-      if (!emailRe.test(email)) { showFieldError(forgotEmailEl2, '邮箱格式错误'); return; }
-
-      setLoading(this, true);
-      const result = await apiPost('/api/send-reset-code', { email });
-      setLoading(this, false);
-
-      if (result.success) {
-        toast('验证码已发送', 'success');
-        let c = 60;
-        this.disabled = true;
-        this.textContent = c + '秒后重发';
-        const timer = setInterval(() => {
-          c--;
-          this.textContent = c + '秒后重发';
-          if (c <= 0) { clearInterval(timer); this.textContent = '发送验证码'; this.disabled = false; }
-        }, 1000);
-      } else {
-        toast(result.message || '发送失败', 'error');
-      }
-    });
-
-    // ========== 重置密码 ==========
-    document.getElementById('btn-reset').addEventListener('click', async function() {
-      clearAllFieldErrors(null);
-      var _formErr = false, _formFirst = null;
-      const fEmailEl = document.getElementById('forgot-email');
-      const fPwdEl = document.getElementById('forgot-newpwd');
-      const fConfirmEl = document.getElementById('forgot-confirm');
-      const email = fEmailEl.value.trim();
-      const newPassword = fPwdEl.value;
-      const confirm = fConfirmEl.value;
-      let code = '';
-      document.querySelectorAll('#code-boxes input').forEach(i => code += i.value);
-
-      if (!email) { showFieldError(fEmailEl, '请输入邮箱', true); _formErr = true; if (!_formFirst) _formFirst = fEmailEl; }
-      if (!newPassword) { showFieldError(fPwdEl, '请输入新密码', true); _formErr = true; if (!_formFirst) _formFirst = fPwdEl; }
-      if (code.length !== 6) { showCodeBoxError(document.getElementById('code-boxes'), '请输入 6 位验证码'); return; }
-      if (newPassword !== confirm) { showFieldError(fConfirmEl, '两次密码不一致'); return; }
-      if (document.getElementById('forgot-captcha').dataset.status !== 'success') {
-        showCaptchaError(document.getElementById('forgot-captcha'), '请先完成人机验证');
-        return;
-      }
-
-      const captchaToken = document.getElementById('forgot-captcha').dataset.token || '';
-      if (!captchaToken) { showCaptchaError(document.getElementById('login-captcha'), '请先完成人机验证'); return; }
-      if (_formErr) return;
-      setLoading(this, true);
-      const result = await apiPost('/api/reset-password', { email, code, newPassword, captchaToken });
-      setLoading(this, false);
-
-      if (result.success) {
-        showSuccess('重置成功', '您的密码已成功重置，请使用新密码登录。');
-      } else {
-        const code2 = result.code || '';
-        const msg = result.message || '重置失败';
-        if (code2 === 'weak_password') {
-          showFieldError(fPwdEl, msg);
-        } else if (code2 === 'invalid_email') {
-          showFieldError(fEmailEl, msg);
-        } else {
-          toast(msg, 'error');
-        }
-      }
-    });
-
-    console.log('[Apex] API 对接已加载');
-  })();
-  </script>
-
-  <script>
-  (function() {
-    'use strict';
-
-    // ============================================================
-    // 1. 语言切换（30 国）
-    // ============================================================
-    
-  // 语言列表（真实支持）
-  const languages = [
-    { code: 'zh-CN', flag: '🇨🇳', name: '简体中文' },
-    { code: 'en',    flag: '🇺🇸', name: 'English' },
-    { code: 'ja',    flag: '🇯🇵', name: '日本語' },
-  ];
-
-  const langBtn = document.getElementById('lang-btn');
-  const langMenu = document.getElementById('lang-menu');
-  const currentFlag = document.getElementById('current-flag');
-  const currentLang = document.getElementById('current-lang');
-
-  if (langBtn && langMenu) {
-    langMenu.innerHTML = '';
-    languages.forEach(lang => {
-      const item = document.createElement('div');
-      item.className = 'lang-item';
-      item.innerHTML = '<span>' + lang.flag + '</span><span>' + lang.name + '</span>';
-      item.onclick = (e) => {
-        e.stopPropagation();
-        currentFlag.textContent = lang.flag;
-        currentLang.textContent = lang.name;
-        langMenu.classList.remove('show');
-        if (window.__setLang) window.__setLang(lang.code);
-      };
-      langMenu.appendChild(item);
-    });
-
-    langBtn.addEventListener('click', (e) => { e.stopPropagation(); langMenu.classList.toggle('show'); });
-    document.addEventListener('click', () => langMenu.classList.remove('show'));
-  }
-
-
-    // ============================================================
-    // 2. 加载页逻辑（仅首次进入）
-    // ============================================================
-    (function() {
-      const splash = document.getElementById('apex-splash-screen');
-      if (!splash) return;
-
-      if (sessionStorage.getItem('apex_splash_shown') === 'true') {
-        splash.style.display = 'none';
-        return;
-      }
-
-      splash.style.display = 'flex';
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-
-      const progressBar = document.getElementById('splash-progress-bar');
-      const progressText = document.getElementById('splash-progress-text');
-
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 2) + 2;
-        if (progress > 100) progress = 100;
-        progressBar.style.width = progress + '%';
-        progressText.innerHTML = 'APEX 系统加载中... <span>' + progress + '%</span>';
-        if (progress === 100) {
-          clearInterval(interval);
-          progressText.innerHTML = 'APEX系统加载完成';
-          setTimeout(() => {
-            splash.classList.add('hide');
-            sessionStorage.setItem('apex_splash_shown', 'true');
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-          }, 800);
-        }
-      }, 100);
-    })();
-
-    // ============================================================
-    // 3. 初始化所有小眼睛图标
-    // ============================================================
-    const EYE_OPEN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    document.querySelectorAll('.btn-toggle').forEach(el => { el.innerHTML = EYE_OPEN; });
-
-    console.log('[Apex] 语言、加载页、小眼睛已初始化');
-  })();
-  </script>
-
-  <script id="apex-monitoring">
-  (function() {
-    function report(type, message) {
-      try {
-        if (window.apiClient) {
-          window.apiClient.post('/api/log',
-            { type: type, message: message, url: location.href },
-            { keepalive: true }
-          );
-        }
-      } catch (e) {}
-    }
-    window.addEventListener('error', function(e) {
-      report('js_error', (e.message || 'Unknown') + ' @ ' + (e.filename || '') + ':' + (e.lineno || ''));
-    });
-    window.addEventListener('unhandledrejection', function(e) {
-      const reason = e.reason && e.reason.message ? e.reason.message : String(e.reason);
-      report('promise_rejection', reason.substring(0, 500));
-    });
-    if ('PerformanceObserver' in window) {
-      try {
-        new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const last = entries[entries.length - 1];
-          report('perf_lcp', Math.round(last.startTime) + 'ms');
-        }).observe({ type: 'largest-contentful-paint', buffered: true });
-      } catch (e) {}
-    }
-    window.addEventListener('load', function() {
-      setTimeout(() => {
-        const nav = performance.getEntriesByType('navigation')[0];
-        if (nav) report('perf_load', 'DOM:' + Math.round(nav.domContentLoadedEventEnd) + 'ms Load:' + Math.round(nav.loadEventEnd) + 'ms');
-      }, 1000);
-    });
-    console.log('[Apex] 监控已启用');
-  })();
-  </script>
+  <script src="/src/js/inline/block-06-apex-monitoring.js" id="apex-monitoring"></script>
 
 
   
-  <script id="apex-auto-login">
-  (function() {
-    // 直接调用 /api/me（Cookie 会自动发送）
-    fetch('/api/me', { credentials: 'include' })
-      .then(res => {
-        if (res.status === 401) return { success: false };
-        return res.json();
-      })
-      .then(data => {
-        if (data && data.success) {
-          console.log('[Apex] 自动登录成功：', data.user.username);
-          window.showHomepage && window.showHomepage(data.user);
-        } else {
-          console.log('[Apex] 未登录或登录已过期');
-        }
-      })
-      .catch(() => {});
-  })();
-  </script>
+  <script src="/src/js/inline/block-07-apex-auto-login.js" id="apex-auto-login"></script>
 
 
 
-  <script id="apex-a11y">
-  (function() {
-    // 1. 给所有输入框补充无障碍属性
-    document.querySelectorAll('input').forEach(input => {
-      if (!input.id) return;
-      // 确保 label 关联
-      const label = input.closest('.input-group')?.querySelector('label');
-      if (label && !label.htmlFor) label.htmlFor = input.id;
-      // aria-label 描述
-      if (!input.getAttribute('aria-label') && input.placeholder) {
-        input.setAttribute('aria-label', input.placeholder);
-      }
-    });
-
-    // 2. 给所有按钮补充 aria-label
-    document.querySelectorAll('.btn-primary').forEach(btn => {
-      if (!btn.getAttribute('aria-label') && btn.textContent.trim()) {
-        btn.setAttribute('aria-label', btn.textContent.trim());
-      }
-    });
-
-    // 3. 给密码小眼睛添加 aria-label
-    document.querySelectorAll('.btn-toggle').forEach(btn => {
-      btn.setAttribute('role', 'button');
-      btn.setAttribute('aria-label', '显示或隐藏密码');
-      btn.setAttribute('tabindex', '0');
-    });
-
-    // 4. 给 Tab 补充无障碍状态
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
-    });
-
-    // 5. 给语言切换按钮补充 aria-label
-    const langBtn = document.getElementById('lang-btn');
-    if (langBtn) {
-      langBtn.setAttribute('aria-label', '切换语言');
-      langBtn.setAttribute('aria-haspopup', 'true');
-    }
-
-    // 6. 键盘可访问性：所有 [role=button] 支持 Enter/Space 触发
-    document.querySelectorAll('[role="button"]').forEach(el => {
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          el.click();
-        }
-      });
-    });
-
-    // 7. 加载页添加 aria-hidden（读屏器忽略它）
-    const splash = document.getElementById('apex-splash-screen');
-    if (splash) splash.setAttribute('aria-hidden', 'true');
-
-    console.log('[Apex] a11y 优化已应用');
-  })();
-  </script>
+  <script src="/src/js/inline/block-08-apex-a11y.js" id="apex-a11y"></script>
 
 
   
 
 
-  <script>
-  window.apexLogout = function() {
-    window.apiClient.post('/api/logout', {}).then(() => {
-      // 认证状态唯一来源是 Cookie，登出后刷新即可回到登录页
-      try { if (window.__apexBroadcast) window.__apexBroadcast.postMessage({ type: 'logout' }); } catch (e) {}
-      location.reload();
-    });
-  };
-  </script>
+  <script src="/src/js/inline/block-09.js"></script>
   
   
 <div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#f5f5f5; overflow-y:auto; z-index:100; -webkit-overflow-scrolling:touch;">
@@ -1819,7 +528,7 @@ window.__apex = { toast, showSuccess, switchTo };
   <!-- 顶部白底导航栏 -->
   <div style="background:#ffffff; border-bottom:1px solid #e8e8e8; padding:14px 16px; position:sticky; top:0; z-index:10;">
     <div style="max-width:480px; margin:0 auto; display:flex; align-items:center; gap:12px;">
-      <img src="/logo-home.png" alt="Apex" style="height:38px; width:auto; display:block;">
+      <img src="/logo-home.png" alt="Apex" width="120" height="38" style="height:38px; width:auto; display:block;" decoding="async" loading="lazy">
       <span style="font-size:15px; font-weight:700; color:#111111; letter-spacing:0.3px;">apextop.cc.cd</span>
     </div>
   </div>
@@ -1835,7 +544,7 @@ window.__apex = { toast, showSuccess, switchTo };
           <div id="user-email" style="font-size:11px; color:#888888; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">email@example.com</div>
         </div>
       </div>
-      <button onclick="window.apexLogout && window.apexLogout()" style="background:#ffffff; border:1px solid #d8d8d8; color:#333333; padding:6px 14px; border-radius:20px; font-size:12px; cursor:pointer; font-family:inherit; flex-shrink:0;">登出</button>
+      <button  data-apex-action="logout" style="background:#ffffff; border:1px solid #d8d8d8; color:#333333; padding:6px 14px; border-radius:20px; font-size:12px; cursor:pointer; font-family:inherit; flex-shrink:0;">登出</button>
     </div>
 
     <!-- 4 个功能卡片 -->
@@ -1896,13 +605,13 @@ window.__apex = { toast, showSuccess, switchTo };
   <div style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:12px;max-width:420px;width:100%;padding:20px;max-height:80vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <span style="font-size:15px;font-weight:bold;color:#fff;">🛡️ 安全中心</span>
-      <button onclick="document.getElementById('security-modal').style.display='none'" style="background:transparent;border:none;color:#888;font-size:20px;cursor:pointer;">×</button>
+      <button  data-apex-action="hide-security-modal" style="background:transparent;border:none;color:#888;font-size:20px;cursor:pointer;">×</button>
     </div>
     <div style="font-size:12px;color:#888;margin-bottom:12px;">当前活跃设备：</div>
     <div id="session-list" style="margin-bottom:16px;"></div>
-    <button onclick="revokeAllSessions()" style="width:100%;padding:10px;background:#e63946;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">撤销所有其他设备</button>
-    <button onclick="document.getElementById('security-modal').style.display='none'; if(window.__apex&&window.__apex.switchTo)window.__apex.switchTo('forgot-form');" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">修改密码</button>
-    <button onclick="alert('登录日志功能即将开放');" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;">查看登录日志</button>
+    <button  data-apex-action="revoke-sessions" style="width:100%;padding:10px;background:#e63946;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">撤销所有其他设备</button>
+    <button data-apex-action="security-modal-forgot" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">修改密码</button>
+    <button  data-apex-action="login-logs-soon" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;">查看登录日志</button>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid #2a2a2a;">
         <div style="font-size:12px;color:#888;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
           <span>Passkey 设备</span>
@@ -1914,146 +623,12 @@ window.__apex = { toast, showSuccess, switchTo };
 </div>
 
 
-  <script id="apex-homepage-logic">
-  window.showHomepage = function(user) {
-    // user 必须由调用方从 /api/me 或登录接口传入，不再读 localStorage
-    user = user || {};
-    // 隐藏所有顶层元素
-    document.querySelectorAll('body > div').forEach(el => {
-      if (el.id === 'apex-homepage' || el.id === 'apex-toast' || el.id === 'security-modal') return;
-      el.style.display = 'none';
-    });
-    const hp = document.getElementById('apex-homepage');
-    if (!hp) return;
-    hp.style.display = 'block';
-    document.getElementById('user-name').textContent = user.username || '用户';
-    document.getElementById('user-email').textContent = user.email || '';
-    document.getElementById('user-avatar').textContent = (user.username || 'A')[0].toUpperCase();
-  };
+  <script src="/src/js/inline/block-10-apex-homepage-logic.js" id="apex-homepage-logic"></script>
 
-  document.addEventListener('click', async function(e) {
-    if (e.target.closest('#security-center-link')) {
-      e.preventDefault();
-      document.getElementById('security-modal').style.display = 'flex';
-      const data = await window.apiClient.get('/api/sessions');
-      const list = document.getElementById('session-list');
-      if (data.success && data.sessions) {
-        // XSS 加固：用 DOM API 构建，禁止 HTML 字符串拼接
-        list.replaceChildren();
-        const frag = document.createDocumentFragment();
-        for (const s of data.sessions) {
-          const card = document.createElement('div');
-          card.style.cssText = 'padding:10px;background:#1a1a1a;border-radius:8px;margin-bottom:8px;font-size:11px;';
-          const title = document.createElement('div');
-          title.style.cssText = 'font-weight:bold;color:' + (s.isCurrent ? '#4ade80' : '#fff') + ';';
-          title.textContent = s.isCurrent ? '当前设备' : '其他设备';
-          card.appendChild(title);
-          const meta = document.createElement('div');
-          meta.style.cssText = 'color:#666;margin-top:4px;';
-          meta.textContent = String(s.createdAt || '');
-          card.appendChild(meta);
-          if (s.device || s.userAgent) {
-            const dev = document.createElement('div');
-            dev.style.cssText = 'color:#888;margin-top:4px;word-break:break-all;';
-            dev.textContent = String(s.device || s.userAgent);
-            card.appendChild(dev);
-          }
-          frag.appendChild(card);
-        }
-        list.appendChild(frag);
-      } else {
-        list.replaceChildren();
-        const empty = document.createElement('div');
-        empty.style.cssText = 'color:#888;font-size:11px;';
-        empty.textContent = '无法加载设备列表';
-        list.appendChild(empty);
-      }
-    }
-  });
-
-  window.revokeAllSessions = async function() {
-    if (!confirm('确认撤销所有其他设备？')) return;
-    const data = await window.apiClient.delete('/api/sessions');
-    alert(data.message || '操作完成');
-    if (data.success) document.getElementById('security-modal').style.display = 'none';
-  };
-  </script>
-
-  <script id="apex-i18n">
-  (function() {
-    // 翻译缓存
-    const cache = {};
-
-    // 当前语言
-    window.__currentLang = localStorage.getItem('apex_lang') || 'zh-CN';
-
-    // 加载翻译文件
-    async function loadTranslations(lang) {
-      if (cache[lang]) return cache[lang];
-      try {
-        const res = await fetch('/i18n/' + lang + '.json');
-        if (!res.ok) throw new Error('not found');
-        cache[lang] = await res.json();
-        return cache[lang];
-      } catch (e) {
-        // 回退到英文
-        if (lang !== 'en') return loadTranslations('en');
-        return {};
-      }
-    }
-
-    // 翻译函数
-    window.t = function(key) {
-      const dict = cache[window.__currentLang] || {};
-      return dict[key] || key;
-    };
-
-    // 遍历所有 [data-i18n] 元素并替换文本
-    async function applyTranslations(lang) {
-      window.__currentLang = lang;
-      await loadTranslations(lang);
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const text = window.t(key);
-        if (text && text !== key) el.textContent = text;
-      });
-
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        const text = window.t(key);
-        if (text && text !== key) el.placeholder = text;
-      });
-
-      localStorage.setItem('apex_lang', lang);
-      // 更新语言切换按钮
-      const flagEl = document.getElementById('current-flag');
-      const langEl = document.getElementById('current-lang');
-      const meta = {
-        'zh-CN': { flag: '🇨🇳', name: '简体中文' },
-        'en': { flag: '🇺🇸', name: 'English' },
-        'ja': { flag: '🇯🇵', name: '日本語' },
-      };
-      if (meta[lang] && flagEl && langEl) {
-        flagEl.textContent = meta[lang].flag;
-        langEl.textContent = meta[lang].name;
-      }
-    }
-
-    window.__setLang = applyTranslations;
-
-    // 页面加载时应用当前语言
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => applyTranslations(window.__currentLang));
-    } else {
-      applyTranslations(window.__currentLang);
-    }
-
-    console.log('[Apex] i18n 已启用，当前语言：', window.__currentLang);
-  })();
-  </script>
+  <script src="/src/js/inline/block-11-apex-i18n.js" id="apex-i18n"></script>
 
 
 
+  <script src="/src/js/inline/event-bindings.js"></script>
 </body>
 </html>

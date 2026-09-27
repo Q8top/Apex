@@ -57,7 +57,7 @@ export async function onRequestPost(context) {
   const codeHash = await sha256Hex(`apex_recover_v1_${email}_${code}`);
   const row = await env.apex_db.prepare(
     `SELECT id, user_id, expires_at, used_at, attempts FROM password_resets
-     WHERE email = ? AND code_hash = ? ORDER BY id DESC LIMIT 1`
+     WHERE LOWER(email) = ? AND code_hash = ? ORDER BY id DESC LIMIT 1`
   ).bind(email, codeHash).first();
 
   if (!row) {
@@ -127,6 +127,10 @@ export async function onRequestPost(context) {
   let authData;
   try {
     authData = parseAuthenticatorData(authDataBytes);
+    // WebAuthn §7.1：User Present 标志必须为 true
+    if (!authData.userPresent) {
+      return errorResponse('缺少用户在场验证', 400, 'user_present_failed', requestId);
+    }
   } catch (e) {
     return errorResponse('authData 解析失败', 400, 'authdata_invalid', requestId);
   }
@@ -152,7 +156,9 @@ export async function onRequestPost(context) {
   try {
     jwk = coseKeyToJwk(coseKey);
   } catch (e) {
-    return errorResponse('公钥不受支持: ' + e.message, 400, 'cose_key_unsupported', requestId);
+    // 不暴露内部 CBOR/COSE 解析错误（避免攻击者探测实现细节）
+    console.error('[Passkey] cose parse failed:', e && e.message ? e.message : e);
+    return errorResponse('设备公钥格式不受支持', 400, 'cose_key_unsupported', requestId);
   }
 
   // ============ 7) credentialId 校验 ============

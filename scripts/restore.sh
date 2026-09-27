@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Apex D1 恢复脚本
 # 用法：
 #   bash scripts/restore.sh backups/apex-db-XXX.sql.gz --remote

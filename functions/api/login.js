@@ -51,9 +51,12 @@ export async function onRequestPost(context) {
   const accountLimited = await enforceKeyRateLimit(env, 'login-account', `acc:${account.toLowerCase()}`, 10, 300);
   if (accountLimited) return accountLimited;
 
+  // 规范化查询：email 存储时 lowercase，用户名大小写敏感但常见写法统一为小写
+  // 用 LOWER() 让 email 匹配时忽略大小写；username 仍精确匹配
+  const accountLower = account.toLowerCase();
   const user = await env.apex_db.prepare(
-    'SELECT id, username, email, password_hash, email_verified, status FROM users WHERE username = ? OR email = ? LIMIT 1'
-  ).bind(account, account).first();
+    'SELECT id, username, email, password_hash, email_verified, status FROM users WHERE username = ? OR LOWER(email) = ? LIMIT 1'
+  ).bind(account, accountLower).first();
 
   if (!user) {
     await writeAudit(env, { action: 'login_failed', metadata: { reason: 'no_user' } }, request);

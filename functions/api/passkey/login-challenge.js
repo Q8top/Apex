@@ -11,6 +11,8 @@ export async function onRequestPost(context) {
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
 
   // 无 IP 限流：challenge 是一次性随机数，不敏感
+  const limited = await enforceIpRateLimit(env, request, 'passkey-login-challenge', 30, 60);
+  if (limited) return limited;
 
   const parsed = await parseJsonBody(request, 2048);
   if (!parsed.ok) return errorResponse(parsed.message, parsed.status, 'bad_request', requestId);
@@ -27,22 +29,11 @@ export async function onRequestPost(context) {
     userId: null,
   });
 
-  // 若账号已填，返回该用户的 credentialIds（用于 allowCredentials）
-  // 若未填，返回空数组（前端会用 resident key 或让用户填账号后重试）
-  let allowCredentials = [];
-  if (account) {
-    const userRow = await env.apex_db.prepare(
-      'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1'
-    ).bind(account, account).first();
-    if (userRow) {
-      const ids = await getCredentialIdsForUser(env, userRow.id);
-      allowCredentials = ids.map((id) => ({
-        type: 'public-key',
-        id,
-        transports: ['internal', 'hybrid', 'usb', 'nfc', 'ble'],
-      }));
-    }
-  }
+  // 消除账号枚举：不再返回 allowCredentials
+  // passkey 通常为 discoverable credential（resident key），浏览器可直接弹出选择
+  // 若账号确实需要 allowCredentials，应改为返回固定长度的随机 ID，避免"存在/不存在"信息泄露
+  // 见 https://w3c.github.io/webauthn/#sctn-discoverable-credentials
+  const allowCredentials = [];
 
   return jsonResponse({
     success: true,

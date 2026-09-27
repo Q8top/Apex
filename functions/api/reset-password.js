@@ -48,7 +48,7 @@ export async function onRequestPost(context) {
   const row = await env.apex_db.prepare(
     `SELECT id, user_id, expires_at, used_at, attempts
      FROM password_resets
-     WHERE email = ? AND code_hash = ?
+     WHERE LOWER(email) = ? AND code_hash = ?
      ORDER BY id DESC LIMIT 1`
   ).bind(email, codeHash).first();
 
@@ -71,7 +71,7 @@ export async function onRequestPost(context) {
   ).bind(row.id).run();
 
   const user = await env.apex_db.prepare(
-    'SELECT id FROM users WHERE email = ? LIMIT 1'
+    'SELECT id FROM users WHERE LOWER(email) = ? LIMIT 1'
   ).bind(email).first();
   if (!user) {
     return errorResponse('账号不存在', 404, 'not_found', requestId);

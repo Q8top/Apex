@@ -51,6 +51,25 @@ export async function onRequestPost(context) {
     return errorResponse('管理员账号已禁用', 403, 'admin_disabled', requestId);
   }
 
+  // 针对同一 admin 账号的失败计数 lockout（防爆破）
+
+
+  const adminKeyLimit = await enforceKeyRateLimit(env, 'admin-login-key', `admin:${admin.id}`, 5, 900);
+
+
+  if (adminKeyLimit) {
+
+
+    await audit(env, { action: 'admin_login_rate_limited', actorId: admin.id, actorType: 'admin' }, request);
+
+
+    return adminKeyLimit;
+
+
+  }
+
+
+
   const pwdOk = await verifyPassword(password, admin.password_hash);
   if (!pwdOk) {
     await audit(env, { action: 'admin_login_failed', actorId: admin.id, actorType: 'admin', metadata: { reason: 'bad_password' } }, request);

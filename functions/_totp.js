@@ -47,7 +47,7 @@ async function generateTotp(secret, timestamp = Date.now()) {
 }
 
 export async function verifyTotp(secret, code) {
-  if (!secret || !code || code.length !== 6) return false;
+  if (!secret || !code || String(code).length !== 6 || !/^\d{6}$/.test(String(code))) return false;
   const now = Date.now();
   for (const offset of [-30000, 0, 30000]) {
     const expected = await generateTotp(secret, now + offset);

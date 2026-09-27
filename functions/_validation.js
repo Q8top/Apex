@@ -179,16 +179,59 @@ export function validatePassword(password, identifier = '') {
   return { valid: true, message: '' };
 }
 
+// JSON 结构限制（防止深度嵌套/超大数组 DoS）
+const JSON_MAX_DEPTH = 10;          // 最大嵌套深度
+const JSON_MAX_KEYS = 100;          // 单对象最大字段数
+const JSON_MAX_ARRAY = 500;         // 单数组最大长度
+const JSON_MAX_STR = 8192;          // 单字符串最大长度
+
+function assertJsonShape(value, depth = 0) {
+  if (depth > JSON_MAX_DEPTH) {
+    throw new Error('json_too_deep');
+  }
+  if (value === null || typeof value !== 'object') {
+    if (typeof value === 'string' && value.length > JSON_MAX_STR) {
+      throw new Error('json_string_too_long');
+    }
+    return;
+  }
+  if (Array.isArray(value)) {
+    if (value.length > JSON_MAX_ARRAY) {
+      throw new Error('json_array_too_long');
+    }
+    for (const item of value) assertJsonShape(item, depth + 1);
+    return;
+  }
+  const keys = Object.keys(value);
+  if (keys.length > JSON_MAX_KEYS) {
+    throw new Error('json_object_too_many_keys');
+  }
+  for (const k of keys) {
+    if (k.length > 200) throw new Error('json_key_too_long');
+    assertJsonShape(value[k], depth + 1);
+  }
+}
+
 export async function parseJsonBody(request, maxBytes = 16384) {
   const contentLength = Number(request.headers.get('Content-Length') || 0);
   if (contentLength > maxBytes) {
     return { ok: false, status: 413, message: '请求体过大' };
   }
+  // 仅接受 application/json（防御 form-encoded / multipart 绕过）
+  const ct = String(request.headers.get('Content-Type') || '').toLowerCase();
+  if (ct && !ct.startsWith('application/json')) {
+    return { ok: false, status: 415, message: 'Content-Type 必须是 application/json' };
+  }
   try {
     const text = await request.text();
     if (text.length > maxBytes) return { ok: false, status: 413, message: '请求体过大' };
     const data = text ? JSON.parse(text) : {};
-    return { ok: true, data };
+      try {
+        assertJsonShape(data);
+      } catch (e) {
+        return { ok: false, status: 400, message: 'JSON 结构非法' };
+      }
+      return { ok: true, data };
   } catch {
     return { ok: false, status: 400, message: 'JSON 格式错误' };
   }

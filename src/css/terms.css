@@ -1,0 +1,77 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: #050505;
+    color: #d0d0d0;
+    min-height: 100vh;
+    padding: 28px 20px 60px;
+    line-height: 1.85;
+    font-size: 14.5px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  h1 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .updated {
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .intro {
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  h2 {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 36px;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 3px solid #555;
+  }
+  h3 {
+    color: #e0e0e0;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  p { color: #b8b8b8; margin-bottom: 12px; text-align: justify; }
+  ul, ol { padding-left: 22px; margin-bottom: 12px; }
+  li { color: #b8b8b8; margin-bottom: 8px; }
+  li strong { color: #e8e8e8; font-weight: 600; }
+  strong { color: #e8e8e8; font-weight: 600; }
+  .callout {
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
+    border-left: 3px solid #666;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    color: #aaa;
+    font-size: 13.5px;
+  }
+  a { color: #ffffff; text-decoration: none; border-bottom: 1px dotted #555; }
+  a:hover { color: #fff; border-bottom-color: #fff; }
+  .footer {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid #1a1a1a;
+  }
+  .footer a { color: #888; border-bottom: none; margin: 0 8px; }
+  .footer a:hover { color: #fff; }

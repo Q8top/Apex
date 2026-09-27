@@ -36,6 +36,12 @@ export function getConfig(env = {}) {
 
     // Session TTL
     sessionMaxAge: 7 * 24 * 60 * 60,
+      // Session 空闲超时（距 last_seen_at 超过此时间则视为无效）
+      // 与 sessionMaxAge 叠加：任一超时都强制重新登录
+      sessionIdleTimeout: 3 * 24 * 60 * 60,
+      // 单用户最多保留的活跃 session 数（超出时撤销最早的，防无限堆积）
+      maxSessionsPerUser: 20, // 单用户活跃 session 上限
+      adminSessionIdleTimeout: 60 * 60,     // 1 小时
     adminSessionMaxAge: 8 * 60 * 60,
 
     // Token TTL
@@ -59,6 +65,9 @@ export function assertProductionConfig(env = {}) {
   const missing = [];
   if (config.isProduction) {
     if (!env.CAPTCHA_SECRET) missing.push('CAPTCHA_SECRET');
+    if (!env.SESSION_SALT) missing.push('SESSION_SALT');
+    if (!env.AUDIT_SALT) missing.push('AUDIT_SALT');
+    if (!env.RATE_LIMIT_SALT) missing.push('RATE_LIMIT_SALT');
     if (!env.PUBLIC_BASE_URL) missing.push('PUBLIC_BASE_URL');
     if (!env.EMAIL_FROM) missing.push('EMAIL_FROM');
     // 至少配置一个邮件服务商

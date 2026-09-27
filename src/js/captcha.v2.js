@@ -36,7 +36,7 @@
 
     let progress = 0;
     const progressInterval = setInterval(() => {
-      progress = Math.min(progress + Math.random() * 15 + 5, 90);
+      progress = Math.min(progress + cryptoRandom() * 15 + 5, 90);
       if (percent) percent.textContent = Math.floor(progress) + '%';
     }, 100);
 

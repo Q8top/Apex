@@ -22,7 +22,12 @@
     "test:password": "node tests/password-policy.test.js",
     "test:csrf": "node tests/csrf-middleware.test.js",
     "test:headers": "node tests/response-headers.test.js",
-    "test:unit": "npm run test:password && npm run test:csrf && npm run test:headers"
+    "test:unit": "npm run test:password && npm run test:csrf && npm run test:headers",
+    "test:cbor": "node tests/cbor.test.js",
+    "test:webauthn": "node tests/webauthn.test.js",
+    "test:all": "npm run test:security && npm run test:password && npm run test:csrf && npm run test:headers && npm run test:cbor && npm run test:webauthn && npm run test:json-shape",
+    "verify": "npm run syntax && npm run test:all",
+    "test:json-shape": "node tests/json-shape.test.js"
   },
   "devDependencies": {
     "wrangler": "^3.90.0"

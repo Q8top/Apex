@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/_headers",
+    "/_routes.json",
+    "/.assetsignore",
+    "/.gitignore",
+    "/functions/*",
+    "/migrations/*",
+    "/scripts/*",
+    "/tests/*",
+    "/docs/*",
+    "/backups/*",
+    "/.wrangler/*",
+    "/.restore-work/*",
+    "/node_modules/*",
+    "/.git/*",
+    "/.github/*",
+    "/Apex_*.txt",
+    "/Apex_*.md",
+    "/package.json",
+    "/package-lock.json",
+    "/wrangler.toml",
+    "/.env*"
+  ]
+}

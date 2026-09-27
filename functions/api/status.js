@@ -36,7 +36,6 @@ export async function onRequestGet(context) {
     db: { state: 'unknown' },
     email: evaluateEmail(env),
     time: new Date().toISOString(),
-    version: '2.0.0',
   };
 
   try {

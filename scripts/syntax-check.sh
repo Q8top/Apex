@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # Apex 全局 JS 语法检查
 set -uo pipefail
 
@@ -17,7 +17,10 @@ while IFS= read -r file; do
     node --check "$file" || true
     FAIL=$((FAIL + 1))
   fi
-done < <(find functions -type f -name "*.js" | sort)
+done < <(find functions src scripts tests -type f -name "*.js" \
+    -not -path "*/node_modules/*" \
+    -not -path "*/.git/*" \
+    -not -path "*/.wrangler/*" | sort)
 
 echo ""
 echo "[SUMMARY] checked=$COUNT failed=$FAIL"
