@@ -23,7 +23,7 @@ function unauthenticatedResponse(env, requestId, message, code) {
 
 // Legacy admin cookie 淘汰：超过此日期后不再接受 apex_admin_session 旧名
 // 与 _auth.js 的 LEGACY_SESSION_SUNSET_MS 保持一致
-const LEGACY_ADMIN_SUNSET_MS = Date.parse('2026-12-31T23:59:59Z');
+const LEGACY_ADMIN_SUNSET_MS = Date.parse('2020-01-01T00:00:00Z'); // P11-C: 旧 admin cookie 立即失效
 function legacyAdminCookieAcceptable() {
   return Date.now() < LEGACY_ADMIN_SUNSET_MS;
 }
