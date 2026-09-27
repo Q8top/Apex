@@ -163,6 +163,92 @@
     }
   }
 
+  // ============ 无密码注册 ============
+  async function signup() {
+    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+
+    const uEl = document.getElementById('signup-username');
+    const eEl = document.getElementById('signup-email');
+    const cEl = document.getElementById('signup-captcha');
+    const aEl = document.getElementById('signup-agreement');
+
+    if (!uEl || !eEl || !cEl) { toast('表单元素缺失'); return; }
+
+    const username = uEl.value.trim();
+    const email = eEl.value.trim().toLowerCase();
+    const userRe = /^[a-zA-Z0-9_]{6,20}$/;
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!username) { toast('请输入账号'); uEl.focus(); return; }
+    if (!userRe.test(username)) { toast('账号需 6-20 位，仅限字母、数字、下划线'); uEl.focus(); return; }
+    if (!email) { toast('请输入邮箱'); eEl.focus(); return; }
+    if (!emailRe.test(email)) { toast('邮箱格式错误'); eEl.focus(); return; }
+    if (cEl.dataset.status !== 'success') { toast('请先完成人机验证'); return; }
+    const captchaToken = cEl.dataset.token || '';
+    if (!captchaToken) { toast('请先完成人机验证'); return; }
+    if (aEl && !aEl.checked) { toast('请先阅读并同意用户协议与隐私政策'); return; }
+
+    const btn = document.getElementById('btn-passkey-signup');
+    if (btn) { btn.disabled = true; btn.textContent = '处理中...'; }
+
+    try {
+      const res = await window.apiClient.post('/api/passkey/signup-challenge', {
+        username: username,
+        email: email,
+        captchaToken: captchaToken,
+      });
+      if (!res || !res.success) { toast((res && res.message) || '获取挑战失败'); return; }
+
+      const pk = res.publicKey;
+      const publicKey = {
+        challenge: b64uToBuf(pk.challenge),
+        rp: pk.rp,
+        user: {
+          id: new TextEncoder().encode(pk.user.id),
+          name: pk.user.name,
+          displayName: pk.user.displayName,
+        },
+        pubKeyCredParams: pk.pubKeyCredParams,
+        timeout: pk.timeout || 60000,
+        attestation: pk.attestation || 'none',
+        authenticatorSelection: pk.authenticatorSelection,
+        excludeCredentials: [],
+      };
+
+      const credential = await navigator.credentials.create({ publicKey });
+      if (!credential) { toast('注册已取消'); return; }
+
+      const att = credential.response;
+      const payload = {
+        username: username,
+        email: email,
+        challengeId: res.challengeId,
+        rawId: bufToB64u(credential.rawId),
+        response: {
+          clientDataJSON: bufToB64u(att.clientDataJSON),
+          attestationObject: bufToB64u(att.attestationObject),
+        },
+        transports: att.getTransports ? att.getTransports() : [],
+        deviceName: detectDeviceName(),
+      };
+
+      const vr = await window.apiClient.post('/api/passkey/signup-verify', payload);
+      if (vr && vr.success) {
+        toast('注册成功', 'success');
+        setTimeout(function () {
+          if (window.showHomepage) window.showHomepage(vr.user);
+        }, 600);
+      } else {
+        toast((vr && vr.message) || '注册失败');
+      }
+    } catch (e) {
+      console.error('[Passkey] signup:', e);
+      toast('注册失败：' + friendlyError(e));
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '🔐 使用 Passkey 创建账号'; }
+    }
+  }
+
   // ============ 列出 + 删除 ============
   async function load() {
     const listEl = document.getElementById('passkey-list');
@@ -226,6 +312,7 @@
     isSupported: isSupported,
     register: register,
     login: login,
+    signup: signup,
     load: load,
   };
 
