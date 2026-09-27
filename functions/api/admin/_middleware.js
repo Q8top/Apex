@@ -2,7 +2,7 @@ import { jsonResponse, errorResponse } from '../../_response.js';
 import { hashSessionToken } from '../../_session.js';
 import { parseCookies } from '../../_utils.js';
 import { getConfig } from '../../_config.js';
-import { buildClearAllAdminCookies } from '../../_admin.js';
+import { buildClearAllAdminCookies, hasPermission, matchAdminRoute } from '../../_admin.js';
 
 function unauthenticatedResponse(env, requestId, message, code) {
   const headers = new Headers();
@@ -99,6 +99,18 @@ export async function onRequest(context) {
     role: session.role,
     tokenHash,
   };
+
+  // === P11-A: 权限矩阵（Fail-Closed）===
+  // 1) 路径必须已在 ROUTE_PERMISSIONS 中声明，否则 403
+  // 2) 声明了 permission 的路径，role 必须拥有该 permission，否则 403
+  const routeMatch = matchAdminRoute(url.pathname);
+  if (!routeMatch.declared) {
+    return errorResponse('管理端路由未声明权限', 403, 'route_not_declared', requestId);
+  }
+  if (routeMatch.permission && !hasPermission(session.role, routeMatch.permission)) {
+    return errorResponse('权限不足', 403, 'forbidden', requestId);
+  }
+  // === P11-A end ===
 
   return next();
 }

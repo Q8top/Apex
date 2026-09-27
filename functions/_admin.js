@@ -35,6 +35,33 @@ export function hasPermission(role, permission) {
   return perms.includes(permission);
 }
 
+// === P11-A: 路由级权限矩阵（Fail-Closed）===
+// 所有 /api/admin/* 端点必须在此声明。
+//   - permission: null     → 仅要求有效 admin session（如 me / logout）
+//   - permission: 'xxx'    → 要求该 permission（会调用 hasPermission）
+// 未声明的路径 → 中间件直接 403 route_not_declared
+// 注意：/api/admin/login 由 _middleware.js 的 PUBLIC_PATHS 单独放行，不经过此表。
+export const ROUTE_PERMISSIONS = [
+  { pattern: /^\/api\/admin\/login$/,  permission: null },
+  { pattern: /^\/api\/admin\/logout$/, permission: null },
+  { pattern: /^\/api\/admin\/me$/,     permission: null },
+  // === 未来新增端点必须在此声明，否则 403 ===
+  // { pattern: /^\/api\/admin\/users$/,        permission: 'users.read' },
+  // { pattern: /^\/api\/admin\/users\/\d+$/,   permission: 'users.write' },
+  // { pattern: /^\/api\/admin\/logs$/,          permission: 'logs.read' },
+  // { pattern: /^\/api\/admin\/audit$/,         permission: 'audit.read' },
+  // { pattern: /^\/api\/admin\/sessions$/,      permission: 'sessions.revoke' },
+];
+
+export function matchAdminRoute(pathname) {
+  for (const r of ROUTE_PERMISSIONS) {
+    if (r.pattern.test(pathname)) {
+      return { declared: true, permission: r.permission };
+    }
+  }
+  return { declared: false, permission: undefined };
+}
+
 // Admin Cookie 名称与生命周期
 export function buildAdminCookie(token, env = {}) {
   const config = getConfig(env);
