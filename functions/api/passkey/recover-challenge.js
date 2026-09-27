@@ -16,8 +16,7 @@ export async function onRequestPost(context) {
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
   const config = getConfig(env);
 
-  const limited = await enforceIpRateLimit(env, request, 'passkey-recover-challenge-ip', 10, 60);
-  if (limited) return limited;
+  // 无 IP 限流：challenge 是一次性随机数，不敏感
 
   const parsed = await parseJsonBody(request, 2048);
   if (!parsed.ok) return errorResponse(parsed.message, parsed.status, 'bad_request', requestId);
