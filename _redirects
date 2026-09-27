@@ -1,44 +1,48 @@
 # ============================================================
-# Cloudflare Pages 重定向规则
-# 优先级：高于静态文件 → 用于阻断源码/配置泄露
-# 语法：<source>  <destination>  <status>
+# Cloudflare Pages 重定向规则（修正版）
+# 关键：Pages 只支持 200/301/302/303/307/308 状态码，404 无效！
+# 策略：敏感路径 → 302 重定向到 /404.html（内容不泄露）
 # ============================================================
 
-# --- 源码 / 配置 / 部署产物：直接 404 ---
-/wrangler.toml            /404.html  404
-/package.json             /404.html  404
-/package-lock.json        /404.html  404
-/.assetsignore            /404.html  404
-/_routes.json             /404.html  404
-/.gitignore               /404.html  404
-/README.md                /404.html  404
+# --- 根目录敏感文件 → 302 到 404 ---
+/wrangler.toml            /404.html  302
+/package.json             /404.html  302
+/package-lock.json        /404.html  302
+/.assetsignore            /404.html  302
+/.assetsignore.not-supported-by-pages  /404.html  302
+/_routes.json             /404.html  302
+/.gitignore               /404.html  302
+/README.md                /404.html  302
+/.deploy-trigger          /404.html  302
 
-# --- 全目录级阻断（含通配符）---
-/functions/*              /404.html  404
-/migrations/*             /404.html  404
-/scripts/*                /404.html  404
-/tests/*                  /404.html  404
-/docs/*                   /404.html  404
-/src/*                    /404.html  404
-/backups/*                /404.html  404
-/.wrangler/*              /404.html  404
-/.git/*                   /404.html  404
-/.github/*                /404.html  404
-/.archive/*               /404.html  404
-/.restore-work/*          /404.html  404
-/node_modules/*           /404.html  404
+# --- 敏感目录（整个目录级阻断）---
+/functions/*              /404.html  302
+/migrations/*             /404.html  302
+/scripts/*                /404.html  302
+/tests/*                  /404.html  302
+/docs/*                   /404.html  302
+/src/*                    /404.html  302
+/backups/*                /404.html  302
+/.wrangler/*              /404.html  302
+/.git/*                   /404.html  302
+/.github/*                /404.html  302
+/.archive/*               /404.html  302
+/.restore-work/*          /404.html  302
+/node_modules/*           /404.html  302
 
-# --- 环境 / 源码导出 / 备份 ---
-/.env                     /404.html  404
-/.env.*                   /404.html  404
-/.dev.vars                /404.html  404
-/.dev.vars.*              /404.html  404
-/Apex_*.txt               /404.html  404
-/Apex_*.md                /404.html  404
+# --- 环境变量 / 源码导出 ---
+/.env                     /404.html  302
+/.env.*                   /404.html  302
+/.dev.vars                /404.html  302
+/.dev.vars.*              /404.html  302
+/Apex_*.txt               /404.html  302
+/Apex_*.md                /404.html  302
 
-# --- 大小写变体兜底（Windows 上传/或暴力枚举）---
-/WRANGLER.TOML            /404.html  404
-/Package.json             /404.html  404
+# --- 大小写变体兜底 ---
+/WRANGLER.TOML            /404.html  302
+/Package.json             /404.html  302
 
-# --- SPA fallback：所有其它未匹配的浏览器路由 → index.html（200）---
-/*                        /index.html  200
+# --- 注意：不添加 /* → /index.html 200 ---
+# 原因：该规则会拦截 /privacy /terms /status 等 clean URL，
+#      把用户重定向到登录页，造成 UX 严重回归。
+# 本项目的登录/注册切换是纯 JS 锚点，不需要 SPA fallback。
