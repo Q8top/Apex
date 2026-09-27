@@ -310,6 +310,18 @@
       || cEl.dataset.token
       || '';
     if (!captchaToken) {
+      try {
+        alert(
+          'DEBUG 信息：\n\n' +
+          'window.__captchaToken = ' + JSON.stringify(window.__captchaToken) + '\n' +
+          'cEl.dataset.token = ' + JSON.stringify(cEl.dataset.token) + '\n' +
+          'cEl.dataset.status = ' + JSON.stringify(cEl.dataset.status) + '\n' +
+          'cEl.id = ' + cEl.id + '\n' +
+          'cEl.tagName = ' + cEl.tagName + '\n' +
+          'cEl 是 signup-captcha 吗 = ' + (cEl === document.getElementById('signup-captcha')) + '\n' +
+          'document.querySelectorAll(\'#signup-captcha\').length = ' + document.querySelectorAll('#signup-captcha').length
+        );
+      } catch (e) {}
       if (cEl.dataset.status === 'verifying') {
         toast('人机验证正在处理，请稍候 1 秒再试');
       } else {
