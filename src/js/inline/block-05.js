@@ -1,6 +1,15 @@
 (function() {
     'use strict';
 
+  // P11-I: UI 随机数也走 CSPRNG，消除 Math.random，统一安全基线
+  const apexUIRandom = (() => {
+    const buf = new Uint32Array(1);
+    return function() {
+      crypto.getRandomValues(buf);
+      return buf[0] / 4294967296;
+    };
+  })();
+
     // ============================================================
     // 1. 语言切换（30 国）
     // ============================================================
@@ -61,7 +70,7 @@
 
       let progress = 0;
       const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 2) + 2;
+        progress += Math.floor(apexUIRandom() * 2) + 2;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
         progressText.innerHTML = 'APEX 系统加载中... <span>' + progress + '%</span>';

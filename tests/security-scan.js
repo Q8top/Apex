@@ -87,15 +87,6 @@ const LINE_WHITELIST = [
 
 // ---------- 文件级白名单 ----------
 
-// ============================================================
-// 白名单：进度条动画的 Math.random 不涉及安全用途（无 CSPRNG 需求）
-// 用途：/src/js/inline/block-02.js 和 block-05.js 仅做 UI 进度条动画
-// 复核：如需删除此白名单，请先确认这两个文件的 Math.random 未被用作 token/code/id
-// ============================================================
-const apex_progress_animation_whitelist = new Set([
-  'src/js/inline/block-02.js',
-  'src/js/inline/block-05.js',
-]);
 const FILE_WHITELIST = {
   'send-reset-code.js':   new Set(['devCode']),
   'send-verify-email.js': new Set(['devToken']),
@@ -120,11 +111,6 @@ function scanFile(filePath) {
     if (isLineWhitelisted(line)) return;
     for (const rule of RULES) {
       if (isFileWhitelisted(filePath, rule.id)) continue;
-      // 进度条动画白名单（apex-progress-animation）
-      if (rule.id === 'math-random' || rule.id === 'math_random' || /random/i.test(rule.id || '')) {
-        const rel = filePath.replace(/^.*?(src\/)/, '$1').replace(/\\/g, '/');
-        if (apex_progress_animation_whitelist.has(rel)) continue;
-      }
       if (rule.regex.test(line)) {
         found.push({ line: idx + 1, msg: rule.msg, snippet: line.trim().substring(0, 100) });
       }
