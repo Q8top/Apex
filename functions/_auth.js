@@ -6,7 +6,7 @@ import { getClientIP, hashIP } from './_security.js';
 // Legacy session cookie 淘汰策略：超过此日期后不再接受 apex_session 旧名
 // 目的：让从 __Host-apex_session 迁移过来的旧 cookie 自然淘汰，避免永久维护旧安全模型
 // 复核周期：每次大版本升级时评估是否可完全移除
-const LEGACY_SESSION_SUNSET_MS = Date.parse('2026-12-31T23:59:59Z');
+const LEGACY_SESSION_SUNSET_MS = Date.parse('2020-01-01T00:00:00Z'); // P11-B: 旧 Cookie 立即失效
 function legacyCookieAcceptable() {
   return Date.now() < LEGACY_SESSION_SUNSET_MS;
 }
