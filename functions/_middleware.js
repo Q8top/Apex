@@ -87,7 +87,10 @@ export async function onRequest(context) {
         headers.set('X-Request-ID', requestId);
         headers.set('X-Content-Type-Options', 'nosniff');
         if (!getCsrfCookie(context.request)) {
-          headers.append('Set-Cookie', buildCsrfCookie(generateCsrfToken()));
+          // P11-J: buildCsrfCookie 返回数组（__Host- 主 + legacy 兼容）
+          for (const c of buildCsrfCookie(generateCsrfToken())) {
+            headers.append('Set-Cookie', c);
+          }
         }
         return new Response(JSON.stringify({
           success: false,
@@ -119,7 +122,10 @@ export async function onRequest(context) {
       newHeaders.set('Vary', 'Origin');
 
     if (!getCsrfCookie(context.request)) {
-      newHeaders.append('Set-Cookie', buildCsrfCookie(generateCsrfToken()));
+      // P11-J: buildCsrfCookie 返回数组（__Host- 主 + legacy 兼容）
+      for (const c of buildCsrfCookie(generateCsrfToken())) {
+        newHeaders.append('Set-Cookie', c);
+      }
     }
 
     if (response.status === 204 || response.status === 304) {

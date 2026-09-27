@@ -8,23 +8,39 @@
 //  - 只保存到 Cookie（非 HttpOnly），不下发到 body
 //  - 比较使用恒定时间算法，避免时序侧信道
 //  - 缺失 / 长度不符 → 直接拒绝
+//  - P11-J: 主 cookie 使用 __Host- 前缀（防子域 cookie 污染）
+//          过渡期同时下发/接受旧名 apex_csrf，保证旧版前端 JS 缓存
+//          仍能正常工作。过渡期结束（约 30 天后）可移除 legacy。
 
-const CSRF_COOKIE_NAME = 'apex_csrf';
+const CSRF_COOKIE_NAME = '__Host-apex_csrf';
+const CSRF_LEGACY_NAME = 'apex_csrf';
 const CSRF_COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 天
 
 export function generateCsrfToken() {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
-  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+// 内部：构造单条 Set-Cookie 值
+// __Host- 前缀要求 Secure + Path=/ + 无 Domain，此处全部满足
+function buildCookieHeader(name, token, maxAge) {
+  return `${name}=${token}; Path=/; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+}
+
+// P11-J: 返回数组——同时下发 __Host-apex_csrf（新）和 apex_csrf（旧兼容）
+// 调用方需遍历数组逐个 append Set-Cookie
 export function buildCsrfCookie(token) {
-  // 非 HttpOnly：前端 JS 需要读取并放入 header
-  // Secure + SameSite=Strict：防跨站发送
-  return `${CSRF_COOKIE_NAME}=${token}; Path=/; Secure; SameSite=Strict; Max-Age=${CSRF_COOKIE_MAX_AGE}`;
+  return [
+    buildCookieHeader(CSRF_COOKIE_NAME, token, CSRF_COOKIE_MAX_AGE),
+    buildCookieHeader(CSRF_LEGACY_NAME, token, CSRF_COOKIE_MAX_AGE),
+  ];
 }
 
 export function buildClearCsrfCookie() {
-  return `${CSRF_COOKIE_NAME}=; Path=/; Secure; SameSite=Strict; Max-Age=0`;
+  return [
+    buildCookieHeader(CSRF_COOKIE_NAME, '', 0),
+    buildCookieHeader(CSRF_LEGACY_NAME, '', 0),
+  ];
 }
 
 // 恒定时间字符串比较
@@ -55,12 +71,14 @@ function readCookie(request, name) {
   return null;
 }
 
+// 优先读新名（__Host-）；过渡期 fallback 读旧名
 export function getCsrfCookie(request) {
-  return readCookie(request, CSRF_COOKIE_NAME);
+  return readCookie(request, CSRF_COOKIE_NAME) || readCookie(request, CSRF_LEGACY_NAME);
 }
 
 export function verifyCsrf(request) {
-  const cookieToken = readCookie(request, CSRF_COOKIE_NAME);
+  const cookieToken =
+    readCookie(request, CSRF_COOKIE_NAME) || readCookie(request, CSRF_LEGACY_NAME);
   const headerToken = request.headers.get('X-CSRF-Token');
   if (!cookieToken || !headerToken) return false;
   return timingSafeEqual(cookieToken, headerToken);
