@@ -1,8 +1,8 @@
 // Apex 管理员创建工具 v2
 //
 // 用法：
-//   node scripts/create-admin.js <username> <role>             # 生产（--remote）
-//   node scripts/create-admin.js <username> <role> --local     # 本地 D1
+//   node scripts/create-admin.js <username> <role> --remote    #  生产
+//   node scripts/create-admin.js <username> <role> --local     #  本地 D1
 //
 // 安全设计：
 //   1. 密码不允许通过命令行参数传入（防止进入 shell history / ps）
@@ -33,10 +33,10 @@ function sqlEscape(v) {
 }
 
 function usage() {
-  console.error('用法：node scripts/create-admin.js <username> <role> [--local]');
+  console.error('用法：node scripts/create-admin.js <username> <role> --remote | --local');
   console.error('  role 必须是以下之一：' + [...VALID_ROLES].join(' / '));
   console.error('');
-  console.error('示例：node scripts/create-admin.js alice admin');
+  console.error('示例：node scripts/create-admin.js alice admin --remote');
   console.error('密码将在下一步通过交互式输入（不回显）。');
   process.exit(1);
 }
@@ -125,6 +125,12 @@ function runWranglerExecute(sqlFilePath, local) {
     else positional.push(a);
   }
   const LOCAL = flags.has('--local');
+  const REMOTE = flags.has('--remote');
+  if (LOCAL === REMOTE) {
+    console.error('[ERROR] 必须且只能指定一个环境标志：--local 或 --remote');
+    console.error('        未指定时默认不写入任何数据库，避免误操作生产。');
+    process.exit(1);
+  }
 
   const username = positional[0];
   const role = positional[1];
@@ -139,8 +145,19 @@ function runWranglerExecute(sqlFilePath, local) {
     process.exit(1);
   }
   if (role === 'super_admin') {
-    console.error('[WARN] 你正在创建 super_admin。建议先创建 admin，需要时再手动升级。');
-  }
+      console.error('[WARN] 你正在创建 super_admin（最高权限）。');
+      if (!process.stdin.isTTY) {
+        console.error('[ERROR] 创建 super_admin 必须使用交互式终端（TTY）');
+        process.exit(1);
+      }
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      const answer = await new Promise((resolve) => rl.question('输入 YES 确认创建 super_admin：', resolve));
+      rl.close();
+      if (!answer || answer.trim() !== 'YES') {
+        console.error('[ERROR] 已取消');
+        process.exit(1);
+      }
+    }
 
   const pwd1 = await readPasswordHidden('请输入密码（不回显）：');
   const policyErr = checkPasswordPolicy(pwd1);
