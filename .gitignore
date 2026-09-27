@@ -53,3 +53,6 @@ tmp/
 
 # 恢复测试临时目录
 .restore-work/
+
+# 部署产物目录（由 scripts/build-dist.sh 生成）
+dist/
