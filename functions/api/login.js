@@ -1,6 +1,7 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../_response.js';
+import { verifyPasswordDetailed, VERIFY_RESULT } from '../_password.js';
 import { parseJsonBody, sanitize } from '../_validation.js';
-import { hashPassword, verifyPassword, needsRehash, generateToken } from '../_utils.js';
+import { hashPassword, needsRehash, generateToken } from '../_utils.js';
 import { getConfig } from '../_config.js';
 import { buildSessionCookie, createUserSession } from '../_auth.js';
 import { enforceIpRateLimit, enforceKeyRateLimit } from '../_rateLimit.js';
@@ -67,11 +68,15 @@ export async function onRequestPost(context) {
     return errorResponse('账号已被禁用，请联系管理员', 403, 'account_disabled', requestId);
   }
 
-  const validPassword = await verifyPassword(password, user.password_hash);
-  if (!validPassword) {
-    await writeAudit(env, { action: 'login_failed', actorId: user.id, actorType: 'user', metadata: { reason: 'bad_password' } }, request);
-    return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
-  }
+    const vres = await verifyPasswordDetailed(password, user.password_hash);
+    if (vres === VERIFY_RESULT.NEEDS_RESET) {
+      await writeAudit(env, { action: 'login_needs_reset', actorId: user.id, actorType: 'user' }, request);
+      return errorResponse('该账号需要重新设置密码，请通过“忘记密码”完成重置', 409, 'password_requires_reset', requestId);
+    }
+    if (vres !== VERIFY_RESULT.MATCH) {
+      await writeAudit(env, { action: 'login_failed', actorId: user.id, actorType: 'user', metadata: { reason: 'bad_password' } }, request);
+      return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
+    }
 
   await upgradePasswordHashIfNeeded(env, user, password);
 

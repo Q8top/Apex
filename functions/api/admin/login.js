@@ -1,6 +1,7 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
 import { parseJsonBody, sanitize } from '../../_validation.js';
-import { verifyPassword } from '../../_utils.js';
+import {  } from '../../_utils.js';
+import { verifyPasswordDetailed, VERIFY_RESULT } from '../../_password.js';
 import { buildAdminCookie, buildClearLegacyAdminCookie, createAdminSession, audit } from '../../_admin.js';
 import { getConfig } from '../../_config.js';
 import { enforceIpRateLimit, enforceKeyRateLimit } from '../../_rateLimit.js';
@@ -70,8 +71,12 @@ export async function onRequestPost(context) {
 
 
 
-  const pwdOk = await verifyPassword(password, admin.password_hash);
-  if (!pwdOk) {
+    const vres = await verifyPasswordDetailed(password, admin.password_hash);
+    if (vres === VERIFY_RESULT.NEEDS_RESET) {
+      await audit(env, { action: 'admin_login_needs_reset', actorType: 'admin', ip, userAgent: ua, metadata: { username } });
+      return errorResponse('该管理员账号需要重新设置密码，请联系系统管理员', 409, 'password_requires_reset', requestId);
+    }
+    if (vres !== VERIFY_RESULT.MATCH) {
     await audit(env, { action: 'admin_login_failed', actorId: admin.id, actorType: 'admin', metadata: { reason: 'bad_password' } }, request);
     return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
   }
