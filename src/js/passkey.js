@@ -552,6 +552,23 @@
   }
 
   // ============ 导出 + 自动绑定 ============
+  // 检测设备是否支持 Passkey，不支持则灰化卡片
+  function __disablePasskeyCards() {
+    if (isSupported()) return;
+    ['pick-login-passkey', 'pick-register-passkey'].forEach(function (id) {
+      var card = document.getElementById(id);
+      if (!card) return;
+      card.classList.add('disabled');
+      card.setAttribute('aria-disabled', 'true');
+      card.removeAttribute('tabindex');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', __disablePasskeyCards);
+  } else {
+    __disablePasskeyCards();
+  }
+
   window.__apexPasskey = {
     isSupported: isSupported,
     register: register,

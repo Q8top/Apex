@@ -176,6 +176,12 @@
     .method-desc { font-size:11px; color:#888; }
     .method-arrow { color:#555; font-size:20px; transition:color 0.25s; }
     .method-card:hover .method-arrow, .method-card:focus-visible .method-arrow { color:#ffffff; }
+    /* ============ 不支持的设备：卡片变灰 ============ */
+    .method-card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
+    .method-card.disabled .method-arrow { display: none; }
+    .method-card .method-warn { display: none; color: #e63946; font-size: 11px; margin-top: 6px; line-height: 1.4; }
+    .method-card.disabled .method-warn { display: block; }
+    .method-card.disabled .method-desc { display: none; }
     /* ============ 卡片内联提示 ============ */
     .inline-msg { display:none; margin:12px 0 0 0; padding:10px 14px; border-radius:8px; font-size:13px; text-align:center; line-height:1.5; box-sizing:border-box; }
     .inline-msg.show { display:block; animation: inlineMsgFadeIn 0.25s ease-in-out; }
@@ -356,6 +362,7 @@
           <div class="method-text">
             <div class="method-title">Passkey 登录</div>
             <div class="method-desc">使用面容 / 指纹 / PIN</div>
+            <div class="method-warn">⚠️ 当前设备或浏览器不支持 Passkey</div>
           </div>
           <div class="method-arrow">›</div>
         </div>
@@ -386,6 +393,7 @@
           <div class="method-text">
             <div class="method-title">Passkey 注册</div>
             <div class="method-desc">使用面容 / 指纹 / PIN（无需密码）</div>
+            <div class="method-warn">⚠️ 当前设备或浏览器不支持 Passkey</div>
           </div>
           <div class="method-arrow">›</div>
         </div>
