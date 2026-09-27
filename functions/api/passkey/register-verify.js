@@ -43,7 +43,8 @@ export async function onRequestPost(context) {
 
   // 1) 消费 challenge
   const stored = await consumeChallenge(env, challengeId, 'registration');
-  if (!stored || stored.userId !== user.userId) {
+  // P11-J: 类型归一化，避免 D1 INTEGER 与 session 数据类型不一致导致合法用户被拒
+  if (!stored || Number(stored.userId) !== Number(user.userId)) {
     return errorResponse('挑战已过期或无效', 400, 'invalid_challenge', requestId);
   }
   const expectedChallenge = stored.challenge;
@@ -51,10 +52,9 @@ export async function onRequestPost(context) {
   // 2) 验证 clientDataJSON
   const config = getConfig(env);
   const origin = config.publicBaseUrl || '';
-  let clientData;
   try {
     const jsonStr = new TextDecoder().decode(b64uDecode(clientDataJSON));
-    clientData = verifyClientData(jsonStr, {
+    verifyClientData(jsonStr, {
       expectedType: 'webauthn.create',
       expectedChallenge,
       expectedOrigins: [origin],
@@ -64,9 +64,15 @@ export async function onRequestPost(context) {
   }
 
   // 3) 解析 attestationObject
+  let attestationBytes;
+  try {
+    attestationBytes = b64uDecode(attestationObject);
+  } catch (e) {
+    return errorResponse('attestation 编码无效', 400, 'attestation_invalid', requestId);
+  }
   let attestation;
   try {
-    attestation = decodeCbor(b64uDecode(attestationObject));
+    attestation = decodeCbor(attestationBytes);
   } catch (e) {
     return errorResponse('attestation 解析失败', 400, 'attestation_invalid', requestId);
   }
