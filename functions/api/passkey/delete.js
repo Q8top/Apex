@@ -23,15 +23,20 @@ export async function onRequestPost(context) {
   const credentialId = String((parsed.data || {}).credentialId || '').trim();
   if (!credentialId) return errorResponse('缺少 credentialId', 400, 'missing_params', requestId);
 
-  // 保护：删除最后一个 passkey 时，要求用户仍有可用的密码/邮箱，否则会永久锁死账号
-  // 若列表长度 === 1 且要删的就是它，拒绝删除
+  // 保护：删除最后一个 passkey 时，必须确保用户仍有可用的其它登录方式
+  // 判定条件（任一满足则允许删除）：
+  //   1) 用户有真实密码（非 passkey-only 哨兵值）
+  //   2) 该 passkey 不是最后一个
   const all = await listPasskeysForUser(env, user.userId);
-  if (Array.isArray(all) && all.length === 1 && all[0].credential_id === credentialId) {
-    const u = await env.apex_db.prepare('SELECT email_verified FROM users WHERE id = ? LIMIT 1')
-      .bind(user.userId).first();
-    if (!u || !u.email_verified) {
+  const isLastPasskey = Array.isArray(all) && all.length === 1 && all[0].credential_id === credentialId;
+  if (isLastPasskey) {
+    const u = await env.apex_db.prepare(
+      'SELECT password_hash FROM users WHERE id = ? LIMIT 1'
+    ).bind(user.userId).first();
+    const hasRealPassword = !!(u && u.password_hash && u.password_hash !== 'passkey-only:no-password');
+    if (!hasRealPassword) {
       return errorResponse(
-        '这是最后一个凭证且账号邮箱未验证，删除后将无法登录',
+        '这是最后一个登录凭证，且账号未设置密码。删除后将无法登录。请先设置密码。',
         409,
         'LAST_PASSKEY_PROTECTED',
         requestId
