@@ -305,19 +305,18 @@
     if (!userRe.test(username)) { toast('账号需 6-20 位，仅限字母、数字、下划线'); uEl.focus(); return; }
     if (!email) { toast('请输入邮箱'); eEl.focus(); return; }
     if (!emailRe.test(email)) { toast('邮箱格式错误'); eEl.focus(); return; }
-    // 诊断：显示实际状态
-    console.log('[Passkey signup] captcha state:', {
-      status: cEl.dataset.status,
-      datasetToken: cEl.dataset.token,
-      globalToken: window.__captchaToken,
-    });
-    if (cEl.dataset.status !== 'success') { toast('请先完成人机验证'); return; }
-    const captchaToken = cEl.dataset.token || window.__captchaToken || '';
+    // 鲁棒检查：优先看全局 token，其次看 dataset.token，最后才看 status
+    var captchaToken = window.__captchaToken
+      || cEl.dataset.token
+      || '';
     if (!captchaToken) {
-      toast('人机验证未完成 (status=' + (cEl.dataset.status || 'empty') + ', token=' + (cEl.dataset.token ? 'set' : 'empty') + ')');
+      if (cEl.dataset.status === 'verifying') {
+        toast('人机验证正在处理，请稍候 1 秒再试');
+      } else {
+        toast('请先完成人机验证');
+      }
       return;
     }
-    if (aEl && !aEl.checked) { toast('请先阅读并同意用户协议与隐私政策'); return; }
 
     const btn = document.getElementById('btn-passkey-signup');
     if (btn) { btn.disabled = true; btn.textContent = '处理中...'; }
