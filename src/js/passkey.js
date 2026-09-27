@@ -33,6 +33,19 @@
     return '我的设备';
   }
 
+  // 精确检测：设备是否有可用的平台验证器（指纹/面容/PIN）
+  async function isPlatformAvailable() {
+    if (!isSupported()) return false;
+    if (typeof window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable !== 'function') {
+      return true; // 老 API 不存在时退回同步检测结果
+    }
+    try {
+      return await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    } catch (e) {
+      return false;
+    }
+  }
+
   function isSupported() {
     return !!(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create);
   }
@@ -90,7 +103,7 @@
 
   // ============ 绑定 ============
   async function register() {
-    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+    if (!(await isPlatformAvailable())) { toast('当前设备或浏览器不支持 Passkey'); return; }
 
     const defaultName = detectDeviceName();
     const nameInput = window.prompt('给这个设备起个名字（方便区分）：', defaultName);
@@ -153,7 +166,7 @@
 
   async function login() {
     if (_passkeyLoginInProgress) { toast('正在处理，请稍候', 'error'); return; }
-    if (!isSupported()) { toast('当前浏览器不支持 Passkey，请使用账号密码登录', 'error'); return; }
+    if (!(await isPlatformAvailable())) { toast('当前设备或浏览器不支持 Passkey，请使用账号密码登录', 'error'); return; }
     _passkeyLoginInProgress = true;
 
     const accEl = document.getElementById('login-account');
@@ -274,7 +287,7 @@
 
   // ============ 无密码注册 ============
   async function signup() {
-    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+    if (!(await isPlatformAvailable())) { toast('当前设备或浏览器不支持 Passkey'); return; }
 
     const uEl = document.getElementById('signup-username');
     const eEl = document.getElementById('signup-email');
@@ -412,7 +425,7 @@
 
   // ============ Passkey 找回（重新绑定）============
   async function recoverVerify() {
-    if (!isSupported()) { toast('当前浏览器不支持 Passkey'); return; }
+    if (!(await isPlatformAvailable())) { toast('当前设备或浏览器不支持 Passkey'); return; }
 
     const emailEl = document.getElementById('recover-email');
     if (!emailEl) return;
@@ -553,8 +566,9 @@
 
   // ============ 导出 + 自动绑定 ============
   // 检测设备是否支持 Passkey，不支持则灰化卡片
-  function __disablePasskeyCards() {
-    if (isSupported()) return;
+  async function __disablePasskeyCards() {
+    var ok = await isPlatformAvailable();
+    if (ok) return;
     ['pick-login-passkey', 'pick-register-passkey'].forEach(function (id) {
       var card = document.getElementById(id);
       if (!card) return;
