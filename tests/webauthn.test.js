@@ -132,25 +132,25 @@ console.log('\n【verifyClientData】');
   const cjson = JSON.stringify({
     type: 'webauthn.create',
     challenge: 'abc',
-    origin: 'https://apex-8rg.pages.dev',
+    origin: 'https://apextop.cc.cd',
   });
   const r = verifyClientData(cjson, {
     expectedType: 'webauthn.create',
     expectedChallenge: 'abc',
-    expectedOrigins: ['https://apex-8rg.pages.dev'],
+    expectedOrigins: ['https://apextop.cc.cd'],
   });
   eq(r.type, 'webauthn.create', '正确 clientData 通过');
 
   throws(() => verifyClientData(cjson, {
     expectedType: 'webauthn.get',
     expectedChallenge: 'abc',
-    expectedOrigins: ['https://apex-8rg.pages.dev'],
+    expectedOrigins: ['https://apextop.cc.cd'],
   }), '错误 type 抛错');
 
   throws(() => verifyClientData(cjson, {
     expectedType: 'webauthn.create',
     expectedChallenge: 'XYZ',
-    expectedOrigins: ['https://apex-8rg.pages.dev'],
+    expectedOrigins: ['https://apextop.cc.cd'],
   }), '错误 challenge 抛错');
 
   throws(() => verifyClientData(cjson, {
@@ -162,7 +162,7 @@ console.log('\n【verifyClientData】');
   throws(() => verifyClientData('not json', {
     expectedType: 'webauthn.create',
     expectedChallenge: 'abc',
-    expectedOrigins: ['https://apex-8rg.pages.dev'],
+    expectedOrigins: ['https://apextop.cc.cd'],
   }), '非法 JSON 抛错');
 }
 

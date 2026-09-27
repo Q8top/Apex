@@ -1,5 +1,5 @@
 // Apex API 冒烟测试
-// 用法：BASE_URL=https://apex-8rg.pages.dev node tests/api-smoke.test.js
+// 用法：BASE_URL=https://apextop.cc.cd node tests/api-smoke.test.js
 //
 // 关键：所有 POST 请求必须先 GET 一次 /api/health 拿 CSRF cookie，
 //       然后在 header 里带上 X-CSRF-Token。
