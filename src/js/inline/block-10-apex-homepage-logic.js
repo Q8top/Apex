@@ -3147,20 +3147,37 @@ document.addEventListener('click', function (e) {
     })();
   }
 
-  // 事件委托：点玩法卡片
+  // 事件委托：同时监听 百家樂模式卡片 + 子页面里的玩法卡片
   function delegate() {
     if (window.__apexRulesV3Bound) return;
     window.__apexRulesV3Bound = true;
 
     document.addEventListener('click', function (e) {
-      var card = e.target.closest('.apex-mode-card');
-      if (!card) return;
-      var mode = card.dataset.mode;
-      if (!mode) return;
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      openRulesPage(mode);
+      // 1. 百家樂模式卡片（.apex-mode-card）
+      var modeCard = e.target.closest('.apex-mode-card');
+      if (modeCard && modeCard.dataset.mode) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        openRulesPage(modeCard.dataset.mode);
+        return;
+      }
+
+      // 2. 子页面里的玩法卡片（.apex-hot-item）
+      var hotItem = e.target.closest('.apex-hot-item');
+      if (!hotItem || !hotItem.dataset.name) return;
+
+      var name = hotItem.dataset.name;
+      var RULES = window.__apexApexRulesV3 || {};
+
+      // 若这个玩法有完整规则数据 → 打开规则页
+      if (RULES[name]) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        openRulesPage(name);
+      }
+      // 否则保持原 toast 行为（不拦截）
     }, true);
   }
 
