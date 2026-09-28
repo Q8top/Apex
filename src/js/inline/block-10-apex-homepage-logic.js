@@ -497,7 +497,7 @@ document.addEventListener('click', function (e) {
 
     // 返回
     document.getElementById('apex-hot-back').addEventListener('click', function () {
-      wrap.classList.remove('is-open');
+      wrap.style.display = 'none';
     });
 
     // 左侧切换
@@ -554,7 +554,7 @@ document.addEventListener('click', function (e) {
     if (hotBtn) {
       hotBtn.addEventListener('click', function () {
         var page = document.getElementById('apex-hot-page');
-        if (page) page.classList.add('is-open');
+        if (page) page.style.display = 'flex';
       });
     }
   }
@@ -563,5 +563,35 @@ document.addEventListener('click', function (e) {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
+  }
+})();
+
+
+// APEX-HOT-FORCE: 强制修复热门按钮点击
+(function () {
+  function fix() {
+    var hotBtn = document.querySelector('.apex-cats .apex-cat[data-cat="hot"]');
+    if (!hotBtn) { setTimeout(fix, 150); return; }
+    // 克隆替换，清掉所有旧监听器
+    var nb = hotBtn.cloneNode(true);
+    hotBtn.parentNode.replaceChild(nb, hotBtn);
+    nb.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var page = document.getElementById('apex-hot-page');
+      if (page) {
+        page.style.display = 'flex';
+      } else {
+        setTimeout(function () {
+          var p = document.getElementById('apex-hot-page');
+          if (p) p.style.display = 'flex';
+        }, 200);
+      }
+    }, true);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fix);
+  } else {
+    setTimeout(fix, 100);
   }
 })();
