@@ -1929,3 +1929,90 @@ document.addEventListener('click', function (e) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else setTimeout(init, 100);
 })();
+
+
+// ============================================================
+// 百家樂玩法选择 - APEX-BACCARAT-MODES
+// ============================================================
+(function () {
+  var MODES = [
+    { en: 'Punto Banco',           zh: '彭托银行' },
+    { en: 'Mini Baccarat',         zh: '迷你百家樂' },
+    { en: 'No Commission Baccarat',zh: '免佣百家樂' },
+    { en: 'Speed Baccarat',        zh: '极速百家樂' },
+    { en: 'Baccarat Variants',     zh: '百家樂变体' }
+  ];
+
+  var ICON = '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10h6M9 14h6"/>';
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-baccarat-modes')) return;
+
+    var w = document.createElement('div');
+    w.id = 'apex-baccarat-modes';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:600;display:none;flex-direction:column;overflow:hidden;';
+
+    var hd = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-baccarat-back">' + svg('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">百家樂</div>'
+      + '</div>';
+
+    var list = '<div class="apex-mode-list">';
+    MODES.forEach(function (m) {
+      list += '<button class="apex-mode-card" data-mode="' + m.en + '">'
+        + '<div class="apex-mode-icon">' + svg(ICON) + '</div>'
+        + '<div class="apex-mode-info">'
+        +   '<div class="apex-mode-title">' + m.en + '</div>'
+        +   '<div class="apex-mode-sub">' + m.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-mode-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</button>';
+    });
+    list += '</div>';
+
+    w.innerHTML = hd + list;
+    document.body.appendChild(w);
+
+    document.getElementById('apex-baccarat-back').addEventListener('click', function () {
+      w.style.display = 'none';
+    });
+
+    w.querySelectorAll('.apex-mode-card').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var mode = b.dataset.mode;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(mode + ' 游戏开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  // 事件委托：拦截所有 .apex-hot-item[data-name="Baccarat"] 的点击
+  function delegate() {
+    if (window.__apexBaccaratBound) return;
+    window.__apexBaccaratBound = true;
+
+    document.addEventListener('click', function (e) {
+      var item = e.target.closest('.apex-hot-item');
+      if (!item) return;
+      if (item.dataset.name === 'Baccarat') {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        build();
+        var page = document.getElementById('apex-baccarat-modes');
+        if (page) page.style.display = 'flex';
+      }
+    }, true); // capture 阶段，抢在 toast 之前
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', delegate);
+  } else {
+    setTimeout(delegate, 100);
+  }
+})();

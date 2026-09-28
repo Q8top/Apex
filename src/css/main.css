@@ -2417,3 +2417,80 @@ html, body, #apex-homepage {
   word-break: keep-all !important;
   line-height: 1.25 !important;
 }
+
+/* ══════════════════════════════════════════════════
+   APEX BACCARAT MODES
+   ══════════════════════════════════════════════════ */
+.apex-mode-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom)) 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.apex-mode-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-family: inherit;
+}
+.apex-mode-card:active {
+  transform: scale(0.985);
+  background: #fafafa;
+}
+.apex-mode-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe4c7 100%);
+  color: #ff6b00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.apex-mode-icon svg {
+  width: 26px;
+  height: 26px;
+}
+.apex-mode-info {
+  flex: 1;
+  min-width: 0;
+}
+.apex-mode-title {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.apex-mode-sub {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #8a8a8a;
+  margin-top: 4px;
+  line-height: 1.2;
+}
+.apex-mode-arrow {
+  color: #c7c7cc;
+  flex-shrink: 0;
+}
+.apex-mode-arrow svg {
+  width: 20px;
+  height: 20px;
+}
