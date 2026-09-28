@@ -15,7 +15,13 @@ set -euo pipefail
 # ============================================================
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUTPUT_DIR="$PROJECT_ROOT/backups"
-KV_NAMESPACE_ID="24dc2e9b5cd649b7a0c866f3592e7a6a"
+# KV_NAMESPACE_ID：优先从环境变量读取，缺失时 fallback 到内置默认值
+# CI 环境应通过 secrets.CLOUDFLARE_KV_NAMESPACE_ID 注入
+KV_NAMESPACE_ID="${CLOUDFLARE_KV_NAMESPACE_ID:-}"
+if [ -z "$KV_NAMESPACE_ID" ]; then
+  echo "[WARN] 未设置 CLOUDFLARE_KV_NAMESPACE_ID，使用内置默认值（建议在 CI 通过 secret 注入）"
+  KV_NAMESPACE_ID="24dc2e9b5cd649b7a0c866f3592e7a6a"
+fi
 KV_LATEST_KEY="backup:latest"
 KV_INDEX_KEY="backup:index"
 KV_KEEP_DAYS=30
