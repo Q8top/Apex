@@ -584,95 +584,17 @@ html {
 #apex-homepage { background:#ffffff; color:#111111; }
 
 /* 黑色顶栏 */
-.apex-topbar {
-  background: #000000;
-  padding: calc(8px + env(safe-area-inset-top))  14px  8px  14px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid #1a1a1a;
-}
-.apex-topbar-inner {
-  max-width: 640px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.apex-topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  flex: 1;
-}
-.apex-topbar-logo {
-  height: 34px !important;
-  width: auto;
-  display: block;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.apex-topbar-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: stretch;
-}
-.apex-topbar-title {
-  font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
-  color: #ffffff;
-  line-height: 1;
-  white-space: nowrap;
-  text-align: justify;
-  text-align-last: justify;
-}
-.apex-topbar-sub {
-  font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 3.8px;
-  color: #888888;
-  line-height: 1;
-  margin-top: 3px;
-  white-space: nowrap;
-  text-align: justify;
-  text-align-last: justify;
-}
-.apex-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-}
-.apex-topbar-btn {
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  font-size: 16px;
-  font-family: inherit;
-  transition: background 0.2s;
-  -webkit-tap-highlight-color: transparent;
-  gap: 2px;
-}
+
+
+
+
+
+
+
+
+
 .apex-topbar-btn:active { background: rgba(255,255,255,0.1); }
-.apex-topbar-caret {
-  font-size: 8px;
-  opacity: 0.7;
-  margin-left: -2px;
-}
+
 
 /* 用户信息卡 */
 .apex-usercard {
@@ -795,101 +717,116 @@ html {
 }
 
 @media (max-width: 400px) {
-  .apex-topbar-title { font-size: 12px; letter-spacing: 0.4px; }
-  .apex-topbar-sub { font-size: 6.5px; letter-spacing: 0.3px; }
-  .apex-topbar-logo { height: 34px !important; }
+  
+  
+  
   .apex-usercard-name { font-size: 13px; }
   .apex-usercard-balance { font-size: 13px; }
 }
 
 /* === APEX TOPBAR FINAL OVERRIDE === */
-#apex-homepage .apex-topbar {
-  padding: calc(6px + env(safe-area-inset-top)) 14px 6px 14px !important;
-}
-#apex-homepage .apex-topbar-inner {
-  max-width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-}
-#apex-homepage .apex-topbar-logo {
-  height: 40px !important;
-  width: auto !important;
-}
-#apex-homepage .apex-topbar-left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex: 1 !important;
-}
-#apex-homepage .apex-topbar-brand {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 2px !important;
-}
-#apex-homepage .apex-topbar-title {
-  font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-  font-size: 18px !important;
-  font-weight: 700 !important;
-  letter-spacing: 1.5px !important;
-  color: #ffffff !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-  text-align: justify !important;
-  text-align-last: justify !important;
-}
-#apex-homepage .apex-topbar-sub {
-  font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-  font-size: 10px !important;
-  font-weight: 600 !important;
-  letter-spacing: 2.5px !important;
-  color: #888888 !important;
-  line-height: 1 !important;
-  margin-top: 2px !important;
-  white-space: nowrap !important;
-  text-align: justify !important;
-  text-align-last: justify !important;
-}
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
 @media (max-width: 400px) {
-  #apex-homepage .apex-topbar-title {
-    font-size: 15px !important;
-    letter-spacing: 1.2px !important;
-  }
-  #apex-homepage .apex-topbar-sub {
-    font-size: 8.5px !important;
-    letter-spacing: 2px !important;
-  }
-  #apex-homepage .apex-topbar-logo {
-    height: 36px !important;
-  }
+  #apex-homepage 
+  #apex-homepage 
+  #apex-homepage 
 }
 
 
 /* APEX SINGLE BRAND */
+#apex-homepage 
+#apex-homepage 
+#apex-homepage 
+@media (max-width: 400px) {
+  #apex-homepage 
+}
+
+/* === APEX TOPBAR CLEAN FINAL === */
+#apex-homepage .apex-topbar {
+  background: #000000;
+  padding: calc(8px + env(safe-area-inset-top)) 14px 8px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #1a1a1a;
+}
+#apex-homepage .apex-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+#apex-homepage .apex-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+#apex-homepage .apex-topbar-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
 #apex-homepage .apex-topbar-brand {
-  display: flex !important;
-  align-items: center !important;
-  padding-left: 4px !important;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 #apex-homepage .apex-topbar-title {
-  font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
-  font-size: 28px !important;
-  font-weight: 700 !important;
-  letter-spacing: 4px !important;
-  color: #ffffff !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-  text-transform: uppercase !important;
-  text-align: left !important;
-  text-align-last: auto !important;
+  font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
 }
 #apex-homepage .apex-topbar-sub {
-  display: none !important;
+  display: none;
+}
+#apex-homepage .apex-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+#apex-homepage .apex-topbar-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 15px;
+  font-family: inherit;
+  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  gap: 2px;
+}
+#apex-homepage .apex-topbar-btn:active { background: rgba(255,255,255,0.1); }
+#apex-homepage .apex-topbar-caret {
+  font-size: 8px;
+  opacity: 0.7;
+  margin-left: -2px;
 }
 @media (max-width: 400px) {
   #apex-homepage .apex-topbar-title {
-    font-size: 24px !important;
-    letter-spacing: 3px !important;
+    font-size: 22px;
+    letter-spacing: 2.5px;
+  }
+  #apex-homepage .apex-topbar-logo {
+    height: 34px;
   }
 }
