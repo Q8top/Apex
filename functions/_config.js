@@ -32,7 +32,6 @@ export function getConfig(env = {}) {
     legacySessionCookie: 'apex_session',
     adminCookie: '__Host-apex_admin_session',
     legacyAdminCookie: 'apex_admin_session',
-    csrfCookie: 'apex_csrf',
 
     // Session TTL
     sessionMaxAge: 7 * 24 * 60 * 60,
