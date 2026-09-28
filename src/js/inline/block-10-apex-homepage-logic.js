@@ -2459,6 +2459,320 @@ document.addEventListener('click', function (e) {
         { q: 'Dragon Bonus 是什么？', a: '若庄或闲以自然 8 或 9 点取胜，押对一方可获得高额额外赔付。' }
       ],
       disclaimer: '本游戏根据预设百家樂规则自动完成发牌、补牌及结算。不同游戏版本可能存在赔率、佣金或特殊投注规则差异，请以当前游戏页面显示的规则及赔率为准。'
+    },
+    'Classic Blackjack': {
+      zh: '经典21点',
+      tagline: '目标：让手中牌点数尽量接近 21 点但不超过。超过 21 点（Bust）立即输，达到 21 点为最强牌。',
+      quickStart: [
+        { n: 1, title: '开局发牌', desc: '你获得 2 张明牌，庄家 1 张明牌 1 张暗牌。' },
+        { n: 2, title: '选择操作', desc: '可选择 Hit（要牌）、Stand（停牌）、Double（加倍）、Split（分牌）。' },
+        { n: 3, title: '庄家开牌', desc: '你停牌后，庄家翻暗牌并按规则要牌至 17 点或以上。' },
+        { n: 4, title: '比点结算', desc: '比谁更接近 21 点但不超；超 21 点爆牌（Bust）即输。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 10', v: '对应牌面点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 点或 11 点（自动取最有利值）' }
+        ],
+        note: '手牌总点数 = 所有牌点数相加。A 可算 1 或 11，系统自动取不爆牌的最大值。',
+        examples: [
+          'A + 6 = 7 点或 17 点（自动选 17）',
+          'A + 6 + K = 17 点（A 只能算 1）',
+          '10 + 10 = 20 点'
+        ],
+        order: '21 点（Blackjack）> 20 点 > 19 点 > … > 0 点；超过 21 点为 Bust'
+      },
+      natural: {
+        desc: '前两张牌为 A + 10/J/Q/K，即 21 点，称为"Blackjack"（天生 21 点），是本游戏最强牌。',
+        examples: [
+          'A + K = Blackjack（21 点）',
+          'A + 10 = Blackjack（21 点）'
+        ],
+        note: '若你 Blackjack 而庄家不是，通常赔率 1 赔 1.5（3:2）。'
+      },
+      odds: [
+        { name: 'Blackjack（天生 21 点）', value: '1 赔 1.5' },
+        { name: '普通获胜', value: '1 赔 1' },
+        { name: '和局（Push）', value: '退回本金' },
+        { name: '保险（Insurance）', value: '1 赔 2' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位；本金按结算规则返还。',
+      tie: {
+        desc: '若你与庄家点数相同，判定为和局（Push）：',
+        rows: [
+          { bet: '你与庄家同点数', rule: '退回本金' },
+          { bet: '双 Blackjack', rule: '退回本金' }
+        ]
+      },
+      pair: {
+        desc: '特殊组合：',
+        rows: [
+          { t: 'Blackjack', d: '前两张 A + 10/J/Q/K，直接获胜' },
+          { t: 'Bust（爆牌）', d: '手牌超过 21 点，立即输' },
+          { t: 'Soft Hand（软牌）', d: '手牌含 A 且算 11 点不爆' },
+          { t: 'Hard Hand（硬牌）', d: '手牌不含 A 或 A 只能算 1 点' }
+        ]
+      },
+      terms: [
+        { en: 'Hit', zh: '要牌，再拿一张' },
+        { en: 'Stand', zh: '停牌，不再要牌' },
+        { en: 'Double', zh: '加倍，赌注翻倍后再拿一张' },
+        { en: 'Split', zh: '分牌，两张同点拆成两手' },
+        { en: 'Surrender', zh: '投降，放弃一半赌注' },
+        { en: 'Insurance', zh: '保险，庄家明牌为 A 时可投' },
+        { en: 'Blackjack', zh: '天生 21 点（前两张 A + 10）' },
+        { en: 'Bust', zh: '爆牌，超过 21 点' },
+        { en: 'Push', zh: '和局，退回本金' }
+      ],
+      faq: [
+        { q: 'A 算 1 还是 11？', a: '系统自动取不爆牌的最大值。如 A + 6 会算 17 点（软牌）。' },
+        { q: '庄家在多少点停牌？', a: '标准规则下庄家在 17 点及以上停牌。' },
+        { q: 'Blackjack 和 21 点有区别吗？', a: '有。Blackjack 特指前两张 A + 10/J/Q/K，赔付更高（1 赔 1.5）。' },
+        { q: '什么时候可以分牌？', a: '当你前两张牌点数相同时（如 8+8、K+Q）。' },
+        { q: '保险值得买吗？', a: '长期来看保险对玩家不利，仅当庄家明牌为 A 时可选，谨慎使用。' }
+      ],
+      disclaimer: '本游戏根据预设 21 点规则自动结算。不同游戏版本可能存在规则差异（如庄家软 17 是否要牌、能否加倍、能否投降等），请以当前游戏页面显示的规则为准。'
+    },
+
+    'European Blackjack': {
+      zh: '欧洲21点',
+      tagline: '欧洲流行的 21 点变体，庄家一开始只有 1 张牌（没有暗牌），但如果你爆牌庄家直接获胜。',
+      quickStart: [
+        { n: 1, title: '开局发牌', desc: '你获得 2 张明牌，庄家先只发 1 张明牌（无暗牌）。' },
+        { n: 2, title: '选择操作', desc: 'Hit / Stand / Double / Split 均可，但规则略有不同。' },
+        { n: 3, title: '庄家补牌', desc: '你停牌后，庄家先补 1 张暗牌，再按规则要牌。' },
+        { n: 4, title: '比点结算', desc: '爆牌立即输；否则比较点数，更接近 21 点者胜。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 10', v: '对应牌面点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 或 11 点（自动取最有利值）' }
+        ],
+        note: 'A 可算 1 或 11，系统自动取不爆牌的最大值。',
+        examples: ['A + 9 = 20 点', '10 + K = 20 点', 'A + A + 9 = 21 点'],
+        order: '21 点 > 20 点 > 19 点 > … > 0 点'
+      },
+      natural: {
+        desc: '前两张牌为 A + 10/J/Q/K 时，为 Blackjack（21 点）。',
+        examples: ['A + K = Blackjack'],
+        note: '部分规则下欧洲 21 点 Blackjack 只赔 1:1（而非 3:2）。'
+      },
+      odds: [
+        { name: 'Blackjack', value: '1 赔 1.5（部分版本 1 赔 1）' },
+        { name: '普通获胜', value: '1 赔 1' },
+        { name: '和局（Push）', value: '退回本金' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位。',
+      tie: {
+        desc: '若你与庄家点数相同：',
+        rows: [
+          { bet: '同点数', rule: '退回本金' }
+        ]
+      },
+      pair: {
+        desc: '欧洲 21 点特色：',
+        rows: [
+          { t: 'No Hole Card', d: '庄家开局无暗牌' },
+          { t: 'Bust and Lose', d: '你爆牌立即输，庄家无需再要牌' },
+          { t: 'No Peek', d: '庄家不会提前检查是否 Blackjack' }
+        ]
+      },
+      terms: [
+        { en: 'No Hole Card', zh: '无暗牌' },
+        { en: 'Hit', zh: '要牌' },
+        { en: 'Stand', zh: '停牌' },
+        { en: 'Double', zh: '加倍' },
+        { en: 'Split', zh: '分牌' },
+        { en: 'Blackjack', zh: '天生 21 点' }
+      ],
+      faq: [
+        { q: '欧洲 21 点和美式有什么不同？', a: '主要差异：庄家开局只有 1 张明牌，没有暗牌；你爆牌庄家立即获胜，不需要再补牌。' },
+        { q: 'Blackjack 赔付是多少？', a: '多数欧洲 21 点赔 1:1.5，部分版本为 1:1，请查看游戏页面显示。' },
+        { q: '可以加倍吗？', a: '通常可以，但部分版本限定只在特定点数上（如 9/10/11）加倍。' }
+      ],
+      disclaimer: '本游戏根据预设欧洲 21 点规则自动结算。不同版本规则差异较大，请以当前游戏页面显示的规则为准。'
+    },
+
+    'Spanish 21': {
+      zh: '西班牙21点',
+      tagline: '从 52 张牌中移除 4 张 10，玩家有多种红利操作（如红利加倍、投降、重新分牌），更利于玩家。',
+      quickStart: [
+        { n: 1, title: '开局发牌', desc: '使用 48 张牌（去掉 4 张 10），你获得 2 张明牌，庄家 1 明 1 暗。' },
+        { n: 2, title: '选择操作', desc: 'Hit / Stand / Double / Split / Surrender 均可，无 10 让玩家更容易拿 21 点。' },
+        { n: 3, title: '庄家开牌', desc: '你停牌后，庄家翻暗牌并按规则要牌至 17 点或以上。' },
+        { n: 4, title: '结算', desc: '比点；21 点赔付 3:2，普通获胜 1:1。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 9', v: '对应牌面点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 或 11 点' }
+        ],
+        note: '牌组中去掉 4 张 10，其余规则与标准 21 点一致。',
+        examples: ['A + K = 21 点', 'A + A + 9 = 21 点'],
+        order: '21 点 > 20 点 > 19 点 > … > 0 点'
+      },
+      natural: {
+        desc: '前两张牌为 A + 10/J/Q/K 时，为 Blackjack（21 点），赔付 3:2。',
+        examples: ['A + K = Blackjack'],
+        note: '西班牙 21 点还有其他红利牌型，如 5 张 21 点自动获胜。'
+      },
+      odds: [
+        { name: 'Blackjack', value: '1 赔 1.5' },
+        { name: '普通获胜', value: '1 赔 1' },
+        { name: '五张 21 点（5-Card 21）', value: '1 赔 1.5' },
+        { name: '六张 21 点', value: '1 赔 2' },
+        { name: '七张 21 点', value: '1 赔 3' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位。',
+      tie: {
+        desc: '若你与庄家点数相同：',
+        rows: [
+          { bet: '同点数', rule: '退回本金' }
+        ]
+      },
+      pair: {
+        desc: '西班牙 21 点特色奖励：',
+        rows: [
+          { t: '5-Card 21', d: '用 5 张牌达到 21 点，赔付 3:2' },
+          { t: '6-Card 21', d: '用 6 张牌达到 21 点，赔付 2:1' },
+          { t: '7-Card 21', d: '用 7 张牌达到 21 点，赔付 3:1' },
+          { t: '红利分牌', d: '分牌后可加倍，红利更多' }
+        ]
+      },
+      terms: [
+        { en: '48-Card Deck', zh: '48 张牌组（无 10）' },
+        { en: '5-Card 21', zh: '五张 21 点，红利赔付' },
+        { en: 'Surrender', zh: '投降，放弃一半赌注' },
+        { en: 'Double Down Rescue', zh: '加倍后投降保一半' }
+      ],
+      faq: [
+        { q: '为什么没有 10 点牌？', a: '西班牙 21 点从 52 张牌中去掉 4 张 10，让玩家更容易拿到 21 点。' },
+        { q: '5 张 21 点怎么赔？', a: '通常 1 赔 1.5，具体请以当前游戏页面显示为准。' },
+        { q: '可以加倍后投降吗？', a: '西班牙 21 点特有的"加倍救援"（Double Down Rescue），可以保住一半赌注。' }
+      ],
+      disclaimer: '本游戏根据预设西班牙 21 点规则自动结算。不同版本规则差异较大，请以当前游戏页面显示的规则为准。'
+    },
+
+    'Blackjack Switch': {
+      zh: '21点换牌',
+      tagline: '你同时玩两手牌，并可以将两手牌的第二张牌互换。庄家 22 点为和局（Push），但 Blackjack 只赔 1:1。',
+      quickStart: [
+        { n: 1, title: '开局发牌', desc: '你同时获得两手牌（各 2 张），庄家 1 明 1 暗。' },
+        { n: 2, title: '选择换牌', desc: '可选择是否将两手牌的第二张互换，让牌型更有利。' },
+        { n: 3, title: '逐手操作', desc: '对两手牌分别进行 Hit / Stand / Double / Split。' },
+        { n: 4, title: '结算', desc: '比点；庄家 22 点直接 Push（和局）。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 10', v: '对应牌面点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 或 11 点' }
+        ],
+        note: '你同时打两手牌，每手独立计算点数。',
+        examples: ['A + 9 = 20 点', '10 + K = 20 点'],
+        order: '21 点 > 20 点 > 19 点 > … > 0 点'
+      },
+      natural: {
+        desc: '前两张牌为 A + 10/J/Q/K 时为 Blackjack，但本变体只赔 1:1（而非 3:2）。',
+        examples: ['A + K = Blackjack'],
+        note: '作为"换牌"的补偿，Blackjack 赔付被降低。'
+      },
+      odds: [
+        { name: 'Blackjack', value: '1 赔 1' },
+        { name: '普通获胜', value: '1 赔 1' },
+        { name: '庄家 22 点（Bust 特殊）', value: 'Push（退回本金）' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位。',
+      tie: {
+        desc: '以下情况为和局：',
+        rows: [
+          { bet: '你与庄家同点数', rule: '退回本金' },
+          { bet: '庄家爆牌至 22 点', rule: '退回本金（特殊规则）' }
+        ]
+      },
+      pair: {
+        desc: '核心机制：',
+        rows: [
+          { t: 'Switch（换牌）', d: '将两手牌的第二张互换' },
+          { t: '22 Push', d: '庄家 22 点为和局，抵消庄家优势' },
+          { t: 'Double After Split', d: '分牌后可以加倍' }
+        ]
+      },
+      terms: [
+        { en: 'Switch', zh: '换牌，第二张牌互换' },
+        { en: 'Two Hands', zh: '两手牌' },
+        { en: '22 Push', zh: '庄家 22 点为和局' }
+      ],
+      faq: [
+        { q: '换牌是强制的吗？', a: '不强制，你可以在下注前选择换或不换。' },
+        { q: '为什么 Blackjack 只赔 1:1？', a: '因为换牌让玩家有更大优势，因此 Blackjack 赔付被降低。' },
+        { q: '庄家 22 点怎么算？', a: '本变体中庄家爆牌至 22 点判定为和局（Push），退回本金。' }
+      ],
+      disclaimer: '本游戏根据预设 21 点换牌规则自动结算。不同版本规则差异较大，请以当前游戏页面显示的规则为准。'
+    },
+
+    'Super Fun 21': {
+      zh: '超级 21 点',
+      tagline: '21 点变体，几乎任何形式的 21 点都能获得额外奖励，玩家有更多低风险机会。',
+      quickStart: [
+        { n: 1, title: '开局发牌', desc: '你获得 2 张明牌，庄家 1 明 1 暗。' },
+        { n: 2, title: '操作', desc: 'Hit / Stand / Double / Split / Surrender 均可，加倍后可以再要牌。' },
+        { n: 3, title: '庄家开牌', desc: '庄家按规则要牌至 17 点或以上。' },
+        { n: 4, title: '结算', desc: '比点 + 特殊组合奖励。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 10', v: '对应牌面点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 或 11 点' }
+        ],
+        note: 'A 可算 1 或 11，系统自动取最有利值。',
+        examples: ['A + 9 = 20 点', 'A + A + 9 = 21 点'],
+        order: '21 点 > 20 点 > 19 点 > … > 0 点'
+      },
+      natural: {
+        desc: '前两张牌为 A + 10/J/Q/K 时，Blackjack 通常赔 1:1（而非 3:2）。',
+        examples: ['A + K = Blackjack'],
+        note: '作为补偿，Super Fun 21 允许"加倍后继续要牌"。'
+      },
+      odds: [
+        { name: 'Blackjack（一般）', value: '1 赔 1' },
+        { name: 'Blackjack（黑桃 A + 黑桃 Blackjack）', value: '1 赔 2' },
+        { name: '钻石 Blackjack（6 张未爆）', value: '1 赔 1.5' },
+        { name: '五张或以上未爆牌获胜', value: '1 赔 1.5' },
+        { name: '普通获胜', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位。',
+      tie: {
+        desc: '若你与庄家点数相同：',
+        rows: [
+          { bet: '同点数', rule: '退回本金' }
+        ]
+      },
+      pair: {
+        desc: 'Super Fun 21 特殊奖励：',
+        rows: [
+          { t: '钻石 Blackjack', d: '6 张牌达到 21 点（未爆）赔 1:1.5' },
+          { t: '黑桃 Blackjack', d: '黑桃 A + 黑桃 J/Q/K 赔 2:1' },
+          { t: '5+ 张未爆', d: '用 5 张或以上牌未爆获胜，赔 1:1.5' },
+          { t: '自由加倍', d: '加倍后可以继续要牌' },
+          { t: '投降', d: '部分版本支持 Surrender' }
+        ]
+      },
+      terms: [
+        { en: 'Diamond Blackjack', zh: '钻石 Blackjack，6 张 21 点' },
+        { en: 'Free Double', zh: '自由加倍，加倍后可继续要牌' },
+        { en: '5-Card Charlie', zh: '5 张牌未爆自动获胜' }
+      ],
+      faq: [
+        { q: '为什么 Blackjack 只赔 1:1？', a: '因为 Super Fun 21 有更多特殊奖励，因此基础 Blackjack 赔付被降低。' },
+        { q: '加倍后能继续要牌吗？', a: '可以，这是 Super Fun 21 的特色规则。' },
+        { q: '5 张未爆牌怎么赔？', a: '用 5 张或以上牌未爆获胜，可获 1:1.5 赔付。' }
+      ],
+      disclaimer: '本游戏根据预设 Super Fun 21 规则自动结算。不同版本规则差异较大，请以当前游戏页面显示的规则为准。'
     }
   };
 
