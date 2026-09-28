@@ -1289,3 +1289,164 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
+
+
+// ============================================================
+// 赛事全屏子页面 - APEX-EVENTS-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'horse', label: '赛马', items: [
+      { en: 'Win', zh: '独赢' },
+      { en: 'Place', zh: '位置' },
+      { en: 'Each-Way', zh: '前二' },
+      { en: 'Exacta', zh: '连赢' },
+      { en: 'Quinella', zh: '连赢位置' },
+      { en: 'Trifecta', zh: '三重彩' },
+      { en: 'Superfecta', zh: '四重彩' }
+    ]},
+    { key: 'greyhound', label: '赛狗', items: [
+      { en: 'Win', zh: '独赢' },
+      { en: 'Place', zh: '位置' },
+      { en: 'Forecast', zh: '预测' },
+      { en: 'Exacta', zh: '连赢' },
+      { en: 'Tricast', zh: '三连' }
+    ]},
+    { key: 'motor', label: '赛车', items: [
+      { en: 'Formula 1', zh: 'F1 一级方程式' },
+      { en: 'MotoGP', zh: 'MotoGP 摩托' },
+      { en: 'NASCAR', zh: 'NASCAR' },
+      { en: 'IndyCar', zh: 'IndyCar' },
+      { en: 'Rally', zh: '拉力赛' }
+    ]},
+    { key: 'virtual', label: '虚拟赛事', items: [
+      { en: 'Virtual Horse Racing', zh: '虚拟赛马' },
+      { en: 'Virtual Greyhound', zh: '虚拟赛狗' },
+      { en: 'Virtual Motor Racing', zh: '虚拟赛车' },
+      { en: 'Virtual Football', zh: '虚拟足球' },
+      { en: 'Virtual Cycling', zh: '虚拟自行车' }
+    ]},
+    { key: 'animal', label: '动物赛事', items: [
+      { en: 'Camel Racing', zh: '骆驼赛' },
+      { en: 'Pigeon Racing', zh: '信鸽赛' },
+      { en: 'Other Animal Racing', zh: '其他动物赛' }
+    ]},
+    { key: 'pool', label: 'Pool / Tote', items: [
+      { en: 'Win Pool', zh: '独赢池' },
+      { en: 'Place Pool', zh: '位置池' },
+      { en: 'Exacta Pool', zh: '连赢池' },
+      { en: 'Trifecta Pool', zh: '三重彩池' },
+      { en: 'Jackpot Pool', zh: '累积奖池' }
+    ]}
+  ];
+
+  var ICONS = {
+    horse:     '<path d="M4 18l2-8a3 3 0 0 1 3-2h4l3-2 2 3 3 1-2 2 2 6"/>',
+    greyhound: '<path d="M3 14l4-4a3 3 0 0 1 4 0l4 2 4-1v4l-3 3H8z"/><circle cx="7" cy="10" r="1" fill="currentColor"/>',
+    motor:     '<path d="M4 16l2-4 4-2h4l4 2 2 4"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/>',
+    virtual:   '<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M9 11l3 2 3-2"/><path d="M8 20h8"/>',
+    animal:    '<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/><path d="M9 16c2 1 4 1 6 0"/>',
+    pool:      '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-events-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-events-page';
+    wrap.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-events-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">赛事</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-events-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(ICONS[cat.key])
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-events-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    document.getElementById('apex-events-back').addEventListener('click', function () {
+      wrap.style.display = 'none';
+    });
+
+    var sideEl = document.getElementById('apex-events-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-events-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var ic = ICONS[cat.key] || ICONS.pool;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var btn = document.querySelector('.apex-cats .apex-cat[data-cat="events"]');
+    if (btn) {
+      var nb = btn.cloneNode(true);
+      btn.parentNode.replaceChild(nb, btn);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var page = document.getElementById('apex-events-page');
+        if (page) page.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+})();
