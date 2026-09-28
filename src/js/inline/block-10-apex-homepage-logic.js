@@ -1450,3 +1450,168 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
+
+
+// 即时游戏全屏子页面 - APEX-INSTANT-PAGE
+(function () {
+  var DATA = [
+    { key: 'crash', label: 'Crash', items: [
+      { en: 'Classic Crash', zh: '经典 Crash' },
+      { en: 'Turbo Crash', zh: '极速 Crash' },
+      { en: 'Multiplier Crash', zh: '倍率 Crash' },
+      { en: 'Auto Cashout', zh: '自动兑现' },
+      { en: 'Progressive Crash', zh: '渐进 Crash' }
+    ]},
+    { key: 'mines', label: 'Mines', items: [
+      { en: 'Classic Mines', zh: '经典 Mines' },
+      { en: 'Grid Mines', zh: '网格 Mines' },
+      { en: 'Multi-Mines', zh: '多雷 Mines' },
+      { en: 'Progressive Mines', zh: '渐进 Mines' }
+    ]},
+    { key: 'plinko', label: 'Plinko', items: [
+      { en: 'Classic Plinko', zh: '经典 Plinko' },
+      { en: 'Multiplier Plinko', zh: '倍率 Plinko' },
+      { en: 'Risk Plinko', zh: '风险 Plinko' },
+      { en: 'Progressive Plinko', zh: '渐进 Plinko' }
+    ]},
+    { key: 'tower', label: 'Tower', items: [
+      { en: 'Classic Tower', zh: '经典 Tower' },
+      { en: 'Multiplier Tower', zh: '倍率 Tower' },
+      { en: 'Risk Tower', zh: '风险 Tower' },
+      { en: 'Progressive Tower', zh: '渐进 Tower' }
+    ]},
+    { key: 'limbo', label: 'Limbo', items: [
+      { en: 'Classic Limbo', zh: '经典 Limbo' },
+      { en: 'High Multiplier Limbo', zh: '高倍率 Limbo' },
+      { en: 'Multi-Round Limbo', zh: '多轮 Limbo' }
+    ]},
+    { key: 'dice', label: 'Dice', items: [
+      { en: 'Roll Over', zh: '大于' },
+      { en: 'Roll Under', zh: '小于' },
+      { en: 'High / Low', zh: '高低' },
+      { en: 'Multiplier Dice', zh: '倍率骰子' }
+    ]},
+    { key: 'keno', label: 'Keno', items: [
+      { en: 'Classic Keno', zh: '经典基诺' },
+      { en: '20/80 Keno', zh: '20/80 基诺' },
+      { en: 'Multi-Draw Keno', zh: '多期基诺' },
+      { en: 'Speed Keno', zh: '极速基诺' },
+      { en: 'Video Keno', zh: '视频基诺' }
+    ]},
+    { key: 'bingo', label: 'Bingo', items: [
+      { en: '30-Ball Bingo', zh: '30 球宾果' },
+      { en: '50-Ball Bingo', zh: '50 球宾果' },
+      { en: '75-Ball Bingo', zh: '75 球宾果' },
+      { en: '80-Ball Bingo', zh: '80 球宾果' },
+      { en: '90-Ball Bingo', zh: '90 球宾果' }
+    ]},
+    { key: 'scratch', label: 'Scratch', items: [
+      { en: 'Scratch Cards', zh: '刮刮卡' },
+      { en: 'Digital Scratch', zh: '数字刮刮乐' },
+      { en: 'Instant Scratch', zh: '即开刮刮乐' },
+      { en: 'Progressive Scratch', zh: '渐进刮刮乐' }
+    ]},
+    { key: 'instant', label: '即时赢', items: [
+      { en: 'Match 3', zh: '三消' },
+      { en: 'Match 4', zh: '四消' },
+      { en: 'Pick & Win', zh: '选赢' },
+      { en: 'Prize Reveal', zh: '揭奖' },
+      { en: 'Instant Jackpot', zh: '即开奖池' },
+      { en: 'Instant Bonus', zh: '即开奖励' }
+    ]}
+  ];
+
+  var I = {
+    crash:   '<path d="M3 17l6-6 4 4 8-9"/><path d="M17 6h4v4"/>',
+    mines:   '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5 5l14 14M19 5L5 19"/>',
+    plinko:  '<circle cx="12" cy="4" r="1.5"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="6" cy="20" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>',
+    tower:   '<path d="M6 20V8h12v12"/><path d="M6 12h12M6 16h12"/>',
+    limbo:   '<path d="M4 12h16M12 4v16"/>',
+    dice:    '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>',
+    keno:    '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>',
+    bingo:   '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+    scratch: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h3M7 14h3"/>',
+    instant: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>'
+  };
+
+  function s(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-instant-page')) return;
+    var w = document.createElement('div');
+    w.id = 'apex-instant-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var hd = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-instant-back">' + s('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">即时游戏</div>'
+      + '</div>';
+
+    var sd = '<div class="apex-hot-side" id="apex-instant-side">';
+    DATA.forEach(function (cat, i) {
+      sd += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + s(I[cat.key]) + '<span>' + cat.label + '</span></button>';
+    });
+    sd += '</div>';
+
+    w.innerHTML = hd + '<div class="apex-hot-body">' + sd + '<div class="apex-hot-list" id="apex-instant-list"></div></div>';
+    document.body.appendChild(w);
+
+    document.getElementById('apex-instant-back').addEventListener('click', function () { w.style.display = 'none'; });
+
+    var sideEl = document.getElementById('apex-instant-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) { el.classList.toggle('is-active', el === b); });
+        render(k);
+      });
+    });
+    render(DATA[0].key);
+  }
+
+  function render(key) {
+    var le = document.getElementById('apex-instant-list');
+    if (!le) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+    var ic = I[cat.key] || I.instant;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + s(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        + '<div class="apex-hot-item-title">' + it.en + '</div>'
+        + '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + s('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    le.innerHTML = html;
+    le.scrollTop = 0;
+    le.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        if (window.__apex && window.__apex.toast) window.__apex.toast(el.dataset.name + ' 开发中，敬请期待', 'info');
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var b = document.querySelector('.apex-cats .apex-cat[data-cat="instant"]');
+    if (b) {
+      var nb = b.cloneNode(true);
+      b.parentNode.replaceChild(nb, b);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var p = document.getElementById('apex-instant-page');
+        if (p) p.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
