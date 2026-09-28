@@ -2243,6 +2243,346 @@
       ],
       disclaimer: '本游戏奖池触发由随机数生成器（RNG）决定。请理性参与。'
     }
+,
+    'Megaways': {
+      zh: 'Megaways',
+      tagline: 'Big Time Gaming 首创的机制——每个转轴上的符号数随旋转实时变化（2-7 个），中奖方式可达数十万种，是老虎机最流行的玩法之一。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定总下注额（无需选择线数）。' },
+        { n: 2, title: '旋转', desc: '每个转轴随机显示 2-7 个符号。' },
+        { n: 3, title: '自动计算', desc: '系统自动计算所有"相邻转轴相同符号"的中奖方式。' },
+        { n: 4, title: '结算', desc: '按中奖方式派彩 + 特色机制奖励。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '转轴', v: '通常 6 个 + 1 个横轴' },
+          { k: '每轴符号数', v: '2 - 7 个（随旋转变化）' },
+          { k: '中奖方式', v: '可达 117,649 种（或更多）' },
+          { k: '赔付方向', v: '从左到右相邻匹配' }
+        ],
+        note: '每轴符号数不同，中奖方式数 = 各轴符号数的乘积。',
+        examples: ['6 轴 × 7 格 → 117,649 中奖方式', '6 轴 × 5 格 → 15,625 中奖方式'],
+        order: '中奖方式越多，单次赔付越低；反之越高'
+      },
+      natural: {
+        desc: 'Megaways 特色机制：',
+        examples: [
+          'Cascading Reels：中奖符号消除，新符号从上方落下',
+          'Multiplier 递增：每次连锁消除倍率 +1，可达 x10 以上',
+          'Free Spins：4+ Scatter 触发 12-20 次免费旋转',
+          '最大 Megaways：部分游戏可达 200,704 或 1,000,000 种中奖方式'
+        ],
+        note: 'Megaways RTP 通常 96% 左右，波动较大。'
+      },
+      odds: [
+        { name: '最高奖', value: '可达 10,000x - 50,000x' },
+        { name: '免费旋转触发', value: '4+ Scatter 触发' },
+        { name: '常规中奖', value: '按符号组合计算' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Megaways', zh: 'BTG 专利机制' },
+        { en: 'Ways to Win', zh: '中奖方式数' },
+        { en: 'Cascading', zh: '连锁消除' },
+        { en: 'Multiplier', zh: '倍率' }
+      ],
+      faq: [
+        { q: 'Megaways 和普通老虎机的区别？', a: 'Megaways 每轴符号数随旋转变化，中奖方式可达数十万种；普通老虎机符号数固定。' },
+        { q: '为什么 Megaways 中奖方式这么多？', a: '中奖方式数 = 每轴符号数的乘积。每轴 2-7 个符号，6 轴可达 117,649 种组合。' },
+        { q: 'Megaways 波动大吗？', a: '通常较大，中奖频率不高但单次奖励可能极高。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。Megaways 为 Big Time Gaming 的注册商标。'
+    },
+
+    'Cluster Pays': {
+      zh: 'Cluster Pays',
+      tagline: '无中奖线机制——相同符号以"群组"形式（相邻 5 个以上）连成一片即中奖，配合连锁消除，中奖机会更多。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定总下注额。' },
+        { n: 2, title: '旋转', desc: '符号出现在网格中。' },
+        { n: 3, title: '识别群组', desc: '系统自动寻找 5 个以上相邻的相同符号。' },
+        { n: 4, title: '结算', desc: '群组消失 → 新符号落下 → 可再次连锁中奖。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '网格', v: '通常 7x7 或 6x5' },
+          { k: '中奖条件', v: '5+ 相同符号相邻' },
+          { k: '无固定中奖线', v: '任意位置相邻匹配' },
+          { k: '连锁', v: '中奖符号消除后新符号落下' }
+        ],
+        note: 'Cluster Pays 没有固定中奖线，只看"相邻符号群组"。',
+        examples: ['9 个相同符号连成一片 → 按 9 个赔付', '连锁消除可多次中奖'],
+        order: '群组越大，赔付越高；15+ 群组可达最高赔率'
+      },
+      natural: {
+        desc: 'Cluster Pays 特色机制：',
+        examples: [
+          'Cluster Size：5-25 个符号群组，越大赔付越高',
+          'Cascading：消除后新符号落下，可连锁',
+          'Multiplier：连锁中每次倍率递增',
+          'Free Spins：特殊符号触发免费旋转'
+        ],
+        note: 'Cluster Pays RTP 通常 96% 左右，中奖频率高但单次奖励偏小。'
+      },
+      odds: [
+        { name: '15+ 群组', value: '最高赔率（如 50x - 500x）' },
+        { name: '10-14 群组', value: '中等赔率' },
+        { name: '5-9 群组', value: '低额赔率' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Cluster', zh: '群组' },
+        { en: 'Cluster Size', zh: '群组大小' },
+        { en: 'Cascading', zh: '连锁消除' }
+      ],
+      faq: [
+        { q: 'Cluster Pays 和普通老虎机有什么不同？', a: 'Cluster Pays 没有中奖线，只看相邻符号群组；普通老虎机需要符号落在线上。' },
+        { q: '群组至少几个符号？', a: '通常 5 个，具体以游戏内规则为准。' },
+        { q: 'Cluster Pays 更适合什么玩家？', a: '适合喜欢频繁中奖、节奏明快的玩家。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Ways to Win': {
+      zh: 'Ways to Win',
+      tagline: '介于固定线和 Megaways 之间的机制——每轴符号数固定，但所有位置相邻匹配即可中奖，中奖方式数 = 各轴符号数的乘积。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定总下注额。' },
+        { n: 2, title: '旋转', desc: '符号落在固定网格上。' },
+        { n: 3, title: '计算', desc: '从左到右相邻转轴上的相同符号，任意位置匹配即中奖。' },
+        { n: 4, title: '结算', desc: '按中奖方式派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '转轴', v: '通常 5 - 6 个' },
+          { k: '每轴符号数', v: '固定（如 3 或 4）' },
+          { k: '中奖方式', v: '3^5 = 243 或 4^5 = 1024' },
+          { k: '赔付方向', v: '从左到右相邻匹配' }
+        ],
+        note: 'Ways to Win 是 Megaways 的"固定符号数"版本。',
+        examples: ['5 轴 × 3 格 = 243 Ways', '6 轴 × 4 格 = 4,096 Ways'],
+        order: 'Ways 越多，中奖频率越高'
+      },
+      natural: {
+        desc: 'Ways to Win 特色：',
+        examples: [
+          '相邻转轴符号匹配即中奖，无需固定线',
+          '中奖方式数 = 各轴符号数乘积',
+          '通常配合 Wild / Scatter 增强',
+          'RTP 通常 95% - 97%'
+        ],
+        note: '常见例子：243 Ways（5 轴 3 格）、1024 Ways（5 轴 4 格）。'
+      },
+      odds: [
+        { name: '5 同符号', value: '最高' },
+        { name: '4 同符号', value: '中等' },
+        { name: '3 同符号', value: '低额' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Ways to Win', zh: '中奖方式' },
+        { en: '243 Ways', zh: '243 种中奖方式' },
+        { en: '1024 Ways', zh: '1024 种中奖方式' }
+      ],
+      faq: [
+        { q: 'Ways to Win 和 Payline 的区别？', a: 'Payline 是固定中奖线；Ways to Win 是任意位置相邻匹配，中奖方式更多。' },
+        { q: 'Ways 越多越好吗？', a: '不绝对。Ways 多则中奖频率高但单次赔率低，看个人偏好。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Cascading Reels': {
+      zh: '连锁消除',
+      tagline: '中奖符号消失后，上方符号落下形成新组合，可能连续中奖。使单次旋转可以产生多次赔付，刺激度极高。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额。' },
+        { n: 2, title: '旋转', desc: '符号落入网格。' },
+        { n: 3, title: '中奖消除', desc: '中奖符号消失，上方符号落下填补空位。' },
+        { n: 4, title: '连锁循环', desc: '若落下的新符号再次中奖，继续消除，直到无中奖为止。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '网格', v: '通常 5-7 轴' },
+          { k: '中奖方式', v: 'Payline 或 Cluster' },
+          { k: '连锁', v: '中奖后符号消失 + 新符号落下' },
+          { k: '倍率', v: '每次连锁可递增' }
+        ],
+        note: '连锁消除中，一次旋转可能触发多次中奖，单次赔付可以叠加。',
+        examples: ['第一次中奖 x2 → 消除 → 再次中奖 x3 → 再消除 → 再中奖 x5', '总赔付 = 2 + 3 + 5 = 10 倍'],
+        order: '连锁次数越多，总赔付越高'
+      },
+      natural: {
+        desc: 'Cascading Reels 特色：',
+        examples: [
+          'Multiplier 递增：每次连锁倍率 +1',
+          'Free Spins 中连锁更频繁',
+          '适合追求"单次高额"的玩家',
+          '常见于 Sweet Bonanza、Gates of Olympus 等'
+        ],
+        note: 'RTP 通常 96% 左右，波动大。'
+      },
+      odds: [
+        { name: '最高奖', value: '可达 5,000x - 21,000x' },
+        { name: '单次连锁奖励', value: '视连锁次数决定' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Cascading Reels', zh: '连锁消除' },
+        { en: 'Tumble', zh: '同步机制（NetEnt 版本）' },
+        { en: 'Multiplier', zh: '连锁倍率' }
+      ],
+      faq: [
+        { q: '连锁消除和普通老虎机有什么不同？', a: '普通老虎机中奖后符号不动；连锁消除中奖符号消失，新符号落下继续中奖。' },
+        { q: '连锁最多几次？', a: '理论无上限，实际受网格大小和符号数影响。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。波动较大，请理性游戏。'
+    },
+
+    'Tumble': {
+      zh: 'Tumble',
+      tagline: 'NetEnt 版本的连锁消除机制——中奖符号消除后，上方符号落下，若再次中奖则继续消除。经典 Gonzo\'s Quest 的标志机制。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额。' },
+        { n: 2, title: '旋转', desc: '符号落入网格。' },
+        { n: 3, title: '中奖消除', desc: '中奖符号消失并崩落。' },
+        { n: 4, title: '连锁继续', desc: '落下的符号若再中奖，继续消除，直到稳定。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '机制', v: '连锁消除' },
+          { k: '与 Cascading 区别', v: 'Tumble 是 NetEnt 商标名' },
+          { k: '中奖方式', v: 'Payline' },
+          { k: '连锁极限', v: '理论无上限' }
+        ],
+        note: 'Tumble 与 Cascading 机制基本一致，只是不同厂商的命名差异。',
+        examples: ['Gonzo\'s Quest：经典 Tumble 游戏', '每次连锁倍率递增'],
+        order: '连锁次数越多，赔付越高'
+      },
+      natural: {
+        desc: 'Tumble 特色：',
+        examples: [
+          '中奖符号消除后新符号落下',
+          '连锁可触发免费旋转',
+          'Gonzo\'s Quest 的黄金雕像收集机制',
+          'RTP 通常 95% - 96%'
+        ],
+        note: 'Tumble 是 NetEnt 的标志性机制，用于多款经典游戏。'
+      },
+      odds: [
+        { name: '最高奖', value: '可达 2,500x - 10,000x' },
+        { name: '连锁奖励', value: '视次数决定' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Tumble', zh: 'NetEnt 连锁机制' },
+        { en: 'Cascading', zh: '连锁消除（通用说法）' },
+        { en: 'Sticky Wild', zh: '粘性百搭' }
+      ],
+      faq: [
+        { q: 'Tumble 和 Cascading 一样吗？', a: '功能一致，Tumble 是 NetEnt 的商标名，其他厂商通常叫 Cascading。' },
+        { q: 'Gonzo\'s Quest 是什么？', a: 'NetEnt 的经典 Tumble 老虎机，被认为是史上最成功的老虎机之一。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。Tumble 是 NetEnt 的注册商标。'
+    },
+
+    'Hold & Win': {
+      zh: 'Hold & Win',
+      tagline: '特殊符号"锁定"在原位，玩家获得若干次重转机会，若期间再有特殊符号落下则再次锁定并重置重转次数。是近年最火爆的老虎机机制。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额。' },
+        { n: 2, title: '旋转', desc: '若出现 6+ 特殊符号，触发 Hold & Win。' },
+        { n: 3, title: '锁定 + 重转', desc: '特殊符号锁定在原位，玩家获得 3 次重转。' },
+        { n: 4, title: '追加 + 结算', desc: '重转期间新特殊符号落下则锁定并重置重转次数，直到结束。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '触发条件', v: '6+ 特殊符号' },
+          { k: '重转次数', v: '初始 3 次' },
+          { k: '锁定', v: '特殊符号固定不动' },
+          { k: '重置', v: '有新符号落则重转次数重置为 3' }
+        ],
+        note: 'Hold & Win 的核心是"锁定 + 重转"，用最少的下注获得连续中奖机会。',
+        examples: ['6 个硬币符号触发 → 3 次重转 → 新符号落下 → 再 3 次', '最终若填满 15 格 → 触发 Grand Jackpot'],
+        order: '特殊符号越多，奖励越高；填满网格触发 Grand Jackpot'
+      },
+      natural: {
+        desc: 'Hold & Win 特色：',
+        examples: [
+          'Hold & Win Respins：经典重转机制',
+          'Jackpot：填满网格触发 Mini / Minor / Major / Grand',
+          'Multiplier：每个符号带倍率，最终累积',
+          'Free Spins：部分游戏免费旋转中也触发 Hold & Win'
+        ],
+        note: 'RTP 通常 95% - 96%，波动大，适合追求高额奖励的玩家。'
+      },
+      odds: [
+        { name: 'Grand Jackpot', value: '1,000x - 5,000x' },
+        { name: 'Major Jackpot', value: '100x - 500x' },
+        { name: 'Minor Jackpot', value: '20x - 100x' },
+        { name: 'Mini Jackpot', value: '5x - 20x' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Hold & Win', zh: '锁定重转机制' },
+        { en: 'Respin', zh: '重转' },
+        { en: 'Coin Symbol', zh: '硬币符号' },
+        { en: 'Jackpot', zh: '奖池' }
+      ],
+      faq: [
+        { q: 'Hold & Win 多久触发一次？', a: '视游戏而定，通常几百到几千转触发一次。' },
+        { q: '重转期间下注会消耗余额吗？', a: '不会。重转是奖励，不消耗额外下注。' },
+        { q: '填满网格有什么用？', a: '填满网格通常触发 Grand Jackpot，是最高奖励。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'All Ways': {
+      zh: 'All Ways',
+      tagline: '类似 Ways to Win 的机制，但强调"所有方向"或"所有位置"的匹配。常见于经典 Novomatic 或 Amatic 老虎机。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定总下注额。' },
+        { n: 2, title: '旋转', desc: '符号落在固定网格上。' },
+        { n: 3, title: '全方向匹配', desc: '无论左右还是任意位置，相同符号相邻即中奖。' },
+        { n: 4, title: '结算', desc: '按匹配方式派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '转轴', v: '通常 5 个' },
+          { k: '每轴符号数', v: '固定 3 个' },
+          { k: '匹配方向', v: '所有方向' },
+          { k: '中奖方式', v: '5^3 = 125 或 5^4 = 625' }
+        ],
+        note: 'All Ways 与 Ways to Win 类似，只是更强调"全方向"。',
+        examples: ['5 轴 × 3 格 = 125 Ways', '5 轴 × 4 格 = 625 Ways'],
+        order: 'Ways 越多，中奖频率越高'
+      },
+      natural: {
+        desc: 'All Ways 特色：',
+        examples: [
+          '所有方向相邻符号匹配即中奖',
+          '无固定中奖线限制',
+          '常见于 Novomatic / Amatic 游戏',
+          'RTP 通常 95% 左右'
+        ],
+        note: 'All Ways 是 Ways to Win 的变体，主要流行于欧洲经典老虎机。'
+      },
+      odds: [
+        { name: '5 同符号', value: '最高' },
+        { name: '4 同符号', value: '中等' },
+        { name: '3 同符号', value: '低额' }
+      ],
+      oddsNote: '"Xx"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'All Ways', zh: '全方向中奖' },
+        { en: 'Ways', zh: '中奖方式' },
+        { en: 'Any Direction', zh: '任意方向' }
+      ],
+      faq: [
+        { q: 'All Ways 和 Ways to Win 一样吗？', a: '基本一致，All Ways 更强调全方向匹配，主要区别在于厂商实现。' },
+        { q: 'All Ways 适合什么玩家？', a: '适合喜欢频繁中奖的玩家。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    }
 
   };
 
