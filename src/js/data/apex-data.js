@@ -3179,6 +3179,279 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
     }
+,
+    'Electronic Baccarat': {
+      zh: '电子百家樂',
+      tagline: '电子版百家樂——无需荷官，通过屏幕操作即可下注。节奏可调（快速/标准），支持多座同时下注，玩法与真人百家樂一致。',
+      quickStart: [
+        { n: 1, title: '选择座位', desc: '选择空座位（可同时押多个座位）。' },
+        { n: 2, title: '下注', desc: '在庄 / 闲 / 和 / 庄对 / 闲对 上下注。' },
+        { n: 3, title: '系统发牌', desc: '系统按标准百家樂规则自动发牌与补牌。' },
+        { n: 4, title: '结算', desc: '按赔率派彩，自动入账。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'A', v: '1 点' },
+          { k: '2 – 9', v: '对应点数' },
+          { k: '10 / J / Q / K', v: '0 点' }
+        ],
+        note: '规则与真人百家樂完全一致，总点数取个位数。',
+        examples: ['8 + 7 = 15 → 5 点', '9 + 6 + 8 = 23 → 3 点'],
+        order: '9 点 > 8 点 > 7 点 > … > 0 点'
+      },
+      natural: {
+        desc: '电子百家樂特点：',
+        examples: [
+          '无荷官，纯屏幕操作',
+          '可同时押多个座位',
+          '节奏可调（快速 27 秒 / 标准 48 秒）',
+          '历史记录面板可查最近结果'
+        ],
+        note: '电子百家樂 RTP 通常 98.94%（押庄）或 98.76%（押闲）。'
+      },
+      odds: [
+        { name: '庄 Banker', value: '1 赔 0.95' },
+        { name: '闲 Player', value: '1 赔 1' },
+        { name: '和 Tie', value: '1 赔 8' },
+        { name: '庄对 Banker Pair', value: '1 赔 11' },
+        { name: '闲对 Player Pair', value: '1 赔 11' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Electronic', zh: '电子版' },
+        { en: 'Multi-Seat', zh: '多座位下注' },
+        { en: 'Auto Deal', zh: '自动发牌' }
+      ],
+      faq: [
+        { q: '电子百家樂和真人百家樂有什么区别？', a: '规则完全一致，只是用屏幕代替荷官，节奏更快。' },
+        { q: '可以同时押多个座位吗？', a: '可以，这是电子百家樂的特色。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生，非真实牌局。'
+    },
+
+    'Electronic Blackjack': {
+      zh: '电子21点',
+      tagline: '电子版 21 点——无荷官，通过屏幕完成 Hit / Stand / Double / Split 操作。支持多手牌同时玩，节奏更快。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额。' },
+        { n: 2, title: '发牌', desc: '你获得 2 张明牌，庄家 1 明 1 暗。' },
+        { n: 3, title: '操作', desc: '点击 Hit / Stand / Double / Split 按钮。' },
+        { n: 4, title: '结算', desc: '按规则自动结算。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '2 – 10', v: '对应点数' },
+          { k: 'J / Q / K', v: '10 点' },
+          { k: 'A', v: '1 或 11 点（自动取最有利值）' }
+        ],
+        note: 'A 可算 1 或 11，系统自动取不爆牌的最大值。',
+        examples: ['A + 9 = 20 点', '10 + K = 20 点', 'A + A + 9 = 21 点'],
+        order: '21 点 > 20 点 > 19 点 > ... > 0 点'
+      },
+      natural: {
+        desc: '电子 21 点特色：',
+        examples: [
+          'Multi-Hand：可同时玩 3-5 手牌',
+          'Fast Deal：发牌速度更快',
+          'Auto Stand：可选自动停牌策略',
+          'Perfect Pairs：附加注可押对子'
+        ],
+        note: '电子 21 点 RTP 通常 99.5% 以上（含最优策略）。'
+      },
+      odds: [
+        { name: 'Blackjack', value: '1 赔 1.5' },
+        { name: '普通获胜', value: '1 赔 1' },
+        { name: '和局（Push）', value: '退回本金' },
+        { name: 'Perfect Pairs', value: '1 赔 6 或 25' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Multi-Hand', zh: '多手牌' },
+        { en: 'Perfect Pairs', zh: '完美对子' },
+        { en: 'Auto Stand', zh: '自动停牌' }
+      ],
+      faq: [
+        { q: '电子 21 点和普通 21 点规则一样吗？', a: '是的，完全一致，只是用屏幕代替荷官。' },
+        { q: '可以同时玩多手牌吗？', a: '部分游戏支持，最多可同时玩 3-5 手。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Electronic Roulette': {
+      zh: '电子轮盘',
+      tagline: '电子版轮盘——无荷官，通过屏幕下注，转盘自动旋转。支持欧洲轮盘、美洲轮盘、多轮同押等多种玩法。',
+      quickStart: [
+        { n: 1, title: '选择轮盘', desc: '欧洲轮盘（0-36）或美洲轮盘（0-36 + 00）。' },
+        { n: 2, title: '下注', desc: '选择数字 / 红黑 / 单双 / 大小 / 分列 / 分组。' },
+        { n: 3, title: '旋转', desc: '点击 SPIN，小球开始旋转。' },
+        { n: 4, title: '结算', desc: '小球停下后按赔率派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '欧洲轮盘', v: '37 格（0-36）' },
+          { k: '美洲轮盘', v: '38 格（0-36 + 00）' },
+          { k: '押单个数字', v: '1 赔 35' },
+          { k: '押红黑/单双/大小', v: '1 赔 1' }
+        ],
+        note: '欧洲轮盘只有 1 个 0，美洲轮盘有 0 和 00，因此欧洲轮盘 RTP 更高。',
+        examples: ['押红 → 球落红格 → 1 赔 1', '押 17 → 球落 17 → 1 赔 35'],
+        order: '押单个数字赔率最高（1:35），押红黑最低（1:1）'
+      },
+      natural: {
+        desc: '电子轮盘常见下注类型：',
+        examples: [
+          'Straight Up：押单个数字（1:35）',
+          'Split：押相邻两个数字（1:17）',
+          'Street：押一行三个数字（1:11）',
+          'Corner：押四个数字（1:8）',
+          'Red / Black：押红或黑（1:1）',
+          'Odd / Even：押单或双（1:1）',
+          '1-18 / 19-36：押大小（1:1）'
+        ],
+        note: '欧洲轮盘 RTP 约 97.3%，美洲轮盘约 94.74%（因多了 00）。'
+      },
+      odds: [
+        { name: 'Straight Up（单个数字）', value: '1 赔 35' },
+        { name: 'Split（两数字）', value: '1 赔 17' },
+        { name: 'Street（三数字）', value: '1 赔 11' },
+        { name: 'Corner（四数字）', value: '1 赔 8' },
+        { name: 'Six Line（六数字）', value: '1 赔 5' },
+        { name: 'Column / Dozen（12 数字）', value: '1 赔 2' },
+        { name: 'Red / Black / Odd / Even / 1-18 / 19-36', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'European Roulette', zh: '欧洲轮盘（1 个 0）' },
+        { en: 'American Roulette', zh: '美洲轮盘（0 + 00）' },
+        { en: 'Straight Up', zh: '押单个数字' },
+        { en: 'Multi-Wheel', zh: '多轮同时押' }
+      ],
+      faq: [
+        { q: '欧洲轮盘和美洲轮盘哪个好？', a: '欧洲轮盘只有 1 个 0，RTP 97.3%，高于美洲轮盘 94.74%。' },
+        { q: '押红黑的概率是多少？', a: '欧洲轮盘 18/37 ≈ 48.65%，美洲轮盘 18/38 ≈ 47.37%。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Electronic Sic Bo': {
+      zh: '电子骰宝',
+      tagline: '电子版骰宝——3 个骰子同时掷出，通过屏幕下注大小 / 单双 / 点数 / 组合等，节奏极快。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注类型（大小 / 单双 / 点数 / 组合）。' },
+        { n: 2, title: '掷骰', desc: '点击投注后，3 个骰子自动掷出。' },
+        { n: 3, title: '显示结果', desc: '骰子点数公开显示。' },
+        { n: 4, title: '结算', desc: '按命中情况派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '骰子数', v: '3 个（每个 1-6）' },
+          { k: '总点数', v: '3 - 18' },
+          { k: '大', v: '11 - 17（不含围骰）' },
+          { k: '小', v: '4 - 10（不含围骰）' }
+        ],
+        note: '围骰（三个骰子点数相同）时，大小单双均输。',
+        examples: ['3 + 4 + 5 = 12 → 大', '1 + 2 + 3 = 6 → 小', '5 + 5 + 5 = 围骰，大小通杀'],
+        order: '围骰 > 特定组合 > 大小/单双'
+      },
+      natural: {
+        desc: '电子骰宝常见下注类型：',
+        examples: [
+          '大小：11-17 为大，4-10 为小',
+          '单双：总点数为单或双',
+          '围骰：三个骰子点数相同（1:150 或 1:180）',
+          '特定三骰：指定三个骰子点数相同',
+          '点数总和：押特定总和（4-17）',
+          '单个骰子：押某个数字出现 1/2/3 次',
+          '双骰组合：押两个特定数字同时出现'
+        ],
+        note: '电子骰宝 RTP 约 97.2%（视具体下注类型）。'
+      },
+      odds: [
+        { name: '大 / 小', value: '1 赔 1' },
+        { name: '单 / 双', value: '1 赔 1' },
+        { name: '围骰（指定）', value: '1 赔 150' },
+        { name: '全围（任意围骰）', value: '1 赔 24' },
+        { name: '单骰（1 个）', value: '1 赔 1' },
+        { name: '单骰（2 个）', value: '1 赔 2' },
+        { name: '单骰（3 个）', value: '1 赔 3' },
+        { name: '双骰组合', value: '1 赔 5' },
+        { name: '点数总和（4 或 17）', value: '1 赔 60' },
+        { name: '点数总和（5 或 16）', value: '1 赔 30' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Big / Small', zh: '大 / 小' },
+        { en: 'Odd / Even', zh: '单 / 双' },
+        { en: 'Triple', zh: '围骰' },
+        { en: 'Total', zh: '点数总和' }
+      ],
+      faq: [
+        { q: '围骰是什么？', a: '围骰指三个骰子点数完全相同（如 3-3-3），赔率 1:150。围骰时大小单双均输。' },
+        { q: '大 / 小的概率是多少？', a: '大（11-17）概率 48.61%，小（4-10）概率 48.61%，围骰通杀。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Electronic Craps': {
+      zh: '电子Craps',
+      tagline: '电子版 Craps——掷 2 个骰子，通过多轮下注决定输赢。规则复杂但赔率多样，是欧美最流行的骰子游戏。',
+      quickStart: [
+        { n: 1, title: 'Come Out Roll', desc: '第一轮掷骰。若掷出 7 或 11 直接赢，2/3/12 直接输。' },
+        { n: 2, title: 'Point 阶段', desc: '若掷出 4/5/6/8/9/10，则该数成为 Point。' },
+        { n: 3, title: 'Roll Point', desc: '继续掷，直到 Point 出现（Pass 赢）或 7 出现（Pass 输）。' },
+        { n: 4, title: '结算', desc: '根据 Pass Line / Don\'t Pass 及其他下注派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '骰子数', v: '2 个' },
+          { k: 'Come Out Win', v: '7 或 11' },
+          { k: 'Come Out Lose', v: '2 / 3 / 12' },
+          { k: 'Point 数字', v: '4 / 5 / 6 / 8 / 9 / 10' }
+        ],
+        note: 'Craps 规则复杂，但核心是 Pass Line 和 Don\'t Pass 两种基础下注。',
+        examples: [
+          'Come Out Roll 掷 7 → Pass 赢',
+          'Come Out Roll 掷 3 → Pass 输',
+          'Point = 6，掷 6 前掷 7 → Pass 输'
+        ],
+        order: 'Pass Line > Don\'t Pass > Come / Don\'t Come > 其他'
+      },
+      natural: {
+        desc: '电子 Craps 常见下注类型：',
+        examples: [
+          'Pass Line：Come Out 7/11 赢，2/3/12 输；其他数字成 Point 后追赢',
+          'Don\'t Pass：与 Pass 相反',
+          'Come / Don\'t Come：类似 Pass / Don\'t Pass 但独立下注',
+          'Field：一次下注押 2/3/4/9/10/11/12',
+          'Proposition：押特定组合，赔率高',
+          'Hardways：押 4/6/8/10 以对子形式出现'
+        ],
+        note: '电子 Craps RTP 约 98.6%（Pass Line）。'
+      },
+      odds: [
+        { name: 'Pass Line', value: '1 赔 1' },
+        { name: 'Don\'t Pass', value: '1 赔 1' },
+        { name: 'Come / Don\'t Come', value: '1 赔 1' },
+        { name: 'Field', value: '1 赔 1（部分数字 1 赔 2）' },
+        { name: 'Any 7', value: '1 赔 4' },
+        { name: 'Any Craps', value: '1 赔 7' },
+        { name: 'Hardway 4 / 10', value: '1 赔 7' },
+        { name: 'Hardway 6 / 8', value: '1 赔 9' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Come Out Roll', zh: '首掷' },
+        { en: 'Point', zh: '目标数' },
+        { en: 'Pass Line', zh: '过线' },
+        { en: 'Hardway', zh: '硬路（对子形式）' }
+      ],
+      faq: [
+        { q: 'Craps 规则复杂吗？', a: '基础规则简单（Pass / Don\'t Pass），但附加注种类多，需要学习。' },
+        { q: 'Pass Line 概率是多少？', a: 'Pass Line 命中概率约 49.3%，RTP 约 98.6%。' },
+        { q: 'Hardway 是什么？', a: 'Hardway 指 4/6/8/10 以对子形式出现（如 2+2、3+3、4+4、5+5），赔率较高。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    }
 
   };
 
