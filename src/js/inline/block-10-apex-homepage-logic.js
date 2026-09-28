@@ -396,56 +396,56 @@ document.addEventListener('click', function (e) {
 // ============================================================
 (function () {
   var DATA = [
-    { key: 'poker', label: '棋牌', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>', items: [
+    { key: 'poker', label: '棋牌热门', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>', items: [
       { en: 'Baccarat', zh: '百家樂', icon: 'card' },
       { en: 'Blackjack', zh: '21点', icon: 'card' },
       { en: 'Texas Hold\'em', zh: '德州扑克', icon: 'card' },
       { en: 'Omaha', zh: '奥马哈', icon: 'card' },
       { en: 'Niu Niu', zh: '牛牛', icon: 'card' }
     ]},
-    { key: 'slot', label: '电子', icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>', items: [
+    { key: 'slot', label: '电子热门', icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>', items: [
       { en: 'Slots', zh: '电子老虎机', icon: 'slot' },
       { en: 'Jackpot', zh: '累积奖池', icon: 'slot' },
       { en: 'Megaways', zh: 'Megaways', icon: 'slot' },
       { en: 'Hold & Win', zh: 'Hold & Win', icon: 'slot' },
       { en: 'Cluster Pays', zh: 'Cluster Pays', icon: 'slot' }
     ]},
-    { key: 'dice', label: '骰子', icon: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>', items: [
+    { key: 'dice', label: '骰子热门', icon: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>', items: [
       { en: 'Sic Bo', zh: '骰宝', icon: 'dice' },
       { en: 'Dice', zh: '骰子', icon: 'dice' },
       { en: 'Hi-Lo', zh: '高低', icon: 'dice' },
       { en: 'Craps', zh: 'Craps', icon: 'dice' },
       { en: 'Wheel', zh: '幸运转盘', icon: 'dice' }
     ]},
-    { key: 'sports', label: '体育', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>', items: [
+    { key: 'sports', label: '体育热门', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>', items: [
       { en: 'Football', zh: '足球', icon: 'sports' },
       { en: 'Basketball', zh: '篮球', icon: 'sports' },
       { en: 'Tennis', zh: '网球', icon: 'sports' },
       { en: 'Baseball', zh: '棒球', icon: 'sports' },
       { en: 'Ice Hockey', zh: '冰球', icon: 'sports' }
     ]},
-    { key: 'events', label: '赛事', icon: '<path d="M12 3v18M8 7h8M5 12h14"/>', items: [
+    { key: 'events', label: '赛事热门', icon: '<path d="M12 3v18M8 7h8M5 12h14"/>', items: [
       { en: 'Horse Racing', zh: '赛马', icon: 'events' },
       { en: 'Greyhound Racing', zh: '赛狗', icon: 'events' },
       { en: 'Motor Racing', zh: '赛车', icon: 'events' },
       { en: 'Virtual Horse Racing', zh: '虚拟赛马', icon: 'events' },
       { en: 'Virtual Racing', zh: '虚拟赛车', icon: 'events' }
     ]},
-    { key: 'instant', label: '即时', icon: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>', items: [
+    { key: 'instant', label: '即时游戏热门', icon: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>', items: [
       { en: 'Crash', zh: 'Crash', icon: 'instant' },
       { en: 'Mines', zh: 'Mines', icon: 'instant' },
       { en: 'Plinko', zh: 'Plinko', icon: 'instant' },
       { en: 'Keno', zh: '基诺', icon: 'instant' },
       { en: 'Bingo', zh: '宾果', icon: 'instant' }
     ]},
-    { key: 'esports', label: '电竞', icon: '<rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/>', items: [
+    { key: 'esports', label: '电竞热门', icon: '<rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/>', items: [
       { en: 'League of Legends', zh: '英雄联盟', icon: 'esports' },
       { en: 'Counter-Strike', zh: 'CS', icon: 'esports' },
       { en: 'Dota 2', zh: 'Dota 2', icon: 'esports' },
       { en: 'Valorant', zh: '无畏契约', icon: 'esports' },
       { en: 'EA Sports FC', zh: 'EA Sports FC', icon: 'esports' }
     ]},
-    { key: 'special', label: '特殊', icon: '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>', items: [
+    { key: 'special', label: '特殊/新型热门', icon: '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>', items: [
       { en: 'Fantasy Sports', zh: '梦幻体育', icon: 'special' },
       { en: 'Prediction Market', zh: '预测市场', icon: 'special' },
       { en: 'Peer-to-Peer', zh: 'P2P', icon: 'special' },
