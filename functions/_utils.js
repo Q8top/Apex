@@ -88,7 +88,7 @@ export async function verifyCaptchaTokenV2(env, token, ip, purpose) {
   if (!token) return { valid: false, reason: 'missing_token' };
   const secret = env.CAPTCHA_SECRET;
   if (!secret) return { valid: false, reason: 'no_secret' };
-  const ipHash = await _hashIP(ip || '', env.CAPTCHA_SALT || (secret ? secret + ':captcha' : ''));
+  const ipHash = await _hashIP(ip || '', env.CAPTCHA_SALT || secret || '');
   // purpose 必须传入，用于绑定 CAPTCHA token 与业务动作（防跨用途重放）
   const result = await _consumeCaptchaToken(env, token, secret, { ipHash, purpose });
   return result;

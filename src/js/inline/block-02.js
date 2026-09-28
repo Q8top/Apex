@@ -46,11 +46,24 @@
         page.style.cssText = 'text-align:center;padding:20px 0;';
         document.querySelector('.auth-card').appendChild(page);
       }
-      page.innerHTML = '<div style="width:64px;height:64px;margin:0 auto 16px;background:rgba(74,222,128,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
-        '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>' +
-        '<h3 style="color:#fff;margin-bottom:8px;font-size:18px;">' + title + '</h3>' +
-        '<p style="color:#888;font-size:13px;margin-bottom:24px;">' + desc + '</p>' +
-        '<button class="btn-primary" id="apex-success-btn">立即登录</button>';
+      page.replaceChildren();
+      var _iconWrap = document.createElement('div');
+      _iconWrap.style.cssText = 'width:64px;height:64px;margin:0 auto 16px;background:rgba(74,222,128,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;';
+      _iconWrap.innerHTML = '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#4ade80" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
+      var _h3 = document.createElement('h3');
+      _h3.style.cssText = 'color:#fff;margin-bottom:8px;font-size:18px;';
+      _h3.textContent = String(title || '');
+      var _p = document.createElement('p');
+      _p.style.cssText = 'color:#888;font-size:13px;margin-bottom:24px;';
+      _p.textContent = String(desc || '');
+      var _btn = document.createElement('button');
+      _btn.className = 'btn-primary';
+      _btn.id = 'apex-success-btn';
+      _btn.textContent = '立即登录';
+      page.appendChild(_iconWrap);
+      page.appendChild(_h3);
+      page.appendChild(_p);
+      page.appendChild(_btn);
       page.style.display = 'block';
       document.getElementById('apex-success-btn').onclick = () => { page.style.display = 'none'; switchTo('login-form'); };
     }

@@ -3,10 +3,14 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
 import { getCurrentUser } from '../../_auth.js';
 import { listPasskeysForUser } from '../../_passkey.js';
+import { enforceIpRateLimit } from '../../_rateLimit.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
+
+  const _rl = await enforceIpRateLimit(env, request, 'passkey-list', 30, 60);
+  if (_rl) return _rl;
 
   const user = await getCurrentUser(env, request);
   if (!user) return errorResponse('请先登录', 401, 'unauthenticated', requestId);

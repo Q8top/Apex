@@ -1,6 +1,7 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../_response.js';
 import { getCurrentUser } from '../_auth.js';
 import { hashSessionToken } from '../_session.js';
+import { enforceIpRateLimit } from '../_rateLimit.js';
 
 function maskUserAgent(ua) {
   const s = String(ua || '');
@@ -16,6 +17,9 @@ function maskUserAgent(ua) {
 export async function onRequestGet(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
+
+  const _rl = await enforceIpRateLimit(env, request, 'sessions-list', 30, 60);
+  if (_rl) return _rl;
 
   const user = await getCurrentUser(env, request);
   if (!user) return errorResponse('未登录', 401, 'unauthenticated', requestId);
@@ -41,6 +45,9 @@ export async function onRequestGet(context) {
 export async function onRequestDelete(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
+
+  const _rl = await enforceIpRateLimit(env, request, 'sessions-revoke', 5, 300);
+  if (_rl) return _rl;
 
   const user = await getCurrentUser(env, request);
   if (!user) return errorResponse('未登录', 401, 'unauthenticated', requestId);

@@ -147,7 +147,7 @@ export async function sendEmail(env, to, subject, text, html, idempotencyKey) {
           tag: 'email_sent',
           provider,
           attempt,
-          to,
+          to_masked: String(to).replace(/^(.{0,2}).*?(@.*)$/, '$1***$2'),
         }));
         return { sent: true, provider, messageId: result.messageId, attempts: attemptsLog };
       }

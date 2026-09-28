@@ -3,10 +3,14 @@ import { parseJsonBody } from '../_validation.js';
 import { verifyPassword } from '../_utils.js';
 import { getCurrentUser, buildClearAllSessionCookies } from '../_auth.js';
 import { writeAudit } from '../_audit.js';
+import { enforceIpRateLimit } from '../_rateLimit.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
+
+  const _rl = await enforceIpRateLimit(env, request, 'delete-account', 5, 300);
+  if (_rl) return _rl;
 
   const user = await getCurrentUser(env, request);
   if (!user) return errorResponse('未登录', 401, 'unauthenticated', requestId);

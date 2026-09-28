@@ -5,10 +5,14 @@ import {
   cleanupExpiredSessions,
 } from '../_auth.js';
 import { writeAudit } from '../_audit.js';
+import { enforceIpRateLimit } from '../_rateLimit.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
+
+  const _rl = await enforceIpRateLimit(env, request, 'logout', 30, 60);
+  if (_rl) return _rl;
 
   try {
     await destroyCurrentSession(env, request);
