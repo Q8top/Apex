@@ -608,7 +608,7 @@ html {
   flex: 1;
 }
 .apex-topbar-logo {
-  height: 18px !important;
+  height: 26px !important;
   width: auto;
   display: block;
   object-fit: contain;
@@ -792,7 +792,7 @@ html {
 @media (max-width: 400px) {
   .apex-topbar-title { font-size: 12px; letter-spacing: 0.4px; }
   .apex-topbar-sub { font-size: 6.5px; letter-spacing: 0.3px; }
-  .apex-topbar-logo { height: 18px !important; }
+  .apex-topbar-logo { height: 26px !important; }
   .apex-usercard-name { font-size: 13px; }
   .apex-usercard-balance { font-size: 13px; }
 }
