@@ -2032,3 +2032,108 @@ html, body, #apex-homepage {
   }
   .apex-cat-icon { width: 22px; height: 22px; }
 }
+
+/* ══════════════════════════════════════════════════
+   APEX 分类导航 — 3×3 宫格卡片
+   ══════════════════════════════════════════════════ */
+
+.apex-cats {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px !important;
+  padding: 14px 16px 16px 16px !important;
+  max-width: 640px !important;
+  margin: 0 auto !important;
+}
+
+.apex-cat {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 18px 8px !important;
+  background: #f5f5f7 !important;
+  border: 1px solid transparent !important;
+  border-radius: 14px !important;
+  color: #111111 !important;
+  font-family: -apple-system, system-ui, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent !important;
+  transition: all 0.18s ease !important;
+  min-height: 92px !important;
+  aspect-ratio: 1 / 0.95 !important;
+}
+
+.apex-cat:active {
+  transform: scale(0.97) !important;
+}
+
+.apex-cat-icon {
+  width: 26px !important;
+  height: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #555555 !important;
+  flex-shrink: 0 !important;
+  transition: color 0.18s ease !important;
+}
+.apex-cat-icon svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.apex-cat-text {
+  flex: none !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+/* 隐藏旧箭头（竖排列表用的） */
+.apex-cat-arrow {
+  display: none !important;
+}
+
+/* 激活态 */
+.apex-cat.is-active {
+  background: #111111 !important;
+  color: #ffffff !important;
+}
+.apex-cat.is-active .apex-cat-icon {
+  color: #ffffff !important;
+}
+
+/* 热门特殊：橙色高亮 */
+.apex-cat[data-cat="hot"]:not(.is-active) {
+  color: #ff6b00 !important;
+}
+.apex-cat[data-cat="hot"]:not(.is-active) .apex-cat-icon {
+  color: #ff6b00 !important;
+}
+.apex-cat[data-cat="hot"].is-active {
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b00 100%) !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.3) !important;
+}
+
+@media (max-width: 400px) {
+  .apex-cat {
+    padding: 16px 6px !important;
+    font-size: 12.5px !important;
+    min-height: 84px !important;
+    gap: 6px !important;
+  }
+  .apex-cat-icon,
+  .apex-cat-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
