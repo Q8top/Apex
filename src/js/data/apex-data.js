@@ -3452,6 +3452,264 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
     }
+,
+    'Pachinko': {
+      zh: '弹珠机',
+      tagline: '日本最流行的娱乐机——小球从上落下，经过针阵弹跳，落入不同奖励槽。既有赌博版（パチンコ）也有纯娱乐版（パチスロ）。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '投入游戏币，系统释放小球。' },
+        { n: 2, title: '发射', desc: '调节力度后发射小球。' },
+        { n: 3, title: '落点', desc: '小球经过针阵弹跳后落入底部槽位。' },
+        { n: 4, title: '结算', desc: '根据落点派彩 + 可能触发奖励机制。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '弹珠', v: '1 个或多个同时' },
+          { k: '针阵', v: '决定球路随机性' },
+          { k: '槽位', v: '5-20 个，赔率不同' },
+          { k: '特殊槽', v: '触发奖励局' }
+        ],
+        note: 'Pachinko 结果由物理模拟或 RNG 决定，不可预测。',
+        examples: ['落入高赔槽 → 大量奖励', '落入奖励槽 → 触发 Fever 模式', '落入普通槽 → 少量奖励'],
+        order: 'Fever 模式 > 高赔槽 > 普通槽 > 落空'
+      },
+      natural: {
+        desc: 'Pachinko 常见类型：',
+        examples: [
+          'Classic Pachinko：经典街机版',
+          'Digital Pachinko：数字模拟版',
+          'Pachislot：老虎机 + Pachinko 混合（日式）',
+          'Fever Mode：进入奖励状态，短时间高产出'
+        ],
+        note: '日本 Pachinko 为合法娱乐，但在多数国家属于赌博。RTP 通常 80% - 90%。'
+      },
+      odds: [
+        { name: 'Fever 模式', value: '高产出，可连续触发' },
+        { name: '高赔槽', value: '数十至数百倍' },
+        { name: '普通槽', value: '1-10 倍' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Pachinko', zh: '弹珠机' },
+        { en: 'Fever Mode', zh: '奖励模式' },
+        { en: 'Pachislot', zh: '日式混合机' }
+      ],
+      faq: [
+        { q: 'Pachinko 结果可预测吗？', a: '不可预测。结果由 RNG 或物理引擎决定，每次独立。' },
+        { q: 'Pachinko 和老虎机有什么不同？', a: 'Pachinko 通过弹珠落入槽位派彩，老虎机通过转轴符号组合派彩。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Video Bingo': {
+      zh: '视频宾果',
+      tagline: '电子版宾果——屏幕显示 5x5 卡片，系统随机抽号，先连成线者中奖。节奏快，可多卡同玩。',
+      quickStart: [
+        { n: 1, title: '选卡', desc: '选择 1-4 张宾果卡（每张 5x5 数字）。' },
+        { n: 2, title: '下注', desc: '每张卡单独下注。' },
+        { n: 3, title: '抽号', desc: '系统按随机顺序抽取数字，自动标记。' },
+        { n: 4, title: '中奖', desc: '连成一条线（横 / 竖 / 斜）即中奖。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '卡片', v: '5x5 = 25 格（通常中间为 Free）' },
+          { k: '号码范围', v: '1 - 75 或 1 - 90' },
+          { k: '中奖线', v: '横 / 竖 / 斜任意一条完整线' },
+          { k: '多卡', v: '可同时玩 1-4 张' }
+        ],
+        note: 'Video Bingo 与实体宾果规则一致，只是通过屏幕展示和自动标记。',
+        examples: ['连成第一行 → Line 中奖', '连成对角线 → 中奖', '连成 4 条线 → 4-Line 中奖'],
+        order: 'Full House（全中）> 4-Line > 3-Line > 2-Line > 1-Line'
+      },
+      natural: {
+        desc: 'Video Bingo 特色：',
+        examples: [
+          'Auto Mark：自动标记抽出的号码',
+          'Pattern Bingo：中奖条件为特定图案',
+          'Multi-Card：同时玩多张卡，中奖机会更多',
+          'Progressive Jackpot：全中触发累进奖池',
+          'Speed Bingo：抽号速度加快，节奏紧凑'
+        ],
+        note: 'Video Bingo RTP 通常 92% - 95%。'
+      },
+      odds: [
+        { name: '1-Line', value: '1-5 倍下注' },
+        { name: '2-Line', value: '5-15 倍下注' },
+        { name: '3-Line', value: '15-30 倍下注' },
+        { name: '4-Line', value: '30-100 倍下注' },
+        { name: 'Full House', value: '100-1,000 倍下注' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Bingo Card', zh: '宾果卡' },
+        { en: 'Line', zh: '连线' },
+        { en: 'Full House', zh: '全中' },
+        { en: 'Pattern', zh: '图案' }
+      ],
+      faq: [
+        { q: '视频宾果和实体宾果一样吗？', a: '规则一致，只是通过屏幕展示，自动标记。' },
+        { q: '可以同时玩多张卡吗？', a: '可以，通常最多 4 张。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Video Keno': {
+      zh: '视频基诺',
+      tagline: '从 1-80 中选 1-20 个数字，系统随机抽取 20 个，命中越多赔率越高。玩法简单，中奖机会多。',
+      quickStart: [
+        { n: 1, title: '选号', desc: '从 1-80 中选择 1-20 个数字。' },
+        { n: 2, title: '下注', desc: '选择下注额。' },
+        { n: 3, title: '抽号', desc: '系统随机抽取 20 个数字。' },
+        { n: 4, title: '结算', desc: '命中越多，赔率越高。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '号码池', v: '1 - 80' },
+          { k: '玩家选号', v: '1 - 20 个' },
+          { k: '系统抽取', v: '20 个' },
+          { k: '中奖条件', v: '命中数量达指定阈值' }
+        ],
+        note: 'Video Keno 中奖概率取决于选号数量与命中数量。',
+        examples: ['选 5 个，命中 5 个 → 高赔', '选 10 个，命中 0 个 → 也可能中奖（部分版本）', '选 20 个，命中 0 个 → 超高赔（极罕见）'],
+        order: '命中全部 > 命中大部分 > 命中少量 > 无命中（部分版本中奖）'
+      },
+      natural: {
+        desc: 'Video Keno 常见变体：',
+        examples: [
+          'Classic Keno：标准 1-80',
+          '20/80 Keno：必选 20 个数字',
+          'Multi-Draw：一次选号，连续多期抽奖',
+          'Speed Keno：抽号速度快',
+          'Progressive Keno：命中全部触发累进奖池'
+        ],
+        note: 'Video Keno RTP 通常 90% - 95%，取决于选号数量。'
+      },
+      odds: [
+        { name: '选 1 命中 1', value: '1 赔 3' },
+        { name: '选 5 命中 5', value: '1 赔 800' },
+        { name: '选 10 命中 10', value: '1 赔 100,000' },
+        { name: '选 20 命中 0', value: '1 赔 3,000' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。具体赔率以游戏内为准。',
+      terms: [
+        { en: 'Keno', zh: '基诺' },
+        { en: 'Spot', zh: '选号数量' },
+        { en: 'Catch', zh: '命中数量' }
+      ],
+      faq: [
+        { q: 'Keno 中奖概率高吗？', a: '取决于选号数量。选号越少中奖越容易但赔率越低。' },
+        { q: '选几个号最容易中奖？', a: '选 1-3 个号命中概率最高，但赔率低；选 10+ 个号赔率高但难度大。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Fish Games': {
+      zh: '捕鱼游戏',
+      tagline: '射击类街机游戏——玩家发射炮弹捕鱼，每条鱼对应不同分值。炮台等级越高伤害越大，是亚洲最火的电子游戏形式。',
+      quickStart: [
+        { n: 1, title: '选择炮台', desc: '选择炮台等级（通常 1-1000 倍）。' },
+        { n: 2, title: '瞄准', desc: '点击屏幕上的鱼进行射击。' },
+        { n: 3, title: '捕获', desc: '炮弹击中鱼后，若伤害足够则捕获。' },
+        { n: 4, title: '结算', desc: '捕获鱼获得对应分值 × 炮台倍率。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '炮台等级', v: '1x - 1000x' },
+          { k: '鱼种', v: '小鱼 - 大鱼 - BOSS' },
+          { k: '捕获概率', v: '与炮台等级 + 鱼种相关' },
+          { k: '消耗', v: '每次射击消耗炮台倍率' }
+        ],
+        note: '炮台等级越高，捕获概率越高，但每次射击消耗也越大。',
+        examples: ['1x 炮台射小鱼 → 消耗 1，捕获得 2-5', '100x 炮台射大鱼 → 消耗 100，捕获得 1000-5000'],
+        order: 'BOSS > 金鲨 > 金龙 > 大鱼 > 中鱼 > 小鱼'
+      },
+      natural: {
+        desc: 'Fish Games 特色：',
+        examples: [
+          '炮台升级：捕获累积达阈值可升级',
+          '特殊武器：激光、闪电、锁定',
+          'BOSS 战：击杀 BOSS 获得高额奖励',
+          '多人同屏：与其他玩家一起捕鱼',
+          '专属技能：冻结 / 狂暴 / 追踪'
+        ],
+        note: 'Fish Games RTP 通常 90% - 96%。'
+      },
+      odds: [
+        { name: '小鱼', value: '2x - 10x 炮台' },
+        { name: '中鱼', value: '10x - 50x 炮台' },
+        { name: '大鱼', value: '50x - 500x 炮台' },
+        { name: 'BOSS', value: '500x - 5,000x 炮台' },
+        { name: '金龙 / 金鲨', value: '5,000x - 50,000x 炮台' }
+      ],
+      oddsNote: 'Xx 表示捕获后的奖励 = 炮台倍率 × X。',
+      terms: [
+        { en: 'Fish Games', zh: '捕鱼游戏' },
+        { en: 'Cannon', zh: '炮台' },
+        { en: 'BOSS', zh: 'BOSS 鱼' },
+        { en: 'Laser', zh: '激光' }
+      ],
+      faq: [
+        { q: '炮台等级越高越好吗？', a: '不一定。高等级炮台消耗大，捕获概率高但风险也大。建议先用低等级练手。' },
+        { q: 'BOSS 能捕获吗？', a: '能，但概率极低。击杀 BOSS 可获得高额奖励。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Arcade Casino Games': {
+      zh: '街机类',
+      tagline: '融合街机元素的赌场游戏——如推币机、摇奖机、转轮、老虎机等。既有娱乐性，又有赌场奖励机制。',
+      quickStart: [
+        { n: 1, title: '选择游戏', desc: '选择具体街机类游戏（推币机 / 摇奖机等）。' },
+        { n: 2, title: '下注', desc: '投入游戏币。' },
+        { n: 3, title: '操作', desc: '点击 / 滑动 / 按键操作。' },
+        { n: 4, title: '结算', desc: '根据游戏结果派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '游戏类型', v: '推币 / 摇奖 / 转轮 / 其他' },
+          { k: '玩法', v: '街机操作 + 赌场奖励' },
+          { k: '奖励', v: '视游戏而定' },
+          { k: '中奖方式', v: '命中 / 累积 / 触发' }
+        ],
+        note: 'Arcade Casino Games 融合街机娱乐与赌场奖励，适合休闲玩家。',
+        examples: [
+          '推币机：推动硬币掉落中奖口',
+          '摇奖机：摇动后数字组合决定结果',
+          '转轮：转动指针停在奖励区'
+        ],
+        order: 'Jackpot > 大奖 > 中奖 > 无奖'
+      },
+      natural: {
+        desc: 'Arcade 常见游戏类型：',
+        examples: [
+          'Coin Pusher：推币机',
+          'Prize Wheel：摇奖转轮',
+          'Claw Machine：抓娃娃机',
+          'Pachinko Machine：弹珠机（街机版）',
+          'Redemption Games：兑换券游戏',
+          'Multiplayer Arcade：多人同屏街机'
+        ],
+        note: 'Arcade Casino Games RTP 视具体游戏而定，通常 85% - 95%。'
+      },
+      odds: [
+        { name: 'Jackpot', value: '100x - 1,000x' },
+        { name: '大奖', value: '10x - 100x' },
+        { name: '中奖', value: '1x - 10x' },
+        { name: '无奖', value: '0' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Arcade', zh: '街机' },
+        { en: 'Coin Pusher', zh: '推币机' },
+        { en: 'Prize Wheel', zh: '摇奖转轮' },
+        { en: 'Redemption', zh: '兑换券' }
+      ],
+      faq: [
+        { q: '街机类和普通赌场游戏有什么不同？', a: '街机类更强调互动和娱乐，通过操作技巧或随机事件影响结果。' },
+        { q: '街机类公平吗？', a: '公平。核心 RNG 与普通赌场游戏一致，操作只是展示层。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    }
 
   };
 
