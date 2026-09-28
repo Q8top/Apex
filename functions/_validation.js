@@ -42,7 +42,6 @@ const ALPHABET_REV = 'zyxwvutsrqponmlkjihgfedcba';
 const DIGITS_FWD   = '0123456789';
 const DIGITS_REV   = '9876543210';
 
-const ALPHABwET_FWD = 'abcdefghijklmnopqrstuvxyz';
 
 function containsSequence(haystack, needles, minLen = 4) {
   const h = String(haystack || '').toLowerCase();

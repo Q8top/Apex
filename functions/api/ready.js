@@ -6,6 +6,7 @@ import { cleanupExpiredChallenges } from '../_passkey.js';
 import { cleanupExpiredTokens } from '../_captcha.js';
 
 export async function onRequestGet(context) {
+  const { env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
   try {
     await context.env.apex_db.prepare('SELECT 1').first();

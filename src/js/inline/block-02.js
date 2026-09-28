@@ -20,29 +20,6 @@
       el.innerHTML = p.type === 'password' ? EYE_OPEN : EYE_CLOSED;
     };
 
-    // ========== 2. 人机验证 ==========
-    window.startCaptcha = function(box) {
-      if (box.dataset.status === 'success' || box.dataset.status === 'verifying') return;
-      box.dataset.status = 'verifying';
-      box.classList.add('verifying');
-      let progress = 0;
-      const percent = box.querySelector('.apex-captcha-percent');
-      percent.textContent = '0%';
-      const interval = setInterval(() => {
-        progress += Math.floor(apexUIRandom() * 15) + 5;
-        if (progress > 100) progress = 100;
-        percent.textContent = progress < 100 ? progress + '%' : '验证成功';
-        if (progress === 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            box.classList.remove('verifying');
-            box.classList.add('success');
-            box.dataset.status = 'success';
-          }, 300);
-        }
-      }, 100);
-    };
-
     // ========== 3. Toast ==========
     function toast(msg, type) {
       let t = document.getElementById('apex-toast');

@@ -31,7 +31,7 @@
     languages.forEach(lang => {
       const item = document.createElement('div');
       item.className = 'lang-item';
-      item.innerHTML = '<span>' + lang.flag + '</span><span>' + lang.name + '</span>';
+      const _sp1=document.createElement('span');_sp1.textContent=lang.flag;const _sp2=document.createElement('span');_sp2.textContent=lang.name;item.replaceChildren(_sp1,_sp2);
       item.onclick = (e) => {
         e.stopPropagation();
         currentFlag.textContent = lang.flag;
@@ -69,22 +69,29 @@
       const progressText = document.getElementById('splash-progress-text');
 
       let progress = 0;
+      let _splashHidden = false;
+      const _hideSplash = function() {
+        if (_splashHidden) return;
+        _splashHidden = true;
+        try {
+          splash.classList.add('hide');
+          sessionStorage.setItem('apex_splash_shown', 'true');
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.width = '';
+        } catch (e) {}
+      };
+      setTimeout(_hideSplash, 5000);
       const interval = setInterval(() => {
         progress += Math.floor(apexUIRandom() * 2) + 2;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
-        progressText.innerHTML = 'APEX 系统加载中... <span>' + progress + '%</span>';
+        progressText.textContent='APEX 系统加载中... '+progress+'%';
         if (progress === 100) {
           clearInterval(interval);
-          progressText.innerHTML = 'APEX系统加载完成';
-          setTimeout(() => {
-            splash.classList.add('hide');
-            sessionStorage.setItem('apex_splash_shown', 'true');
-            document.documentElement.style.overflow = '';
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-          }, 800);
+          progressText.textContent='APEX系统加载完成';
+          setTimeout(_hideSplash, 800);
         }
       }, 100);
     })();

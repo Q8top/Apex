@@ -1,144 +1,107 @@
-import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
-import { parseJsonBody, sanitize } from '../../_validation.js';
-import { verifyPasswordDetailed, VERIFY_RESULT } from '../../_password.js';
-import { buildAdminCookie, buildClearLegacyAdminCookie, createAdminSession, audit } from '../../_admin.js';
-import { getConfig } from '../../_config.js';
-import { enforceIpRateLimit, enforceKeyRateLimit } from '../../_rateLimit.js';
-import { sha256Hex } from '../../_security.js';
+// Apex 用户登录 API（账号 + 密码 + 人机验证）
+import { jsonResponse, errorResponse, optionsResponse } from '../_response.js';
+import { verifyPasswordDetailed, VERIFY_RESULT } from '../_password.js';
+import { parseJsonBody, sanitize } from '../_validation.js';
+import { hashPassword, needsRehash } from '../_utils.js';
+import { getConfig } from '../_config.js';
+import { buildSessionCookie, createUserSession } from '../_auth.js';
+import { enforceIpRateLimit, enforceKeyRateLimit } from '../_rateLimit.js';
+import { verifyCaptchaTokenV2 } from '../_utils.js';
+import { writeAudit } from '../_audit.js';
+import { getClientIP } from '../_security.js';
 
-async function verifyTotpSafe(secret, code) {
-  if (!secret || !code) return false;
+async function upgradePasswordHashIfNeeded(env, user, plainPassword) {
   try {
-    const mod = await import('../../_totp.js');
-    return await mod.verifyTotp(secret, code);
+    if (!needsRehash(user.password_hash)) return;
+    const newHash = await hashPassword(plainPassword);
+    await env.apex_db.prepare(
+      'UPDATE users SET password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+    ).bind(newHash, user.id).run();
   } catch (error) {
-    console.error('[AdminLogin] totp error:', error.message);
-    return false;
-  }
-}
-
-// P11-J: 返回 { ok, counter }，用于重放保护
-async function verifyTotpDetailedSafe(secret, code) {
-  if (!secret || !code) return { ok: false, counter: 0 };
-  try {
-    const mod = await import('../../_totp.js');
-    return await mod.verifyTotpDetailed(secret, code);
-  } catch (error) {
-    console.error('[AdminLogin] totp error:', error.message);
-    return { ok: false, counter: 0 };
+    console.error('[Login] hash upgrade failed:', error.message);
   }
 }
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
-  const config = getConfig(env);
 
-  const ipLimited = await enforceIpRateLimit(env, request, 'admin-login-ip', 10, 300);
-  if (ipLimited) return ipLimited;
+  const limited = await enforceIpRateLimit(env, request, 'login-ip', 20, 60);
+  if (limited) return limited;
 
-  const parsed = await parseJsonBody(request, 2048);
+  const parsed = await parseJsonBody(request, 4096);
   if (!parsed.ok) return errorResponse(parsed.message, parsed.status, 'bad_request', requestId);
+  const body = parsed.data || {};
 
-  const username = sanitize(parsed.data.username, 64);
-  const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
-if (typeof password !== 'string' || password.length === 0 || password.length > 256) {
-    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
-  }
-    const totpCode = sanitize(parsed.data.totpCode, 8);
+  const account = sanitize(body.account, 200);
+  const password = typeof body.password === 'string' ? body.password : '';
+  const captchaToken = typeof body.captchaToken === 'string' ? body.captchaToken : '';
 
-  if (!username || !password) {
+  if (!account || !password) {
     return errorResponse('账号和密码不能为空', 400, 'missing_fields', requestId);
   }
+  if (password.length > 256) {
+    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
+  }
+  if (!captchaToken) {
+    return errorResponse('请先完成人机验证', 400, 'captcha_missing', requestId);
+  }
 
-  // P11-J: admin username 加盐哈希后再作为 rate-limit key，避免明文落库
-  const usernameHash = await sha256Hex('apex_admin_login_v1:' + username);
-  const accLimited = await enforceKeyRateLimit(env, 'admin-login-account', `admin:${usernameHash}`, 10, 900);
-  if (accLimited) return accLimited;
+  const captchaIp = getClientIP(request);
+  const captcha = await verifyCaptchaTokenV2(env, captchaToken, captchaIp, 'login');
+  if (!captcha.valid) {
+    return errorResponse('人机验证无效或已过期，请重新验证', 400, 'captcha_invalid', requestId);
+  }
 
-  const admin = await env.apex_db.prepare(
-    'SELECT id, username, password_hash, role, totp_secret, totp_enabled, status, last_totp_counter FROM admin_users WHERE username = ? LIMIT 1'
-  ).bind(username).first();
+  const accountLimited = await enforceKeyRateLimit(env, 'login-account', 'acc:' + account.toLowerCase(), 10, 300);
+  if (accountLimited) return accountLimited;
 
-  if (!admin) {
-    await audit(env, { action: 'admin_login_failed', metadata: { reason: 'no_user' } }, request);
+  const accountLower = account.toLowerCase();
+  const user = await env.apex_db.prepare(
+    'SELECT id, username, email, password_hash, email_verified, status FROM users WHERE username = ? OR LOWER(email) = ? LIMIT 1'
+  ).bind(account, accountLower).first();
+
+  if (!user) {
+    await writeAudit(env, { action: 'login_failed', metadata: { reason: 'no_user' } }, request);
     return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
   }
-  if (admin.status && admin.status !== 'active') {
-    await audit(env, { action: 'admin_login_blocked', actorId: admin.id, actorType: 'admin' }, request);
-    return errorResponse('管理员账号已禁用', 403, 'admin_disabled', requestId);
+  if (user.status && user.status !== 'active') {
+    await writeAudit(env, { action: 'login_blocked', actorId: user.id, actorType: 'user', metadata: { status: user.status } }, request);
+    return errorResponse('账号已被禁用，请联系管理员', 403, 'account_disabled', requestId);
   }
 
-  // 针对同一 admin 账号的失败计数 lockout（防爆破）
-
-
-  const adminKeyLimit = await enforceKeyRateLimit(env, 'admin-login-key', `admin:${admin.id}`, 5, 900);
-
-
-  if (adminKeyLimit) {
-
-
-    await audit(env, { action: 'admin_login_rate_limited', actorId: admin.id, actorType: 'admin' }, request);
-
-
-    return adminKeyLimit;
-
-
+  const vres = await verifyPasswordDetailed(password, user.password_hash);
+  if (vres === VERIFY_RESULT.NEEDS_RESET) {
+    await writeAudit(env, { action: 'login_needs_reset', actorId: user.id, actorType: 'user' }, request);
+    return errorResponse('该账号需要重新设置密码，请通过忘记密码完成重置', 409, 'password_requires_reset', requestId);
   }
-
-
-
-    const vres = await verifyPasswordDetailed(password, admin.password_hash);
-    if (vres === VERIFY_RESULT.NEEDS_RESET) {
-      await audit(env, { action: 'admin_login_needs_reset', actorType: 'admin', metadata: { username } }, request);
-      return errorResponse('该管理员账号需要重新设置密码，请联系系统管理员', 409, 'password_requires_reset', requestId);
-    }
-    if (vres !== VERIFY_RESULT.MATCH) {
-    await audit(env, { action: 'admin_login_failed', actorId: admin.id, actorType: 'admin', metadata: { reason: 'bad_password' } }, request);
+  if (vres !== VERIFY_RESULT.MATCH) {
+    await writeAudit(env, { action: 'login_failed', actorId: user.id, actorType: 'user', metadata: { reason: 'bad_password' } }, request);
     return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
   }
 
-  // MFA 检查
-  if (admin.totp_enabled) {
-    if (!totpCode) {
-      return errorResponse('请输入 MFA 验证码', 401, 'need_mfa', requestId);
-    }
-    const mfaRes = await verifyTotpDetailedSafe(admin.totp_secret, totpCode);
-    if (!mfaRes.ok) {
-      await audit(env, { action: 'admin_mfa_failed', actorId: admin.id, actorType: 'admin' }, request);
-      return errorResponse('MFA 验证码错误', 401, 'invalid_mfa', requestId);
-    }
-    // P11-J: TOTP 重放保护——本次匹配的 counter 必须严格大于已记录值
-    const lastCounter = Number(admin.last_totp_counter || 0);
-    if (mfaRes.counter <= lastCounter) {
-      await audit(env, { action: 'admin_mfa_replay_detected', actorId: admin.id, actorType: 'admin' }, request);
-      return errorResponse('MFA 验证码错误', 401, 'invalid_mfa', requestId);
-    }
-    await env.apex_db.prepare(
-      'UPDATE admin_users SET last_totp_counter = ? WHERE id = ?'
-    ).bind(mfaRes.counter, admin.id).run();
-  }
+  await upgradePasswordHashIfNeeded(env, user, password);
 
-  const session = await createAdminSession(env, admin.id, request);
-  const token = session.token;
+  const session = await createUserSession(env, user.id, request);
+  const config = getConfig(env);
 
   await env.apex_db.prepare(
-    'UPDATE admin_users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
-  ).bind(admin.id).run();
+    'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
+  ).bind(user.id).run();
 
-  await audit(env, {
-    action: 'admin_login_success',
-    actorId: admin.id,
-    actorType: 'admin',
-    metadata: { role: admin.role },
-  }, request);
+  await writeAudit(env, { action: 'login_success', actorId: user.id, actorType: 'user' }, request);
 
   return jsonResponse({
     success: true,
     message: '登录成功',
-    admin: { id: admin.id, username: admin.username, role: admin.role },
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      emailVerified: Boolean(user.email_verified),
+    },
   }, 200, requestId, {
-    'Set-Cookie': [buildClearLegacyAdminCookie(env), buildAdminCookie(token, env)],
+    'Set-Cookie': buildSessionCookie(session.token, config.sessionMaxAge, env),
   });
 }
 

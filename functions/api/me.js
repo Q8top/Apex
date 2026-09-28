@@ -10,6 +10,8 @@ export async function onRequestGet(context) {
     if (!user) {
       const headers = new Headers();
       headers.set('Content-Type', 'application/json; charset=utf-8');
+      headers.set('Cache-Control', 'no-store');
+      headers.set('X-Content-Type-Options', 'nosniff');
       if (requestId) headers.set('X-Request-ID', requestId);
       for (const c of buildClearAllSessionCookies(env)) {
         headers.append('Set-Cookie', c);

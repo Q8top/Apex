@@ -21,7 +21,6 @@
 /scripts/*                /404.html  302
 /tests/*                  /404.html  302
 /docs/*                   /404.html  302
-/src/*                    /404.html  302
 /backups/*                /404.html  302
 /.wrangler/*              /404.html  302
 /.git/*                   /404.html  302
