@@ -284,3 +284,34 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
+
+
+// ============================================================
+// 二级 tab 栏 - APEX-TABS-BIND
+// ============================================================
+(function () {
+  function bind() {
+    var tabs = document.querySelector('.apex-tabs');
+    if (!tabs) return;
+    tabs.querySelectorAll('.apex-tabs-item').forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        var tab = item.dataset.tab;
+        tabs.querySelectorAll('.apex-tabs-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === item);
+        });
+        if (tab !== 'lobby') {
+          if (window.__apex && window.__apex.toast) {
+            var labels = { recent: '最近', favorites: '收藏' };
+            window.__apex.toast(labels[tab] + ' 功能开发中，敬请期待', 'info');
+          }
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
