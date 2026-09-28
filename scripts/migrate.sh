@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-# Apex 迁移系统
+# Apex 迁移系统（P9 修复版）
+# 关键改动：
+#   1. 已应用迁移按 name 匹配（避免 version 4/5 位不一致导致重跑）
+#   2. grep 正则兼容本地 sqlite3 直接文本与远程 wrangler JSON
+#   3. INSERT OR IGNORE 防止重复写入
 # 用法：bash scripts/migrate.sh [--local|--remote] [--dry-run]
 set -uo pipefail
 
@@ -30,19 +34,23 @@ run_sql_raw "$MODE" "CREATE TABLE IF NOT EXISTS _migrations (
 );" >/dev/null 2>&1 || true
 echo "[OK] _migrations 表已确认"
 
-# 2) 载入已执行迁移
+# 2) 载入已执行迁移（按 name 匹配）
 declare -A APPLIED
 declare -A APPLIED_CHECKSUMS
-while IFS='|' read -r v c; do
-  v="$(echo "$v" | tr -d '[:space:]')"
-  c="$(echo "$c" | tr -d '[:space:]')"
-  if [ -n "$v" ]; then
-    APPLIED["$v"]=1
-    APPLIED_CHECKSUMS["$v"]="$c"
+while IFS='|' read -r nm ck; do
+  nm="$(echo "$nm" | tr -d '[:space:]')"
+  ck="$(echo "$ck" | tr -d '[:space:]')"
+  if [ -n "$nm" ]; then
+    APPLIED["$nm"]=1
+    APPLIED_CHECKSUMS["$nm"]="$ck"
   fi
-# 从 wrangler JSON 输出中提取 "0001|abcdef0123456789" 形式
-done < <(run_sql_raw "$MODE" "SELECT version || '|' || checksum AS vc FROM _migrations;" 2>/dev/null \
-  | grep -oP '"\K[0-9]{4}\|[a-f0-9]{16}(?=")' \
+# 提取 "0001_initial.sql|abcdef0123..." 形式
+# 兼容：
+#   - 本地 sqlite3 直接输出: "0001_initial.sql|abcdef..."
+#   - wrangler JSON 输出:    [{"vc":"0001_initial.sql|abcdef..."}]
+#   - 生产库 5 位 version:   name 字段若为 "30001_0001_initial.sql" 也能提取尾部
+done < <(run_sql_raw "$MODE" "SELECT name || '|' || checksum FROM _migrations;" 2>/dev/null \
+  | grep -oE '[0-9]{4}_[a-zA-Z0-9_]+\.sql\|[a-f0-9]+' \
   || true)
 
 APPLIED_COUNT=0
@@ -52,6 +60,7 @@ echo "[INFO] 已执行迁移数: $APPLIED_COUNT"
 # 3) 遍历迁移
 TOTAL=0
 NEW_APPLIED=0
+SKIPPED=0
 MISMATCH=0
 
 apply_one() {
@@ -81,13 +90,14 @@ for f in $(list_migrations); do
   name="$(basename "$f")"
   ck="$(calc_checksum "$f")"
 
-  if [ -n "${APPLIED[$v]:-}" ]; then
-    prev="${APPLIED_CHECKSUMS[$v]:-}"
+  if [ -n "${APPLIED[$name]:-}" ]; then
+    prev="${APPLIED_CHECKSUMS[$name]:-}"
     if [ "$prev" != "$ck" ]; then
       echo "[MISMATCH] $name checksum 与已执行不一致 (db=$prev file=$ck)"
       MISMATCH=$((MISMATCH+1))
     else
       echo "[SKIP] $name 已执行"
+      SKIPPED=$((SKIPPED+1))
     fi
     continue
   fi
@@ -104,8 +114,7 @@ for f in $(list_migrations); do
   fi
 
   esc_name="${name//\'/\'\'}"
-  # 记录到 _migrations（幂等：即使记录写入失败，SQL 本身已成功执行，不阻断流程）
-  if ! run_sql_write "$MODE" "INSERT INTO _migrations (version, name, checksum) VALUES ('$v', '$esc_name', '$ck');" >/dev/null 2>&1; then
+  if ! run_sql_write "$MODE" "INSERT OR IGNORE INTO _migrations (version, name, checksum) VALUES ('$v', '$esc_name', '$ck');" >/dev/null 2>&1; then
     echo "[WARN] $name 已执行但未写入 _migrations 记录"
   fi
 
@@ -114,7 +123,7 @@ for f in $(list_migrations); do
 done
 
 echo ""
-echo "[SUMMARY] total=$TOTAL applied=$NEW_APPLIED mismatch=$MISMATCH"
+echo "[SUMMARY] total=$TOTAL skipped=$SKIPPED applied=$NEW_APPLIED mismatch=$MISMATCH"
 
 if [ "$MISMATCH" -gt 0 ]; then
   echo "[ERROR] 存在 checksum 不匹配，请人工排查"
