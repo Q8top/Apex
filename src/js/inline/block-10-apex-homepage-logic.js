@@ -1093,3 +1093,199 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
+
+
+// ============================================================
+// 体育全屏子页面 - APEX-SPORTS-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'football', label: '足球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Handicap', zh: '让球' },
+      { en: 'Over / Under', zh: '大小' },
+      { en: 'Correct Score', zh: '比分' },
+      { en: 'Both Teams to Score', zh: '双方进球' }
+    ]},
+    { key: 'basketball', label: '篮球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Point Spread', zh: '分差' },
+      { en: 'Over / Under', zh: '大小' },
+      { en: 'Quarter Markets', zh: '单节' },
+      { en: 'Player Props', zh: '球员数据' }
+    ]},
+    { key: 'tennis', label: '网球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Set Winner', zh: '盘胜' },
+      { en: 'Game Handicap', zh: '局让' },
+      { en: 'Total Games', zh: '总局数' },
+      { en: 'Correct Score', zh: '正确比分' }
+    ]},
+    { key: 'baseball', label: '棒球', items: [
+      { en: 'Moneyline', zh: '胜负' },
+      { en: 'Run Line', zh: '让分' },
+      { en: 'Total Runs', zh: '总分' },
+      { en: 'Innings', zh: '单局' },
+      { en: 'Player Props', zh: '球员数据' }
+    ]},
+    { key: 'hockey', label: '冰球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Puck Line', zh: '让分' },
+      { en: 'Total Goals', zh: '总进球' },
+      { en: 'Period Markets', zh: '单节' },
+      { en: 'Correct Score', zh: '正确比分' }
+    ]},
+    { key: 'rugby', label: '橄榄球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Handicap', zh: '让分' },
+      { en: 'Total Points', zh: '总分' },
+      { en: 'Correct Score', zh: '正确比分' }
+    ]},
+    { key: 'cricket', label: '板球', items: [
+      { en: 'Match Winner', zh: '胜负' },
+      { en: 'Innings', zh: '局' },
+      { en: 'Runs', zh: '得分' },
+      { en: 'Player Performance', zh: '球员表现' }
+    ]},
+    { key: 'boxing', label: '拳击', items: [
+      { en: 'Fight Winner', zh: '胜者' },
+      { en: 'Method of Victory', zh: '获胜方式' },
+      { en: 'Round', zh: '回合' },
+      { en: 'Total Rounds', zh: '总回合' }
+    ]},
+    { key: 'mma', label: 'MMA', items: [
+      { en: 'Fight Winner', zh: '胜者' },
+      { en: 'Method of Victory', zh: '获胜方式' },
+      { en: 'Round', zh: '回合' },
+      { en: 'Fight Duration', zh: '比赛时长' }
+    ]},
+    { key: 'other', label: '其他体育', items: [
+      { en: 'Golf', zh: '高尔夫' },
+      { en: 'Volleyball', zh: '排球' },
+      { en: 'Badminton', zh: '羽毛球' },
+      { en: 'Table Tennis', zh: '乒乓球' },
+      { en: 'Handball', zh: '手球' },
+      { en: 'Darts', zh: '飞镖' },
+      { en: 'Snooker', zh: '斯诺克' },
+      { en: 'Cycling', zh: '自行车' },
+      { en: 'Swimming', zh: '游泳' },
+      { en: 'Athletics', zh: '田径' },
+      { en: 'Skiing', zh: '滑雪' },
+      { en: 'Motorsports', zh: '赛车' }
+    ]}
+  ];
+
+  var ICONS = {
+    football:   '<circle cx="12" cy="12" r="9"/><path d="M12 7l3 2v4l-3 2-3-2V9z"/>',
+    basketball: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5 5l14 14M19 5L5 19"/>',
+    tennis:     '<circle cx="12" cy="12" r="9"/><path d="M5 5c3 3 3 11 0 14M19 5c-3 3-3 11 0 14"/>',
+    baseball:   '<circle cx="12" cy="12" r="9"/><path d="M6 6c3 3 3 9 0 12M18 6c-3 3-3 9 0 12"/>',
+    hockey:     '<circle cx="12" cy="12" r="9"/><path d="M4 10h16M4 14h16"/>',
+    rugby:      '<ellipse cx="12" cy="12" rx="9" ry="6"/><path d="M8 9v6M12 9v6M16 9v6"/>',
+    cricket:    '<circle cx="12" cy="12" r="9"/><path d="M8 5v14M16 5v14"/>',
+    boxing:     '<path d="M6 6h6a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M14 8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4"/>',
+    mma:        '<circle cx="12" cy="12" r="9"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/>',
+    other:      '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-sports-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-sports-page';
+    wrap.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-sports-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">体育</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-sports-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(ICONS[cat.key])
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-sports-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    document.getElementById('apex-sports-back').addEventListener('click', function () {
+      wrap.style.display = 'none';
+    });
+
+    var sideEl = document.getElementById('apex-sports-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-sports-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var ic = ICONS[cat.key] || ICONS.other;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var btn = document.querySelector('.apex-cats .apex-cat[data-cat="sports"]');
+    if (btn) {
+      var nb = btn.cloneNode(true);
+      btn.parentNode.replaceChild(nb, btn);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var page = document.getElementById('apex-sports-page');
+        if (page) page.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+})();
