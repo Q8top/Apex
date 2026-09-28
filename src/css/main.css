@@ -2633,3 +2633,257 @@ html, body, #apex-homepage {
   transform: scale(0.98);
   box-shadow: 0 2px 8px rgba(255, 107, 0, 0.25);
 }
+
+/* ══════════════════════════════════════════════════
+   APEX RULES v2 — 轮播 + 详细规则 + 4 按钮
+   ══════════════════════════════════════════════════ */
+.apex-rules-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0 130px 0;
+  background: #f5f5f7;
+}
+.apex-rules-carousel {
+  position: relative;
+  margin: 16px 20px 0 20px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #e5e5e7;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+.apex-rules-track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+.apex-rules-slide {
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffffff;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.apex-rules-slide:nth-child(1) { background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%); }
+.apex-rules-slide:nth-child(2) { background: linear-gradient(135deg, #2d2416 0%, #4a3a24 100%); }
+.apex-rules-slide:nth-child(3) { background: linear-gradient(135deg, #16291c 0%, #2a4a34 100%); }
+.apex-rules-slide:nth-child(4) { background: linear-gradient(135deg, #2d1619 0%, #4a2228 100%); }
+.apex-rules-slide-title {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 6px;
+}
+.apex-rules-slide-sub {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+.apex-rules-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+}
+.apex-rules-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.apex-rules-dot.is-active {
+  width: 20px;
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+.apex-rules-titlerow {
+  padding: 20px 20px 0 20px;
+  text-align: center;
+}
+.apex-rules-name {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111111;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+.apex-rules-cname {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  color: #8a8a8a;
+  font-weight: 500;
+}
+
+.apex-rules-section {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 14px 20px 0 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.apex-rules-section-title {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.apex-rules-section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: #d4af37;
+  border-radius: 2px;
+}
+.apex-rules-desc {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13.5px;
+  color: #444444;
+  line-height: 1.75;
+}
+.apex-rules-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.apex-rules-list li {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13.5px;
+  color: #444444;
+  line-height: 1.7;
+  padding: 7px 0 7px 20px;
+  position: relative;
+}
+.apex-rules-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 15px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d4af37;
+}
+.apex-rules-odds {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 14px;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13.5px;
+}
+.apex-rules-odds-name {
+  color: #444444;
+}
+.apex-rules-odds-value {
+  color: #ff6b00;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* 底部 4 按钮 */
+.apex-rules-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 44px 44px 1fr 1.5fr;
+  gap: 8px;
+  align-items: center;
+}
+.apex-rules-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f5f5f7;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555555;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.18s ease;
+  padding: 0;
+}
+.apex-rules-icon-btn:active {
+  background: #e5e5e7;
+  transform: scale(0.94);
+}
+.apex-rules-icon-btn.is-active {
+  color: #ff6b00;
+  background: rgba(255, 107, 0, 0.1);
+}
+.apex-rules-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.apex-rules-try-btn {
+  height: 44px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1.5px solid #111111;
+  color: #111111;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.18s ease;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.apex-rules-try-btn:active {
+  background: #f0f0f0;
+  transform: scale(0.97);
+}
+.apex-rules-start {
+  height: 44px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b00 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 14px rgba(255, 107, 0, 0.32);
+  white-space: nowrap;
+}
+.apex-rules-start:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.24);
+}
