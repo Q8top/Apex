@@ -32,6 +32,7 @@ export async function onRequestGet(context) {
         emailVerified: user.emailVerified,
         createdAt: user.createdAt,
         lastLoginAt: user.lastLoginAt,
+        walletBalance: user.walletBalance,
       },
     }, 200, requestId);
   } catch (error) {

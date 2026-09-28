@@ -9,7 +9,8 @@
   <title>Apex - Global Entertainment</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.svg">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/css/main.css">
 
@@ -567,84 +568,38 @@
   <script src="/src/js/inline/block-09.js"></script>
   
   
-<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#050505; overflow-y:auto; z-index:100; -webkit-overflow-scrolling:touch; padding-bottom:env(safe-area-inset-bottom);">
+<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#ffffff; z-index:100; overflow-y:auto; -webkit-overflow-scrolling:touch;">
 
-  <!-- 顶部导航栏：黑金玻璃态 -->
-  <div style="background:rgba(5,5,5,0.75); backdrop-filter:blur(14px) saturate(150%); -webkit-backdrop-filter:blur(14px) saturate(150%); border-bottom:1px solid rgba(212,175,55,0.18); padding:calc(14px + env(safe-area-inset-top)) 20px 14px 20px; position:sticky; top:0; z-index:10;">
-    <div style="max-width:520px; margin:0 auto; display:flex; align-items:center; gap:14px;">
-      <picture><source srcset="/logo-home.webp" type="image/webp"><img src="/logo-home.png" alt="Apex" width="56" height="56" style="height:56px; width:56px; display:block; object-fit:contain; filter:drop-shadow(0 3px 12px rgba(212,175,55,0.45));" decoding="async" loading="lazy"></picture>
-      <span class="apex-brand-text">Apex Global Entertainment</span>
-    </div>
-  </div>
-
-  <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Apex Global Entertainment - 全球娱乐游戏平台</h1>
-  <div style="max-width:520px; margin:0 auto; padding:18px;">
-
-    <!-- 用户信息卡 -->
-    <div class="apex-card apex-user-card">
-      <div style="display:flex; align-items:center; gap:14px; min-width:0;">
-        <div id="user-avatar" style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #d4af37 0%, #8a6d1f 100%); color:#050505; display:flex; align-items:center; justify-content:center; font-family:'Manrope','Inter',system-ui,sans-serif; font-size:20px; font-weight:800; flex-shrink:0; box-shadow:0 4px 14px rgba(212,175,55,0.35);">A</div>
-        <div style="min-width:0; flex:1;">
-          <div id="user-name" style="font-size:15px; font-weight:700; color:#ffffff; letter-spacing:0.2px;">用户</div>
-          <div id="user-email" style="font-size:12px; color:#8a8a8a; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">email@example.com</div>
-        <div id="user-created" style="font-size:10px; color:#666666; margin-top:3px;">注册于 —</div>
+  <!-- ============ 黑色顶栏 ============ -->
+  <div class="apex-topbar">
+    <div class="apex-topbar-inner">
+      <div class="apex-topbar-left">
+        <picture><source type="image/webp" srcset="/logo-home.webp?v=7"><img class="apex-topbar-logo" src="/logo-home.png?v=7" alt="Apex" decoding="async"></picture>
+        <div class="apex-topbar-brand">
+          <div class="apex-topbar-title">APEX ENTERTAINMENT</div>
+          <div class="apex-topbar-sub">APEX GLOBAL ENTERTAINMENT</div>
         </div>
-        <button data-apex-action="logout" aria-label="登出账号" style="background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); color:#d4af37; padding:7px 16px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0; transition:all 0.2s;" data-i18n="home.logout">登出</button>
+      </div>
+      <div class="apex-topbar-right">
+        <button id="home-lang-btn" class="apex-topbar-btn" aria-label="切换语言" type="button">
+          <span id="home-current-flag">🇨🇳</span>
+          <span class="apex-topbar-caret">▼</span>
+        </button>
+        <button class="apex-topbar-btn" aria-label="消息" type="button" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </button>
+        <button class="apex-topbar-btn" aria-label="客服" type="button" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
+        </button>
       </div>
     </div>
-
-    <!-- 4 个功能卡片 -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
-      <a href="#" data-coming-soon class="apex-card apex-feature-card">
-        <span style="font-size:28px;">🎮</span>
-        <span class="apex-feature-title" data-i18n="home.gameHall">游戏大厅</span>
-        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
-      </a>
-      <a href="#" data-coming-soon class="apex-card apex-feature-card">
-        <span style="font-size:28px;">💰</span>
-        <span class="apex-feature-title" data-i18n="home.wallet">我的钱包</span>
-        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
-      </a>
-      <a href="#" data-coming-soon class="apex-card apex-feature-card">
-        <span style="font-size:28px;">🎁</span>
-        <span class="apex-feature-title" data-i18n="home.events">活动中心</span>
-        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
-      </a>
-      <a href="#" id="security-center-link" class="apex-card apex-feature-card">
-        <span style="font-size:28px;">🛡️</span>
-        <span class="apex-feature-title" data-i18n="home.security">安全中心</span>
-        <span class="apex-feature-desc-active" data-i18n="home.viewDevices">查看设备</span>
-      </a>
-    </div>
-
-    <!-- 系统公告 -->
-    <div class="apex-card" style="padding:18px; margin-bottom:16px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-        <span style="font-size:16px;">📢</span>
-        <span style="font-size:14px; font-weight:700; color:#ffffff;" data-i18n="home.notice">系统公告</span>
-      </div>
-      <p style="font-size:12.5px; color:#a0a0a0; line-height:1.75; margin:0;">欢迎使用 Apex Global Entertainment。我们的游戏平台正在开发中，即将上线。</p>
-    </div>
-
-    <!-- 账户信息 -->
-    <div class="apex-card" style="padding:18px; margin-bottom:16px;">
-      <div style="font-size:14px; font-weight:700; color:#ffffff; margin-bottom:14px;" data-i18n="home.accountInfo">账户信息</div>
-      <div style="display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px;">
-        <span style="color:#8a8a8a;" data-i18n="home.emailStatus">邮箱状态</span>
-        <span style="color:#4ade80; font-weight:600;" data-i18n="home.verified" id="user-email-verified">已验证</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; padding:11px 0; font-size:13px;">
-        <span style="color:#8a8a8a;" data-i18n="home.userLevel">账户等级</span>
-        <span style="color:#d4af37; font-weight:600;" data-i18n="home.standardUser" id="user-level">标准用户</span>
-      </div>
-    </div>
-
-    <!-- 页脚 -->
-    <div style="text-align:center; color:#888888; font-size:12px; padding:24px 0 12px 0; letter-spacing:0.3px;">
-      © 2026 Apex Global Entertainment
-    </div>
-
   </div>
+
+  <!-- ============ 内容占位 ============ -->
+  <div class="apex-home-placeholder">
+    <div class="apex-home-placeholder-text">更多功能开发中…</div>
+  </div>
+
 </div>
 
 <div id="security-modal" role="dialog" aria-modal="true" aria-labelledby="security-modal-title" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">

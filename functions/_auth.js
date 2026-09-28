@@ -79,7 +79,7 @@ export async function getCurrentUser(env, request) {
   const tokenHash = await hashSessionToken(token);
   const row = await env.apex_db.prepare(
     `SELECT s.id, s.user_id, s.expires_at, s.revoked_at, s.last_seen_at,
-            u.username, u.email, u.email_verified, u.status, u.created_at, u.last_login_at
+            u.username, u.email, u.email_verified, u.status, u.created_at, u.last_login_at, u.wallet_balance
      FROM sessions s
      JOIN users u ON u.id = s.user_id
      WHERE s.id = ?`
@@ -110,6 +110,7 @@ export async function getCurrentUser(env, request) {
     status: row.status || 'active',
     createdAt: row.created_at || null,
     lastLoginAt: row.last_login_at || null,
+    walletBalance: Number(row.wallet_balance) || 0,
     tokenHash,
   };
 }
