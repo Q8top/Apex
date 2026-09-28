@@ -31,10 +31,6 @@
 /status.html
   Cache-Control: no-cache
 
-# Service Worker：禁止缓存，确保新版本立即生效
-/sw.js
-  Cache-Control: no-cache
-  Service-Worker-Allowed: /
 
 # PWA manifest：短期缓存
 /manifest.json
@@ -52,3 +48,8 @@
 # 404 页面：不缓存
 /404.html
   Cache-Control: no-cache
+
+# Service Worker：自杀版也必须 no-cache，让浏览器每次拉取最新版
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /

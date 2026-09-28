@@ -6,28 +6,6 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 // 统一 API 响应安全头（防御纵深：即使脱离 Cloudflare Pages 的 _headers 也生效）
 // CORS 部分动态生成：优先使用 ALLOWED_ORIGINS，其次 PUBLIC_BASE_URL
 // 不再硬编码域名，避免与 wrangler.toml [vars] 不一致
-function buildCorsHeaders(env) {
-  const origins = new Set();
-  const rawAllowed = String(env.ALLOWED_ORIGINS || '');
-  for (const o of rawAllowed.split(',')) {
-    const t = o.trim();
-    if (t) origins.add(t);
-  }
-  const base = String(env.PUBLIC_BASE_URL || '').replace(/\/+$/, '');
-  if (base) origins.add(base);
-
-  const header = { 'Vary': 'Origin' };
-  if (origins.size === 1) {
-    header['Access-Control-Allow-Origin'] = [...origins][0];
-  } else if (origins.size > 1) {
-    // 多域名：不设置 ACAO（仅靠 Vary: Origin 告诉缓存按 Origin 分桶）
-    // 实际跨域判断由 applyCors 按 request Origin 动态匹配
-    header['Access-Control-Allow-Origin'] = [...origins].join('|'); // 占位，会被 applyCors 覆盖
-  } else {
-    // 无配置：不设 ACAO（同源请求无需 CORS 头）
-  }
-  return header;
-}
 
 const API_SECURITY_HEADERS_STATIC = {
   'X-Content-Type-Options': 'nosniff',
@@ -107,8 +85,6 @@ export async function onRequest(context) {
     const response = await context.next();
     const newHeaders = new Headers(response.headers);
     newHeaders.set('X-Request-ID', requestId);
-    // buildCorsHeaders 保留供未来按 request.Origin 动态匹配使用
-    void buildCorsHeaders;
       for (const [k, v] of Object.entries(API_SECURITY_HEADERS_STATIC)) {
         newHeaders.set(k, v);
       }

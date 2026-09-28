@@ -98,7 +98,7 @@ export async function createAdminSession(env, adminId, request) {
   const token = generateToken();
   const tokenHash = await hashSessionToken(token);
   const expiresAt = new Date(Date.now() + config.adminSessionMaxAge * 1000).toISOString();
-  const ipHash = await hashIP(getClientIP(request), env.SESSION_SALT || env.CAPTCHA_SECRET || '');
+  const ipHash = await hashIP(getClientIP(request), env.SESSION_SALT || (env.CAPTCHA_SECRET ? env.CAPTCHA_SECRET + ':session' : '') || '');
   const userAgent = String(request.headers.get('User-Agent') || '').substring(0, 200);
 
   await env.apex_db.prepare(

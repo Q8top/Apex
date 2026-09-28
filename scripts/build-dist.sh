@@ -53,7 +53,7 @@ echo "[BUILD] 检查 dist/ 中不应存在的敏感文件..."
 BAD=0
 for bad in wrangler.toml package.json package-lock.json .env .dev.vars .gitignore \
            tests functions migrations scripts docs backups .wrangler .git .github \
-           .assetsignore _routes.json sw.js; do
+           .assetsignore _routes.json; do
   if [ -e "$DIST/$bad" ]; then
     echo "  [ERROR] dist/$bad 不应存在"
     BAD=1
@@ -69,3 +69,15 @@ echo ""
 echo "[BUILD] 文件数：$(find "$DIST" -type f | wc -l)"
 echo "[BUILD] 总大小：$(du -sh "$DIST" | awk '{print $1}')"
 echo "[BUILD] 完成"
+
+# ============================================================
+# [Phase6 自动添加] 强制复制 sw.js 到 dist/
+# 原因：旧版 SW 缓存了 HTML，此自杀版 SW 必须部署给所有用户，
+#       否则旧设备上的旧 SW 永远不会注销。
+# ============================================================
+if [ -f "$ROOT/sw.js" ]; then
+  cp -f "$ROOT/sw.js" "$DIST/sw.js"
+  echo "  [COPY] sw.js"
+else
+  echo "  [WARN] 根目录 sw.js 不存在，跳过"
+fi

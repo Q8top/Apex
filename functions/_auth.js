@@ -36,7 +36,7 @@ export async function createUserSession(env, userId, request) {
   const token = generateToken();
   const tokenHash = await hashSessionToken(token);
   const expiresAt = new Date(Date.now() + config.sessionMaxAge * 1000).toISOString();
-  const ipHash = await hashIP(getClientIP(request), env.SESSION_SALT || env.CAPTCHA_SECRET || '');
+  const ipHash = await hashIP(getClientIP(request), env.SESSION_SALT || (env.CAPTCHA_SECRET ? env.CAPTCHA_SECRET + ':session' : '') || '');
   const userAgent = String(request.headers.get('User-Agent') || '').substring(0, 200);
 
   // 单用户 session 数上限：超出时撤销最早的 N 个（保留最近的 maxSessionsPerUser 个）
@@ -125,7 +125,6 @@ export async function destroyCurrentSession(env, request) {
 export async function destroyAllUserSessions(env, userId) {
   await env.apex_db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(userId).run();
 }
-
 
 // 清理 legacy cookie 名字（迁移用）
 export function buildClearLegacySessionCookie(env = {}) {

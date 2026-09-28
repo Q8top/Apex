@@ -37,7 +37,7 @@ export async function onRequestPost(context) {
   const url = sanitizeLogUrl(body.url, URL_MAX);
   const ua = String(request.headers.get('User-Agent') || '').substring(0, UA_MAX);
   const ip = getClientIP(request);
-  const ipHash = await hashIP(ip, env.AUDIT_SALT || env.CAPTCHA_SECRET || '');
+  const ipHash = await hashIP(ip, env.AUDIT_SALT || (env.CAPTCHA_SECRET ? env.CAPTCHA_SECRET + ':audit' : '') || '');
   const environment = env.ENVIRONMENT || 'production';
 
   try {

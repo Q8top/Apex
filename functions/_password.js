@@ -89,7 +89,7 @@ export async function verifyPasswordDetailed(password, stored) {
 
   // P11-I: iterations 超过 Workers 上限 -> 明确告知调用方"需要重置密码"
   if (iterations > PBKDF2_WORKERS_MAX) {
-    console.error('[password] iterations exceeds Workers max, requires reset:', iterations);
+    console.error('[password] iterations exceeds Workers max, requires reset');
     return VERIFY_RESULT.NEEDS_RESET;
   }
 
@@ -105,7 +105,7 @@ export async function verifyPasswordDetailed(password, stored) {
     );
     return constantTimeEqual(toHex(bits), hashHex) ? VERIFY_RESULT.MATCH : VERIFY_RESULT.NO_MATCH;
   } catch (err) {
-    console.error('[password] deriveBits failed:', err && err.message ? err.message : err);
+    console.error('[password] deriveBits failed');
     return VERIFY_RESULT.INVALID_INPUT;
   }
 }

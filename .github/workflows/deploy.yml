@@ -75,12 +75,15 @@ jobs:
       - name: Apply D1 migrations (remote)
         run: bash scripts/migrate.sh --remote
 
+      - name: Build dist
+        run: bash scripts/build-dist.sh
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=apex --branch=main
+          command: pages deploy dist --project-name=apex --branch=main
 
       - name: Post-deploy health check
         run: |

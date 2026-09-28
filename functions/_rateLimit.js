@@ -33,7 +33,7 @@ export async function consumeRateLimit(env, { key, action, max, windowSec, cost 
 
 export async function enforceIpRateLimit(env, request, action, max, windowSec, suffix = '') {
   const ip = getClientIP(request);
-  const ipHash = await hashIP(ip, env.RATE_LIMIT_SALT || env.CAPTCHA_SECRET || '');
+  const ipHash = await hashIP(ip, env.RATE_LIMIT_SALT || (env.CAPTCHA_SECRET ? env.CAPTCHA_SECRET + ':rate' : '') || '');
   const key = `ip:${ipHash}${suffix ? ':' + suffix : ''}`;
   const result = await consumeRateLimit(env, { key, action, max, windowSec });
   if (!result.allowed) {

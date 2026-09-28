@@ -3,7 +3,7 @@ import { getClientIP, hashIP, redactSensitive, stripControlChars } from './_secu
 export async function writeAudit(env, entry = {}, request = null) {
   try {
     const ip = request ? getClientIP(request) : entry.ip || '';
-    const ipHash = ip ? await hashIP(ip, env.AUDIT_SALT || env.CAPTCHA_SECRET || '') : null;
+    const ipHash = ip ? await hashIP(ip, env.AUDIT_SALT || (env.CAPTCHA_SECRET ? env.CAPTCHA_SECRET + ':audit' : '') || '') : null;
     const userAgent = request
       ? stripControlChars(request.headers.get('User-Agent') || '', 200)
       : stripControlChars(entry.userAgent || '', 200);
