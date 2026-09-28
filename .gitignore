@@ -64,5 +64,10 @@ dist/
 # ===== Apex migrations 本地临时文件 =====
 migrations/_local_backup_*/
 migrations/_archive_old_*/
-*.bak
-*.bak_*
+
+# Apex 审计：不部署根目录 sw.js、源码导出、审计结果
+audit-results-*/
+
+# ===== Apex 审计备份目录（自动排除，避免污染 git 状态）=====
+.audit-backup-*/
+audit-backup-*/
