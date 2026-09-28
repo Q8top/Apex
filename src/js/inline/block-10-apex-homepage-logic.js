@@ -2023,107 +2023,13 @@ document.addEventListener('click', function (e) {
 
 
 // ============================================================
-// 玩法规则页 v2 - APEX-RULES-PAGE (轮播 + 4 按钮)
+
+
+
+// ============================================================
+// 规则页 v3 - 分层信息架构
 // ============================================================
 (function () {
-  var RULES = {
-    'Punto Banco': {
-      zh: '彭托银行（标准百家樂）',
-      desc: '百家樂是全球最受欢迎的赌桌游戏之一。玩家无需掌握复杂技巧，只需判断"庄"或"闲"哪一方点数更接近 9 点，下注即可，简单直观。',
-      points: [
-        '庄家（Banker）与闲家（Player）开局各发 2 张牌，总点数按个位数计算，如 8+7=15 视为 5 点',
-        '双方点数最大为 9 点（"天王"），其次为 8 点（"天王"），任一方前两张达 8 或 9 点即停牌',
-        '若双方都未达 8 或 9 点，则按固定规则补第三张牌，玩家无需额外决策',
-        '下注选项：庄（Banker）、闲（Player）、和（Tie），另有庄对、闲对等附加注',
-        '庄家赔率通常为 1:0.95（抽 5% 水），闲家为 1:1，和为 1:8',
-        '每局时间约 30-50 秒，节奏明快，可连续下注'
-      ],
-      odds: [
-        { name: '押庄（Banker）', value: '1 : 0.95' },
-        { name: '押闲（Player）', value: '1 : 1' },
-        { name: '押和（Tie）', value: '1 : 8' },
-        { name: '庄对（Banker Pair）', value: '1 : 11' },
-        { name: '闲对（Player Pair）', value: '1 : 11' }
-      ]
-    },
-    'Mini Baccarat': {
-      zh: '迷你百家樂',
-      desc: '迷你百家樂是标准百家樂的小型版本，赌桌更紧凑、节奏更快、限红更低，非常适合新手练习和快速下注。',
-      points: [
-        '核心规则与标准百家樂完全一致：庄闲各 2 张牌，9 点为最大',
-        '赌桌通常为 7 个座位，庄家由荷官固定担任',
-        '下注额度（限红）比标准桌更低，上手门槛更友好',
-        '补牌规则由荷官按标准执行，玩家全程无需决策',
-        '每局节奏较标准百家樂更快，适合喜欢高频游戏的玩家',
-        '赔率与标准百家樂一致：庄 1:0.95，闲 1:1，和 1:8'
-      ],
-      odds: [
-        { name: '押庄（Banker）', value: '1 : 0.95' },
-        { name: '押闲（Player）', value: '1 : 1' },
-        { name: '押和（Tie）', value: '1 : 8' },
-        { name: '庄对（Banker Pair）', value: '1 : 11' },
-        { name: '闲对（Player Pair）', value: '1 : 11' }
-      ]
-    },
-    'No Commission Baccarat': {
-      zh: '免佣百家樂',
-      desc: '免佣百家樂取消了庄家赢时的 5% 抽水，但设置了"庄 6 点赢只赔一半"的特殊规则作为补偿。适合长期押庄的玩家。',
-      points: [
-        '规则与标准百家樂一致：庄闲各 2 张牌，9 点最大',
-        '庄家赢取时不再抽取 5% 佣金，直接赔 1:1',
-        '例外情况：若庄家以 6 点取胜，只赔注额的一半（1:0.5）',
-        '闲家赔率保持 1:1，和局赔率 1:8，附加注规则不变',
-        '长期统计上，免佣百家樂的庄家期望值更接近 0，吸引高频玩家',
-        '整体节奏与标准百家樂相同，约 45 秒一局'
-      ],
-      odds: [
-        { name: '押庄（赢非 6 点）', value: '1 : 1' },
-        { name: '押庄（6 点赢）', value: '1 : 0.5' },
-        { name: '押闲（Player）', value: '1 : 1' },
-        { name: '押和（Tie）', value: '1 : 8' },
-        { name: '庄对（Banker Pair）', value: '1 : 11' }
-      ]
-    },
-    'Speed Baccarat': {
-      zh: '极速百家樂',
-      desc: '极速百家樂将所有流程压缩至最快速度，发牌和下注窗口大幅缩短，一局约 27 秒，带来高强度的刺激体验。',
-      points: [
-        '规则与标准百家樂完全一致，只是节奏加快',
-        '每局时间从约 48 秒缩短至约 27 秒，几乎无缝衔接',
-        '发牌速度加快，下注窗口缩短至约 15 秒',
-        '适合熟练玩家连续高频下注，也适合喜欢紧张节奏的用户',
-        '赔率保持标准：庄 1:0.95，闲 1:1，和 1:8',
-        '每局结束立即开始下一局，不需等待'
-      ],
-      odds: [
-        { name: '押庄（Banker）', value: '1 : 0.95' },
-        { name: '押闲（Player）', value: '1 : 1' },
-        { name: '押和（Tie）', value: '1 : 8' },
-        { name: '庄对（Banker Pair）', value: '1 : 11' },
-        { name: '闲对（Player Pair）', value: '1 : 11' }
-      ]
-    },
-    'Baccarat Variants': {
-      zh: '百家樂变体',
-      desc: '百家樂变体汇集了多种衍生玩法，在标准规则基础上加入额外赔率或特殊下注选项，为玩家提供更多策略和刺激。',
-      points: [
-        'Dragon Bonus（龙加奖）：押对"自然赢"的牌型，额外获得高额赔率，最高可达 1:30',
-        'Panda 8（熊猫 8）：若闲家以 8 点取胜，额外奖励押闲的玩家，赔率约 1:25',
-        'Fortune 6（财富 6）：庄家以 6 点获胜时，押庄的玩家可获得双倍赔率',
-        'Baccarat Squeeze（捏牌百家樂）：实况慢镜头捏牌玩法，紧张感更强',
-        '所有变体均基于标准百家樂规则，仅在附加注上不同',
-        '赔率因变体种类不同，通常为标准的 2-30 倍'
-      ],
-      odds: [
-        { name: 'Dragon Bonus（自然 9 赢）', value: '1 : 30' },
-        { name: 'Panda 8（闲 8 赢）', value: '1 : 25' },
-        { name: 'Fortune 6（庄 6 赢）', value: '1 : 15' },
-        { name: '标准庄 / 闲', value: '1 : 0.95 / 1:1' },
-        { name: '标准和（Tie）', value: '1 : 8' }
-      ]
-    }
-  };
-
   var SLIDES = [
     { title: '图一', sub: 'Banner 1' },
     { title: '图二', sub: 'Banner 2' },
@@ -2131,74 +2037,343 @@ document.addEventListener('click', function (e) {
     { title: '图四', sub: 'Banner 4' }
   ];
 
+  var RULES = {
+    'Punto Banco': {
+      zh: '标准百家樂',
+      tagline: '比较庄（Banker）与闲（Player）的最终点数，9 点为最高点数。玩家选择投注项目后，发牌、补牌及结算均按照固定规则自动完成。',
+      quickStart: [
+        { n: 1, title: '选择投注', desc: '选择你要投注的项目：庄（Banker）／闲（Player）／和（Tie）／庄对／闲对' },
+        { n: 2, title: '自动发牌', desc: '庄、闲各发两张牌，系统自动完成。' },
+        { n: 3, title: '自动补牌', desc: '根据固定规则判断是否需要第三张牌，玩家无需决定要牌或停牌。' },
+        { n: 4, title: '比较点数', desc: '最终点数越接近 9 点的一方获胜。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'A', v: '1 点' },
+          { k: '2 – 9', v: '对应牌面点数' },
+          { k: '10 / J / Q / K', v: '0 点' }
+        ],
+        note: '庄、闲所有牌的总点数只取个位数。',
+        examples: [
+          '8 + 7 = 15 → 5 点',
+          '9 + 6 + 8 = 23 → 3 点'
+        ],
+        order: '9 点 > 8 点 > 7 点 > … > 0 点'
+      },
+      natural: {
+        desc: '如果庄或闲的前两张牌合计为 8 点或 9 点，称为"天牌（Natural）"。出现天牌时，按照规则不再补第三张牌。',
+        examples: [
+          '闲：4 + 4 = 8 点 → 闲家天牌',
+          '庄：K + 9 = 9 点 → 庄家天牌'
+        ],
+        note: '若双方均为天牌，则直接比较 8 点或 9 点。'
+      },
+      thirdCard: {
+        playerRules: [
+          { range: '0 – 5 点', action: '补第三张牌' },
+          { range: '6 – 7 点', action: '停牌' },
+          { range: '8 – 9 点', action: '天牌，不补牌' }
+        ],
+        bankerRules: [
+          { pt: '0 – 2', cond: '任意', action: '补牌' },
+          { pt: '3', cond: '0 – 7、9', action: '补牌' },
+          { pt: '3', cond: '8', action: '停牌' },
+          { pt: '4', cond: '2 – 7', action: '补牌' },
+          { pt: '4', cond: '0、1、8、9', action: '停牌' },
+          { pt: '5', cond: '4 – 7', action: '补牌' },
+          { pt: '5', cond: '0 – 3、8、9', action: '停牌' },
+          { pt: '6', cond: '6 – 7', action: '补牌' },
+          { pt: '6', cond: '0 – 5、8、9', action: '停牌' },
+          { pt: '7', cond: '任意', action: '停牌' }
+        ],
+        collapsedSummary: '闲家 0–5 点补牌，6–7 点停牌；庄家按照固定规则自动判断。'
+      },
+      outcome: {
+        desc: '比较庄与闲的最终点数：',
+        rows: [
+          { cond: '庄点数 > 闲点数', result: '庄胜' },
+          { cond: '闲点数 > 庄点数', result: '闲胜' },
+          { cond: '庄点数 = 闲点数', result: '和（Tie）' }
+        ]
+      },
+      odds: [
+        { name: '庄 Banker', value: '1 赔 0.95' },
+        { name: '闲 Player', value: '1 赔 1' },
+        { name: '和 Tie', value: '1 赔 8' },
+        { name: '庄对 Banker Pair', value: '1 赔 11' },
+        { name: '闲对 Player Pair', value: '1 赔 11' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位，获胜后净赢取 X 单位；本金按结算规则返还。',
+      oddsExample: '例如：下注 100 于庄，庄胜时净赢 95，并返还下注本金 100。',
+      tie: {
+        desc: '如果庄与闲最终点数相同，则判定为和局。本版本规则：',
+        rows: [
+          { bet: '庄 / 闲 投注', rule: '退回本金' },
+          { bet: '和（Tie）投注', rule: '按照 1 赔 8 结算' }
+        ],
+        example: '例如：庄 6 点 · 闲 6 点 → 和局'
+      },
+      pair: {
+        desc: '对子投注独立于庄／闲胜负进行结算。',
+        rows: [
+          { t: '庄对 Banker Pair', d: '庄家的前两张牌牌面相同（如 7♠ + 7♥）' },
+          { t: '闲对 Player Pair', d: '闲家的前两张牌牌面相同（如 K♣ + K♦）' }
+        ],
+        note: '标准百家樂对子通常以前两张牌 Rank 相同为准，例如 7+7、K+K。'
+      },
+      examples: [
+        { title: '示例 01｜闲胜', lines: ['闲：7 + 2 = 9 点', '庄：4 + 3 = 7 点'], result: '结果：闲胜' },
+        { title: '示例 02｜补第三张牌', lines: ['闲：4 + 2 = 6 点 → 补牌', '第三张：7', '最终：4 + 2 + 7 = 13 → 3 点'], result: '系统继续按庄家规则判断是否补牌。' },
+        { title: '示例 03｜和局', lines: ['闲：8 + K = 8 点', '庄：5 + 3 = 8 点'], result: '结果：和局（Tie）' }
+      ],
+      terms: [
+        { en: 'Banker', zh: '庄，庄家一方' },
+        { en: 'Player', zh: '闲，闲家一方' },
+        { en: 'Tie', zh: '和，庄、闲最终点数相同' },
+        { en: 'Natural', zh: '天牌，前两张牌合计为 8 或 9 点' },
+        { en: 'Banker Pair', zh: '庄对，庄家前两张牌构成对子' },
+        { en: 'Player Pair', zh: '闲对，闲家前两张牌构成对子' },
+        { en: 'Point', zh: '点数，庄、闲最终牌面点数，最高为 9 点' }
+      ],
+      faq: [
+        { q: '我可以选择第三张牌吗？', a: '不能。庄、闲是否补第三张牌，以及补哪一张牌，均由发牌结果和固定规则决定。' },
+        { q: '10、J、Q、K 算多少点？', a: '均为 0 点。' },
+        { q: '为什么 8 + 7 是 5 点？', a: '15 只取个位数：8 + 7 = 15 → 5 点。' },
+        { q: '9 点是不是最大的？', a: '是。百家樂最终点数范围为 0–9 点，其中 9 点最高。' },
+        { q: '庄和闲都是 8 点怎么办？', a: '判定为和局（Tie）。' },
+        { q: '天牌还会继续发第三张牌吗？', a: '不会。庄或闲前两张牌合计为 8 或 9 点时，按照规则停止补牌。' },
+        { q: '庄和闲哪个一定更容易赢？', a: '不能根据单局结果确定。每局发牌结果具有随机性，历史结果不能保证下一局结果。' }
+      ],
+      disclaimer: '本游戏根据预设百家樂规则自动完成发牌、补牌及结算。玩家无法控制具体发牌结果或第三张牌。不同游戏版本可能存在赔率、佣金或特殊投注规则差异，请以当前游戏页面显示的规则及赔率为准。'
+    }
+  };
+
+  window.__apexApexRulesV3 = RULES;
+  window.__apexApexSlidesV3 = SLIDES;
+
+  console.log('[Apex] RULES v3 Punto Banco 数据已写入');
+})();
+
+
+// ============================================================
+// 渲染函数 v3 - APEX-RENDER-V3
+// ============================================================
+(function () {
   function svg(d) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
   }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
-  function build(modeName) {
-    var old = document.getElementById('apex-rules-page');
-    if (old) old.remove();
+  function buildCarousel(slides) {
+    var html = '<div class="apex-rules-carousel"><div class="apex-rules-track" id="apex-rules-track">';
+    slides.forEach(function (sl) {
+      html += '<div class="apex-rules-slide"><div class="apex-rules-slide-title">' + esc(sl.title) + '</div>'
+        + '<div class="apex-rules-slide-sub">' + esc(sl.sub) + '</div></div>';
+    });
+    html += '</div><div class="apex-rules-dots" id="apex-rules-dots">';
+    slides.forEach(function (sl, i) {
+      html += '<span class="apex-rules-dot' + (i === 0 ? ' is-active' : '') + '" data-i="' + i + '"></span>';
+    });
+    html += '</div></div>';
+    return html;
+  }
 
-    var rule = RULES[modeName] || RULES['Punto Banco'];
+  function buildHead(modeName, rule) {
+    return '<div class="apex-rules-head">'
+      + '<div class="apex-rules-name">' + esc(modeName) + '</div>'
+      + '<div class="apex-rules-cname">' + esc(rule.zh) + '</div>'
+      + '<div class="apex-rules-tagline">' + esc(rule.tagline) + '</div>'
+      + '</div>';
+  }
 
-    var w = document.createElement('div');
-    w.id = 'apex-rules-page';
-    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:700;display:flex;flex-direction:column;overflow:hidden;';
+  function buildQuickStart(qs) {
+    if (!qs || !qs.length) return '';
+    var rows = '';
+    qs.forEach(function (s) {
+      rows += '<div class="apex-step">'
+        + '<div class="apex-step-num">' + s.n + '</div>'
+        + '<div class="apex-step-body">'
+        + '<div class="apex-step-t">' + esc(s.title) + '</div>'
+        + '<div class="apex-step-d">' + esc(s.desc) + '</div>'
+        + '</div></div>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">快速开始</div><div class="apex-steps">' + rows + '</div></div>';
+  }
 
-    // Header
+  function buildPointCalc(pc) {
+    if (!pc) return '';
+    var t = '<table class="apex-tbl"><thead><tr><th>牌面</th><th style="text-align:right;">点数</th></tr></thead><tbody>';
+    pc.rows.forEach(function (r) {
+      t += '<tr><td>' + esc(r.k) + '</td><td>' + esc(r.v) + '</td></tr>';
+    });
+    t += '</tbody></table>';
+    var ex = '';
+    (pc.examples || []).forEach(function (e) { ex += '<div class="apex-ex-line">' + esc(e) + '</div>'; });
+    return '<div class="apex-rs"><div class="apex-rs-title">点数怎么算？</div>'
+      + t
+      + '<div class="apex-rs-text" style="margin-top:12px;">' + esc(pc.note) + '</div>'
+      + '<div style="margin-top:8px;">' + ex + '</div>'
+      + (pc.order ? '<div class="apex-rs-text" style="margin-top:10px;color:#ff6b00;font-weight:700;">' + esc(pc.order) + '</div>' : '')
+      + '</div>';
+  }
+
+  function buildNatural(nat) {
+    if (!nat) return '';
+    var ex = '';
+    (nat.examples || []).forEach(function (e) { ex += '<div class="apex-ex-line">' + esc(e) + '</div>'; });
+    return '<div class="apex-rs"><div class="apex-rs-title">天牌 Natural</div>'
+      + '<div class="apex-rs-text">' + esc(nat.desc) + '</div>'
+      + '<div style="margin-top:10px;">' + ex + '</div>'
+      + (nat.note ? '<div class="apex-rs-text" style="margin-top:10px;color:#8a8a8a;">' + esc(nat.note) + '</div>' : '')
+      + '</div>';
+  }
+
+  function buildThirdCard(tc) {
+    if (!tc) return '';
+    var playerRows = '';
+    (tc.playerRules || []).forEach(function (r) {
+      playerRows += '<tr><td>' + esc(r.range) + '</td><td>' + esc(r.action) + '</td></tr>';
+    });
+    var playerTable = '<table class="apex-tbl"><thead><tr><th>闲家前两张牌</th><th style="text-align:right;">处理</th></tr></thead><tbody>' + playerRows + '</tbody></table>';
+
+    var bankerRows = '';
+    (tc.bankerRules || []).forEach(function (r) {
+      bankerRows += '<tr><td>' + esc(r.pt) + '</td><td>' + esc(r.cond) + '</td><td>' + esc(r.action) + '</td></tr>';
+    });
+    var bankerTable = '<table class="apex-tbl"><thead><tr><th>庄家点数</th><th>闲家第三张</th><th style="text-align:right;">操作</th></tr></thead><tbody>' + bankerRows + '</tbody></table>';
+
+    return '<div class="apex-rs"><div class="apex-rs-title">第三张牌规则</div>'
+      + '<div class="apex-rs-text" style="margin-bottom:12px;">' + esc(tc.collapsedSummary) + '</div>'
+      + '<details class="apex-fold"><summary>闲家规则</summary><div class="apex-fold-body">' + playerTable + '</div></details>'
+      + '<details class="apex-fold"><summary>庄家规则（完整表）</summary><div class="apex-fold-body">' + bankerTable + '</div></details>'
+      + '<div class="apex-rs-text" style="margin-top:12px;color:#8a8a8a;">第三张牌由系统根据固定规则自动决定，玩家无法选择。</div>'
+      + '</div>';
+  }
+
+  function buildOutcome(oc) {
+    if (!oc) return '';
+    var rows = '';
+    (oc.rows || []).forEach(function (r) {
+      rows += '<tr><td>' + esc(r.cond) + '</td><td>' + esc(r.result) + '</td></tr>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">如何判定胜负</div>'
+      + '<div class="apex-rs-text" style="margin-bottom:10px;">' + esc(oc.desc) + '</div>'
+      + '<table class="apex-tbl"><tbody>' + rows + '</tbody></table>'
+      + '</div>';
+  }
+
+  function buildOdds(odds, note, example) {
+    if (!odds) return '';
+    var rows = '';
+    odds.forEach(function (o) {
+      rows += '<tr><td>' + esc(o.name) + '</td><td>' + esc(o.value) + '</td></tr>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">赔率与派彩</div>'
+      + '<table class="apex-tbl odds">' + rows + '</table>'
+      + (note ? '<div class="apex-rs-text" style="margin-top:12px;color:#8a8a8a;font-size:12px;line-height:1.7;">' + esc(note) + '</div>' : '')
+      + (example ? '<div class="apex-ex"><div class="apex-ex-line">' + esc(example) + '</div></div>' : '')
+      + '</div>';
+  }
+
+  function buildTie(tie) {
+    if (!tie) return '';
+    var rows = '';
+    (tie.rows || []).forEach(function (r) {
+      rows += '<tr><td>' + esc(r.bet) + '</td><td>' + esc(r.rule) + '</td></tr>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">和局如何处理</div>'
+      + '<div class="apex-rs-text" style="margin-bottom:10px;">' + esc(tie.desc) + '</div>'
+      + '<table class="apex-tbl">' + rows + '</table>'
+      + (tie.example ? '<div class="apex-ex"><div class="apex-ex-line">' + esc(tie.example) + '</div></div>' : '')
+      + '</div>';
+  }
+
+  function buildPair(pair) {
+    if (!pair) return '';
+    var rows = '';
+    (pair.rows || []).forEach(function (r) {
+      rows += '<tr><td>' + esc(r.t) + '</td><td>' + esc(r.d) + '</td></tr>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">什么是对子？</div>'
+      + '<div class="apex-rs-text" style="margin-bottom:10px;">' + esc(pair.desc) + '</div>'
+      + '<table class="apex-tbl">' + rows + '</table>'
+      + (pair.note ? '<div class="apex-rs-text" style="margin-top:10px;color:#8a8a8a;font-size:12px;">' + esc(pair.note) + '</div>' : '')
+      + '</div>';
+  }
+
+  function buildExamples(exs) {
+    if (!exs || !exs.length) return '';
+    var html = '';
+    exs.forEach(function (e) {
+      var lines = '';
+      (e.lines || []).forEach(function (l) { lines += '<div class="apex-ex-line">' + esc(l) + '</div>'; });
+      html += '<div class="apex-ex">'
+        + '<div class="apex-ex-title">' + esc(e.title) + '</div>'
+        + lines
+        + '<div class="apex-ex-result">' + esc(e.result) + '</div>'
+        + '</div>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">示例牌局</div>' + html + '</div>';
+  }
+
+  function buildTerms(terms) {
+    if (!terms || !terms.length) return '';
+    var html = '';
+    terms.forEach(function (t) {
+      html += '<div class="apex-term"><div class="apex-term-en">' + esc(t.en) + '</div><div class="apex-term-zh">' + esc(t.zh) + '</div></div>';
+    });
+    return '<div class="apex-rs"><div class="apex-rs-title">常用术语</div>'
+      + '<details class="apex-fold" open><summary>展开 / 收起</summary><div class="apex-fold-body"><div class="apex-terms">' + html + '</div></div></details>'
+      + '</div>';
+  }
+
+  function buildFaq(faq) {
+    if (!faq || !faq.length) return '';
+    var html = '<div class="apex-faq">';
+    faq.forEach(function (item, i) {
+      html += '<details class="apex-faq-item"' + (i === 0 ? ' open' : '') + '>'
+        + '<summary class="apex-faq-q">' + esc(item.q) + '</summary>'
+        + '<div class="apex-faq-a">' + esc(item.a) + '</div>'
+        + '</details>';
+    });
+    html += '</div>';
+    return '<div class="apex-rs"><div class="apex-rs-title">常见问题 FAQ</div>' + html + '</div>';
+  }
+
+  function buildDisclaimer(text) {
+    if (!text) return '';
+    return '<div class="apex-disclaimer">'
+      + '<div class="apex-disclaimer-title">重要说明</div>'
+      + esc(text)
+      + '</div>';
+  }
+
+  window.__apexBuildRulesPage = function (modeName, rule, slides) {
+    var body = '<div class="apex-rules-body">'
+      + buildCarousel(slides)
+      + buildHead(modeName, rule)
+      + buildQuickStart(rule.quickStart)
+      + buildPointCalc(rule.pointCalc)
+      + buildNatural(rule.natural)
+      + buildThirdCard(rule.thirdCard)
+      + buildOutcome(rule.outcome)
+      + buildOdds(rule.odds, rule.oddsNote, rule.oddsExample)
+      + buildTie(rule.tie)
+      + buildPair(rule.pair)
+      + buildExamples(rule.examples)
+      + buildTerms(rule.terms)
+      + buildFaq(rule.faq)
+      + buildDisclaimer(rule.disclaimer)
+      + '</div>';
+
     var hd = '<div class="apex-hot-header">'
       + '<button class="apex-hot-back" aria-label="返回" id="apex-rules-back">' + svg('<polyline points="15 18 9 12 15 6"/>') + '</button>'
-      + '<div class="apex-hot-title">' + modeName + '</div>'
+      + '<div class="apex-hot-title">' + esc(modeName) + '</div>'
       + '</div>';
 
-    // 轮播
-    var carousel = '<div class="apex-rules-carousel">'
-      + '<div class="apex-rules-track" id="apex-rules-track">';
-    SLIDES.forEach(function (sl) {
-      carousel += '<div class="apex-rules-slide"><div class="apex-rules-slide-title">' + sl.title + '</div><div class="apex-rules-slide-sub">' + sl.sub + '</div></div>';
-    });
-    carousel += '</div>'
-      + '<div class="apex-rules-dots" id="apex-rules-dots">';
-    SLIDES.forEach(function (sl, i) {
-      carousel += '<span class="apex-rules-dot' + (i === 0 ? ' is-active' : '') + '" data-i="' + i + '"></span>';
-    });
-    carousel += '</div></div>';
-
-    // 标题
-    var titleRow = '<div class="apex-rules-titlerow">'
-      + '<div class="apex-rules-name">' + modeName + '</div>'
-      + '<div class="apex-rules-cname">' + rule.zh + '</div>'
-      + '</div>';
-
-    // 简介
-    var intro = '<div class="apex-rules-section">'
-      + '<div class="apex-rules-section-title">玩法简介</div>'
-      + '<div class="apex-rules-desc">' + rule.desc + '</div>'
-      + '</div>';
-
-    // 规则
-    var pointsHtml = '<ul class="apex-rules-list">';
-    rule.points.forEach(function (p) { pointsHtml += '<li>' + p + '</li>'; });
-    pointsHtml += '</ul>';
-    var rules = '<div class="apex-rules-section">'
-      + '<div class="apex-rules-section-title">游戏规则</div>'
-      + pointsHtml
-      + '</div>';
-
-    // 赔率
-    var oddsHtml = '<div class="apex-rules-odds">';
-    rule.odds.forEach(function (o) {
-      oddsHtml += '<div class="apex-rules-odds-name">' + o.name + '</div><div class="apex-rules-odds-value">' + o.value + '</div>';
-    });
-    oddsHtml += '</div>';
-    var oddsSection = '<div class="apex-rules-section">'
-      + '<div class="apex-rules-section-title">赔率</div>'
-      + oddsHtml
-      + '</div>';
-
-    var body = '<div class="apex-rules-body">' + carousel + titleRow + intro + rules + oddsSection + '</div>';
-
-    // 底部 4 按钮
     var footer = '<div class="apex-rules-footer">'
       + '<button class="apex-rules-icon-btn" id="apex-rules-share" aria-label="分享">' + svg('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.6 6.8-3.8M8.6 13.4l6.8 3.8"/>') + '</button>'
       + '<button class="apex-rules-icon-btn" id="apex-rules-fav" aria-label="收藏">' + svg('<path d="M12 3l2.7 6 6.3.9-4.5 4.4 1.1 6.2L12 17.8 6.4 20.5l1.1-6.2L3 9.9 9.3 9z"/>') + '</button>'
@@ -2206,7 +2381,39 @@ document.addEventListener('click', function (e) {
       + '<button class="apex-rules-start" id="apex-rules-start">开始游戏</button>'
       + '</div>';
 
-    w.innerHTML = hd + body + footer;
+    return hd + body + footer;
+  };
+
+  console.log('[Apex] Render v3 已就绪');
+})();
+
+
+// ============================================================
+// 规则页事件绑定 v3 - APEX-BIND-V3
+// ============================================================
+(function () {
+  function openRulesPage(modeName) {
+    var RULES = window.__apexApexRulesV3 || {};
+    var SLIDES = window.__apexApexSlidesV3 || [];
+
+    var rule = RULES[modeName];
+    if (!rule) {
+      // 其他 4 个玩法暂时用简化提示
+      if (window.__apex && window.__apex.toast) {
+        window.__apex.toast(modeName + ' 规则页开发中', 'info');
+      }
+      return;
+    }
+
+    // 删除旧页
+    var old = document.getElementById('apex-rules-page');
+    if (old) old.remove();
+
+    // 新建页
+    var w = document.createElement('div');
+    w.id = 'apex-rules-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:700;display:flex;flex-direction:column;overflow:hidden;';
+    w.innerHTML = window.__apexBuildRulesPage(modeName, rule, SLIDES);
     document.body.appendChild(w);
 
     // 返回
@@ -2215,49 +2422,56 @@ document.addEventListener('click', function (e) {
     // 分享
     document.getElementById('apex-rules-share').addEventListener('click', function () {
       var url = location.origin + location.pathname;
+      var title = 'Apex ' + modeName;
       if (navigator.share) {
-        navigator.share({ title: 'Apex ' + modeName, text: 'Apex Entertainment - ' + modeName, url: url }).catch(function(){});
+        navigator.share({ title: title, text: 'Apex Entertainment - ' + modeName, url: url }).catch(function () {});
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(url).then(function () {
           if (window.__apex && window.__apex.toast) window.__apex.toast('链接已复制', 'success');
+        }).catch(function () {
+          if (window.__apex && window.__apex.toast) window.__apex.toast('分享链接：' + url, 'info');
         });
       } else {
-        if (window.__apex && window.__apex.toast) window.__apex.toast('分享：' + url, 'info');
+        if (window.__apex && window.__apex.toast) window.__apex.toast('分享链接：' + url, 'info');
       }
     });
 
     // 收藏
     var favBtn = document.getElementById('apex-rules-fav');
     var favKey = 'apex_fav_' + modeName;
-    try {
-      if (localStorage.getItem(favKey) === '1') favBtn.classList.add('is-active');
-    } catch (e) {}
+    try { if (localStorage.getItem(favKey) === '1') favBtn.classList.add('is-active'); } catch (e) {}
     favBtn.addEventListener('click', function () {
       var isFav = favBtn.classList.toggle('is-active');
       try { localStorage.setItem(favKey, isFav ? '1' : '0'); } catch (e) {}
-      if (window.__apex && window.__apex.toast) window.__apex.toast(isFav ? '已收藏' : '已取消收藏', 'success');
+      if (window.__apex && window.__apex.toast) {
+        window.__apex.toast(isFav ? '已收藏' : '已取消收藏', 'success');
+      }
     });
 
     // 免费试玩
     document.getElementById('apex-rules-try').addEventListener('click', function () {
-      if (window.__apex && window.__apex.toast) window.__apex.toast(modeName + ' 免费试玩模式接入中', 'info');
+      if (window.__apex && window.__apex.toast) {
+        window.__apex.toast(modeName + ' 免费试玩模式接入中', 'info');
+      }
     });
 
     // 开始游戏
     document.getElementById('apex-rules-start').addEventListener('click', function () {
-      if (window.__apex && window.__apex.toast) window.__apex.toast(modeName + ' 游戏接入中，敬请期待', 'info');
+      if (window.__apex && window.__apex.toast) {
+        window.__apex.toast(modeName + ' 游戏接入中，敬请期待', 'info');
+      }
     });
 
-    // 轮播：自动播 + 点击圆点 + 触摸滑动
+    // 轮播
     (function initCarousel() {
       var track = document.getElementById('apex-rules-track');
       var dots = document.getElementById('apex-rules-dots');
-      if (!track) return;
-      var slides = SLIDES.length;
+      if (!track || !dots) return;
+      var total = SLIDES.length || 4;
       var idx = 0, timer = null, INTERVAL = 4000;
 
       function go(n, animate) {
-        idx = (n + slides) % slides;
+        idx = (n + total) % total;
         track.style.transition = animate === false ? 'none' : '';
         track.style.transform = 'translateX(-' + (idx * 100) + '%)';
         dots.querySelectorAll('.apex-rules-dot').forEach(function (d, i) {
@@ -2305,27 +2519,28 @@ document.addEventListener('click', function (e) {
     })();
   }
 
-  // 事件委托
+  // 事件委托：点玩法卡片
   function delegate() {
-    if (window.__apexRulesV2Bound) return;
-    window.__apexRulesV2Bound = true;
+    if (window.__apexRulesV3Bound) return;
+    window.__apexRulesV3Bound = true;
 
     document.addEventListener('click', function (e) {
       var card = e.target.closest('.apex-mode-card');
       if (!card) return;
       var mode = card.dataset.mode;
-      if (RULES[mode]) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        build(mode);
-      }
+      if (!mode) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      openRulesPage(mode);
     }, true);
   }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', delegate);
   } else {
-    setTimeout(delegate, 200);
+    setTimeout(delegate, 250);
   }
+
+  console.log('[Apex] Bind v3 已就绪');
 })();
