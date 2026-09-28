@@ -2583,6 +2583,321 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
     }
+,
+    'Free Spins': {
+      zh: '免费旋转',
+      tagline: '老虎机最经典奖励机制——无需下注即可旋转若干次，中奖金额全部归玩家。通常由 3 个以上 Scatter 触发。',
+      quickStart: [
+        { n: 1, title: '旋转触发', desc: '3+ Scatter 符号出现在任意位置即触发。' },
+        { n: 2, title: '获得次数', desc: '通常 10-20 次免费旋转。' },
+        { n: 3, title: '中奖入账', desc: '免费旋转中奖金额全部归玩家。' },
+        { n: 4, title: '追加次数', desc: '免费旋转中出现 3+ Scatter 可再追加。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '触发条件', v: '3+ Scatter 符号' },
+          { k: '免费次数', v: '通常 10 - 20 次' },
+          { k: '是否消耗余额', v: '否' },
+          { k: '追加条件', v: '再出现 3+ Scatter' }
+        ],
+        note: '免费旋转是老虎机最高频奖励，中奖金额归玩家，不消耗额外下注。',
+        examples: ['3 Scatter 触发 10 次免费旋转', '4 Scatter 触发 15 次', '5 Scatter 触发 20 次'],
+        order: '5 Scatter > 4 Scatter > 3 Scatter > 无'
+      },
+      natural: {
+        desc: '免费旋转常见特色：',
+        examples: [
+          'Multiplier：免费旋转中所有中奖 ×2 或 ×3',
+          'Retrigger：免费旋转中再触发 Scatter 可追加次数',
+          'Sticky Wild：免费旋转中 Wild 会固定在原位',
+          'Expanding Wild：Wild 可扩展覆盖整个转轴'
+        ],
+        note: '免费旋转 RTP 通常占总 RTP 的 30% - 70%。'
+      },
+      odds: [
+        { name: '3 Scatter', value: '10 次免费旋转' },
+        { name: '4 Scatter', value: '15 次免费旋转' },
+        { name: '5 Scatter', value: '20 次免费旋转' },
+        { name: '追加（Retrigger）', value: '再 +5 至 +15 次' }
+      ],
+      oddsNote: '具体次数以游戏内规则为准。',
+      terms: [
+        { en: 'Free Spins', zh: '免费旋转' },
+        { en: 'Scatter', zh: '散点符号' },
+        { en: 'Retrigger', zh: '追加触发' },
+        { en: 'Sticky Wild', zh: '粘性百搭' }
+      ],
+      faq: [
+        { q: '免费旋转会消耗余额吗？', a: '不会。免费旋转是纯奖励，不消耗额外下注。' },
+        { q: '免费旋转中奖金额有限制吗？', a: '通常无上限，部分游戏可能设置单次最大奖额。' },
+        { q: '如何触发免费旋转？', a: '3+ Scatter 符号出现在任意位置即可触发。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。免费旋转次数与倍率以游戏内显示为准。'
+    },
+
+    'Bonus Buy': {
+      zh: '奖励购买',
+      tagline: '直接花钱购买免费旋转或奖励游戏，跳过基础游戏等待。快速进入高波动奖励机制，代价是支付 50-200 倍下注额。',
+      quickStart: [
+        { n: 1, title: '选择购买', desc: '点击 Buy Bonus 按钮。' },
+        { n: 2, title: '支付费用', desc: '支付 50x - 200x 下注额。' },
+        { n: 3, title: '立即触发', desc: '直接进入免费旋转或奖励游戏。' },
+        { n: 4, title: '中奖入账', desc: '奖励中奖金额归玩家。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '购买费用', v: '通常 50x - 200x 下注额' },
+          { k: '触发内容', v: '免费旋转 / 奖励游戏' },
+          { k: '是否需要等待', v: '否，立即触发' },
+          { k: '是否消耗余额', v: '是（按购买价扣款）' }
+        ],
+        note: 'Bonus Buy 适合想跳过基础游戏、直接体验奖励机制的玩家。',
+        examples: [
+          'Sweet Bonanza Buy Free Spins：100x 下注额',
+          'Gates of Olympus Buy Free Spins：100x 下注额',
+          'Money Train Buy Bonus：80x 下注额'
+        ],
+        order: '购买费用越高，通常奖励机制越强'
+      },
+      natural: {
+        desc: 'Bonus Buy 特色：',
+        examples: [
+          'Feature Buy：直接购买奖励机制',
+          'Random Buy：随机触发不同奖励',
+          'Bonus Buy 价格通常 50x - 200x',
+          '部分游戏支持购买"超级免费旋转"（更贵但更强）'
+        ],
+        note: 'Bonus Buy RTP 通常与基础游戏一致，但波动更大。'
+      },
+      odds: [
+        { name: '标准购买', value: '100x 下注额' },
+        { name: '超级购买', value: '200x 下注额' },
+        { name: '奖励返回', value: '理论 RTP 一致' }
+      ],
+      oddsNote: 'Bonus Buy 为固定价格，非 1 赔 X。',
+      terms: [
+        { en: 'Bonus Buy', zh: '奖励购买' },
+        { en: 'Feature Buy', zh: '特性购买' },
+        { en: 'Super Buy', zh: '超级购买' }
+      ],
+      faq: [
+        { q: 'Bonus Buy 划算吗？', a: '不绝对。RTP 与基础游戏一致，但波动更大。适合追求刺激的玩家。' },
+        { q: '购买后能退回吗？', a: '不能。购买即视为消费，无论奖励结果如何。' },
+        { q: '为什么有些游戏没有 Bonus Buy？', a: '部分司法辖区禁止 Bonus Buy 功能，因此部分游戏不提供。' }
+      ],
+      disclaimer: '本游戏 Bonus Buy 为可选功能，请理性消费。RTP 为长期理论值。'
+    },
+
+    'Pick Bonus': {
+      zh: 'Pick Bonus',
+      tagline: '奖励小游戏——玩家从若干选项中挑选若干个，每个隐藏不同奖金。选得越多奖金越高，但选择权在玩家手中。',
+      quickStart: [
+        { n: 1, title: '触发', desc: '3+ Bonus 符号触发 Pick Bonus。' },
+        { n: 2, title: '挑选', desc: '从 12-25 个选项中挑选若干个。' },
+        { n: 3, title: '揭晓', desc: '每选一个即揭晓隐藏奖金。' },
+        { n: 4, title: '结算', desc: '累计所有揭晓金额，即为总奖金。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '触发条件', v: '3+ Bonus 符号' },
+          { k: '选项数', v: '通常 12 - 25 个' },
+          { k: '可选次数', v: '3 - 5 次' },
+          { k: '奖金', v: '随机分布' }
+        ],
+        note: 'Pick Bonus 的核心是"玩家选择"，增加参与感。',
+        examples: [
+          '从 12 个礼盒中选 3 个',
+          '从 20 个金币中选 5 个',
+          '每个选项奖金 5x - 100x 下注额'
+        ],
+        order: '选到越多高额选项，总奖金越高'
+      },
+      natural: {
+        desc: 'Pick Bonus 特色：',
+        examples: [
+          'Pick & Win：经典挑选机制',
+          'Collection Bonus：集齐指定符号后触发',
+          'Progressive Pick：每次挑选可能触发下一阶段',
+          'Multiplier Reveal：挑选结果是倍率'
+        ],
+        note: 'Pick Bonus 让玩家有"策略参与"的错觉，实际结果早已由 RNG 决定。'
+      },
+      odds: [
+        { name: '单次挑选最高', value: '100x - 500x' },
+        { name: '累计最高', value: '500x - 5,000x' },
+        { name: '常规挑选', value: '5x - 50x' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Pick Bonus', zh: '挑选奖励' },
+        { en: 'Pick & Win', zh: '挑选赢奖' },
+        { en: 'Reveal', zh: '揭晓' }
+      ],
+      faq: [
+        { q: '挑选顺序影响结果吗？', a: '不影响。所有选项结果由 RNG 提前决定，玩家选择只是动画展示。' },
+        { q: 'Pick Bonus 触发概率高吗？', a: '较低，通常几百转触发一次。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。玩家选择不影响最终结果。'
+    },
+
+    'Gamble Feature': {
+      zh: '赌倍特性',
+      tagline: '中奖后选择"赌一把"——猜对颜色 / 花色则奖金翻倍，猜错则全部失去。高风险高回报，刺激度极高。',
+      quickStart: [
+        { n: 1, title: '中奖', desc: '获得任意中奖。' },
+        { n: 2, title: '选择赌倍', desc: '点击 Gamble 按钮。' },
+        { n: 3, title: '猜牌', desc: '猜下一张牌颜色（红 / 黑）或花色。' },
+        { n: 4, title: '结果', desc: '猜对奖金翻倍，猜错失去全部奖金。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '触发条件', v: '任意中奖后' },
+          { k: '猜颜色', v: '红 / 黑（50% 概率）' },
+          { k: '猜花色', v: '♠ ♥ ♣ ♦（25% 概率）' },
+          { k: '翻倍率', v: '猜颜色 ×2，猜花色 ×4' }
+        ],
+        note: 'Gamble Feature 是"全押式"玩法，赢则翻倍，输则归零。',
+        examples: [
+          '中奖 100 → 猜对颜色 → 200',
+          '中奖 100 → 猜对花色 → 400',
+          '中奖 100 → 猜错 → 0'
+        ],
+        order: '猜花色 > 猜颜色 > 不赌'
+      },
+      natural: {
+        desc: 'Gamble Feature 特色：',
+        examples: [
+          'Color Gamble：猜红或黑（50/50）',
+          'Suit Gamble：猜花色（1/4）',
+          'Limited Gamble：最多可赌倍若干次',
+          'Double or Nothing：真正的"全押式"',
+          'Partial Gamble：可赌一半奖金'
+        ],
+        note: 'Gamble Feature 使短期波动极大，请谨慎使用。'
+      },
+      odds: [
+        { name: '猜对颜色', value: '1 赔 1（奖金翻倍）' },
+        { name: '猜对花色', value: '1 赔 3（奖金 ×4）' },
+        { name: '猜错', value: '失去全部奖金' }
+      ],
+      oddsNote: 'Gamble 无庄家优势或劣势（视牌组构成），但波动极大。',
+      terms: [
+        { en: 'Gamble', zh: '赌倍' },
+        { en: 'Double or Nothing', zh: '双倍或归零' },
+        { en: 'Partial Gamble', zh: '部分赌倍' }
+      ],
+      faq: [
+        { q: 'Gamble 划算吗？', a: '理论期望相同，但波动极大。短期可能翻倍，也可能归零。' },
+        { q: '可以连续赌倍吗？', a: '部分游戏允许，最多可赌若干次。' },
+        { q: '输了会怎样？', a: '失去全部中奖金额。' }
+      ],
+      disclaimer: 'Gamble Feature 波动极大，请谨慎使用。本游戏结果由 RNG 产生。'
+    },
+
+    'Multiplier': {
+      zh: '倍率',
+      tagline: '在基础中奖上乘以倍率——2x / 5x / 10x / 100x 不等，有时可叠加。是老虎机提升单次奖励的核心机制。',
+      quickStart: [
+        { n: 1, title: '旋转', desc: '设定下注额旋转。' },
+        { n: 2, title: '中奖', desc: '基础中奖金额产生。' },
+        { n: 3, title: '倍率生效', desc: '若中奖含 Multiplier，按倍率放大。' },
+        { n: 4, title: '叠加', desc: '多个 Multiplier 可叠加（乘法或加法，视游戏而定）。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Multiplier 来源', v: 'Wild / 符号 / 特殊机制' },
+          { k: '常见倍率', v: '2x / 3x / 5x / 10x / 100x' },
+          { k: '叠加方式', v: '乘法或加法' },
+          { k: '生效时机', v: '中奖时' }
+        ],
+        note: 'Multiplier 使基础中奖金额成倍增加，是老虎机核心奖励机制。',
+        examples: [
+          '基础中奖 10x × Multiplier 5x = 50x',
+          '两个 Multiplier 2x + 3x（乘法）= 6x',
+          '三个 Multiplier 2x + 3x + 5x（乘法）= 30x'
+        ],
+        order: 'Multiplier 越高，单次奖励越大'
+      },
+      natural: {
+        desc: 'Multiplier 常见类型：',
+        examples: [
+          'Wild Multiplier：Wild 参与中奖时生效',
+          'Global Multiplier：全局倍率，影响所有中奖',
+          'Progressive Multiplier：连锁中倍率递增',
+          'Random Multiplier：随机触发倍率'
+        ],
+        note: 'Gates of Olympus 的 Zeus 随机倍率可达 500x，Sweet Bonanza 的糖果倍率可达 100x。'
+      },
+      odds: [
+        { name: '低倍率', value: '2x - 5x' },
+        { name: '中倍率', value: '10x - 50x' },
+        { name: '高倍率', value: '100x - 500x' },
+        { name: '超高倍率', value: '1,000x 以上' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Multiplier', zh: '倍率' },
+        { en: 'Global Multiplier', zh: '全局倍率' },
+        { en: 'Progressive Multiplier', zh: '递增倍率' }
+      ],
+      faq: [
+        { q: 'Multiplier 可以叠加吗？', a: '部分游戏支持，通常为乘法叠加；具体以游戏内规则为准。' },
+        { q: 'Multiplier 什么时候生效？', a: '中奖时生效。若符号未参与中奖，倍率不生效。' }
+      ],
+      disclaimer: '本游戏结果由 RNG 产生。Multiplier 触发概率以游戏内显示为准。'
+    },
+
+    'Respins': {
+      zh: '重转',
+      tagline: '免费再转若干次，但只重转部分转轴（如 1-3 轴），其他轴锁定。常见于 Hold & Win 机制，中奖机会多。',
+      quickStart: [
+        { n: 1, title: '触发', desc: '特定条件下触发 Respins。' },
+        { n: 2, title: '锁定 + 重转', desc: '部分转轴锁定，其余重转。' },
+        { n: 3, title: '追加', desc: '新特殊符号落下则再获得重转。' },
+        { n: 4, title: '结算', desc: '重转结束后累计中奖。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '触发条件', v: '特殊符号 / 特定机制' },
+          { k: '重转次数', v: '初始 3 次（或更多）' },
+          { k: '重转范围', v: '部分转轴' },
+          { k: '追加机制', v: '新符号落下则重置' }
+        ],
+        note: 'Respins 与 Free Spins 的区别：Respins 通常只重转部分转轴，Free Spins 则全部重转。',
+        examples: [
+          '6+ 硬币符号触发 → 3 次 Respins',
+          'Respins 中新符号落下 → 重置为 3 次',
+          '最终按符号数量累积奖金'
+        ],
+        order: 'Respins 越多，中奖机会越多'
+      },
+      natural: {
+        desc: 'Respins 常见类型：',
+        examples: [
+          'Hold & Win Respins：经典重转机制',
+          'Symbol Respins：特定符号触发重转',
+          'Nudge Respins：转轴微调后重转',
+          'Sticky Respins：锁定符号重转'
+        ],
+        note: 'Respins 常与 Hold & Win、Jackpot 机制结合。'
+      },
+      odds: [
+        { name: 'Respins 初始', value: '3 次' },
+        { name: '追加次数', value: '每次新符号 +3 次' },
+        { name: '累计中奖', value: '视符号数量与数值' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Respin', zh: '重转' },
+        { en: 'Hold & Win', zh: '锁定重转' },
+        { en: 'Sticky Wild', zh: '粘性百搭' }
+      ],
+      faq: [
+        { q: 'Respins 和 Free Spins 的区别？', a: 'Respins 通常只重转部分转轴（其他锁定），Free Spins 则全部重转。' },
+        { q: 'Respins 中下注消耗余额吗？', a: '通常不消耗。Respins 是奖励机制。' }
+      ],
+      disclaimer: '本游戏结果由 RNG 产生。Respins 触发条件以游戏内显示为准。'
+    }
 
   };
 
