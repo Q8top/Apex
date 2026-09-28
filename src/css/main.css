@@ -2321,3 +2321,51 @@ html, body, #apex-homepage {
   color: #c7c7cc;
   flex-shrink: 0;
 }
+
+/* ══════════════════════════════════════════════════
+   APEX HOT LIST — 卡片自动撑满屏幕
+   ══════════════════════════════════════════════════ */
+
+.apex-hot-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+.apex-hot-side {
+  height: 100%;
+}
+.apex-hot-list {
+  flex: 1;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom)) 12px !important;
+  overflow: hidden !important;
+}
+.apex-hot-item {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  padding: 16px 16px !important;
+}
+.apex-hot-item-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+}
+.apex-hot-item-icon svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+.apex-hot-item-title {
+  font-size: 16px !important;
+}
+.apex-hot-item-sub {
+  font-size: 12.5px !important;
+  margin-top: 4px !important;
+}
+.apex-hot-item-arrow svg {
+  width: 20px !important;
+  height: 20px !important;
+}
