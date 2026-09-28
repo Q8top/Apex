@@ -315,3 +315,39 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
+
+
+// ============================================================
+// 左侧竖列导航 - APEX-SIDE-BIND
+// ============================================================
+(function () {
+  var names = {
+    poker: '棋牌',
+    slot: '电子',
+    dice: '骰子/数学概率',
+    sports: '体育',
+    events: '赛事',
+    instant: '即时游戏',
+    esports: '电竞',
+    special: '特殊/新型'
+  };
+  function bind() {
+    var side = document.querySelector('.apex-side');
+    if (!side) return;
+    side.querySelectorAll('.apex-side-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var cat = item.dataset.cat;
+        side.querySelectorAll('.apex-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === item);
+        });
+        var titleEl = document.getElementById('apex-content-title');
+        if (titleEl) titleEl.textContent = names[cat] || cat;
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
