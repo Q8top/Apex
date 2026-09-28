@@ -1992,13 +1992,6 @@ document.addEventListener('click', function (e) {
   }
 
   // 百家樂独立监听已禁用（统一走通用组件）
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', delegate);
-  } else {
-    setTimeout(delegate, 100);
-  }
 })();
 
 
