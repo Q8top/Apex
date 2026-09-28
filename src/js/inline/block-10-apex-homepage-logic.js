@@ -1615,3 +1615,159 @@ document.addEventListener('click', function (e) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else setTimeout(init, 100);
 })();
+
+
+// 电竞全屏子页面 - APEX-ESPORTS-PAGE
+(function () {
+  var DATA = [
+    { key: 'lol', label: '英雄联盟', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Map Winner', zh: '单图胜负' },
+      { en: 'Total Kills', zh: '总击杀' },
+      { en: 'First Blood', zh: '首杀' },
+      { en: 'First Tower', zh: '首塔' }
+    ]},
+    { key: 'cs', label: 'Counter-Strike', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Map Winner', zh: '单图胜负' },
+      { en: 'Round Handicap', zh: '局让分' },
+      { en: 'Total Rounds', zh: '总局数' },
+      { en: 'Player Performance', zh: '选手表现' }
+    ]},
+    { key: 'dota', label: 'Dota 2', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Map Winner', zh: '单图胜负' },
+      { en: 'Total Kills', zh: '总击杀' },
+      { en: 'First Blood', zh: '首杀' },
+      { en: 'First Tower', zh: '首塔' }
+    ]},
+    { key: 'valorant', label: '无畏契约', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Map Winner', zh: '单图胜负' },
+      { en: 'Round Handicap', zh: '局让分' },
+      { en: 'Total Rounds', zh: '总局数' },
+      { en: 'First Map', zh: '首图' }
+    ]},
+    { key: 'pubg', label: 'PUBG', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Tournament Winner', zh: '锦标赛冠军' },
+      { en: 'Placement', zh: '名次' },
+      { en: 'Total Kills', zh: '总击杀' }
+    ]},
+    { key: 'fc', label: 'EA Sports FC', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Correct Score', zh: '正确比分' },
+      { en: 'Total Goals', zh: '总进球' },
+      { en: 'Handicap', zh: '让分' }
+    ]},
+    { key: 'rl', label: 'Rocket League', items: [
+      { en: 'Match Winner', zh: '比赛胜负' },
+      { en: 'Map Winner', zh: '单图胜负' },
+      { en: 'Total Goals', zh: '总进球' },
+      { en: 'Handicap', zh: '让分' }
+    ]},
+    { key: 'other', label: '其他电竞', items: [
+      { en: 'Overwatch 2', zh: '守望先锋 2' },
+      { en: 'Rainbow Six Siege', zh: '彩虹六号' },
+      { en: 'StarCraft II', zh: '星际争霸 II' },
+      { en: 'Warcraft III', zh: '魔兽争霸 III' },
+      { en: 'Call of Duty', zh: '使命召唤' },
+      { en: 'Fortnite', zh: '堡垒之夜' },
+      { en: 'Mobile Legends', zh: 'Mobile Legends' },
+      { en: 'Honor of Kings', zh: '王者荣耀' },
+      { en: 'Free Fire', zh: 'Free Fire' }
+    ]}
+  ];
+
+  var I = {
+    lol:      '<path d="M4 20l4-4M20 4l-4 4M12 4v16M4 12h16"/>',
+    cs:       '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 12h9"/>',
+    dota:     '<path d="M4 12 12 4l8 8-8 8z"/><path d="M12 4v16M4 12h16"/>',
+    valorant: '<path d="M4 6v12M20 6v12M8 6l4 8 4-8"/>',
+    pubg:     '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 12h10"/>',
+    fc:       '<circle cx="12" cy="12" r="9"/><path d="M12 7l3 2v4l-3 2-3-2V9z"/>',
+    rl:       '<circle cx="9" cy="14" r="3"/><circle cx="15" cy="14" r="3"/><path d="M9 8h6"/>',
+    other:    '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>'
+  };
+
+  function s(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-esports-page')) return;
+    var w = document.createElement('div');
+    w.id = 'apex-esports-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var hd = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-esports-back">' + s('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">电竞</div>'
+      + '</div>';
+
+    var sd = '<div class="apex-hot-side" id="apex-esports-side">';
+    DATA.forEach(function (cat, i) {
+      sd += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + s(I[cat.key]) + '<span>' + cat.label + '</span></button>';
+    });
+    sd += '</div>';
+
+    w.innerHTML = hd + '<div class="apex-hot-body">' + sd + '<div class="apex-hot-list" id="apex-esports-list"></div></div>';
+    document.body.appendChild(w);
+
+    document.getElementById('apex-esports-back').addEventListener('click', function () { w.style.display = 'none'; });
+
+    var sideEl = document.getElementById('apex-esports-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) { el.classList.toggle('is-active', el === b); });
+        render(k);
+      });
+    });
+    render(DATA[0].key);
+  }
+
+  function render(key) {
+    var le = document.getElementById('apex-esports-list');
+    if (!le) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+    var ic = I[cat.key] || I.other;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + s(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        + '<div class="apex-hot-item-title">' + it.en + '</div>'
+        + '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + s('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    le.innerHTML = html;
+    le.scrollTop = 0;
+    le.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        if (window.__apex && window.__apex.toast) window.__apex.toast(el.dataset.name + ' 开发中，敬请期待', 'info');
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var b = document.querySelector('.apex-cats .apex-cat[data-cat="esports"]');
+    if (b) {
+      var nb = b.cloneNode(true);
+      b.parentNode.replaceChild(nb, b);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var p = document.getElementById('apex-esports-page');
+        if (p) p.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
