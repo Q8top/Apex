@@ -1991,23 +1991,7 @@ document.addEventListener('click', function (e) {
     });
   }
 
-  // 事件委托：拦截所有 .apex-hot-item[data-name="Baccarat"] 的点击
-  function delegate() {
-    if (window.__apexBaccaratBound) return;
-    window.__apexBaccaratBound = true;
-
-    document.addEventListener('click', function (e) {
-      var item = e.target.closest('.apex-hot-item');
-      if (!item) return;
-      if (item.dataset.name === 'Baccarat') {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        build();
-        var page = document.getElementById('apex-baccarat-modes');
-        if (page) page.style.display = 'flex';
-      }
-    }, true); // capture 阶段，抢在 toast 之前
+  // 百家樂独立监听已禁用（统一走通用组件）
   }
 
   if (document.readyState === 'loading') {
@@ -3474,13 +3458,16 @@ document.addEventListener('click', function (e) {
     })();
   }
 
-  // 事件委托：同时监听 百家樂模式卡片 + 子页面里的玩法卡片
+  // 事件委托：三级导航
+  //   .apex-mode-card (子页面里的模式卡片) → 规则页
+  //   .apex-hot-item 若在 MODES_MAP → 模式页
+  //   .apex-hot-item 若在 RULES     → 规则页
   function delegate() {
     if (window.__apexRulesV3Bound) return;
     window.__apexRulesV3Bound = true;
 
     document.addEventListener('click', function (e) {
-      // 1. 百家樂模式卡片（.apex-mode-card）
+      // ─── Level 1: 模式卡片 → 规则页 ───
       var modeCard = e.target.closest('.apex-mode-card');
       if (modeCard && modeCard.dataset.mode) {
         e.preventDefault();
@@ -3490,21 +3477,35 @@ document.addEventListener('click', function (e) {
         return;
       }
 
-      // 2. 子页面里的玩法卡片（.apex-hot-item）
+      // ─── Level 2/3: 玩法卡片 ───
       var hotItem = e.target.closest('.apex-hot-item');
       if (!hotItem || !hotItem.dataset.name) return;
 
       var name = hotItem.dataset.name;
       var RULES = window.__apexApexRulesV3 || {};
+      var MODES = window.__apexModesMap || {};
 
-      // 若这个玩法有完整规则数据 → 打开规则页
+      // 有完整规则数据 → 直接打开规则页
       if (RULES[name]) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         openRulesPage(name);
+        return;
       }
-      // 否则保持原 toast 行为（不拦截）
+
+      // 有模式列表 → 打开模式页
+      if (MODES[name]) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        if (typeof window.__apexOpenModesPage === 'function') {
+          window.__apexOpenModesPage(name, MODES[name]);
+        }
+        return;
+      }
+
+      // 都没有 → 保持原 toast 行为
     }, true);
   }
 
@@ -3515,4 +3516,102 @@ document.addEventListener('click', function (e) {
   }
 
   console.log('[Apex] Bind v3 已就绪');
+})();
+
+
+// ============================================================
+// 通用模式选择页 + 模式映射表 - APEX-GENERIC-MODES
+// ============================================================
+(function () {
+  // 每个玩法的模式列表（英文名 + 中文名）
+  var MODES_MAP = {
+    'Baccarat': [
+      { en: 'Punto Banco', zh: '彭托银行' },
+      { en: 'Mini Baccarat', zh: '迷你百家樂' },
+      { en: 'No Commission Baccarat', zh: '免佣百家樂' },
+      { en: 'Speed Baccarat', zh: '极速百家樂' },
+      { en: 'Baccarat Variants', zh: '百家樂变体' }
+    ],
+    'Blackjack': [
+      { en: 'Classic Blackjack', zh: '经典21点' },
+      { en: 'European Blackjack', zh: '欧洲21点' },
+      { en: 'Spanish 21', zh: '西班牙21点' },
+      { en: 'Blackjack Switch', zh: '21点换牌' },
+      { en: 'Super Fun 21', zh: '超级21点' }
+    ],
+    "Texas Hold'em": [
+      { en: "Texas Hold'em", zh: '德州扑克' },
+      { en: "Short Deck Hold'em", zh: '短牌德州' },
+      { en: 'Fast Fold Poker', zh: '快速弃牌' },
+      { en: 'Tournament Poker', zh: '锦标赛扑克' },
+      { en: 'Heads-Up Poker', zh: '单挑扑克' }
+    ],
+    'Omaha': [
+      { en: 'Omaha', zh: '奥马哈' },
+      { en: 'Omaha Hi-Lo', zh: '奥马哈高低' },
+      { en: 'Pot-Limit Omaha', zh: '底池限注奥马哈' },
+      { en: 'Five Card Omaha', zh: '五张奥马哈' }
+    ],
+    'Niu Niu': [
+      { en: 'Niu Niu', zh: '牛牛' },
+      { en: 'Classic Niu Niu', zh: '经典牛牛' },
+      { en: 'Super Niu Niu', zh: '超级牛牛' },
+      { en: 'Bonus Niu Niu', zh: '奖励牛牛' },
+      { en: 'Variant Niu Niu', zh: '变体牛牛' }
+    ]
+  };
+
+  window.__apexModesMap = MODES_MAP;
+
+  var ICON = '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10h6M9 14h6"/>';
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  window.__apexOpenModesPage = function (title, modes) {
+    if (!modes || !modes.length) return;
+
+    // 删除旧页
+    var old = document.getElementById('apex-modes-page');
+    if (old) old.remove();
+
+    var w = document.createElement('div');
+    w.id = 'apex-modes-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:600;display:flex;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-modes-back">' + svg('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">' + esc(title) + '</div>'
+      + '</div>';
+
+    var list = '<div class="apex-mode-list">';
+    modes.forEach(function (m) {
+      list += '<button class="apex-mode-card" data-mode="' + esc(m.en) + '">'
+        + '<div class="apex-mode-icon">' + svg(ICON) + '</div>'
+        + '<div class="apex-mode-info">'
+        +   '<div class="apex-mode-title">' + esc(m.en) + '</div>'
+        +   '<div class="apex-mode-sub">' + esc(m.zh) + '</div>'
+        + '</div>'
+        + '<span class="apex-mode-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</button>';
+    });
+    list += '</div>';
+
+    w.innerHTML = header + list;
+    document.body.appendChild(w);
+
+    document.getElementById('apex-modes-back').addEventListener('click', function () {
+      w.remove();
+    });
+
+    // 模式卡片点击由主委托逻辑处理（.apex-mode-card → RULES → 规则页）
+    console.log('[Apex] 通用模式页已打开：' + title + ' (' + modes.length + ' 个模式)');
+  };
+
+  console.log('[Apex] 通用模式组件已就绪');
 })();
