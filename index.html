@@ -568,24 +568,57 @@
   <script src="/src/js/inline/block-09.js"></script>
   
   
-<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#f5f5f7; z-index:100; display:none; align-items:center; justify-content:center;">
+<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#ffffff; z-index:100; overflow-y:auto; -webkit-overflow-scrolling:touch;">
 
-  <button data-apex-action="logout" style="
-    background:#111111;
-    color:#ffffff;
-    border:none;
-    padding:16px 48px;
-    border-radius:12px;
-    font-family:'Manrope','Inter',system-ui,sans-serif;
-    font-size:16px;
-    font-weight:600;
-    letter-spacing:2px;
-    cursor:pointer;
-    min-height:52px;
-    min-width:160px;
-    -webkit-tap-highlight-color:transparent;
-    transition:opacity 0.2s;
-  ">退出</button>
+  <!-- ============ 黑色顶栏 ============ -->
+  <div class="apex-topbar">
+    <div class="apex-topbar-inner">
+      <div class="apex-topbar-title">APEX</div>
+      <div class="apex-topbar-right">
+        <button class="apex-topbar-btn" aria-label="通知" type="button" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="apex-topbar-badge">3</span>
+        </button>
+        <button class="apex-topbar-btn" aria-label="在线客服" type="button" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
+        </button>
+        <button id="home-lang-btn" class="apex-topbar-btn apex-topbar-lang" aria-label="切换语言" type="button">
+          <span id="home-current-flag">🇨🇳</span>
+          <span class="apex-topbar-caret">▼</span>
+        </button>
+      </div>
+    </div>
+    <div id="home-lang-menu" class="apex-lang-menu">
+      <div class="apex-lang-item" data-lang="zh-CN" data-flag="🇨🇳">
+        <span class="apex-lang-flag">🇨🇳</span>
+        <span class="apex-lang-name">简体中文</span>
+      </div>
+      <div class="apex-lang-item" data-lang="en" data-flag="🇺🇸">
+        <span class="apex-lang-flag">🇺🇸</span>
+        <span class="apex-lang-name">English</span>
+      </div>
+      <div class="apex-lang-item" data-lang="ja" data-flag="🇯🇵">
+        <span class="apex-lang-flag">🇯🇵</span>
+        <span class="apex-lang-name">日本語</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 广告轮播 ============ -->
+  <div class="apex-carousel">
+    <div class="apex-carousel-track" id="apex-carousel-track">
+      <div class="apex-carousel-slide">图一</div>
+      <div class="apex-carousel-slide">图二</div>
+      <div class="apex-carousel-slide">图三</div>
+      <div class="apex-carousel-slide">图四</div>
+    </div>
+    <div class="apex-carousel-dots" id="apex-carousel-dots">
+      <span class="apex-carousel-dot active" data-index="0"></span>
+      <span class="apex-carousel-dot" data-index="1"></span>
+      <span class="apex-carousel-dot" data-index="2"></span>
+      <span class="apex-carousel-dot" data-index="3"></span>
+    </div>
+  </div>
 
 </div>
 

@@ -836,3 +836,207 @@ html {
 #apex-homepage .apex-topbar-title {
   padding-top: 6px !important;
 }
+
+/* === APEX HOMEPAGE V2 === */
+#apex-homepage {
+  background: #f5f5f7;
+  color: #111111;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 顶栏 */
+#apex-homepage .apex-topbar {
+  background: #000000;
+  padding: calc(10px + env(safe-area-inset-top)) 16px 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+#apex-homepage .apex-topbar-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#apex-homepage .apex-topbar-title {
+  font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffffff;
+  line-height: 1;
+}
+#apex-homepage .apex-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#apex-homepage .apex-topbar-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+  font-family: inherit;
+  font-size: 16px;
+  gap: 2px;
+}
+#apex-homepage .apex-topbar-btn:active { background: rgba(255,255,255,0.1); }
+#apex-homepage .apex-topbar-lang {
+  width: auto;
+  padding: 0 8px;
+  border-radius: 20px;
+}
+#apex-homepage .apex-topbar-caret {
+  font-size: 8px;
+  opacity: 0.7;
+  margin-left: 2px;
+  transition: transform 0.2s;
+}
+#apex-homepage .apex-topbar-lang.open .apex-topbar-caret {
+  transform: rotate(180deg);
+}
+#apex-homepage .apex-topbar-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #e63946;
+  color: #ffffff;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 语言下拉菜单 */
+#apex-homepage .apex-lang-menu {
+  display: none;
+  position: absolute;
+  right: 16px;
+  top: calc(100% + 6px);
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 20;
+}
+#apex-homepage .apex-lang-menu.show {
+  display: block;
+}
+#apex-homepage .apex-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+#apex-homepage .apex-lang-item:active,
+#apex-homepage .apex-lang-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+#apex-homepage .apex-lang-item.active {
+  background: rgba(212,175,55,0.15);
+  color: #d4af37;
+}
+#apex-homepage .apex-lang-flag {
+  font-size: 18px;
+}
+#apex-homepage .apex-lang-name {
+  flex: 1;
+}
+
+/* 广告轮播 */
+#apex-homepage .apex-carousel {
+  position: relative;
+  max-width: 640px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+#apex-homepage .apex-carousel-track {
+  display: flex;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  aspect-ratio: 16 / 9;
+}
+#apex-homepage .apex-carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+}
+#apex-homepage .apex-carousel-slide:nth-child(1) { background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%); }
+#apex-homepage .apex-carousel-slide:nth-child(2) { background: linear-gradient(135deg, #2d1f0f 0%, #4a3416 100%); }
+#apex-homepage .apex-carousel-slide:nth-child(3) { background: linear-gradient(135deg, #1a2d1f 0%, #2d4a34 100%); }
+#apex-homepage .apex-carousel-slide:nth-child(4) { background: linear-gradient(135deg, #2d1a1f 0%, #4a2d34 100%); }
+#apex-homepage .apex-carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#apex-homepage .apex-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+#apex-homepage .apex-carousel-dot.active {
+  width: 18px;
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+@media (max-width: 400px) {
+  #apex-homepage .apex-topbar-title {
+    font-size: 22px;
+    letter-spacing: 2.5px;
+  }
+  #apex-homepage .apex-carousel-slide {
+    font-size: 20px;
+  }
+}
