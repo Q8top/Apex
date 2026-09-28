@@ -272,6 +272,26 @@ fi
 # 5) 真正导入
 # ============================================================
 log "导入到 D1 --remote..."
+# === APEX-AUTO DROP-BEFORE-IMPORT ===
+if [ -z "${DRY_RUN:-}" ] && [ -n "${TMP_SQL:-}" ] && [ -f "$TMP_SQL" ]; then
+  _APEX_DROP_SQL="/tmp/apex-drop-$$.sql"
+  {
+    echo "PRAGMA foreign_keys=OFF;"
+    grep -oiE 'CREATE TABLE (IF NOT EXISTS )?["`\[]?[a-zA-Z_][a-zA-Z0-9_]*' "$TMP_SQL" 2>/dev/null \
+      | awk '{print $NF}' | tr -d '"`[]' | sort -u \
+      | while IFS= read -r _t; do
+          [ -n "$_t" ] && echo "DROP TABLE IF EXISTS \"$_t\";"
+        done
+    echo "PRAGMA foreign_keys=ON;"
+  } > "$_APEX_DROP_SQL"
+  echo "[INFO] APEX-AUTO: 清空目标表..."
+  if ! wrangler d1 execute "$D1_BINDING" --remote --file="$_APEX_DROP_SQL" --yes; then
+    rm -f "$_APEX_DROP_SQL"
+    fail "APEX-AUTO: DROP 失败"
+  fi
+  rm -f "$_APEX_DROP_SQL"
+fi
+# === APEX-AUTO END ===
 if ! wrangler d1 execute "$D1_BINDING" --remote --file="$TMP_SQL" --yes; then
   fail "导入失败"
 fi
