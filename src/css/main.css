@@ -864,3 +864,32 @@ html {
     height: 36px !important;
   }
 }
+
+
+/* APEX SINGLE BRAND */
+#apex-homepage .apex-topbar-brand {
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 4px !important;
+}
+#apex-homepage .apex-topbar-title {
+  font-family: 'Cinzel', 'Times New Roman', Georgia, serif !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  letter-spacing: 4px !important;
+  color: #ffffff !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  text-align-last: auto !important;
+}
+#apex-homepage .apex-topbar-sub {
+  display: none !important;
+}
+@media (max-width: 400px) {
+  #apex-homepage .apex-topbar-title {
+    font-size: 24px !important;
+    letter-spacing: 3px !important;
+  }
+}
