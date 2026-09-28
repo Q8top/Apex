@@ -2898,6 +2898,287 @@
       ],
       disclaimer: '本游戏结果由 RNG 产生。Respins 触发条件以游戏内显示为准。'
     }
+,
+    'Jacks or Better': {
+      zh: 'Jacks or Better',
+      tagline: '视频扑克最经典的玩法——一对 J 或更高即获胜。规则简单、RTP 高（99%+），是职业玩家首选。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额（通常 1-5 倍）。' },
+        { n: 2, title: '发牌', desc: '系统发 5 张牌，全部明牌。' },
+        { n: 3, title: '换牌', desc: '选择保留部分牌，其余换新牌。' },
+        { n: 4, title: '结算', desc: '根据最终 5 张牌型派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '52 张' },
+          { k: '起始牌', v: '5 张' },
+          { k: '换牌次数', v: '1 次（可选 0-5 张）' },
+          { k: '最低中奖', v: '一对 J 或更高' }
+        ],
+        note: 'Jacks or Better 的最低中奖牌型是"一对 J/Q/K/A"，一对 10 或更低不算中奖。',
+        examples: ['一对 J → 1:1', '两对 → 2:1', '三条 → 3:1', '同花 → 6:1'],
+        order: '皇家同花顺 > 同花顺 > 四条 > 葫芦 > 同花 > 顺子 > 三条 > 两对 > 一对 J+'
+      },
+      natural: {
+        desc: 'Jacks or Better 牌型等级：',
+        examples: [
+          '皇家同花顺：A-K-Q-J-10 同花（最高）',
+          '同花顺：5 张连续同花',
+          '四条：4 张同点数',
+          '葫芦：3 张 + 1 对',
+          '同花：5 张同花但不连续',
+          '顺子：5 张连续但不同花',
+          '三条：3 张同点数',
+          '两对：两组对子',
+          '一对 J / Q / K / A：最低中奖'
+        ],
+        note: 'Jacks or Better 的 RTP 可达 99.54%，是视频扑克最高之一。'
+      },
+      odds: [
+        { name: '皇家同花顺', value: '1 赔 800' },
+        { name: '同花顺', value: '1 赔 50' },
+        { name: '四条', value: '1 赔 25' },
+        { name: '葫芦', value: '1 赔 9' },
+        { name: '同花', value: '1 赔 6' },
+        { name: '顺子', value: '1 赔 4' },
+        { name: '三条', value: '1 赔 3' },
+        { name: '两对', value: '1 赔 2' },
+        { name: '一对 J 或更高', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。皇家同花顺在 5 倍下注时通常赔 4000 单位。',
+      terms: [
+        { en: 'Draw', zh: '换牌' },
+        { en: 'Hold', zh: '保留牌' },
+        { en: 'RTP', zh: '返还率' },
+        { en: 'Royal Flush', zh: '皇家同花顺' }
+      ],
+      faq: [
+        { q: '可以换几张牌？', a: '最多 5 张，由你决定。保留越好的牌越好。' },
+        { q: '为什么叫 Jacks or Better？', a: '因为最低中奖牌型是一对 J/Q/K/A，一对 10 或更低不算中奖。' },
+        { q: 'Jacks or Better RTP 是多少？', a: '最优策略下 RTP 约 99.54%，是视频扑克最高之一。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Deuces Wild': {
+      zh: 'Deuces Wild',
+      tagline: '视频扑克变体——所有 2 都是 Wild（百搭），可以替代任何牌。中奖更容易，但普通对子赔率降低。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额。' },
+        { n: 2, title: '发牌', desc: '发 5 张牌，全部明牌。' },
+        { n: 3, title: '换牌', desc: '保留部分牌，其余换新。' },
+        { n: 4, title: '结算', desc: '注意 2 是 Wild，参与任何中奖组合。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '52 张' },
+          { k: 'Wild 牌', v: '4 张 2（所有 2）' },
+          { k: '起始牌', v: '5 张' },
+          { k: '最低中奖', v: '三条（3 of a Kind）' }
+        ],
+        note: 'Deuces Wild 中 2 是百搭，可以替代任何牌。因此三条即可中奖，但对子不赔付。',
+        examples: ['三条 → 1:1', '顺子 → 2:1', '同花 → 2:1', '四条（含 2 张 2）→ 4:1'],
+        order: '自然皇家同花顺 > 4 张 2 + A > 野生皇家同花顺 > 5 张 2 > 同花顺 > 四条 > 葫芦 > 同花 > 顺子 > 三条'
+      },
+      natural: {
+        desc: 'Deuces Wild 特殊规则：',
+        examples: [
+          '4 张 2（Four Deuces）：最高奖，赔 200x',
+          '野生皇家同花顺：用 2 补充的皇家同花顺',
+          '5 张 2：赔率极高（1000x）',
+          '自然皇家同花顺：不用 2 的皇家同花顺（最高）'
+        ],
+        note: 'Deuces Wild RTP 在最优策略下约 100.76%（部分版本），是玩家优势版本。'
+      },
+      odds: [
+        { name: '自然皇家同花顺', value: '1 赔 800' },
+        { name: '4 张 2 + A', value: '1 赔 400' },
+        { name: '野生皇家同花顺', value: '1 赔 25' },
+        { name: '5 张 2（Five of a Kind）', value: '1 赔 15' },
+        { name: '同花顺', value: '1 赔 9' },
+        { name: '四条', value: '1 赔 5' },
+        { name: '葫芦', value: '1 赔 3' },
+        { name: '同花', value: '1 赔 2' },
+        { name: '顺子', value: '1 赔 2' },
+        { name: '三条', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Deuces Wild', zh: '2 是百搭' },
+        { en: 'Natural Royal', zh: '自然皇家同花顺' },
+        { en: 'Four Deuces', zh: '四张 2' }
+      ],
+      faq: [
+        { q: '为什么对子不算中奖？', a: '因为 2 是 Wild，中奖概率大幅提升，所以对子不再赔付，补偿是其他牌型赔率提高。' },
+        { q: 'Deuces Wild RTP 是多少？', a: '最优策略下可达 100.76%（部分版本），玩家占优。' },
+        { q: '4 张 2 怎么算？', a: '4 张 2 是特殊牌型，赔率 200x。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Joker Poker': {
+      zh: 'Joker Poker',
+      tagline: '视频扑克变体——加入 1 张 Joker（百搭），牌组 53 张。Joker 可替代任何牌，中奖更容易。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额。' },
+        { n: 2, title: '发牌', desc: '发 5 张牌（含 Joker 时更强）。' },
+        { n: 3, title: '换牌', desc: '保留部分牌，其余换新。' },
+        { n: 4, title: '结算', desc: 'Joker 可替代任何牌。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '53 张（52 + 1 Joker）' },
+          { k: 'Wild 牌', v: '1 张 Joker' },
+          { k: '起始牌', v: '5 张' },
+          { k: '最低中奖', v: '两对（Two Pair）' }
+        ],
+        note: 'Joker Poker 中 Joker 是百搭，可以替代任何牌。最低中奖是两对。',
+        examples: ['两对 → 1:1', '三条 → 2:1', '顺子 → 4:1', '含 Joker 的五条 → 最高奖'],
+        order: '五条（含 Joker）> 皇家同花顺 > 同花顺 > 四条 > 葫芦 > 同花 > 顺子 > 三条 > 两对'
+      },
+      natural: {
+        desc: 'Joker Poker 特殊牌型：',
+        examples: [
+          '五条（Five of a Kind）：含 Joker 的 4 张相同点数牌',
+          '皇家同花顺：Joker 可替代皇家同花顺中缺失的牌',
+          '同花顺：Joker 辅助',
+          '四条：4 张同点数'
+        ],
+        note: 'Joker Poker RTP 通常在 98% - 100% 之间，取决于具体版本。'
+      },
+      odds: [
+        { name: '五条（Five of a Kind）', value: '1 赔 800' },
+        { name: '皇家同花顺', value: '1 赔 100' },
+        { name: '同花顺', value: '1 赔 50' },
+        { name: '四条', value: '1 赔 20' },
+        { name: '葫芦', value: '1 赔 7' },
+        { name: '同花', value: '1 赔 5' },
+        { name: '顺子', value: '1 赔 4' },
+        { name: '三条', value: '1 赔 3' },
+        { name: '两对', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Joker', zh: '百搭牌' },
+        { en: 'Five of a Kind', zh: '五条' },
+        { en: 'Wild', zh: '百搭' }
+      ],
+      faq: [
+        { q: 'Joker 可以替代任何牌吗？', a: '是的，Joker 是百搭牌，可以替代任何牌。' },
+        { q: '五条怎么组成？', a: '五条 = Joker + 4 张相同点数牌（如 Joker + 4 张 7）。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Bonus Poker': {
+      zh: 'Bonus Poker',
+      tagline: '视频扑克变体——四条 A 或 2/3/4 有更高赔率，鼓励玩家追求高额奖金。RTP 约 99.2%。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额。' },
+        { n: 2, title: '发牌', desc: '发 5 张牌。' },
+        { n: 3, title: '换牌', desc: '保留部分牌，其余换新。' },
+        { n: 4, title: '结算', desc: '四条 A / 2 / 3 / 4 有特殊赔率。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '52 张' },
+          { k: '起始牌', v: '5 张' },
+          { k: '换牌次数', v: '1 次' },
+          { k: '最低中奖', v: '一对 J 或更高' }
+        ],
+        note: 'Bonus Poker 的特殊之处是四条按点数分级赔付。',
+        examples: ['四条 A → 80x', '四条 2/3/4 → 40x', '四条 5-K → 25x'],
+        order: '皇家同花顺 > 同花顺 > 四条 A > 四条 2-4 > 四条 5-K > 葫芦 > 同花 > 顺子 > 三条 > 两对 > 一对 J+'
+      },
+      natural: {
+        desc: 'Bonus Poker 特色赔率：',
+        examples: [
+          '四条 A：赔率 80x（比其他版本高）',
+          '四条 2 / 3 / 4：赔率 40x',
+          '四条 5 - K：赔率 25x',
+          '皇家同花顺：赔率 800x'
+        ],
+        note: 'Bonus Poker RTP 约 99.17%，略低于 Jacks or Better。'
+      },
+      odds: [
+        { name: '皇家同花顺', value: '1 赔 800' },
+        { name: '同花顺', value: '1 赔 50' },
+        { name: '四条 A', value: '1 赔 80' },
+        { name: '四条 2 / 3 / 4', value: '1 赔 40' },
+        { name: '四条 5 - K', value: '1 赔 25' },
+        { name: '葫芦', value: '1 赔 8' },
+        { name: '同花', value: '1 赔 5' },
+        { name: '顺子', value: '1 赔 4' },
+        { name: '三条', value: '1 赔 3' },
+        { name: '两对', value: '1 赔 2' },
+        { name: '一对 J 或更高', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Bonus Poker', zh: '奖励扑克' },
+        { en: 'Four Aces', zh: '四条 A' },
+        { en: 'Four 2s-4s', zh: '四条 2-4' }
+      ],
+      faq: [
+        { q: 'Bonus Poker 和 Jacks or Better 的区别？', a: 'Bonus Poker 四条按点数分级赔付：四条 A 赔 80x，四条 2-4 赔 40x，四条 5-K 赔 25x。' },
+        { q: '为什么四条 A 赔率这么高？', a: '奖励玩法鼓励玩家追求高额奖金，是平衡设计。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    },
+
+    'Aces & Faces': {
+      zh: 'Aces & Faces',
+      tagline: '视频扑克变体——四条 A、2、3、4 及 J/Q/K 有更高赔率，突出"人头牌"概念。RTP 约 99.4%。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '选择下注额。' },
+        { n: 2, title: '发牌', desc: '发 5 张牌。' },
+        { n: 3, title: '换牌', desc: '保留部分牌，其余换新。' },
+        { n: 4, title: '结算', desc: '四条特殊点数有更高赔率。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '52 张' },
+          { k: '起始牌', v: '5 张' },
+          { k: '换牌次数', v: '1 次' },
+          { k: '最低中奖', v: '一对 J 或更高' }
+        ],
+        note: 'Aces & Faces 突出"人头牌"（J/Q/K）和 A 的特殊赔率。',
+        examples: ['四条 A / 2 / 3 / 4 → 80x', '四条 J / Q / K → 80x', '四条 5-10 → 50x'],
+        order: '皇家同花顺 > 同花顺 > 四条 A/2/3/4/J/Q/K > 四条 5-10 > 葫芦 > 同花 > 顺子 > 三条 > 两对 > 一对 J+'
+      },
+      natural: {
+        desc: 'Aces & Faces 特色：',
+        examples: [
+          '四条 A / 2 / 3 / 4：赔率 80x',
+          '四条 J / Q / K：赔率 80x',
+          '四条 5 - 10：赔率 50x',
+          '皇家同花顺：赔率 800x'
+        ],
+        note: 'Aces & Faces RTP 约 99.40%，是视频扑克较高的版本。'
+      },
+      odds: [
+        { name: '皇家同花顺', value: '1 赔 800' },
+        { name: '同花顺', value: '1 赔 50' },
+        { name: '四条 A/2/3/4/J/Q/K', value: '1 赔 80' },
+        { name: '四条 5 - 10', value: '1 赔 50' },
+        { name: '葫芦', value: '1 赔 8' },
+        { name: '同花', value: '1 赔 5' },
+        { name: '顺子', value: '1 赔 4' },
+        { name: '三条', value: '1 赔 3' },
+        { name: '两对', value: '1 赔 2' },
+        { name: '一对 J 或更高', value: '1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Aces & Faces', zh: 'A 和人头牌' },
+        { en: 'Faces', zh: '人头牌（J / Q / K）' }
+      ],
+      faq: [
+        { q: 'Aces & Faces 和 Bonus Poker 的区别？', a: 'Aces & Faces 把四条 J/Q/K 也归入高赔率组，突出"人头牌"概念。' },
+        { q: '四条 5-10 赔率多少？', a: '赔率 50x（低于四条 A/J/Q/K 的 80x）。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。RTP 为长期理论值。'
+    }
 
   };
 
