@@ -767,3 +767,176 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
+
+
+// ============================================================
+// 电子全屏子页面 - APEX-SLOT-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'slots', label: 'Slots', items: [
+      { en: 'Classic Slots', zh: '经典老虎机' },
+      { en: 'Video Slots', zh: '视频老虎机' },
+      { en: '3-Reel Slots', zh: '三轴' },
+      { en: '5-Reel Slots', zh: '五轴' },
+      { en: 'Multi-Reel', zh: '多轴' },
+      { en: 'Branded Slots', zh: '品牌主题' }
+    ]},
+    { key: 'jackpot', label: 'Jackpot', items: [
+      { en: 'Progressive Jackpot', zh: '累进奖池' },
+      { en: 'Fixed Jackpot', zh: '固定奖池' },
+      { en: 'Local Jackpot', zh: '本地奖池' },
+      { en: 'Network Jackpot', zh: '联网奖池' },
+      { en: 'Mystery Jackpot', zh: '神秘奖池' }
+    ]},
+    { key: 'mech', label: '中奖机制', items: [
+      { en: 'Megaways', zh: 'Megaways' },
+      { en: 'Cluster Pays', zh: 'Cluster Pays' },
+      { en: 'Ways to Win', zh: 'Ways to Win' },
+      { en: 'Cascading Reels', zh: '连锁消除' },
+      { en: 'Tumble', zh: 'Tumble' },
+      { en: 'Hold & Win', zh: 'Hold & Win' },
+      { en: 'All Ways', zh: 'All Ways' }
+    ]},
+    { key: 'bonus', label: 'Bonus类', items: [
+      { en: 'Free Spins', zh: '免费旋转' },
+      { en: 'Bonus Buy', zh: '奖励购买' },
+      { en: 'Pick Bonus', zh: 'Pick Bonus' },
+      { en: 'Gamble Feature', zh: 'Gamble Feature' },
+      { en: 'Multiplier', zh: '倍率' },
+      { en: 'Respins', zh: '重转' }
+    ]},
+    { key: 'vp', label: 'Video Poker', items: [
+      { en: 'Jacks or Better', zh: 'Jacks or Better' },
+      { en: 'Deuces Wild', zh: 'Deuces Wild' },
+      { en: 'Joker Poker', zh: 'Joker Poker' },
+      { en: 'Bonus Poker', zh: 'Bonus Poker' },
+      { en: 'Aces & Faces', zh: 'Aces & Faces' }
+    ]},
+    { key: 'etable', label: '电子桌面', items: [
+      { en: 'Electronic Baccarat', zh: '电子百家樂' },
+      { en: 'Electronic Blackjack', zh: '电子21点' },
+      { en: 'Electronic Roulette', zh: '电子轮盘' },
+      { en: 'Electronic Sic Bo', zh: '电子骰宝' },
+      { en: 'Electronic Craps', zh: '电子Craps' }
+    ]},
+    { key: 'other', label: '其他电子', items: [
+      { en: 'Pachinko', zh: '弹珠机' },
+      { en: 'Video Bingo', zh: '视频宾果' },
+      { en: 'Video Keno', zh: '视频基诺' },
+      { en: 'Fish Games', zh: '捕鱼游戏' },
+      { en: 'Arcade Casino Games', zh: '街机类' }
+    ]}
+  ];
+
+  var ICONS = {
+    slots:   '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>',
+    jackpot: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h6M9 14h6"/>',
+    mech:    '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    bonus:   '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+    vp:      '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>',
+    etable:  '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 12h10M7 16h10"/>',
+    other:   '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-slot-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-slot-page';
+    wrap.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-slot-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">电子</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-slot-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(ICONS[cat.key])
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-slot-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    document.getElementById('apex-slot-back').addEventListener('click', function () {
+      wrap.style.display = 'none';
+    });
+
+    var sideEl = document.getElementById('apex-slot-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-slot-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var ic = ICONS[cat.key] || ICONS.slots;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var btn = document.querySelector('.apex-cats .apex-cat[data-cat="slot"]');
+    if (btn) {
+      var nb = btn.cloneNode(true);
+      btn.parentNode.replaceChild(nb, btn);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var page = document.getElementById('apex-slot-page');
+        if (page) page.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+})();
