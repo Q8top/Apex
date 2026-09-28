@@ -7,10 +7,31 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 detect_local_sqlite() {
   local d1dir="$PROJECT_ROOT/.wrangler/state/v3/d1"
-  [ -d "$d1dir" ] || return 1
-  local f
-  f=$(find "$d1dir" -maxdepth 2 -type f -name "*.sqlite" 2>/dev/null | head -1)
-  [ -n "$f" ] && echo "$f"
+  local target="$d1dir/miniflare-D1DatabaseObject/local.sqlite"
+
+  # 已有则直接用
+  if [ -d "$d1dir" ]; then
+    local f
+    f=$(find "$d1dir" -maxdepth 2 -type f -name "*.sqlite" 2>/dev/null | head -1)
+    if [ -n "$f" ]; then
+      echo "$f"
+      return 0
+    fi
+  fi
+
+  # 不存在则自动创建（Termux 下 wrangler local 不可用，需手动初始化）
+  if command -v sqlite3 >/dev/null 2>&1; then
+    mkdir -p "$d1dir/miniflare-D1DatabaseObject"
+    if [ ! -f "$target" ]; then
+      sqlite3 "$target" "PRAGMA journal_mode=WAL;" >/dev/null 2>&1 || true
+      sqlite3 "$target" "SELECT 1;" >/dev/null 2>&1 || return 1
+      echo "[INIT] 已创建本地 sqlite: $target" >&2
+    fi
+    echo "$target"
+    return 0
+  fi
+
+  return 1
 }
 
 calc_checksum() {
