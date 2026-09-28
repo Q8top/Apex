@@ -830,3 +830,9 @@ html {
     height: 34px;
   }
 }
+
+
+/* APEX TITLE NUDGE */
+#apex-homepage .apex-topbar-title {
+  padding-top: 6px !important;
+}
