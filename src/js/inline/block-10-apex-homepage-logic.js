@@ -138,39 +138,7 @@ document.addEventListener('click', function (e) {
 });
 
 
-// ============================================================
-// 公告横排轮播（垂直滚动）
-// ============================================================
-(function () {
-  var track = null, items = 0, idx = 0, timer = null, INTERVAL = 3500;
-
-  function go(n) {
-    if (!track) return;
-    idx = (n + items) % items;
-    track.style.transform = 'translateY(-' + (idx * 100) + '%)';
-  }
-  function start() { stop(); timer = setInterval(function () { go(idx + 1); }, INTERVAL); }
-  function stop() { if (timer) { clearInterval(timer); timer = null; } }
-
-  function init() {
-    track = document.getElementById('apex-nt-track');
-    if (!track) return;
-    items = track.querySelectorAll('.apex-nt-item').length;
-    if (items <= 1) return;
-
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) stop(); else start();
-    });
-
-    start();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
+// 公告：改用 CSS 横向滚动（无需 JS）
 
 // ============================================================
 // 广告轮播：添加触摸滑动支持

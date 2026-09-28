@@ -1506,3 +1506,50 @@ html {
 .apex-cr-slide * {
   pointer-events: none;
 }
+
+/* ══════════════════════════════════════════════════
+   APEX — 纯白页面 + 公告横向滚动
+   ══════════════════════════════════════════════════ */
+
+/* 整个主页背景纯白 */
+#apex-homepage {
+  background: #ffffff !important;
+}
+
+/* 公告横向滚动 */
+.apex-nt-viewport {
+  flex: 1;
+  min-width: 0;
+  height: 20px !important;
+  overflow: hidden !important;
+  position: relative;
+}
+.apex-nt-track {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 60px;
+  white-space: nowrap;
+  width: max-content;
+  animation: apex-nt-marquee 30s linear infinite;
+  will-change: transform;
+  transform: none !important;
+}
+.apex-nt-item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 20px;
+  line-height: 20px;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+  color: #333333;
+  white-space: nowrap;
+}
+@keyframes apex-nt-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apex-nt-track { animation: none !important; }
+}
