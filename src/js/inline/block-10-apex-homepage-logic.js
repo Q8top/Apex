@@ -389,3 +389,179 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
+
+
+// ============================================================
+// 热门全屏子页面 - APEX-HOT-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'poker', label: '棋牌', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>', items: [
+      { en: 'Baccarat', zh: '百家樂', icon: 'card' },
+      { en: 'Blackjack', zh: '21点', icon: 'card' },
+      { en: 'Texas Hold\'em', zh: '德州扑克', icon: 'card' },
+      { en: 'Omaha', zh: '奥马哈', icon: 'card' },
+      { en: 'Niu Niu', zh: '牛牛', icon: 'card' }
+    ]},
+    { key: 'slot', label: '电子', icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>', items: [
+      { en: 'Slots', zh: '电子老虎机', icon: 'slot' },
+      { en: 'Jackpot', zh: '累积奖池', icon: 'slot' },
+      { en: 'Megaways', zh: 'Megaways', icon: 'slot' },
+      { en: 'Hold & Win', zh: 'Hold & Win', icon: 'slot' },
+      { en: 'Cluster Pays', zh: 'Cluster Pays', icon: 'slot' }
+    ]},
+    { key: 'dice', label: '骰子', icon: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>', items: [
+      { en: 'Sic Bo', zh: '骰宝', icon: 'dice' },
+      { en: 'Dice', zh: '骰子', icon: 'dice' },
+      { en: 'Hi-Lo', zh: '高低', icon: 'dice' },
+      { en: 'Craps', zh: 'Craps', icon: 'dice' },
+      { en: 'Wheel', zh: '幸运转盘', icon: 'dice' }
+    ]},
+    { key: 'sports', label: '体育', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>', items: [
+      { en: 'Football', zh: '足球', icon: 'sports' },
+      { en: 'Basketball', zh: '篮球', icon: 'sports' },
+      { en: 'Tennis', zh: '网球', icon: 'sports' },
+      { en: 'Baseball', zh: '棒球', icon: 'sports' },
+      { en: 'Ice Hockey', zh: '冰球', icon: 'sports' }
+    ]},
+    { key: 'events', label: '赛事', icon: '<path d="M12 3v18M8 7h8M5 12h14"/>', items: [
+      { en: 'Horse Racing', zh: '赛马', icon: 'events' },
+      { en: 'Greyhound Racing', zh: '赛狗', icon: 'events' },
+      { en: 'Motor Racing', zh: '赛车', icon: 'events' },
+      { en: 'Virtual Horse Racing', zh: '虚拟赛马', icon: 'events' },
+      { en: 'Virtual Racing', zh: '虚拟赛车', icon: 'events' }
+    ]},
+    { key: 'instant', label: '即时', icon: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>', items: [
+      { en: 'Crash', zh: 'Crash', icon: 'instant' },
+      { en: 'Mines', zh: 'Mines', icon: 'instant' },
+      { en: 'Plinko', zh: 'Plinko', icon: 'instant' },
+      { en: 'Keno', zh: '基诺', icon: 'instant' },
+      { en: 'Bingo', zh: '宾果', icon: 'instant' }
+    ]},
+    { key: 'esports', label: '电竞', icon: '<rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/>', items: [
+      { en: 'League of Legends', zh: '英雄联盟', icon: 'esports' },
+      { en: 'Counter-Strike', zh: 'CS', icon: 'esports' },
+      { en: 'Dota 2', zh: 'Dota 2', icon: 'esports' },
+      { en: 'Valorant', zh: '无畏契约', icon: 'esports' },
+      { en: 'EA Sports FC', zh: 'EA Sports FC', icon: 'esports' }
+    ]},
+    { key: 'special', label: '特殊', icon: '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>', items: [
+      { en: 'Fantasy Sports', zh: '梦幻体育', icon: 'special' },
+      { en: 'Prediction Market', zh: '预测市场', icon: 'special' },
+      { en: 'Peer-to-Peer', zh: 'P2P', icon: 'special' },
+      { en: 'Exchange', zh: '交易所模式', icon: 'special' },
+      { en: 'Hybrid Games', zh: '混合玩法', icon: 'special' }
+    ]}
+  ];
+
+  var ICON_MAP = {
+    card:    '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>',
+    slot:    '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>',
+    dice:    '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>',
+    sports:  '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>',
+    events:  '<path d="M12 3v18M8 7h8M5 12h14"/>',
+    instant: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+    esports: '<rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/>',
+    special: '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-hot-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-hot-page';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-hot-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">热门</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-hot-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(cat.icon)
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-hot-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    // 返回
+    document.getElementById('apex-hot-back').addEventListener('click', function () {
+      wrap.classList.remove('is-open');
+    });
+
+    // 左侧切换
+    var sideEl = document.getElementById('apex-hot-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-hot-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var html = '';
+    cat.items.forEach(function (it) {
+      var ic = ICON_MAP[it.icon] || ICON_MAP.special;
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    // 点击子项
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    // 绑定"热门"卡片点击
+    var hotBtn = document.querySelector('.apex-cats .apex-cat[data-cat="hot"]');
+    if (hotBtn) {
+      hotBtn.addEventListener('click', function () {
+        var page = document.getElementById('apex-hot-page');
+        if (page) page.classList.add('is-open');
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
