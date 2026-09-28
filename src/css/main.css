@@ -1477,10 +1477,7 @@ html {
 
 
 
-@keyframes apex-nt-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
+
 @media (prefers-reduced-motion: reduce) {
   
 }
@@ -1499,6 +1496,36 @@ html, body {
 }
 
 /* 公告栏 */
+
+
+
+
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  
+}
+
+/* ══════════════════════════════════════════════════
+   APEX FINAL — 纯白 + 公告无缝滚动
+   ══════════════════════════════════════════════════ */
+
+html, body, #apex-homepage {
+  background: #ffffff !important;
+}
+#apex-homepage {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* 顶栏无底边（和页面纯白无缝） */
+.apex-hd {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 公告栏 */
 .apex-nt {
   padding: 14px 16px 0 16px;
   max-width: 640px;
@@ -1509,7 +1536,7 @@ html, body {
   align-items: center;
   gap: 10px;
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 12px 14px;
   overflow: hidden;
@@ -1533,18 +1560,15 @@ html, body {
   position: relative;
 }
 .apex-nt-track {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 60px;
-  white-space: nowrap;
-  padding-left: 100%;
+  width: max-content;
   height: 20px;
-  animation: apex-nt-marquee 20s linear infinite;
+  animation: apex-nt-marquee 25s linear infinite;
   will-change: transform;
 }
 .apex-nt-item {
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   height: 20px;
   line-height: 20px;
   font-family: -apple-system, system-ui, sans-serif;
@@ -1552,10 +1576,11 @@ html, body {
   color: #333333;
   white-space: nowrap;
   flex-shrink: 0;
+  padding-right: 80px;
 }
 @keyframes apex-nt-marquee {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  100% { transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .apex-nt-track { animation: none !important; }
