@@ -568,57 +568,71 @@
   <script src="/src/js/inline/block-09.js"></script>
   
   
-<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#ffffff; z-index:100; overflow-y:auto; -webkit-overflow-scrolling:touch;">
+<div id="apex-homepage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#f5f5f7;z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch;">
 
-  <!-- ============ 黑色顶栏 ============ -->
-  <div class="apex-topbar">
-    <div class="apex-topbar-inner">
-      <div class="apex-topbar-title">APEX</div>
-      <div class="apex-topbar-right">
-        <button class="apex-topbar-btn" aria-label="通知" type="button" data-apex-action="coming-soon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-          <span class="apex-topbar-badge">3</span>
+  <header class="apex-hd">
+    <div class="apex-hd-inner">
+      <div class="apex-hd-brand">APEX</div>
+      <div class="apex-hd-actions">
+        <button class="apex-hd-btn" type="button" aria-label="通知" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="apex-hd-badge">3</span>
         </button>
-        <button class="apex-topbar-btn" aria-label="在线客服" type="button" data-apex-action="coming-soon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
+        <button class="apex-hd-btn" type="button" aria-label="客服" data-apex-action="coming-soon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
         </button>
-        <button id="home-lang-btn" class="apex-topbar-btn apex-topbar-lang" aria-label="切换语言" type="button">
-          <span id="home-current-flag">🇨🇳</span>
-          <span class="apex-topbar-caret">▼</span>
+        <button id="home-lang-btn" class="apex-lg-btn" type="button" aria-label="语言">
+          <span id="home-current-flag" class="apex-lg-flag">🇨🇳</span>
+          <span id="home-current-name" class="apex-lg-name">中文</span>
+          <svg class="apex-lg-chev" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 4.5 6 7.5 9 4.5"/></svg>
         </button>
       </div>
     </div>
-    <div id="home-lang-menu" class="apex-lang-menu">
-      <div class="apex-lang-item" data-lang="zh-CN" data-flag="🇨🇳">
-        <span class="apex-lang-flag">🇨🇳</span>
-        <span class="apex-lang-name">简体中文</span>
-      </div>
-      <div class="apex-lang-item" data-lang="en" data-flag="🇺🇸">
-        <span class="apex-lang-flag">🇺🇸</span>
-        <span class="apex-lang-name">English</span>
-      </div>
-      <div class="apex-lang-item" data-lang="ja" data-flag="🇯🇵">
-        <span class="apex-lang-flag">🇯🇵</span>
-        <span class="apex-lang-name">日本語</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- ============ 广告轮播 ============ -->
-  <div class="apex-carousel">
-    <div class="apex-carousel-track" id="apex-carousel-track">
-      <div class="apex-carousel-slide">图一</div>
-      <div class="apex-carousel-slide">图二</div>
-      <div class="apex-carousel-slide">图三</div>
-      <div class="apex-carousel-slide">图四</div>
+    <div id="home-lang-menu" class="apex-lg-menu">
+      <div class="apex-lg-option" data-lang="zh-CN" data-flag="🇨🇳" data-name="中文">
+        <span class="apex-lg-opt-flag">🇨🇳</span>
+        <div class="apex-lg-opt-text">
+          <div class="apex-lg-opt-title">简体中文</div>
+          <div class="apex-lg-opt-sub">Chinese (Simplified)</div>
+        </div>
+        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
+      </div>
+      <div class="apex-lg-option" data-lang="en" data-flag="🇺🇸" data-name="English">
+        <span class="apex-lg-opt-flag">🇺🇸</span>
+        <div class="apex-lg-opt-text">
+          <div class="apex-lg-opt-title">English</div>
+          <div class="apex-lg-opt-sub">English (US)</div>
+        </div>
+        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
+      </div>
+      <div class="apex-lg-option" data-lang="ja" data-flag="🇯🇵" data-name="日本語">
+        <span class="apex-lg-opt-flag">🇯🇵</span>
+        <div class="apex-lg-opt-text">
+          <div class="apex-lg-opt-title">日本語</div>
+          <div class="apex-lg-opt-sub">Japanese</div>
+        </div>
+        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
+      </div>
     </div>
-    <div class="apex-carousel-dots" id="apex-carousel-dots">
-      <span class="apex-carousel-dot active" data-index="0"></span>
-      <span class="apex-carousel-dot" data-index="1"></span>
-      <span class="apex-carousel-dot" data-index="2"></span>
-      <span class="apex-carousel-dot" data-index="3"></span>
+  </header>
+
+  <section class="apex-cr">
+    <div class="apex-cr-viewport">
+      <div class="apex-cr-track" id="apex-cr-track">
+        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图一</div><div class="apex-cr-slide-sub">Banner 1</div></div>
+        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图二</div><div class="apex-cr-slide-sub">Banner 2</div></div>
+        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图三</div><div class="apex-cr-slide-sub">Banner 3</div></div>
+        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图四</div><div class="apex-cr-slide-sub">Banner 4</div></div>
+      </div>
     </div>
-  </div>
+    <div class="apex-cr-dots" id="apex-cr-dots">
+      <span class="apex-cr-dot is-active" data-i="0"></span>
+      <span class="apex-cr-dot" data-i="1"></span>
+      <span class="apex-cr-dot" data-i="2"></span>
+      <span class="apex-cr-dot" data-i="3"></span>
+    </div>
+  </section>
 
 </div>
 

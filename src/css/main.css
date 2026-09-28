@@ -1040,3 +1040,286 @@ html {
     font-size: 20px;
   }
 }
+
+/* ══════════════════════════════════════════════════
+   APEX HOMEPAGE — MODERN REDESIGN
+   ══════════════════════════════════════════════════ */
+
+#apex-homepage {
+  background: #f5f5f7 !important;
+  color: #111111 !important;
+  padding-bottom: env(safe-area-inset-bottom);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Manrope', system-ui, sans-serif;
+}
+
+/* ───── 顶栏 ───── */
+.apex-hd {
+  background: rgba(0, 0, 0, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  padding: calc(8px + env(safe-area-inset-top)) 20px 8px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+.apex-hd-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+.apex-hd-brand {
+  font-family: 'Cinzel', 'Times New Roman', Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffffff;
+  line-height: 1;
+  padding-left: 2px;
+}
+.apex-hd-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 图标按钮 */
+.apex-hd-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s ease;
+}
+.apex-hd-btn:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+.apex-hd-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #ff3b30;
+  color: #ffffff;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 8px;
+  border: 1.5px solid #000000;
+  box-sizing: border-box;
+}
+
+/* 语言按钮 */
+.apex-lg-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 12px 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s ease;
+}
+.apex-lg-btn:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+.apex-lg-flag {
+  font-size: 16px;
+  line-height: 1;
+}
+.apex-lg-name {
+  color: #ffffff;
+}
+.apex-lg-chev {
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: -1px;
+}
+.apex-lg-btn.is-open .apex-lg-chev {
+  transform: rotate(180deg);
+}
+
+/* 语言下拉菜单 */
+.apex-lg-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 16px;
+  width: 240px;
+  background: rgba(28, 28, 30, 0.92);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 200;
+}
+.apex-lg-menu.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.apex-lg-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #ffffff;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.14s ease;
+}
+.apex-lg-option:active,
+.apex-lg-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.apex-lg-option.is-active {
+  background: rgba(255, 255, 255, 0.06);
+}
+.apex-lg-opt-flag {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.apex-lg-opt-text {
+  flex: 1;
+  min-width: 0;
+}
+.apex-lg-opt-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+.apex-lg-opt-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 1px;
+  line-height: 1.2;
+}
+.apex-lg-opt-check {
+  flex-shrink: 0;
+  color: #0a84ff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.apex-lg-option.is-active .apex-lg-opt-check {
+  opacity: 1;
+}
+
+/* ───── 广告轮播 ───── */
+.apex-cr {
+  padding: 20px 16px 0 16px;
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+}
+.apex-cr-viewport {
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.06);
+  background: #e5e5e7;
+}
+.apex-cr-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+.apex-cr-slide {
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+}
+.apex-cr-slide:nth-child(2) { background: linear-gradient(135deg, #2d2416 0%, #4a3a24 100%); }
+.apex-cr-slide:nth-child(3) { background: linear-gradient(135deg, #16291c 0%, #2a4a34 100%); }
+.apex-cr-slide:nth-child(4) { background: linear-gradient(135deg, #2d1619 0%, #4a2228 100%); }
+.apex-cr-slide-title {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 6px;
+}
+.apex-cr-slide-sub {
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Dots */
+.apex-cr-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-radius: 12px;
+}
+.apex-cr-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.apex-cr-dot.is-active {
+  width: 20px;
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+@media (max-width: 400px) {
+  .apex-hd-brand { font-size: 21px; letter-spacing: 2.5px; }
+  .apex-cr-slide-title { font-size: 24px; letter-spacing: 5px; }
+}
