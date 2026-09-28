@@ -352,3 +352,40 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
+
+
+// ============================================================
+// 分类导航列表 - APEX-CATS-BIND
+// ============================================================
+(function () {
+  function bind() {
+    var cats = document.querySelector('.apex-cats');
+    if (!cats) return;
+    cats.querySelectorAll('.apex-cat').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var cat = item.dataset.cat;
+        var name = item.querySelector('.apex-cat-text').textContent.trim();
+
+        cats.querySelectorAll('.apex-cat').forEach(function (el) {
+          el.classList.toggle('is-active', el === item);
+        });
+
+        // 跳到对应"页面"（实际是显示 toast，未来接真实路由）
+        if (cat === 'hot') {
+          if (window.__apex && window.__apex.toast) {
+            window.__apex.toast('热门内容加载中…', 'info');
+          }
+        } else {
+          if (window.__apex && window.__apex.toast) {
+            window.__apex.toast(name + ' 页面开发中，敬请期待', 'info');
+          }
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
