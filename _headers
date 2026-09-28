@@ -53,3 +53,36 @@
 /sw.js
   Cache-Control: no-cache
   Service-Worker-Allowed: /
+
+# === APEX-CACHE-IMAGES ===
+/logo.webp
+  Cache-Control: public, max-age=604800
+
+/logo.png
+  Cache-Control: public, max-age=604800
+
+/logo-home.webp
+  Cache-Control: public, max-age=604800
+
+/logo-home.png
+  Cache-Control: public, max-age=604800
+
+/splash-top.webp
+  Cache-Control: public, max-age=604800
+
+/splash-top.jpeg
+  Cache-Control: public, max-age=604800
+
+/favicon.svg
+  Cache-Control: public, max-age=604800
+
+# === APEX-CACHE-SRC ===
+/src/css/*
+  Cache-Control: public, max-age=86400
+
+/src/js/*
+  Cache-Control: public, max-age=86400
+
+/i18n/*
+  Cache-Control: public, max-age=3600
+# === APEX-CACHE-END ===
