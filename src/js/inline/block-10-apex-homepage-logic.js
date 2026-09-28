@@ -2016,3 +2016,188 @@ document.addEventListener('click', function (e) {
     setTimeout(delegate, 100);
   }
 })();
+
+
+// ============================================================
+// 玩法规则页 - APEX-RULES-PAGE
+// ============================================================
+(function () {
+  var RULES = {
+    'Punto Banco': {
+      zh: '彭托银行（标准百家樂）',
+      desc: '经典百家樂玩法，庄闲独立补牌，玩家只下注',
+      points: [
+        '庄家（Banker）和闲家（Player）各发 2 张牌',
+        '总点数取个位数，9 为最大，8 为次大',
+        '任一方前两张点数 8 或 9 时立即停牌（自然胜）',
+        '庄闲补牌按固定规则执行，玩家无需决策',
+        '玩家可在庄、闲、和三个位置下注'
+      ],
+      odds: [
+        { name: '押庄（Banker）', value: '1 : 0.95' },
+        { name: '押闲（Player）', value: '1 : 1' },
+        { name: '押和（Tie）', value: '1 : 8' },
+        { name: '庄对（Banker Pair）', value: '1 : 11' },
+        { name: '闲对（Player Pair）', value: '1 : 11' }
+      ]
+    },
+    'Mini Baccarat': {
+      zh: '迷你百家樂',
+      desc: '标准百家樂的简化版本，赌桌更小，节奏更快',
+      points: [
+        '规则与标准百家樂基本一致',
+        '赌桌较小，通常 7 个座位',
+        '限红（下注额）通常比标准桌低',
+        '庄家由荷官固定担任，玩家不下庄'
+      ],
+      odds: [
+        { name: '押庄（Banker）', value: '1 : 0.95' },
+        { name: '押闲（Player）', value: '1 : 1' },
+        { name: '押和（Tie）', value: '1 : 8' }
+      ]
+    },
+    'No Commission Baccarat': {
+      zh: '免佣百家樂',
+      desc: '庄赢不抽佣，但庄以 6 点取胜时只赔 1:0.5',
+      points: [
+        '规则与标准百家樂一致',
+        '庄赢时不再抽取 5% 佣金',
+        '例外：庄以 6 点取胜只赔 1 : 0.5（一半赌注）',
+        '适合高频下注庄家的玩家'
+      ],
+      odds: [
+        { name: '押庄（赢非 6 点）', value: '1 : 1' },
+        { name: '押庄（6 点赢）', value: '1 : 0.5' },
+        { name: '押闲（Player）', value: '1 : 1' },
+        { name: '押和（Tie）', value: '1 : 8' }
+      ]
+    },
+    'Speed Baccarat': {
+      zh: '极速百家樂',
+      desc: '一局约 27 秒（标准为 48 秒），节奏更快',
+      points: [
+        '规则与标准百家樂完全一致',
+        '每局时间缩短至约 27 秒',
+        '发牌更快，下注窗口更短',
+        '适合喜欢快速节奏的玩家'
+      ],
+      odds: [
+        { name: '押庄（Banker）', value: '1 : 0.95' },
+        { name: '押闲（Player）', value: '1 : 1' },
+        { name: '押和（Tie）', value: '1 : 8' }
+      ]
+    },
+    'Baccarat Variants': {
+      zh: '百家樂变体',
+      desc: '包含多种百家樂衍生玩法',
+      points: [
+        'Dragon Bonus：押对自然赢的牌型加赔',
+        'Panda 8：闲家以 8 点赢加赔',
+        'Fortune 6：庄家以 6 点赢赔率翻倍',
+        'Baccarat Squeeze：实况慢镜头捏牌玩法'
+      ],
+      odds: [
+        { name: 'Dragon Bonus（自然 9 赢）', value: '1 : 30' },
+        { name: 'Panda 8（闲 8 赢）', value: '1 : 25' },
+        { name: 'Fortune 6（庄 6 赢）', value: '1 : 15' }
+      ]
+    }
+  };
+
+  var ICON = '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10h6M9 14h6"/>';
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build(modeName) {
+    var old = document.getElementById('apex-rules-page');
+    if (old) old.remove();
+
+    var rule = RULES[modeName] || RULES['Punto Banco'];
+
+    var w = document.createElement('div');
+    w.id = 'apex-rules-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:700;display:flex;flex-direction:column;overflow:hidden;';
+
+    var hd = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-rules-back">' + svg('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">' + modeName + '</div>'
+      + '</div>';
+
+    var hero = '<div class="apex-rules-hero">'
+      + '<div class="apex-rules-hero-icon">' + svg(ICON) + '</div>'
+      + '<div class="apex-rules-hero-title">' + modeName + '</div>'
+      + '<div class="apex-rules-hero-sub">' + rule.zh + '</div>'
+      + '</div>';
+
+    var intro = '<div class="apex-rules-section">'
+      + '<div class="apex-rules-section-title">玩法简介</div>'
+      + '<div style="font-family:-apple-system,system-ui,sans-serif;font-size:13.5px;color:#444444;line-height:1.7;">' + rule.desc + '</div>'
+      + '</div>';
+
+    var pointsHtml = '<ul class="apex-rules-list">';
+    rule.points.forEach(function (p) {
+      pointsHtml += '<li>' + p + '</li>';
+    });
+    pointsHtml += '</ul>';
+    var rules = '<div class="apex-rules-section">'
+      + '<div class="apex-rules-section-title">游戏规则</div>'
+      + pointsHtml
+      + '</div>';
+
+    var oddsHtml = '<div class="apex-rules-odds">';
+    rule.odds.forEach(function (o) {
+      oddsHtml += '<div class="apex-rules-odds-name">' + o.name + '</div>'
+        + '<div class="apex-rules-odds-value">' + o.value + '</div>';
+    });
+    oddsHtml += '</div>';
+    var oddsSection = '<div class="apex-rules-section">'
+      + '<div class="apex-rules-section-title">赔率</div>'
+      + oddsHtml
+      + '</div>';
+
+    var body = '<div class="apex-rules-body">' + hero + intro + rules + oddsSection + '</div>';
+
+    var footer = '<div class="apex-rules-footer">'
+      + '<button class="apex-rules-start" id="apex-rules-start">开始游戏</button>'
+      + '</div>';
+
+    w.innerHTML = hd + body + footer;
+    document.body.appendChild(w);
+
+    document.getElementById('apex-rules-back').addEventListener('click', function () {
+      w.remove();
+    });
+
+    document.getElementById('apex-rules-start').addEventListener('click', function () {
+      if (window.__apex && window.__apex.toast) {
+        window.__apex.toast(modeName + ' 游戏接入中，敬请期待', 'info');
+      }
+    });
+  }
+
+  // 事件委托：点百家樂玩法卡片 → 打开规则页
+  function delegate() {
+    if (window.__apexRulesBound) return;
+    window.__apexRulesBound = true;
+
+    document.addEventListener('click', function (e) {
+      var card = e.target.closest('.apex-mode-card');
+      if (!card) return;
+      var mode = card.dataset.mode;
+      if (RULES[mode]) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        build(mode);
+      }
+    }, true);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', delegate);
+  } else {
+    setTimeout(delegate, 150);
+  }
+})();
