@@ -940,3 +940,156 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
+
+
+// ============================================================
+// 骰子全屏子页面 - APEX-DICE-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'sicbo', label: 'Sic Bo', items: [
+      { en: 'Big / Small', zh: '大小' },
+      { en: 'Odd / Even', zh: '单双' },
+      { en: 'Single Dice', zh: '单骰' },
+      { en: 'Double Dice', zh: '双骰' },
+      { en: 'Triple Dice', zh: '三骰' }
+    ]},
+    { key: 'craps', label: 'Craps', items: [
+      { en: 'Pass Line', zh: '过线' },
+      { en: "Don't Pass", zh: '不过线' },
+      { en: 'Come', zh: '来注' },
+      { en: "Don't Come", zh: '不来注' },
+      { en: 'Proposition Bets', zh: '提议赌注' }
+    ]},
+    { key: 'dice', label: 'Dice', items: [
+      { en: 'High / Low', zh: '高低' },
+      { en: 'Odd / Even', zh: '单双' },
+      { en: 'Over / Under', zh: '大小区间' },
+      { en: 'Exact Number', zh: '指定点数' },
+      { en: 'Dice Combination', zh: '组合' }
+    ]},
+    { key: 'hilo', label: 'Hi-Lo', items: [
+      { en: 'High', zh: '高' },
+      { en: 'Low', zh: '低' },
+      { en: 'Same', zh: '相同' },
+      { en: 'Higher / Lower', zh: '更高/更低' },
+      { en: 'Multi-Round', zh: '多轮' }
+    ]},
+    { key: 'wheel', label: 'Wheel', items: [
+      { en: 'Big Wheel', zh: '幸运大转盘' },
+      { en: 'Money Wheel', zh: '金钱转盘' },
+      { en: 'Number Wheel', zh: '数字转盘' },
+      { en: 'Fortune Wheel', zh: '幸运轮' },
+      { en: 'Multiplier Wheel', zh: '倍率转盘' }
+    ]}
+  ];
+
+  var ICONS = {
+    sicbo: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="8" cy="16" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>',
+    craps: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="12" r="1" fill="currentColor"/><circle cx="16" cy="12" r="1" fill="currentColor"/>',
+    dice:  '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/>',
+    hilo:  '<path d="M4 8 12 4 20 8v8l-8 4-8-4z"/><path d="M12 8v8M8 12h8"/>',
+    wheel: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5 5l14 14M19 5L5 19"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-dice-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-dice-page';
+    wrap.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-dice-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">骰子</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-dice-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(ICONS[cat.key])
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-dice-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    document.getElementById('apex-dice-back').addEventListener('click', function () {
+      wrap.style.display = 'none';
+    });
+
+    var sideEl = document.getElementById('apex-dice-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-dice-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var ic = ICONS[cat.key] || ICONS.dice;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var btn = document.querySelector('.apex-cats .apex-cat[data-cat="dice"]');
+    if (btn) {
+      var nb = btn.cloneNode(true);
+      btn.parentNode.replaceChild(nb, btn);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var page = document.getElementById('apex-dice-page');
+        if (page) page.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+})();
