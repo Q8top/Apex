@@ -30,8 +30,10 @@ for f in "$ROOT"/*.webp "$ROOT"/*.jpeg "$ROOT"/*.jpg "$ROOT"/*.png; do
   bn="$(basename "$f")"
   cp "$f" "$DIST/" && echo "  [COPY] $bn"
 done
-# 5. Cloudflare Pages 特殊文件（_headers / _redirects）
-for f in _headers _redirects; do
+# 5. Cloudflare Pages 特殊文件（_headers / _redirects / _routes.json）
+# 注意：_routes.json 决定哪些路径被静态资源服务、哪些交给 Functions，
+#       缺失会导致 /functions /migrations 等源码目录被意外暴露
+for f in _headers _redirects _routes.json; do
   [ -f "$ROOT/$f" ] && cp "$ROOT/$f" "$DIST/" && echo "  [COPY] $f"
 done
 
@@ -51,9 +53,11 @@ fi
 echo ""
 echo "[BUILD] 检查 dist/ 中不应存在的敏感文件..."
 BAD=0
+# 注意：_routes.json 是 Cloudflare Pages 必需的路由配置文件，
+#       必须存在于 dist/ 才会生效，绝不能列入"不应存在"清单。
+# 注意：.assetsignore 是构建期文件，不需要进入 dist/。
 for bad in wrangler.toml package.json package-lock.json .env .dev.vars .gitignore \
-           tests functions migrations scripts docs backups .wrangler .git .github \
-           .assetsignore _routes.json; do
+           tests functions migrations scripts docs backups .wrangler .git .github; do
   if [ -e "$DIST/$bad" ]; then
     echo "  [ERROR] dist/$bad 不应存在"
     BAD=1
