@@ -25,7 +25,10 @@ export async function onRequestPost(context) {
   const username = sanitize(body.username, 32);
   const email = sanitize(body.email, 200).toLowerCase();
   const password = typeof body.password === 'string' ? body.password : '';
-  const captchaToken = typeof body.captchaToken === 'string' ? body.captchaToken : '';
+if (typeof password !== 'string' || password.length === 0 || password.length > 256) {
+    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
+  }
+    const captchaToken = typeof body.captchaToken === 'string' ? body.captchaToken : '';
 
   if (!captchaToken) return errorResponse('请先完成人机验证', 400, 'captcha_missing', requestId);
   const captchaIp = getClientIP(request);

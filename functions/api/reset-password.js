@@ -34,7 +34,10 @@ export async function onRequestPost(context) {
   const email = sanitize(parsed.data.email, 200).toLowerCase();
   const code = sanitize(parsed.data.code, 16);
   const newPassword = typeof parsed.data.newPassword === 'string' ? parsed.data.newPassword : '';
-
+if (typeof newPassword !== 'string' || newPassword.length === 0 || newPassword.length > 256) {
+    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
+  }
+  
   if (!validateEmail(email)) return errorResponse('请输入有效的邮箱地址', 400, 'invalid_email', requestId);
   if (!/^\d{6}$/.test(code)) return errorResponse('验证码格式错误', 400, 'invalid_code', requestId);
   const pwd = validatePassword(newPassword, email);
@@ -74,7 +77,9 @@ export async function onRequestPost(context) {
     'SELECT id FROM users WHERE LOWER(email) = ? LIMIT 1'
   ).bind(email).first();
   if (!user) {
-    return errorResponse('账号不存在', 404, 'not_found', requestId);
+    // 防枚举：不透露账号是否存在
+    await writeAudit(env, { action: 'reset_user_missing', targetType: 'email' }, request);
+    return errorResponse('验证码错误', 400, 'invalid_code', requestId);
   }
 
   const newHash = await hashPassword(newPassword);

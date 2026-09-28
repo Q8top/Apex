@@ -42,7 +42,10 @@ export async function onRequestPost(context) {
 
   const username = sanitize(parsed.data.username, 64);
   const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
-  const totpCode = sanitize(parsed.data.totpCode, 8);
+if (typeof password !== 'string' || password.length === 0 || password.length > 256) {
+    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
+  }
+    const totpCode = sanitize(parsed.data.totpCode, 8);
 
   if (!username || !password) {
     return errorResponse('账号和密码不能为空', 400, 'missing_fields', requestId);

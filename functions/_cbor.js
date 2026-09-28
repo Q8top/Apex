@@ -34,11 +34,13 @@ export function decodeCbor(input) {
     if (ai === 26) {
       let v = 0;
       for (let i = 0; i < 4; i += 1) v = v * 256 + readByte();
+      if (v > CBOR_MAX_BYTES) throw new Error('cbor_len_exceeds_max');
       return v;
     }
     if (ai === 27) {
       let v = 0;
       for (let i = 0; i < 8; i += 1) v = v * 256 + readByte();
+      if (v > CBOR_MAX_BYTES) throw new Error('cbor_len_exceeds_max');
       return v;
     }
     throw new Error('cbor_invalid_length_ai_' + ai);

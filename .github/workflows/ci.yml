@@ -45,6 +45,7 @@ jobs:
           node tests/response-headers.test.js
           node tests/cbor.test.js
           node tests/webauthn.test.js
+            node tests/password-length.test.js
 
       - name: Security Scan
         run: node tests/security-scan.js

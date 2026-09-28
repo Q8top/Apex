@@ -14,7 +14,10 @@ export async function onRequestPost(context) {
   const parsed = await parseJsonBody(request, 2048);
   if (!parsed.ok) return errorResponse(parsed.message, parsed.status, 'bad_request', requestId);
   const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
-  if (!password) return errorResponse('请提供密码确认', 400, 'missing_password', requestId);
+if (typeof password !== 'string' || password.length === 0 || password.length > 256) {
+    return errorResponse('密码长度必须在 1-256 字符之间', 400, 'password_length_invalid', requestId);
+  }
+    if (!password) return errorResponse('请提供密码确认', 400, 'missing_password', requestId);
 
   const row = await env.apex_db.prepare(
     'SELECT id, password_hash FROM users WHERE id = ?'
