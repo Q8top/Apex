@@ -14,8 +14,8 @@
     .hero::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(180deg, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.95) 100%); }
     .hero-content { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
     .hero .logo-img { width:90px; height:90px; object-fit:contain; mix-blend-mode:screen; margin-bottom:12px; }
-    .hero .main-title { font-size:16px; font-weight:bold; color:#fff; margin-bottom:4px; }
-    .hero .sub-title { font-size:11px; color:#ccc; }
+    .hero .main-title { font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif; font-size:17px; font-weight:800; letter-spacing:0.3px; color:#ffffff; margin-bottom:4px; }
+    .hero .sub-title { font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif; font-size:11.5px; font-weight:500; color:#a0a0a0; letter-spacing:0.2px; }
     /* ============ 卡片容器 ============ */
     .card-section { max-width:480px; margin:0 auto; padding:0 16px; width:100%; margin-top:-20px; position:relative; z-index:3; }
     .auth-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px 20px 14px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
@@ -183,3 +183,242 @@
     #login-method-picker, #register-method-picker { margin-top:6px; }
     #passkey-signup-back { color:#888; font-size:12px; text-decoration:none; }
     #passkey-signup-back:hover { color:#ffffff; }
+
+
+/* === APEX HOMEPAGE REDESIGN === */
+.apex-brand-text {
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #d4af37;
+  white-space: nowrap;
+}
+.apex-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(212,175,55,0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.apex-user-card {
+  padding: 18px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(212,175,55,0.04);
+}
+.apex-feature-card {
+  padding: 20px 18px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: inherit;
+}
+.apex-feature-card:hover,
+.apex-feature-card:active {
+  background: rgba(212,175,55,0.08);
+  border-color: rgba(212,175,55,0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,175,55,0.15);
+}
+.apex-feature-title {
+  font-family: 'Manrope', 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+.apex-feature-desc {
+  font-size: 11px;
+  color: #666666;
+}
+.apex-feature-desc-active {
+  font-size: 11px;
+  color: #d4af37;
+  font-weight: 600;
+}
+#apex-homepage button[data-apex-action="logout"]:hover {
+  background: rgba(212,175,55,0.15);
+  border-color: rgba(212,175,55,0.6);
+}
+
+
+/* === APEX HOMEPAGE RESPONSIVE === */
+@media (max-width: 400px) {
+  #apex-homepage .apex-brand-text {
+    font-size: 13px !important;
+  }
+  #apex-homepage picture img {
+    height: 48px !important;
+    width: 48px !important;
+  }
+}
+
+/* 触摸目标 ≥ 44px */
+#apex-homepage button[data-apex-action="logout"] {
+  min-height: 36px;
+  padding: 8px 18px !important;
+  font-size: 13px !important;
+}
+@media (pointer: coarse) {
+  #apex-homepage button[data-apex-action="logout"] {
+    min-height: 44px;
+    padding: 11px 20px !important;
+  }
+  #apex-homepage .apex-feature-card {
+    padding: 22px 18px !important;
+    min-height: 108px;
+  }
+}
+
+/* 桌面端：主页内容宽一点 */
+@media (min-width: 768px) {
+  #apex-homepage > div:last-child {
+    max-width: 640px !important;
+  }
+  #apex-homepage > div:first-child > div {
+    max-width: 640px !important;
+  }
+}
+
+
+/* === APEX R17 === */
+
+/* 小屏：卡片 grid 转 1 列 */
+@media (max-width: 340px) {
+  #apex-homepage .apex-card.apex-feature-card {
+    grid-column: 1 / -1;
+  }
+  #apex-homepage > div:first-child > div {
+    gap: 10px !important;
+  }
+  #apex-homepage .apex-brand-text {
+    font-size: 12px !important;
+    letter-spacing: 0 !important;
+  }
+  #apex-homepage picture img {
+    height: 42px !important;
+    width: 42px !important;
+  }
+}
+
+/* 主页卡片入场动画 */
+@keyframes apex-card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#apex-homepage .apex-card {
+  animation: apex-card-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+#apex-homepage .apex-feature-card:nth-of-type(1) { animation-delay: 0.02s; }
+#apex-homepage .apex-feature-card:nth-of-type(2) { animation-delay: 0.06s; }
+#apex-homepage .apex-feature-card:nth-of-type(3) { animation-delay: 0.10s; }
+#apex-homepage .apex-feature-card:nth-of-type(4) { animation-delay: 0.14s; }
+
+
+@media (prefers-reduced-motion: reduce) {
+  #apex-homepage .apex-card { animation: none !important; }
+}
+
+/* toast info 类型 */
+#apex-toast.apex-toast-info {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(212,175,55,0.3) !important;
+}
+#apex-toast.apex-toast-error {
+  background: #e63946 !important;
+  color: #ffffff !important;
+}
+#apex-toast.apex-toast-success {
+  background: #4ade80 !important;
+  color: #000000 !important;
+}
+
+/* 滚动条美化（深色主题） */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212,175,55,0.3) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212,175,55,0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212,175,55,0.45);
+}
+
+/* === APEX R18 === */
+
+/* 主页用户卡 hover */
+#apex-homepage .apex-user-card:hover {
+  background: rgba(212,175,55,0.06);
+  border-color: rgba(212,175,55,0.25);
+}
+
+/* modal 按钮 hover */
+#security-modal button[data-apex-action="revoke-sessions"]:hover {
+  background: linear-gradient(135deg, #ff4d5e 0%, #cc2531 100%) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(230,57,70,0.4) !important;
+}
+#security-modal button[data-apex-action="security-modal-forgot"]:hover,
+#security-modal button[data-apex-action="login-logs-soon"]:hover {
+  background: rgba(212,175,55,0.15) !important;
+  border-color: rgba(212,175,55,0.5) !important;
+}
+
+/* modal 关闭按钮 hover */
+#security-modal button[data-apex-action="hide-security-modal"]:hover {
+  color: #d4af37 !important;
+}
+
+/* 主页背景纯黑，删除渐变残留 */
+#apex-homepage {
+  background: #050505 !important;
+}
+
+/* hero 字体统一 */
+.hero .main-title,
+.hero .sub-title {
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* PWA standalone 模式顶部安全区 */
+@media (display-mode: standalone) {
+  .header {
+    top: calc(16px + env(safe-area-inset-top)) !important;
+  }
+}
+
+
+/* === APEX R22 === */
+@keyframes apex-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 主页 Passkey 快捷卡片 - 待用 */
+.apex-quick-passkey {
+  background: linear-gradient(135deg, rgba(74,222,128,0.08) 0%, rgba(212,175,55,0.06) 100%);
+  border: 1px solid rgba(74,222,128,0.25);
+}
+.apex-quick-passkey:hover {
+  background: linear-gradient(135deg, rgba(74,222,128,0.12) 0%, rgba(212,175,55,0.10) 100%);
+  border-color: rgba(74,222,128,0.5);
+  transform: translateY(-2px);
+}

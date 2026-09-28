@@ -54,5 +54,17 @@
   "home.emailStatus": "邮箱状态",
   "home.verified": "已验证",
   "home.userLevel": "账户等级",
-  "home.standardUser": "标准用户"
+  "home.standardUser": "标准用户",
+  "home.logout": "登出",
+  "home.viewDevices": "查看设备",
+  "home.user": "用户",
+  "home.emailNotVerified": "未验证",
+  "home.comingSoonHint": "功能开发中，敬请期待",
+  "security.title": "安全中心",
+  "security.currentDevices": "当前活跃设备",
+  "security.revokeAll": "撤销所有其他设备",
+  "security.changePassword": "修改密码",
+  "security.loginLogs": "查看登录日志",
+  "security.currentDevice": "当前设备",
+  "security.otherDevice": "其他设备"
 }

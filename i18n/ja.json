@@ -54,5 +54,17 @@
   "home.emailStatus": "メール状態",
   "home.verified": "確認済み",
   "home.userLevel": "ユーザーランク",
-  "home.standardUser": "一般ユーザー"
+  "home.standardUser": "一般ユーザー",
+  "home.logout": "ログアウト",
+  "home.viewDevices": "デバイスを表示",
+  "home.user": "ユーザー",
+  "home.emailNotVerified": "未確認",
+  "home.comingSoonHint": "近日公開予定",
+  "security.title": "セキュリティ",
+  "security.currentDevices": "アクティブデバイス",
+  "security.revokeAll": "他のデバイスを無効化",
+  "security.changePassword": "パスワード変更",
+  "security.loginLogs": "ログイン履歴",
+  "security.currentDevice": "現在のデバイス",
+  "security.otherDevice": "その他"
 }

@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
   <title>Apex - Global Entertainment</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/css/main.css">
 
 <!-- APEX-PRELOAD-START -->
@@ -38,8 +40,8 @@
   <meta property="og:description" content="全球娱乐游戏平台 · 一站式体验·玩法丰富·公平公正·极速存取">
   <meta property="og:url" content="https://apextop.cc.cd/">
   <meta property="og:image" content="https://apextop.cc.cd/splash-top.webp">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="500">
   <meta property="og:image:type" content="image/webp">
   <meta property="og:locale" content="zh_CN">
   
@@ -54,16 +56,51 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Apex Entertainment",
+    "name": "Apex Global Entertainment",
     "url": "https://apextop.cc.cd/",
     "logo": "https://apextop.cc.cd/logo.png",
     "description": "全球娱乐游戏平台",
     "sameAs": []
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Apex Global Entertainment",
+    "url": "https://apextop.cc.cd/",
+    "inLanguage": "zh-CN",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://apextop.cc.cd/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Apex Global Entertainment",
+    "operatingSystem": "Web",
+    "applicationCategory": "GameApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "1"
+    }
+  }
+  </script>
 <!-- APEX-SEO-END -->
   <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo.png">
 </head>
 <body>
 
@@ -87,7 +124,7 @@
   <div id="apex-splash-screen">
     <picture>
       <source srcset="./splash-top.webp" type="image/webp">
-      <img src="./splash-top.jpeg" alt="Splash" class="splash-top-img" fetchpriority="high" loading="eager" decoding="async">
+      <img src="./splash-top.jpeg" alt="Splash" class="splash-top-img" width="800" height="500" fetchpriority="high" loading="eager" decoding="async">
     </picture>
     <div class="splash-welcome">欢迎来到 APEX ENTERTAINMENT</div>
     <!-- 老虎机滚动 A-P-E-X -->
@@ -128,6 +165,13 @@
         <div class="splash-feature-item"><div class="splash-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e63946" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div><div class="splash-feature-text"><span class="feature-title">24/7客服</span><span class="feature-desc">专业团队 随时在线</span></div></div>
       </div>
     </div>
+  </div>
+
+  
+  <!-- R22: 首屏登录检测骨架（/api/me 检查期间显示） -->
+  <div id="apex-auth-check" style="display:none; position:fixed; inset:0; z-index:98; background:#050505; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+    <div style="width:56px;height:56px;border:3px solid rgba(212,175,55,0.15);border-top-color:#d4af37;border-radius:50%;animation:apex-spin 0.9s linear infinite;"></div>
+    <div style="color:#8a8a8a;font-size:13px;font-family:'Manrope','Inter',system-ui,sans-serif;">正在检查登录状态…</div>
   </div>
 
   <!-- ============ 顶部语言切换 ============ -->
@@ -523,99 +567,101 @@
   <script src="/src/js/inline/block-09.js"></script>
   
   
-<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#f5f5f5; overflow-y:auto; z-index:100; -webkit-overflow-scrolling:touch;">
+<div id="apex-homepage" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#050505; overflow-y:auto; z-index:100; -webkit-overflow-scrolling:touch; padding-bottom:env(safe-area-inset-bottom);">
 
-  <!-- 顶部白底导航栏 -->
-  <div style="background:#ffffff; border-bottom:1px solid #e8e8e8; padding:14px 16px; position:sticky; top:0; z-index:10;">
-    <div style="max-width:480px; margin:0 auto; display:flex; align-items:center; gap:12px;">
-      <picture><source srcset="/logo-home.webp" type="image/webp"><img src="/logo-home.png" alt="Apex" width="120" height="38" style="height:38px; width:auto; display:block;" decoding="async" loading="lazy"></picture>
-      <span style="font-size:15px; font-weight:700; color:#111111; letter-spacing:0.3px;">apextop.cc.cd</span>
+  <!-- 顶部导航栏：黑金玻璃态 -->
+  <div style="background:rgba(5,5,5,0.75); backdrop-filter:blur(14px) saturate(150%); -webkit-backdrop-filter:blur(14px) saturate(150%); border-bottom:1px solid rgba(212,175,55,0.18); padding:calc(14px + env(safe-area-inset-top)) 20px 14px 20px; position:sticky; top:0; z-index:10;">
+    <div style="max-width:520px; margin:0 auto; display:flex; align-items:center; gap:14px;">
+      <picture><source srcset="/logo-home.webp" type="image/webp"><img src="/logo-home.png" alt="Apex" width="56" height="56" style="height:56px; width:56px; display:block; object-fit:contain; filter:drop-shadow(0 3px 12px rgba(212,175,55,0.45));" decoding="async" loading="lazy"></picture>
+      <span class="apex-brand-text">Apex Global Entertainment</span>
     </div>
   </div>
 
-  <div style="max-width:480px; margin:0 auto; padding:16px;">
+  <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Apex Global Entertainment - 全球娱乐游戏平台</h1>
+  <div style="max-width:520px; margin:0 auto; padding:18px;">
 
     <!-- 用户信息卡 -->
-    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
-      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
-        <div id="user-avatar" style="width:44px; height:44px; border-radius:50%; background:#111111; color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0;">A</div>
-        <div style="min-width:0;">
-          <div id="user-name" style="font-size:14px; font-weight:700; color:#111111;">用户</div>
-          <div id="user-email" style="font-size:11px; color:#888888; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">email@example.com</div>
+    <div class="apex-card apex-user-card">
+      <div style="display:flex; align-items:center; gap:14px; min-width:0;">
+        <div id="user-avatar" style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #d4af37 0%, #8a6d1f 100%); color:#050505; display:flex; align-items:center; justify-content:center; font-family:'Manrope','Inter',system-ui,sans-serif; font-size:20px; font-weight:800; flex-shrink:0; box-shadow:0 4px 14px rgba(212,175,55,0.35);">A</div>
+        <div style="min-width:0; flex:1;">
+          <div id="user-name" style="font-size:15px; font-weight:700; color:#ffffff; letter-spacing:0.2px;">用户</div>
+          <div id="user-email" style="font-size:12px; color:#8a8a8a; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">email@example.com</div>
+        <div id="user-created" style="font-size:10px; color:#666666; margin-top:3px;">注册于 —</div>
         </div>
+        <button data-apex-action="logout" aria-label="登出账号" style="background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.3); color:#d4af37; padding:7px 16px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; flex-shrink:0; transition:all 0.2s;" data-i18n="home.logout">登出</button>
       </div>
-      <button  data-apex-action="logout" style="background:#ffffff; border:1px solid #d8d8d8; color:#333333; padding:6px 14px; border-radius:20px; font-size:12px; cursor:pointer; font-family:inherit; flex-shrink:0;">登出</button>
     </div>
 
     <!-- 4 个功能卡片 -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
-      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
-        <span style="font-size:26px;">🎮</span>
-        <span style="font-size:14px; font-weight:700; color:#111111;">游戏大厅</span>
-        <span style="font-size:11px; color:#999999;">即将开放</span>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
+      <a href="#" data-coming-soon class="apex-card apex-feature-card">
+        <span style="font-size:28px;">🎮</span>
+        <span class="apex-feature-title" data-i18n="home.gameHall">游戏大厅</span>
+        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
       </a>
-      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
-        <span style="font-size:26px;">💰</span>
-        <span style="font-size:14px; font-weight:700; color:#111111;">我的钱包</span>
-        <span style="font-size:11px; color:#999999;">即将开放</span>
+      <a href="#" data-coming-soon class="apex-card apex-feature-card">
+        <span style="font-size:28px;">💰</span>
+        <span class="apex-feature-title" data-i18n="home.wallet">我的钱包</span>
+        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
       </a>
-      <a href="#" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
-        <span style="font-size:26px;">🎁</span>
-        <span style="font-size:14px; font-weight:700; color:#111111;">活动中心</span>
-        <span style="font-size:11px; color:#999999;">即将开放</span>
+      <a href="#" data-coming-soon class="apex-card apex-feature-card">
+        <span style="font-size:28px;">🎁</span>
+        <span class="apex-feature-title" data-i18n="home.events">活动中心</span>
+        <span class="apex-feature-desc" data-i18n="home.comingSoon">即将开放</span>
       </a>
-      <a href="#" id="security-center-link" style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:18px 16px; text-decoration:none; display:flex; flex-direction:column; gap:6px;">
-        <span style="font-size:26px;">🛡️</span>
-        <span style="font-size:14px; font-weight:700; color:#111111;">安全中心</span>
-        <span style="font-size:11px; color:#16a34a; font-weight:600;">查看设备</span>
+      <a href="#" id="security-center-link" class="apex-card apex-feature-card">
+        <span style="font-size:28px;">🛡️</span>
+        <span class="apex-feature-title" data-i18n="home.security">安全中心</span>
+        <span class="apex-feature-desc-active" data-i18n="home.viewDevices">查看设备</span>
       </a>
     </div>
 
     <!-- 系统公告 -->
-    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+    <div class="apex-card" style="padding:18px; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
         <span style="font-size:16px;">📢</span>
-        <span style="font-size:14px; font-weight:700; color:#111111;">系统公告</span>
+        <span style="font-size:14px; font-weight:700; color:#ffffff;" data-i18n="home.notice">系统公告</span>
       </div>
-      <p style="font-size:12.5px; color:#666666; line-height:1.7; margin:0;">欢迎使用 Apex Entertainment。我们的游戏平台正在开发中，即将上线。</p>
+      <p style="font-size:12.5px; color:#a0a0a0; line-height:1.75; margin:0;">欢迎使用 Apex Global Entertainment。我们的游戏平台正在开发中，即将上线。</p>
     </div>
 
     <!-- 账户信息 -->
-    <div style="background:#ffffff; border:1px solid #e8e8e8; border-radius:14px; padding:16px; margin-bottom:16px;">
-      <div style="font-size:14px; font-weight:700; color:#111111; margin-bottom:12px;">账户信息</div>
-      <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:13px;">
-        <span style="color:#888888;">邮箱状态</span>
-        <span style="color:#16a34a; font-weight:600;">已验证</span>
+    <div class="apex-card" style="padding:18px; margin-bottom:16px;">
+      <div style="font-size:14px; font-weight:700; color:#ffffff; margin-bottom:14px;" data-i18n="home.accountInfo">账户信息</div>
+      <div style="display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px;">
+        <span style="color:#8a8a8a;" data-i18n="home.emailStatus">邮箱状态</span>
+        <span style="color:#4ade80; font-weight:600;" data-i18n="home.verified" id="user-email-verified">已验证</span>
       </div>
-      <div style="display:flex; justify-content:space-between; padding:10px 0; font-size:13px;">
-        <span style="color:#888888;">账户等级</span>
-        <span style="color:#111111; font-weight:600;">标准用户</span>
+      <div style="display:flex; justify-content:space-between; padding:11px 0; font-size:13px;">
+        <span style="color:#8a8a8a;" data-i18n="home.userLevel">账户等级</span>
+        <span style="color:#d4af37; font-weight:600;" data-i18n="home.standardUser" id="user-level">标准用户</span>
       </div>
     </div>
 
     <!-- 页脚 -->
-    <div style="text-align:center; color:#aaaaaa; font-size:11px; padding:20px 0;">
+    <div style="text-align:center; color:#888888; font-size:12px; padding:24px 0 12px 0; letter-spacing:0.3px;">
       © 2026 Apex Global Entertainment
     </div>
 
   </div>
 </div>
 
-<div id="security-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:12px;max-width:420px;width:100%;padding:20px;max-height:80vh;overflow-y:auto;">
+<div id="security-modal" role="dialog" aria-modal="true" aria-labelledby="security-modal-title" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <div style="background:linear-gradient(180deg, rgba(15,15,15,0.98) 0%, rgba(5,5,5,0.98) 100%); border:1px solid rgba(212,175,55,0.25); border-radius:16px; max-width:420px; width:100%; padding:22px; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.08); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <span style="font-size:15px;font-weight:bold;color:#fff;">🛡️ 安全中心</span>
-      <button  data-apex-action="hide-security-modal" style="background:transparent;border:none;color:#888;font-size:20px;cursor:pointer;">×</button>
+      <span id="security-modal-title" style="font-size:15px;font-weight:700;color:#d4af37;letter-spacing:0.3px;">🛡️ 安全中心</span>
+      <button  data-apex-action="hide-security-modal" aria-label="关闭安全中心" style="background:transparent;border:none;color:#888;font-size:24px;cursor:pointer;padding:4px 8px;line-height:1;">×</button>
     </div>
-    <div style="font-size:12px;color:#888;margin-bottom:12px;">当前活跃设备：</div>
+    <div style="font-size:12px;color:#8a8a8a;margin-bottom:12px;">当前活跃设备：</div>
     <div id="session-list" style="margin-bottom:16px;"></div>
-    <button  data-apex-action="revoke-sessions" style="width:100%;padding:10px;background:#e63946;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">撤销所有其他设备</button>
-    <button data-apex-action="security-modal-forgot" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;margin-bottom:8px;">修改密码</button>
-    <button  data-apex-action="login-logs-soon" style="width:100%;padding:10px;background:#2a2a2a;color:#fff;border:1px solid #333;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;">查看登录日志</button>
+    <button  data-apex-action="revoke-sessions" style="width:100%;padding:12px;background:linear-gradient(135deg, #e63946 0%, #b02a36 100%);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px;transition:all 0.2s;box-shadow:0 4px 14px rgba(230,57,70,0.3);">撤销所有其他设备</button>
+    <button data-apex-action="security-modal-forgot" style="width:100%;padding:12px;background:rgba(212,175,55,0.08);color:#d4af37;border:1px solid rgba(212,175,55,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px;transition:all 0.2s;">修改密码</button>
+    <button  data-apex-action="login-logs-soon" style="width:100%;padding:12px;background:rgba(212,175,55,0.08);color:#d4af37;border:1px solid rgba(212,175,55,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;min-height:44px;transition:all 0.2s;">查看登录日志</button>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid #2a2a2a;">
-        <div style="font-size:12px;color:#888;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-          <span>Passkey 设备</span>
-          <button id="btn-register-passkey" type="button" style="background:transparent;border:1px solid #4ade80;color:#4ade80;padding:3px 10px;border-radius:6px;font-size:10px;cursor:pointer;">+ 绑定新设备</button>
+        <div style="font-size:12px;color:#8a8a8a;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#d4af37;font-weight:600;">Passkey 设备</span>
+          <button id="btn-register-passkey" type="button" style="background:transparent;border:1px solid #4ade80;color:#4ade80;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;padding:4px 12px;">+ 绑定新设备</button>
         </div>
         <div id="passkey-list" style="margin-bottom:8px;"></div>
       </div>

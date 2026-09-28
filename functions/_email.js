@@ -178,14 +178,24 @@ export function emailTemplate(title, content, code) {
   const safeTitle = String(title || '');
   const safeContent = String(content || '');
   const safeCode = code ? String(code) : '';
-  return '<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#0a0a0a;color:#fff;border-radius:12px;">'
-    + '<h2 style="color:#d4af37;margin:0 0 16px 0;letter-spacing:1px;">Apex Entertainment</h2>'
-    + '<p style="color:#ccc;margin:0 0 12px 0;">' + safeTitle + '</p>'
-    + (safeCode
-        ? '<div style="font-size:36px;font-weight:bold;letter-spacing:10px;color:#4ade80;padding:24px;background:#1a1a1a;border-radius:10px;text-align:center;margin:20px 0;font-family:Courier New,monospace;">' + safeCode + '</div>'
-        : '')
-    + '<p style="color:#888;font-size:13px;margin:12px 0;">' + safeContent + '</p>'
-    + '<hr style="border:none;border-top:1px solid #222;margin:20px 0;">'
-    + '<p style="color:#555;font-size:11px;text-align:center;margin:0;">© 2026 Apex Global Entertainment</p>'
+  const year = new Date().getFullYear();
+  const wrapOpen = '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;background:#0a0a0a;border-radius:12px;overflow:hidden;">';
+  const header = '<div style="background:linear-gradient(135deg,#0f0f0f 0%,#050505 100%);padding:28px 24px;border-bottom:1px solid rgba(212,175,55,0.15);">'
+    + '<div style="font-family:Georgia,\'Times New Roman\',serif;font-size:22px;font-weight:700;letter-spacing:3px;color:#d4af37;text-align:center;">APEX</div>'
+    + '<div style="font-size:11px;letter-spacing:2px;color:#8a8a8a;text-align:center;margin-top:6px;text-transform:uppercase;">Global Entertainment</div>'
     + '</div>';
+  const bodyOpen = '<div style="padding:32px 28px;">';
+  const titleHtml = '<p style="color:#ffffff;font-size:16px;font-weight:600;margin:0 0 16px 0;line-height:1.5;">' + safeTitle + '</p>';
+  const codeHtml = safeCode
+    ? '<div style="font-size:36px;font-weight:800;letter-spacing:12px;color:#4ade80;padding:24px 20px;background:#0f0f0f;border:1px solid rgba(74,222,128,0.2);border-radius:10px;text-align:center;margin:20px 0;font-family:Courier New,monospace;">' + safeCode + '</div>'
+    : '';
+  const contentHtml = '<p style="color:#a0a0a0;font-size:13.5px;line-height:1.7;margin:16px 0 0 0;">' + safeContent + '</p>';
+  const bodyClose = '</div>';
+  const footer = '<div style="padding:24px 28px;border-top:1px solid rgba(255,255,255,0.05);background:#050505;">'
+    + '<p style="color:#555555;font-size:11px;line-height:1.6;margin:0 0 8px 0;text-align:center;">这是一封系统邮件，请勿直接回复。</p>'
+    + '<p style="color:#555555;font-size:11px;line-height:1.6;margin:0 0 8px 0;text-align:center;">如果你不认识这封邮件，请忽略它。</p>'
+    + '<p style="color:#444444;font-size:10px;line-height:1.6;margin:16px 0 0 0;text-align:center;">© ' + year + ' Apex Global Entertainment. All rights reserved.</p>'
+    + '</div>';
+  const wrapClose = '</div>';
+  return wrapOpen + header + bodyOpen + titleHtml + codeHtml + contentHtml + bodyClose + footer + wrapClose;
 }

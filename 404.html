@@ -3,22 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>页面不存在 · Apex</title>
+<title>页面不存在 · Apex Global Entertainment</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#050505">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="stylesheet" href="/src/css/status.css">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-  body { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-  h1 { color: #d4af37; font-size: 64px; margin: 0 0 8px 0; }
-  p { color: #888; margin: 0 0 24px 0; }
-  a { color: #d4af37; text-decoration: none; padding: 12px 24px; border: 1px solid #d4af37; border-radius: 8px; display: inline-block; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #050505;
+    color: #fff;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  .container { max-width: 480px; width: 100%; }
+  .code {
+    font-family: 'Manrope', monospace;
+    font-size: 72px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #ffffff;
+  }
+  .desc {
+    font-size: 14px;
+    color: #8a8a8a;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .btn {
+    display: block;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    min-height: 48px;
+    line-height: 20px;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+    color: #050505;
+    box-shadow: 0 4px 14px rgba(212,175,55,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(212,175,55,0.5);
+  }
+  .btn-secondary {
+    background: rgba(255,255,255,0.03);
+    color: #d4af37;
+    border: 1px solid rgba(212,175,55,0.3);
+  }
+  .btn-secondary:hover {
+    background: rgba(212,175,55,0.08);
+    border-color: rgba(212,175,55,0.6);
+  }
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 12px;
+    color: #555;
+  }
+  .links a {
+    color: #8a8a8a;
+    text-decoration: none;
+  }
+  .links a:hover { color: #d4af37; }
 </style>
 </head>
 <body>
-<div>
-  <h1>404</h1>
-  <p>这个页面不存在，或者已经被移走。</p>
-  <a href="/">返回首页</a>
+<div class="container">
+  <div class="code">404</div>
+  <div class="title">找不到这个页面</div>
+  <div class="desc">你访问的页面不存在，或者已经被移走了。<br>试试回到首页重新开始。</div>
+  <div class="actions">
+    <a href="/" class="btn btn-primary">返回首页</a>
+    <a href="/status" class="btn btn-secondary">查看系统状态</a>
+  </div>
+  <div class="links">
+    <a href="/privacy">隐私政策</a>
+    <a href="/terms">用户协议</a>
+    <a href="/status">系统状态</a>
+  </div>
 </div>
 </body>
 </html>

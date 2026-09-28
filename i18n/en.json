@@ -46,7 +46,7 @@
   "home.gameHall": "Game Hall",
   "home.wallet": "My Wallet",
   "home.events": "Events",
-  "home.security": "Security Center",
+  "home.security": "Security",
   "home.comingSoon": "Coming Soon",
   "home.notice": "Notice",
   "home.noticeText": "Welcome to Apex Entertainment. Our platform is under development.",
@@ -54,5 +54,17 @@
   "home.emailStatus": "Email Status",
   "home.verified": "Verified",
   "home.userLevel": "User Level",
-  "home.standardUser": "Standard User"
+  "home.standardUser": "Standard User",
+  "home.logout": "Logout",
+  "home.viewDevices": "View Devices",
+  "home.user": "User",
+  "home.emailNotVerified": "Unverified",
+  "home.comingSoonHint": "Coming soon",
+  "security.title": "Security",
+  "security.currentDevices": "Active Devices",
+  "security.revokeAll": "Revoke Other Devices",
+  "security.changePassword": "Change Password",
+  "security.loginLogs": "Login Logs",
+  "security.currentDevice": "Current",
+  "security.otherDevice": "Other"
 }

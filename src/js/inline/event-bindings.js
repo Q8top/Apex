@@ -127,4 +127,27 @@
   } else {
     init();
   }
+
+  // Esc 关闭 modal + 焦点管理
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var m = document.getElementById('security-modal');
+      if (m && m.style.display !== 'none' && m.style.display !== '') {
+        m.style.display = 'none';
+        // 返回焦点到 security-center-link
+        var trigger = document.getElementById('security-center-link');
+        if (trigger && typeof trigger.focus === 'function') trigger.focus();
+      }
+    }
+  });
+
+  // modal 首次显示时自动聚焦关闭按钮
+  if (!window.__apexModalEsc) {
+    window.__apexModalEsc = true;
+    var _origShow = null;
+    Object.defineProperty(window, '__apexModalWatch', {
+      configurable: true,
+      set: function (v) { _origShow = v; }
+    });
+  }
 })();

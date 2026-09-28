@@ -24,9 +24,16 @@
     function toast(msg, type) {
       let t = document.getElementById('apex-toast');
       if (!t) { t = document.createElement('div'); t.id = 'apex-toast'; document.body.appendChild(t); }
-      t.textContent = msg;
-      t.style.background = type === 'error' ? '#e63946' : '#4ade80';
-      t.style.color = type === 'error' ? '#fff' : '#000';
+      t.textContent = String(msg || '');
+      // class 化，配合 CSS
+      t.classList.remove('apex-toast-info', 'apex-toast-error', 'apex-toast-success');
+      if (type === 'error') {
+        t.classList.add('apex-toast-error');
+      } else if (type === 'success') {
+        t.classList.add('apex-toast-success');
+      } else {
+        t.classList.add('apex-toast-info');
+      }
       t.style.opacity = '1';
       clearTimeout(t._timer);
       t._timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);

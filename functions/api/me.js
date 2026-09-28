@@ -30,6 +30,8 @@ export async function onRequestGet(context) {
         username: user.username,
         email: user.email,
         emailVerified: user.emailVerified,
+        createdAt: user.createdAt,
+        lastLoginAt: user.lastLoginAt,
       },
     }, 200, requestId);
   } catch (error) {
