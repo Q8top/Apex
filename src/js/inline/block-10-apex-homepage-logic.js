@@ -246,3 +246,41 @@ document.addEventListener('click', function (e) {
     init();
   }
 })();
+
+
+// ============================================================
+// 底部导航栏 - APEX-NAV-BIND
+// ============================================================
+(function () {
+  function bind() {
+    var nav = document.querySelector('.apex-nav');
+    if (!nav) return;
+    nav.querySelectorAll('.apex-nav-item').forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        var tab = item.dataset.tab;
+        nav.querySelectorAll('.apex-nav-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === item);
+        });
+        // 首页以外的 tab 显示"开发中"提示
+        if (tab !== 'home') {
+          if (window.__apex && window.__apex.toast) {
+            var labels = {
+              promo: '优惠',
+              assets: '资产',
+              service: '客服',
+              more: '更多',
+              mine: '我的'
+            };
+            window.__apex.toast(labels[tab] + ' 功能开发中，敬请期待', 'info');
+          }
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind);
+  } else {
+    bind();
+  }
+})();
