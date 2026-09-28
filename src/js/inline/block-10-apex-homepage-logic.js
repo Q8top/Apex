@@ -1771,3 +1771,161 @@ document.addEventListener('click', function (e) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else setTimeout(init, 100);
 })();
+
+
+// 特殊/新型全屏子页面 - APEX-SPECIAL-PAGE
+(function () {
+  var DATA = [
+    { key: 'fantasy', label: '梦幻体育', items: [
+      { en: 'Fantasy Football', zh: '梦幻足球' },
+      { en: 'Fantasy Basketball', zh: '梦幻篮球' },
+      { en: 'Fantasy Baseball', zh: '梦幻棒球' },
+      { en: 'Fantasy Cricket', zh: '梦幻板球' },
+      { en: 'Fantasy Hockey', zh: '梦幻冰球' }
+    ]},
+    { key: 'predict', label: '预测市场', items: [
+      { en: 'Sports Events', zh: '体育事件' },
+      { en: 'Entertainment', zh: '娱乐事件' },
+      { en: 'Economic Events', zh: '经济事件' },
+      { en: 'Weather Events', zh: '天气事件' },
+      { en: 'Other Events', zh: '其他事件' }
+    ]},
+    { key: 'p2p', label: 'P2P', items: [
+      { en: 'Peer-to-Peer', zh: '点对点' },
+      { en: 'Head-to-Head', zh: '一对一' },
+      { en: 'Player Pools', zh: '玩家池' },
+      { en: 'Tournament Pools', zh: '锦标赛池' }
+    ]},
+    { key: 'exchange', label: 'Exchange', items: [
+      { en: 'Back / Lay', zh: '买/卖' },
+      { en: 'Sports Exchange', zh: '体育交易所' },
+      { en: 'Racing Exchange', zh: '赛马交易所' },
+      { en: 'Event Exchange', zh: '事件交易所' }
+    ]},
+    { key: 'skill', label: 'Skill Games', items: [
+      { en: 'Skill Poker', zh: '技巧扑克' },
+      { en: 'Fantasy Games', zh: '梦幻游戏' },
+      { en: 'Competitive Card Games', zh: '竞技卡牌' },
+      { en: 'Competitive Arcade Games', zh: '竞技街机' }
+    ]},
+    { key: 'hybrid', label: 'Hybrid', items: [
+      { en: 'Slot + Table', zh: '老虎机 + 桌面' },
+      { en: 'Slot + Bingo', zh: '老虎机 + 宾果' },
+      { en: 'Bingo + Arcade', zh: '宾果 + 街机' },
+      { en: 'Poker + Slots', zh: '扑克 + 老虎机' },
+      { en: 'Sports + Fantasy', zh: '体育 + 梦幻' }
+    ]},
+    { key: 'show', label: 'Game Show', items: [
+      { en: 'Wheel Games', zh: '转盘游戏' },
+      { en: 'Quiz Games', zh: '问答游戏' },
+      { en: 'Prize Games', zh: '奖品游戏' },
+      { en: 'Random Pick Games', zh: '随机抽取' }
+    ]},
+    { key: 'vgames', label: 'Virtual', items: [
+      { en: 'Virtual Sports', zh: '虚拟体育' },
+      { en: 'Virtual Racing', zh: '虚拟赛马' },
+      { en: 'Virtual Football', zh: '虚拟足球' },
+      { en: 'Virtual Animals', zh: '虚拟动物' }
+    ]},
+    { key: 'novel', label: 'Novel', items: [
+      { en: 'Multiplier Games', zh: '倍率游戏' },
+      { en: 'Social Games', zh: '社交玩法' },
+      { en: 'Tournament Games', zh: '锦标赛玩法' },
+      { en: 'Progressive Games', zh: '累进玩法' },
+      { en: 'Community Games', zh: '社区玩法' }
+    ]}
+  ];
+
+  var I = {
+    fantasy: '<path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+    predict: '<path d="M3 12h4l3-9 4 18 3-9h4"/>',
+    p2p:     '<circle cx="9" cy="12" r="3"/><circle cx="15" cy="12" r="3"/>',
+    exchange:'<path d="M4 8h12l-3-3M20 16H8l3 3"/>',
+    skill:   '<path d="M6 4v16M18 4v16M9 8h6M9 16h6"/>',
+    hybrid:  '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
+    show:    '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>',
+    vgames:  '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 10h3M8 14h8"/>',
+    novel:   '<path d="M4 6h16M4 12h16M4 18h10"/>'
+  };
+
+  function s(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-special-page')) return;
+    var w = document.createElement('div');
+    w.id = 'apex-special-page';
+    w.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var hd = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-special-back">' + s('<polyline points="15 18 9 12 15 6"/>') + '</button>'
+      + '<div class="apex-hot-title">特殊 / 新型</div>'
+      + '</div>';
+
+    var sd = '<div class="apex-hot-side" id="apex-special-side">';
+    DATA.forEach(function (cat, i) {
+      sd += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + s(I[cat.key]) + '<span>' + cat.label + '</span></button>';
+    });
+    sd += '</div>';
+
+    w.innerHTML = hd + '<div class="apex-hot-body">' + sd + '<div class="apex-hot-list" id="apex-special-list"></div></div>';
+    document.body.appendChild(w);
+
+    document.getElementById('apex-special-back').addEventListener('click', function () { w.style.display = 'none'; });
+
+    var sideEl = document.getElementById('apex-special-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) { el.classList.toggle('is-active', el === b); });
+        render(k);
+      });
+    });
+    render(DATA[0].key);
+  }
+
+  function render(key) {
+    var le = document.getElementById('apex-special-list');
+    if (!le) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+    var ic = I[cat.key] || I.novel;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + s(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        + '<div class="apex-hot-item-title">' + it.en + '</div>'
+        + '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + s('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    le.innerHTML = html;
+    le.scrollTop = 0;
+    le.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        if (window.__apex && window.__apex.toast) window.__apex.toast(el.dataset.name + ' 开发中，敬请期待', 'info');
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var b = document.querySelector('.apex-cats .apex-cat[data-cat="special"]');
+    if (b) {
+      var nb = b.cloneNode(true);
+      b.parentNode.replaceChild(nb, b);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var p = document.getElementById('apex-special-page');
+        if (p) p.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
