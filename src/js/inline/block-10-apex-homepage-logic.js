@@ -322,6 +322,7 @@ document.addEventListener('click', function (e) {
 // ============================================================
 (function () {
   var names = {
+    hot: '热门',
     poker: '棋牌',
     slot: '电子',
     dice: '骰子/数学概率',
