@@ -137,7 +137,6 @@ document.addEventListener('click', function (e) {
   }
 });
 
-
 // 公告：改用 CSS 横向滚动（无需 JS）
 
 // ============================================================
@@ -247,7 +246,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // ============================================================
 // 底部导航栏 - APEX-NAV-BIND
 // ============================================================
@@ -285,7 +283,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // ============================================================
 // 二级 tab 栏 - APEX-TABS-BIND
 // ============================================================
@@ -315,7 +312,6 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
-
 
 // ============================================================
 // 左侧竖列导航 - APEX-SIDE-BIND
@@ -353,7 +349,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // ============================================================
 // 分类导航列表 - APEX-CATS-BIND
 // ============================================================
@@ -389,7 +384,6 @@ document.addEventListener('click', function (e) {
     bind();
   }
 })();
-
 
 // ============================================================
 // 热门全屏子页面 - APEX-HOT-PAGE
@@ -566,7 +560,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // APEX-HOT-FORCE: 强制修复热门按钮点击
 (function () {
   function fix() {
@@ -595,7 +588,6 @@ document.addEventListener('click', function (e) {
     setTimeout(fix, 100);
   }
 })();
-
 
 // ============================================================
 // 棋牌全屏子页面 - APEX-POKER-PAGE
@@ -767,7 +759,6 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
-
 
 // ============================================================
 // 电子全屏子页面 - APEX-SLOT-PAGE
@@ -941,7 +932,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // ============================================================
 // 骰子全屏子页面 - APEX-DICE-PAGE
 // ============================================================
@@ -1093,7 +1083,6 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
-
 
 // ============================================================
 // 体育全屏子页面 - APEX-SPORTS-PAGE
@@ -1290,7 +1279,6 @@ document.addEventListener('click', function (e) {
   }
 })();
 
-
 // ============================================================
 // 赛事全屏子页面 - APEX-EVENTS-PAGE
 // ============================================================
@@ -1450,7 +1438,6 @@ document.addEventListener('click', function (e) {
     setTimeout(init, 100);
   }
 })();
-
 
 // 即时游戏全屏子页面 - APEX-INSTANT-PAGE
 (function () {
@@ -1616,7 +1603,6 @@ document.addEventListener('click', function (e) {
   else setTimeout(init, 100);
 })();
 
-
 // 电竞全屏子页面 - APEX-ESPORTS-PAGE
 (function () {
   var DATA = [
@@ -1771,7 +1757,6 @@ document.addEventListener('click', function (e) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else setTimeout(init, 100);
 })();
-
 
 // 特殊/新型全屏子页面 - APEX-SPECIAL-PAGE
 (function () {
@@ -1930,7 +1915,6 @@ document.addEventListener('click', function (e) {
   else setTimeout(init, 100);
 })();
 
-
 // ============================================================
 // 百家樂玩法选择 - APEX-BACCARAT-MODES
 // ============================================================
@@ -1994,14 +1978,9 @@ document.addEventListener('click', function (e) {
   // 百家樂独立监听已禁用（统一走通用组件）
 })();
 
-
 // ============================================================
 
-
-
 // ============================================================
-
-
 
 // ============================================================
 // 规则页 v3 - 分层信息架构
@@ -2016,12 +1995,10 @@ document.addEventListener('click', function (e) {
 
   
 
-  window.__apexApexRulesV3 = RULES;
   window.__apexApexSlidesV3 = SLIDES;
 
   console.log('[Apex] RULES v3 Punto Banco 数据已写入');
 })();
-
 
 // ============================================================
 // 渲染函数 v3 - APEX-RENDER-V3
@@ -2255,7 +2232,6 @@ document.addEventListener('click', function (e) {
   console.log('[Apex] Render v3 已就绪');
 })();
 
-
 // ============================================================
 // 规则页事件绑定 v3 - APEX-BIND-V3
 // ============================================================
@@ -2447,14 +2423,12 @@ document.addEventListener('click', function (e) {
   console.log('[Apex] Bind v3 已就绪');
 })();
 
-
 // ============================================================
 // 通用模式选择页 + 模式映射表 - APEX-GENERIC-MODES
 // ============================================================
 (function () {
   // 每个玩法的模式列表（英文名 + 中文名）
   
-
 
   var ICON = '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10h6M9 14h6"/>';
 
