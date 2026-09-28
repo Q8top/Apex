@@ -95,6 +95,8 @@ window.showHomepage = function (user) {
   }
   function start() { stop(); timer = setInterval(function () { go(idx + 1); }, INTERVAL); }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  window.__apexCarouselPause = stop;
+  window.__apexCarouselResume = start;
 
   function init() {
     track = document.getElementById('apex-cr-track');
@@ -134,3 +136,145 @@ document.addEventListener('click', function (e) {
     }
   }
 });
+
+
+// ============================================================
+// 公告横排轮播（垂直滚动）
+// ============================================================
+(function () {
+  var track = null, items = 0, idx = 0, timer = null, INTERVAL = 3500;
+
+  function go(n) {
+    if (!track) return;
+    idx = (n + items) % items;
+    track.style.transform = 'translateY(-' + (idx * 100) + '%)';
+  }
+  function start() { stop(); timer = setInterval(function () { go(idx + 1); }, INTERVAL); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  function init() {
+    track = document.getElementById('apex-nt-track');
+    if (!track) return;
+    items = track.querySelectorAll('.apex-nt-item').length;
+    if (items <= 1) return;
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else start();
+    });
+
+    start();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+// ============================================================
+// 广告轮播：添加触摸滑动支持
+// ============================================================
+(function () {
+  var viewport = null, track = null, dots = null;
+  var slides = 0, idx = 0;
+  var startX = 0, startY = 0, deltaX = 0, deltaY = 0;
+  var isDragging = false, isHorizontal = null;
+  var width = 0;
+
+  function go(n, animate) {
+    if (!track) return;
+    idx = Math.max(0, Math.min(slides - 1, n));
+    track.style.transition = animate === false ? 'none' : '';
+    track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    if (dots) {
+      dots.querySelectorAll('.apex-cr-dot').forEach(function (d, i) {
+        d.classList.toggle('is-active', i === idx);
+      });
+    }
+  }
+
+  function init() {
+    var vp = document.querySelector('.apex-cr-viewport');
+    var tk = document.getElementById('apex-cr-track');
+    var dt = document.getElementById('apex-cr-dots');
+    if (!vp || !tk) return;
+    viewport = vp;
+    track = tk;
+    dots = dt;
+    slides = track.querySelectorAll('.apex-cr-slide').length;
+    width = vp.clientWidth;
+
+    viewport.addEventListener('touchstart', onStart, { passive: true });
+    viewport.addEventListener('touchmove', onMove, { passive: false });
+    viewport.addEventListener('touchend', onEnd, { passive: true });
+    viewport.addEventListener('touchcancel', onEnd, { passive: true });
+
+    window.addEventListener('resize', function () {
+      width = viewport.clientWidth;
+      go(idx, false);
+    });
+  }
+
+  function onStart(e) {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    deltaX = 0;
+    deltaY = 0;
+    isDragging = true;
+    isHorizontal = null;
+    track.classList.add('is-dragging');
+    // 暂停自动播放
+    if (window.__apexCarouselPause) window.__apexCarouselPause();
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+    deltaX = e.touches[0].clientX - startX;
+    deltaY = e.touches[0].clientY - startY;
+
+    // 判断方向（只判断一次）
+    if (isHorizontal === null) {
+      if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+        isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+      }
+    }
+
+    if (isHorizontal === true) {
+      e.preventDefault();
+      var offset = -idx * width + deltaX;
+      track.style.transform = 'translateX(' + offset + 'px)';
+    }
+  }
+
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('is-dragging');
+    // 恢复自动播放
+    if (window.__apexCarouselResume) window.__apexCarouselResume();
+
+    if (isHorizontal === true) {
+      var threshold = Math.max(40, width * 0.15);
+      if (deltaX > threshold) {
+        go(idx - 1);
+      } else if (deltaX < -threshold) {
+        go(idx + 1);
+      } else {
+        go(idx);
+      }
+    } else {
+      go(idx, false);
+    }
+    deltaX = 0;
+    deltaY = 0;
+    isHorizontal = null;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

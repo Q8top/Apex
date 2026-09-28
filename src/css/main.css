@@ -1426,3 +1426,83 @@ html {
   background: #111111 !important;
   border-radius: 3px !important;
 }
+
+/* ══════════════════════════════════════════════════
+   APEX ANNOUNCEMENT BAR + CAROUSEL TOUCH
+   ══════════════════════════════════════════════════ */
+
+/* 公告栏 */
+.apex-nt {
+  padding: 14px 16px 0 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.apex-nt-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.apex-nt-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.1);
+  border-radius: 50%;
+}
+.apex-nt-viewport {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.apex-nt-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.apex-nt-item {
+  height: 20px;
+  line-height: 20px;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+  color: #333333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Carousel 触摸滑动 */
+.apex-cr-viewport {
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.apex-cr-viewport:active {
+  cursor: grabbing;
+}
+.apex-cr-track {
+  transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.apex-cr-track.is-dragging {
+  transition: none !important;
+}
+.apex-cr-slide {
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+.apex-cr-slide * {
+  pointer-events: none;
+}
