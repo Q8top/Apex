@@ -595,3 +595,175 @@ document.addEventListener('click', function (e) {
     setTimeout(fix, 100);
   }
 })();
+
+
+// ============================================================
+// 棋牌全屏子页面 - APEX-POKER-PAGE
+// ============================================================
+(function () {
+  var DATA = [
+    { key: 'poker', label: '扑克', items: [
+      { en: "Texas Hold'em", zh: '德州扑克' },
+      { en: 'Omaha', zh: '奥马哈' },
+      { en: 'Omaha Hi-Lo', zh: '奥马哈高低' },
+      { en: 'Seven Card Stud', zh: '七张牌' },
+      { en: 'Five Card Draw', zh: '五张牌' },
+      { en: 'Short Deck Poker', zh: '短牌扑克' },
+      { en: 'Caribbean Stud Poker', zh: '加勒比扑克' },
+      { en: 'Three Card Poker', zh: '三张牌扑克' },
+      { en: 'Pai Gow Poker', zh: '牌九扑克' }
+    ]},
+    { key: 'blackjack', label: '21点', items: [
+      { en: 'Classic Blackjack', zh: '经典21点' },
+      { en: 'European Blackjack', zh: '欧洲21点' },
+      { en: 'Atlantic City Blackjack', zh: '大西洋城21点' },
+      { en: 'Spanish 21', zh: '西班牙21点' },
+      { en: 'Blackjack Switch', zh: '21点换牌' },
+      { en: 'Pontoon', zh: '浮桥21点' }
+    ]},
+    { key: 'baccarat', label: '百家樂', items: [
+      { en: 'Punto Banco', zh: '彭托银行' },
+      { en: 'Mini Baccarat', zh: '迷你百家樂' },
+      { en: 'Baccarat Banque', zh: '银行百家樂' },
+      { en: 'Chemin de Fer', zh: '铁路百家樂' },
+      { en: 'No Commission Baccarat', zh: '免佣百家樂' },
+      { en: 'Speed Baccarat', zh: '极速百家樂' }
+    ]},
+    { key: 'asia', label: '亚洲棋牌', items: [
+      { en: 'Niu Niu', zh: '牛牛' },
+      { en: 'San Gong', zh: '三公' },
+      { en: 'Dragon Tiger', zh: '龙虎' },
+      { en: 'Teen Patti', zh: '印度三张' },
+      { en: 'Andar Bahar', zh: '安达巴哈' },
+      { en: 'Pai Gow', zh: '牌九' },
+      { en: 'Fan Tan', zh: '番摊' },
+      { en: 'Hoo Hey How', zh: '鱼虾蟹' }
+    ]},
+    { key: 'mahjong', label: '麻将', items: [
+      { en: 'Mahjong', zh: '麻将' },
+      { en: 'Hong Kong Mahjong', zh: '港式麻将' },
+      { en: 'Japanese Mahjong', zh: '日麻' },
+      { en: 'Riichi Mahjong', zh: '立直麻将' },
+      { en: 'Chinese Mahjong', zh: '中式麻将' },
+      { en: 'American Mahjong', zh: '美式麻将' }
+    ]},
+    { key: 'other', label: '其他棋牌', items: [
+      { en: 'Casino War', zh: '赌场战争' },
+      { en: 'Red Dog', zh: '红狗' },
+      { en: 'War', zh: '战争' },
+      { en: 'Pontoon', zh: '浮桥' },
+      { en: 'Baccarat Variants', zh: '百家樂变体' },
+      { en: 'Card Matching Games', zh: '纸牌配对' }
+    ]}
+  ];
+
+  var ICONS = {
+    poker:    '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/>',
+    blackjack:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8"/>',
+    baccarat: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 10h6M9 14h6"/>',
+    asia:     '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/>',
+    mahjong:  '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8v8H8z"/>',
+    other:    '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>'
+  };
+
+  function svg(d) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  }
+
+  function build() {
+    if (document.getElementById('apex-poker-page')) return;
+    var wrap = document.createElement('div');
+    wrap.id = 'apex-poker-page';
+    wrap.style.cssText = 'position:fixed;inset:0;background:#f5f5f7;z-index:500;display:none;flex-direction:column;overflow:hidden;';
+
+    var header = '<div class="apex-hot-header">'
+      + '<button class="apex-hot-back" aria-label="返回" id="apex-poker-back">'
+      + svg('<polyline points="15 18 9 12 15 6"/>')
+      + '</button>'
+      + '<div class="apex-hot-title">棋牌</div>'
+      + '</div>';
+
+    var side = '<div class="apex-hot-side" id="apex-poker-side">';
+    DATA.forEach(function (cat, i) {
+      side += '<button class="apex-hot-side-item' + (i === 0 ? ' is-active' : '') + '" data-key="' + cat.key + '">'
+        + svg(ICONS[cat.key])
+        + '<span>' + cat.label + '</span>'
+        + '</button>';
+    });
+    side += '</div>';
+
+    var list = '<div class="apex-hot-list" id="apex-poker-list"></div>';
+
+    wrap.innerHTML = header + '<div class="apex-hot-body">' + side + list + '</div>';
+    document.body.appendChild(wrap);
+
+    document.getElementById('apex-poker-back').addEventListener('click', function () {
+      wrap.style.display = 'none';
+    });
+
+    var sideEl = document.getElementById('apex-poker-side');
+    sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        sideEl.querySelectorAll('.apex-hot-side-item').forEach(function (el) {
+          el.classList.toggle('is-active', el === btn);
+        });
+        renderList(key);
+      });
+    });
+
+    renderList(DATA[0].key);
+  }
+
+  function renderList(key) {
+    var listEl = document.getElementById('apex-poker-list');
+    if (!listEl) return;
+    var cat = DATA.find(function (c) { return c.key === key; });
+    if (!cat) return;
+
+    var ic = ICONS[cat.key] || ICONS.poker;
+    var html = '';
+    cat.items.forEach(function (it) {
+      html += '<div class="apex-hot-item" data-name="' + it.en + '">'
+        + '<div class="apex-hot-item-icon">' + svg(ic) + '</div>'
+        + '<div class="apex-hot-item-info">'
+        +   '<div class="apex-hot-item-title">' + it.en + '</div>'
+        +   '<div class="apex-hot-item-sub">' + it.zh + '</div>'
+        + '</div>'
+        + '<span class="apex-hot-item-arrow">' + svg('<polyline points="9 6 15 12 9 18"/>') + '</span>'
+        + '</div>';
+    });
+    listEl.innerHTML = html;
+    listEl.scrollTop = 0;
+
+    listEl.querySelectorAll('.apex-hot-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var name = el.dataset.name;
+        if (window.__apex && window.__apex.toast) {
+          window.__apex.toast(name + ' 开发中，敬请期待', 'info');
+        }
+      });
+    });
+  }
+
+  function init() {
+    build();
+    var pokerBtn = document.querySelector('.apex-cats .apex-cat[data-cat="poker"]');
+    if (pokerBtn) {
+      var nb = pokerBtn.cloneNode(true);
+      pokerBtn.parentNode.replaceChild(nb, pokerBtn);
+      nb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var page = document.getElementById('apex-poker-page');
+        if (page) page.style.display = 'flex';
+      }, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+})();
