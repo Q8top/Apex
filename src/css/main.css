@@ -1323,3 +1323,106 @@ html {
   .apex-hd-brand { font-size: 21px; letter-spacing: 2.5px; }
   .apex-cr-slide-title { font-size: 24px; letter-spacing: 5px; }
 }
+
+/* ══════════════════════════════════════════════════
+   APEX HOMEPAGE — WHITE TOPBAR EDITION
+   ══════════════════════════════════════════════════ */
+
+/* 顶栏：纯白 */
+.apex-hd {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06) !important;
+}
+.apex-hd-brand {
+  color: #111111 !important;
+}
+.apex-hd-btn {
+  color: #111111 !important;
+}
+.apex-hd-btn:active {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+.apex-hd-badge {
+  border-color: #ffffff !important;
+}
+
+/* 语言按钮：白底黑字 + 灰边 */
+.apex-lg-btn {
+  color: #111111 !important;
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  padding: 0 12px 0 10px !important;
+  height: 34px !important;
+  border-radius: 17px !important;
+}
+.apex-lg-btn:active {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+.apex-lg-name {
+  color: #111111 !important;
+  font-weight: 500 !important;
+}
+.apex-lg-chev {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 语言下拉：白底黑字 */
+.apex-lg-menu {
+  background: #ffffff !important;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+.apex-lg-option {
+  color: #111111 !important;
+}
+.apex-lg-option:active,
+.apex-lg-option:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+.apex-lg-option.is-active {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+.apex-lg-opt-title {
+  color: #111111 !important;
+}
+.apex-lg-opt-sub {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+.apex-lg-opt-check {
+  color: #0a84ff !important;
+}
+
+/* Carousel: dots 移出图片下方 */
+.apex-cr {
+  padding: 20px 16px 0 16px !important;
+}
+.apex-cr-dots {
+  position: static !important;
+  transform: none !important;
+  left: auto !important;
+  bottom: auto !important;
+  margin: 12px auto 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.apex-cr-dot {
+  width: 6px !important;
+  height: 6px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.apex-cr-dot.is-active {
+  width: 20px !important;
+  background: #111111 !important;
+  border-radius: 3px !important;
+}
