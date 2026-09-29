@@ -10,9 +10,6 @@
   var skeletonShown = false;
   var skeletonTimer = setTimeout(function () {
     if (!skeleton) return;
-    var spl = document.getElementById('apex-splash-screen');
-    var splVisible = spl && spl.style.display !== 'none' && !spl.classList.contains('hide');
-    if (splVisible) return; // splash 还在就不要打架
     skeleton.style.display = 'flex';
     skeletonShown = true;
   }, 300);

@@ -48,9 +48,6 @@
       });
     });
 
-    // 7. 加载页添加 aria-hidden（读屏器忽略它）
-    const splash = document.getElementById('apex-splash-screen');
-    if (splash) splash.setAttribute('aria-hidden', 'true');
 
     console.log('[Apex] a11y 优化已应用');
   })();

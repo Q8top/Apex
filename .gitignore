@@ -71,3 +71,4 @@ audit-results-*/
 # ===== Apex 审计备份目录（自动排除，避免污染 git 状态）=====
 .audit-backup-*/
 audit-backup-*/
+.archive/
