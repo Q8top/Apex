@@ -5169,6 +5169,281 @@
       ],
       disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
     }
+,
+    'Fantasy Sports': {
+      zh: '梦幻体育',
+      tagline: '玩家扮演"经理"角色，根据真实球员数据得分。不是押比赛结果，而是押球员表现——统计深度最高的博彩形式。',
+      quickStart: [
+        { n: 1, title: '选阵容', desc: '从各队挑选球员组成阵容（受工资帽限制）。' },
+        { n: 2, title: '下注', desc: '支付入场费参与联赛。' },
+        { n: 3, title: '比赛进行', desc: '球员实际表现决定你的积分。' },
+        { n: 4, title: '结算', desc: '积分排名靠前者按奖金分配。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '游戏类型', v: 'Daily Fantasy / Season Fantasy' },
+          { k: '工资帽', v: '通常 50,000 - 100,000' },
+          { k: '阵容规模', v: '8 - 12 名球员' },
+          { k: '计分方式', v: '根据球员实际数据（TD / 得分 / 助攻等）' }
+        ],
+        note: '梦幻体育不是押比赛胜负，而是押球员的统计表现。',
+        examples: [
+          'NFL Fantasy：QB 传球 300 码 + 3 TD → 30 分',
+          'NBA Fantasy：球员得分 + 篮板 + 助攻 → 总分',
+          '足球 Fantasy：进球 + 助攻 + 关键传球 → 积分'
+        ],
+        order: '积分最高者 > 积分次高者 > 其他人'
+      },
+      natural: {
+        desc: 'Fantasy Sports 常见类型：',
+        examples: [
+          'Daily Fantasy Sports：单日联赛',
+          'Season Fantasy：整个赛季联赛',
+          'Tournament Fantasy：锦标赛联赛',
+          'Head-to-Head：一对一对抗',
+          'Guaranteed Prize Pool（GPP）：保证奖金池'
+        ],
+        note: 'Fantasy Sports 在北美合法化程度较高（部分州有监管），RTP 通常 85% - 92%。'
+      },
+      odds: [
+        { name: 'Head-to-Head 胜利', value: '约 1 赔 0.8 - 1 赔 1' },
+        { name: 'GPP 前 1%', value: '1 赔 10 - 1 赔 1000' },
+        { name: 'GPP 前 20%', value: '1 赔 1 - 1 赔 5' },
+        { name: 'GPP 未入奖', value: '失去入场费' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'DFS', zh: 'Daily Fantasy Sports' },
+        { en: 'Salary Cap', zh: '工资帽' },
+        { en: 'Lineup', zh: '阵容' },
+        { en: 'GPP', zh: 'Guaranteed Prize Pool' }
+      ],
+      faq: [
+        { q: 'Fantasy Sports 和普通博彩有什么不同？', a: 'Fantasy Sports 强调技巧（选阵容），不是纯随机；更类似"策略游戏 + 奖金"。' },
+        { q: 'DFS 和 Season Fantasy 有什么区别？', a: 'DFS 单日联赛，速度快；Season Fantasy 整个赛季，时间长。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际参与需符合所在司法辖区的法律法规。'
+    },
+
+    'Prediction Market': {
+      zh: '预测市场',
+      tagline: '对未来事件进行"是/否"下注——体育 / 娱乐 / 经济 / 天气等均可。价格反映市场共识，结果揭晓后自动结算。',
+      quickStart: [
+        { n: 1, title: '选择事件', desc: '从体育 / 娱乐 / 经济 / 天气等事件中选择。' },
+        { n: 2, title: '选择方向', desc: '押事件会发生或不会发生。' },
+        { n: 3, title: '下注', desc: '按当前市场价格买入份额。' },
+        { n: 4, title: '结算', desc: '事件揭晓后，中奖方向每份赔 1 单位。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '事件类型', v: '体育 / 娱乐 / 经济 / 天气等' },
+          { k: '下注方式', v: '是 / 否 二元下注' },
+          { k: '价格', v: '0.01 - 0.99（反映概率）' },
+          { k: '结算', v: '中奖方向每份赔 1.00' }
+        ],
+        note: 'Prediction Market 的价格反映市场共识概率（价格 0.70 = 70% 概率）。',
+        examples: [
+          '事件：Trump 赢得 2028 大选？',
+          'YES 价格 0.55 → 押 100 份 = 花 55',
+          '若 Trump 赢得 → 每份赔 1 → 收入 100（净赢 45）'
+        ],
+        order: '价格越低收益越高（但概率也越低）'
+      },
+      natural: {
+        desc: 'Prediction Market 常见类型：',
+        examples: [
+          'Sports Events：比赛胜负 / 冠军 / 球员表现',
+          'Entertainment：奥斯卡 / 格莱美 / 票房',
+          'Economic：利率 / 通胀 / GDP',
+          'Weather：气温 / 降雨 / 降雪',
+          'Political：选举 / 政策'
+        ],
+        note: 'Prediction Market 在部分司法辖区有监管要求，请在合规地区参与。'
+      },
+      odds: [
+        { name: 'YES 价格 0.50', value: '约 1 赔 1' },
+        { name: 'YES 价格 0.75', value: '约 1 赔 0.33' },
+        { name: 'YES 价格 0.20', value: '约 1 赔 4' },
+        { name: 'YES 价格 0.05', value: '约 1 赔 19' }
+      ],
+      oddsNote: '赔率 = 1 / 价格 - 1。如价格 0.50 → 赔率 1:1。',
+      terms: [
+        { en: 'Prediction Market', zh: '预测市场' },
+        { en: 'Binary Option', zh: '二元期权' },
+        { en: 'Shares', zh: '份额' },
+        { en: 'Resolution', zh: '结果揭晓' }
+      ],
+      faq: [
+        { q: 'Prediction Market 和普通博彩有什么不同？', a: 'Prediction Market 价格由市场供需决定，反映集体共识；传统博彩赔率由庄家设定。' },
+        { q: '价格代表什么？', a: '价格反映市场认为事件发生的概率。如价格 0.75 = 75% 概率。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际参与需符合所在司法辖区的法律法规。'
+    },
+
+    'Peer-to-Peer': {
+      zh: 'P2P 玩法',
+      tagline: '玩家对玩家——无需庄家，玩家互相对赌。奖池由玩家下注共同组成，胜者通吃或按名次分配。',
+      quickStart: [
+        { n: 1, title: '选择玩法', desc: '1v1 / 多人池 / 锦标赛池。' },
+        { n: 2, title: '下注', desc: '支付入场费参与。' },
+        { n: 3, title: '与其他玩家对战', desc: '系统自动匹配或按名次排行。' },
+        { n: 4, title: '结算', desc: '胜者或名次靠前者获得奖池。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '玩法类型', v: '1v1 / 多人 / 锦标赛' },
+          { k: '奖池来源', v: '玩家下注共同组成' },
+          { k: '平台抽成', v: '通常 5% - 10%' },
+          { k: '胜者', v: '通吃或按名次分配' }
+        ],
+        note: 'P2P 无需庄家，玩家之间直接对战，平台只收取服务费。',
+        examples: [
+          '1v1：两人各下 100，胜者获得 190（平台抽 10）',
+          '3 人池：各下 100，奖池 270（平台抽 30），按 70/30 分配',
+          '10 人锦标赛：奖池 900，前 3 名分配'
+        ],
+        order: '1v1 赢家通吃；多人池按名次分配'
+      },
+      natural: {
+        desc: 'P2P 常见玩法：',
+        examples: [
+          'Head-to-Head：1v1 对抗',
+          'Player Pools：多人奖池',
+          'Tournament Pools：锦标赛奖池',
+          'Knockout：淘汰赛',
+          'Leaderboard：排行榜'
+        ],
+        note: 'P2P RTP 通常 90% - 95%（取决于平台抽成）。'
+      },
+      odds: [
+        { name: '1v1 胜利', value: '约 1 赔 0.9（平台抽 10%）' },
+        { name: '多人池前 10%', value: '按比例分配' },
+        { name: '锦标赛冠军', value: '按奖金分配' }
+      ],
+      oddsNote: 'P2P 无固定赔率，取决于其他玩家表现。',
+      terms: [
+        { en: 'P2P', zh: 'Peer-to-Peer（点对点）' },
+        { en: 'Head-to-Head', zh: '一对一' },
+        { en: 'Tournament', zh: '锦标赛' },
+        { en: 'Rake', zh: '抽成' }
+      ],
+      faq: [
+        { q: 'P2P 和普通博彩有什么不同？', a: 'P2P 无庄家，玩家之间直接对赌，平台只收取服务费。' },
+        { q: '平台如何盈利？', a: '平台从奖池中抽取 Rake（通常 5% - 10%）。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际参与需符合所在司法辖区的法律法规。'
+    },
+
+    'Exchange': {
+      zh: '交易所模式',
+      tagline: '像买卖股票一样交易体育赛事——可以"买入"（Back）或"卖出"（Lay）任何结果，价格随市场变动。',
+      quickStart: [
+        { n: 1, title: '选择市场', desc: '体育 / 赛马 / 其他事件。' },
+        { n: 2, title: '选择方向', desc: 'Back（买入）或 Lay（卖出）。' },
+        { n: 3, title: '设定价格', desc: '按当前市场价或自设价格挂单。' },
+        { n: 4, title: '匹配 + 结算', desc: '与对手方匹配成功后，事件结果决定输赢。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Back', v: '买入结果，赌事件发生' },
+          { k: 'Lay', v: '卖出结果，赌事件不发生' },
+          { k: '价格', v: '赔率形式（如 2.00）' },
+          { k: '匹配', v: '买卖双方价格达成一致' }
+        ],
+        note: 'Exchange 允许"做空"——即使你不看好某个结果，也可以 Lay 它来获利。',
+        examples: [
+          'Back 曼城 @ 2.00：押 100，赢则净赢 100',
+          'Lay 曼城 @ 2.00：押 100 但赌曼城不赢，赢则净赢 100',
+          '可组合 Back 和 Lay 形成交易策略'
+        ],
+        order: 'Back 与 Lay 互为反向，价格反映市场共识'
+      },
+      natural: {
+        desc: 'Exchange 常见类型：',
+        examples: [
+          'Sports Exchange：足球 / 篮球 / 网球等',
+          'Racing Exchange：赛马 / 赛狗',
+          'Event Exchange：娱乐 / 政治事件',
+          'Back：买入结果',
+          'Lay：卖出结果',
+          'Trading：像炒股一样交易赔率'
+        ],
+        note: 'Exchange RTP 通常 95% - 98%（仅抽 2% - 5% 佣金）。'
+      },
+      odds: [
+        { name: 'Back @ 2.00', value: '1 赔 1' },
+        { name: 'Back @ 5.00', value: '1 赔 4' },
+        { name: 'Lay @ 2.00', value: '对方赢你赔 1' },
+        { name: '佣金', value: '通常 2% - 5%' }
+      ],
+      oddsNote: 'Exchange 赔率由市场决定，非平台设定。',
+      terms: [
+        { en: 'Back', zh: '买入（赌发生）' },
+        { en: 'Lay', zh: '卖出（赌不发生）' },
+        { en: 'Matched', zh: '已匹配' },
+        { en: 'Commission', zh: '佣金' }
+      ],
+      faq: [
+        { q: 'Exchange 和普通博彩有什么不同？', a: 'Exchange 是玩家之间交易，可 Back 也可 Lay；普通博彩是玩家对庄家，只能 Back。' },
+        { q: 'Lay 是什么意思？', a: 'Lay 是"卖出"，赌事件不发生。若事件不发生你赢，若发生你输。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际参与需符合所在司法辖区的法律法规。'
+    },
+
+    'Hybrid Games': {
+      zh: '混合玩法',
+      tagline: '将两种不同玩法融合在一起——如老虎机 + 桌面、宾果 + 街机、扑克 + 老虎机等。创新形式，体验独特。',
+      quickStart: [
+        { n: 1, title: '选择玩法', desc: '选择具体的混合游戏。' },
+        { n: 2, title: '下注', desc: '按游戏规则下注。' },
+        { n: 3, title: '体验混合机制', desc: '游戏过程中会交替出现两种玩法。' },
+        { n: 4, title: '结算', desc: '按各阶段结果累积派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '玩法类型', v: '老虎机 + 桌面 / 宾果 + 街机等' },
+          { k: '阶段', v: '通常 2-3 个交替阶段' },
+          { k: '奖励', v: '各阶段独立或累积' },
+          { k: '核心', v: '创新性组合' }
+        ],
+        note: 'Hybrid Games 是近年创新趋势，将两种流行玩法组合。',
+        examples: [
+          'Slot + Table：基础老虎机 + 桌面奖励阶段',
+          'Bingo + Arcade：宾果 + 街机小游戏',
+          'Poker + Slots：扑克 + 老虎机奖励',
+          'Sports + Fantasy：体育 + 梦幻体育'
+        ],
+        order: '进入奖励阶段 > 基础游戏 > 无中奖'
+      },
+      natural: {
+        desc: 'Hybrid Games 常见组合：',
+        examples: [
+          'Slot + Table：老虎机 + 百家樂 / 21点',
+          'Slot + Bingo：老虎机 + 宾果',
+          'Bingo + Arcade：宾果 + 街机',
+          'Poker + Slots：扑克 + 老虎机',
+          'Sports + Fantasy：体育 + 梦幻体育',
+          'Live + Slot：真人 + 老虎机'
+        ],
+        note: 'Hybrid Games RTP 视具体组合而定，通常 95% - 97%。'
+      },
+      odds: [
+        { name: '基础中奖', value: '1 赔 0.5 - 1 赔 10' },
+        { name: '奖励阶段', value: '1 赔 5 - 1 赔 100' },
+        { name: '最大奖', value: '1 赔 100 - 1 赔 5,000' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Hybrid', zh: '混合' },
+        { en: 'Bonus Stage', zh: '奖励阶段' },
+        { en: 'Multi-Phase', zh: '多阶段' }
+      ],
+      faq: [
+        { q: 'Hybrid Games 更刺激吗？', a: '通常更刺激，因为融合了两种玩法的刺激点。' },
+        { q: 'RTP 更差吗？', a: '不一定。Hybrid Games RTP 与单玩法接近，通常 95% - 97%。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际参与需符合所在司法辖区的法律法规。'
+    }
 
   };
 
