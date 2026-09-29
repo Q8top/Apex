@@ -30,18 +30,13 @@ export function getConfig(env = {}) {
     // Cookie 名称
     sessionCookie: '__Host-apex_session',
     legacySessionCookie: 'apex_session',
-    adminCookie: '__Host-apex_admin_session',
-    legacyAdminCookie: 'apex_admin_session',
-
-    // Session TTL
+// Session TTL
     sessionMaxAge: 7 * 24 * 60 * 60,
       // Session 空闲超时（距 last_seen_at 超过此时间则视为无效）
       // 与 sessionMaxAge 叠加：任一超时都强制重新登录
       sessionIdleTimeout: 3 * 24 * 60 * 60,
       // 单用户最多保留的活跃 session 数（超出时撤销最早的，防无限堆积）
       maxSessionsPerUser: 20, // 单用户活跃 session 上限
-      adminSessionIdleTimeout: 60 * 60,     // 1 小时
-    adminSessionMaxAge: 8 * 60 * 60,
 
     // Token TTL
     resetCodeTtlMs: 10 * 60 * 1000,

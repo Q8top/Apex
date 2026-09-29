@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://images.unsplash.com">
-  <link rel="preload" href="/logo.png" as="image">
+  <link rel="preload" as="image">
 <!-- APEX-PRELOAD-END -->
 <!-- APEX-SEO-START -->
 <!--
@@ -99,9 +99,9 @@
   </script>
 <!-- APEX-SEO-END -->
   <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/logo.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/logo.png">
+  <link rel="apple-touch-icon" sizes="180x180">
+  <link rel="apple-touch-icon" sizes="192x192">
+  <link rel="apple-touch-icon" sizes="512x512">
 </head>
 <body>
 
@@ -123,12 +123,6 @@
 
   
   
-  <!-- R22: 首屏登录检测骨架（/api/me 检查期间显示） -->
-  <div id="apex-auth-check" style="display:none; position:fixed; inset:0; z-index:98; background:#050505; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
-    <div style="width:56px;height:56px;border:3px solid rgba(212,175,55,0.15);border-top-color:#d4af37;border-radius:50%;animation:apex-spin 0.9s linear infinite;"></div>
-    <div style="color:#8a8a8a;font-size:13px;font-family:'Manrope','Inter',system-ui,sans-serif;">正在检查登录状态…</div>
-  </div>
-
   <!-- ============ 顶部语言切换 ============ -->
   <div class="header">
     <div class="lang-selector" id="lang-selector">
@@ -148,7 +142,7 @@
       fetchpriority="high"
     >
     <div class="hero-content">
-      <picture><source srcset="./logo.webp" type="image/webp"><img src="./logo.png" alt="Apex Logo" class="logo-img" width="90" height="90" decoding="async" fetchpriority="high"></picture>
+      <picture><source srcset="./logo.webp" type="image/webp"><img alt="Apex Logo" class="logo-img" width="90" height="90" decoding="async" fetchpriority="high"></picture>
       <div class="main-title" data-i18n="hero.title">全球娱乐游戏平台</div>
       <div class="sub-title" data-i18n="hero.subtitle">一站式体验·玩法丰富·公平公正·极速存取</div>
     </div>
@@ -514,13 +508,10 @@
   <script src="/src/js/inline/block-05.js"></script>
 
   <script src="/src/js/inline/block-06-apex-monitoring.js" id="apex-monitoring"></script>
+  <script src="/src/js/inline/block-07-apex-auth.js"></script>
 
 
   
-  <script src="/src/js/inline/block-07-apex-auto-login.js" id="apex-auto-login"></script>
-
-
-
   <script src="/src/js/inline/block-08-apex-a11y.js" id="apex-a11y"></script>
 
 
@@ -528,189 +519,13 @@
 
 
   <script src="/src/js/inline/block-09.js"></script>
-  
-  
-<div id="apex-homepage" class="apx-home-v2">
-  <header class="apx-v2-header">
-    <button class="apx-v2-menu" aria-label="菜单">☰</button>
-    <div class="apx-v2-brand">APEX</div>
-    <div class="apx-v2-actions">
-      <button aria-label="通知">♧</button>
-      <button aria-label="账户">◉</button>
-    </div>
-  </header>
+<script src="/src/js/inline/event-bindings.js"></script>
 
-  <main class="apx-v2-main">
-    <section class="apx-v2-account">
-      <div class="apx-v2-user">👤 <span>账户昵称</span></div>
-      <div class="apx-v2-balance">
-        <small>BALANCE</small>
-        <strong>0.00</strong>
-        <div>
-          <button>充值</button>
-          <button>提现</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="apx-v2-search">搜索游戏 / 玩法</section>
-
-    <section class="apx-v2-hero">
-      <small>APEX EXCLUSIVE</small>
-      <h1>发现新的娱乐世界</h1>
-      <button>立即探索 →</button>
-      <div class="apx-v2-dots">● ○ ○</div>
-    </section>
-
-    <section class="apx-v2-section">
-<h2>QUICK ACCESS</h2>
-<div class="apx-v2-quick-grid">
-<div class="apx-v2-quick-item"><b>⌂</b>首页</div>
-<div class="apx-v2-quick-item"><b>✦</b>热门</div>
-<div class="apx-v2-quick-item"><b>◈</b>活动</div>
-<div class="apx-v2-quick-item"><b>♡</b>收藏</div>
-<div class="apx-v2-quick-item"><b>•••</b>更多</div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>CONTINUE</h2>
-<div class="apx-v2-continue">
-<div class="apx-v2-mini-card"><strong>继续探索</strong></div>
-<div class="apx-v2-mini-card"><strong>最近访问</strong></div>
-<div class="apx-v2-mini-card"><strong>我的收藏</strong></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>FEATURED</h2>
-<div class="apx-v2-featured">
-<div class="apx-v2-feature-card"><small>APEX ORIGINAL</small><strong>全新娱乐体验</strong></div>
-<div class="apx-v2-feature-card alt"><small>SPOTLIGHT</small><strong>精选专题</strong></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>DISCOVER</h2>
-<div class="apx-v2-discover">
-<div class="apx-v2-discover-item"><span>01</span><strong>精选内容</strong></div>
-<div class="apx-v2-discover-item"><span>02</span><strong>热门玩法</strong></div>
-<div class="apx-v2-discover-item"><span>03</span><strong>快速体验</strong></div>
-<div class="apx-v2-discover-item"><span>04</span><strong>探索更多</strong></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>FEATURED UNIVERSE</h2>
-<div class="apx-v2-universe-card">
-<small>APEX UNIVERSE</small>
-<strong>探索专属娱乐宇宙</strong>
-<span>精选内容、专题体验与全新发现</span>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>SPECIAL AREA</h2>
-<div class="apx-v2-special">
-<div class="apx-v2-special-card dark"><small>LIVE</small><strong>实时精选</strong></div>
-<div class="apx-v2-special-card"><small>SPOTLIGHT</small><strong>今日焦点</strong></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>INSTANT</h2>
-<div class="apx-v2-instant">
-<div class="apx-v2-instant-item"><b>⚡</b><span>快速体验</span></div>
-<div class="apx-v2-instant-item"><b>◈</b><span>精选玩法</span></div>
-<div class="apx-v2-instant-item"><b>✦</b><span>热门内容</span></div>
-<div class="apx-v2-instant-item"><b>＋</b><span>更多发现</span></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>NEW</h2>
-<div class="apx-v2-new">
-<small>JUST ARRIVED</small>
-<strong>全新内容，正在上线</strong>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>TRENDING</h2>
-<div class="apx-v2-trending">
-<div class="apx-v2-rank"><div class="apx-v2-rank-num">01</div><strong>Trending One</strong><span>热门</span></div>
-<div class="apx-v2-rank"><div class="apx-v2-rank-num">02</div><strong>Trending Two</strong><span>热门</span></div>
-<div class="apx-v2-rank"><div class="apx-v2-rank-num">03</div><strong>Trending Three</strong><span>热门</span></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>FOR YOU</h2>
-<div class="apx-v2-for-you">
-<div class="apx-v2-recommend"><small>RECOMMENDED</small><strong>为你精选</strong></div>
-<div class="apx-v2-recommend"><small>PERSONAL</small><strong>专属推荐</strong></div>
-<div class="apx-v2-recommend"><small>DISCOVER</small><strong>发现新内容</strong></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>PROMOTION</h2>
-<div class="apx-v2-promotion">
-<small>APEX SPECIAL</small>
-<strong>精彩活动与限时专题</strong>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>GAME CATEGORIES</h2>
-<div class="apx-v2-categories">
-<div class="apx-v2-category"><b>◈</b><span>全部内容</span></div>
-<div class="apx-v2-category"><b>⚡</b><span>快速体验</span></div>
-<div class="apx-v2-category"><b>✦</b><span>热门精选</span></div>
-<div class="apx-v2-category"><b>○</b><span>更多分类</span></div>
-</div>
-</section>
-    <section class="apx-v2-section">
-<h2>SERVICE AREA</h2>
-<div class="apx-v2-service">
-<div class="apx-v2-service-item"><b>♡</b>收藏</div>
-<div class="apx-v2-service-item"><b>◷</b>历史</div>
-<div class="apx-v2-service-item"><b>♛</b>VIP</div>
-<div class="apx-v2-service-item"><b>?</b>帮助</div>
-<div class="apx-v2-service-item"><b>◉</b>服务</div>
-<div class="apx-v2-service-item"><b>•••</b>更多</div>
-</div>
-</section>
-
-    <footer class="apx-v2-footer">关于　条款　隐私　帮助<br><small>© 2026 Apex Global Entertainment</small></footer>
-  </main>
-
-  <nav class="apx-v2-bottom">
-    <span>首页</span><span>游戏</span><span>活动</span><span>我的</span>
-  </nav>
-</div>
-
-<div id="security-modal" role="dialog" aria-modal="true" aria-labelledby="security-modal-title" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <div style="background:linear-gradient(180deg, rgba(15,15,15,0.98) 0%, rgba(5,5,5,0.98) 100%); border:1px solid rgba(212,175,55,0.25); border-radius:16px; max-width:420px; width:100%; padding:22px; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.08); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <span id="security-modal-title" style="font-size:15px;font-weight:700;color:#d4af37;letter-spacing:0.3px;">🛡️ 安全中心</span>
-      <button  data-apex-action="hide-security-modal" aria-label="关闭安全中心" style="background:transparent;border:none;color:#888;font-size:24px;cursor:pointer;padding:4px 8px;line-height:1;">×</button>
-    </div>
-    <div style="font-size:12px;color:#8a8a8a;margin-bottom:12px;">当前活跃设备：</div>
-    <div id="session-list" style="margin-bottom:16px;"></div>
-    <button  data-apex-action="revoke-sessions" style="width:100%;padding:12px;background:linear-gradient(135deg, #e63946 0%, #b02a36 100%);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px;transition:all 0.2s;box-shadow:0 4px 14px rgba(230,57,70,0.3);">撤销所有其他设备</button>
-    <button data-apex-action="security-modal-forgot" style="width:100%;padding:12px;background:rgba(212,175,55,0.08);color:#d4af37;border:1px solid rgba(212,175,55,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;min-height:44px;transition:all 0.2s;">修改密码</button>
-    <button  data-apex-action="login-logs-soon" style="width:100%;padding:12px;background:rgba(212,175,55,0.08);color:#d4af37;border:1px solid rgba(212,175,55,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;min-height:44px;transition:all 0.2s;">查看登录日志</button>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid #2a2a2a;">
-        <div style="font-size:12px;color:#8a8a8a;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:#d4af37;font-weight:600;">Passkey 设备</span>
-          <button id="btn-register-passkey" type="button" style="background:transparent;border:1px solid #4ade80;color:#4ade80;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;padding:4px 12px;">+ 绑定新设备</button>
-        </div>
-        <div id="passkey-list" style="margin-bottom:8px;"></div>
-      </div>
+  <div id="apex-logged-in" style="display:none; max-width:480px; margin:80px auto; padding:32px 24px; text-align:center; color:#fff; font-family:Manrope,system-ui,sans-serif;">
+    <div style="font-size:56px; margin-bottom:16px;">&#10003;</div>
+    <div style="font-size:20px; font-weight:700; margin-bottom:8px;">已登录</div>
+    <div style="font-size:14px; color:#888; margin-bottom:28px;">欢迎，<span id="apex-logged-in-user">用户</span></div>
+    <button id="apex-logged-in-logout" style="padding:12px 32px; background:#111; color:#fff; border:1px solid #333; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">登出</button>
   </div>
-</div>
-
-
-  <script src="/src/js/data/apex-data.js"></script>
-<script src="/src/js/data/homeData.js?v=20260929"></script>
-
-  
-
-  <script src="/src/js/inline/block-11-apex-i18n.js" id="apex-i18n"></script>
-
-
-
-  <script src="/src/js/inline/event-bindings.js"></script>
-<script src="/src/js/home-v2.js?v=20260929"></script>
 </body>
 </html>

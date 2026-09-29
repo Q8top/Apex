@@ -24,7 +24,6 @@ const files = [
   'functions/api/login.js',
   'functions/api/reset-password.js',
   'functions/api/delete-account.js',
-  'functions/api/admin/login.js',
 ];
 
 for (const f of files) {

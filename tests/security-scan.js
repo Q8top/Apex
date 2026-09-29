@@ -62,9 +62,7 @@ const LINE_WHITELIST = [
   /\?secret=/i,
   /\+\s*secret\s*\+/i,
   /secret\s*\+\s*['"]/i,
-  /totp_secret/i,
-  /admin_sessions/i,
-  // ---- 测试/mock 值白名单（值是 placeholder 才放过，真实 secret 仍然报警） ----
+// ---- 测试/mock 值白名单（值是 placeholder 才放过，真实 secret 仍然报警） ----
   /['"]test-[^'"]*['"]/i,
   /['"]mock-[^'"]*['"]/i,
   /['"]fake-[^'"]*['"]/i,

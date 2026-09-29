@@ -253,9 +253,7 @@
       const vr = await window.apiClient.post('/api/passkey/login-verify', payload);
       if (vr && vr.success) {
         toast('登录成功', 'success');
-        setTimeout(function () {
-          if (window.showHomepage) window.showHomepage(vr.user);
-        }, 600);
+        setTimeout(function () { if (window.showLoggedIn) window.showLoggedIn(vr.user); }, 600);
       } else {
         const vcode = vr && vr.code;
         if (vcode === 'credential_not_found') {
@@ -355,9 +353,7 @@
       const vr = await window.apiClient.post('/api/passkey/signup-verify', payload);
       if (vr && vr.success) {
         toast('注册成功', 'success');
-        setTimeout(function () {
-          if (window.showHomepage) window.showHomepage(vr.user);
-        }, 600);
+        setTimeout(function () { if (window.showLoggedIn) window.showLoggedIn(vr.user); }, 600);
       } else {
         toast((vr && vr.message) || '注册失败');
       }
@@ -490,9 +486,7 @@
       if (vr && vr.success) {
         toast('找回成功', 'success');
         window.__recoverChallenge = null;
-        setTimeout(function () {
-          if (window.showHomepage) window.showHomepage(vr.user);
-        }, 600);
+        setTimeout(function () { if (window.showLoggedIn) window.showLoggedIn(vr.user); }, 600);
       } else {
         toast((vr && vr.message) || '找回失败');
       }

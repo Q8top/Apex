@@ -21,15 +21,7 @@ export function buildClearSessionCookie(env = {}) {
   return `${config.sessionCookie}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 }
 
-export function buildAdminCookie(token, maxAgeSec, env = {}) {
-  const config = getConfig(env);
-  return `${config.adminCookie}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAgeSec}`;
-}
 
-export function buildClearAdminCookie(env = {}) {
-  const config = getConfig(env);
-  return `${config.adminCookie}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
-}
 
 export async function createUserSession(env, userId, request) {
   const config = getConfig(env);

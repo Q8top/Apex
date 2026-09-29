@@ -321,10 +321,10 @@
         // 此处不再写入 localStorage（避免「本地显示已登录，但 Session 已过期」错位）
         toast('登录成功', 'success');
         setTimeout(() => {
-          window.showHomepage && window.showHomepage(result.user);
         clearCaptchaError(document.getElementById('login-captcha'));
         clearCheckboxError(document.getElementById('login-agreement'));
-        }, 800);
+        if (window.showLoggedIn) window.showLoggedIn(result.user);
+      }, 800);
       } else {
         const code = result.code || '';
         const msg = result.message || '登录失败';
