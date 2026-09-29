@@ -3710,6 +3710,294 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
     }
+,
+    'Sic Bo': {
+      zh: '骰宝',
+      tagline: '三颗骰子同时掷出，大小单双一眼便知。规则简单、节奏极快，是亚洲最经典的赌桌游戏之一。',
+      quickStart: [
+        { n: 1, title: '选择下注', desc: '押大／小、单／双、单骰、双骰、三骰或点数总和。' },
+        { n: 2, title: '掷骰', desc: '系统同时掷出 3 颗骰子，点数公开。' },
+        { n: 3, title: '判定', desc: '三颗骰子总点数决定结果。' },
+        { n: 4, title: '结算', desc: '按命中类型派彩；围骰时大小单双通杀。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '骰子数', v: '3 颗（每颗 1-6）' },
+          { k: '总点数范围', v: '3 - 18' },
+          { k: '大', v: '11 - 17（不含围骰）' },
+          { k: '小', v: '4 - 10（不含围骰）' },
+          { k: '单', v: '总点数为奇数' },
+          { k: '双', v: '总点数为偶数' }
+        ],
+        note: '围骰（三颗骰子点数完全相同）出现时，大小单双全部输。',
+        examples: ['4 + 5 + 6 = 15 → 大·单', '1 + 2 + 3 = 6 → 小·双', '3 + 3 + 3 = 围骰（大小单双通杀）'],
+        order: '围骰 > 特定三骰 > 双骰组合 > 单骰 > 大小单双'
+      },
+      natural: {
+        desc: '骰宝常见下注类型：',
+        examples: [
+          '大 / 小：11-17 为大，4-10 为小',
+          '单 / 双：总点数为奇数为单，偶数为双',
+          '单骰：押某一数字出现 1 / 2 / 3 次',
+          '双骰组合：押两个特定数字同时出现',
+          '三骰：押三颗骰子点数完全相同',
+          '点数总和：押 4-17 中的某个具体数字'
+        ],
+        note: '骰宝 RTP 约 97.2%，每种下注类型赔率不同。'
+      },
+      odds: [
+        { name: '大 / 小', value: '1 赔 1' },
+        { name: '单 / 双', value: '1 赔 1' },
+        { name: '单骰（出现 1 次）', value: '1 赔 1' },
+        { name: '单骰（出现 2 次）', value: '1 赔 2' },
+        { name: '单骰（出现 3 次）', value: '1 赔 3' },
+        { name: '双骰组合', value: '1 赔 5' },
+        { name: '指定三骰（围骰）', value: '1 赔 150' },
+        { name: '任意围骰', value: '1 赔 24' },
+        { name: '点数总和（4 或 17）', value: '1 赔 60' },
+        { name: '点数总和（5 或 16）', value: '1 赔 30' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位，本金照常返还。',
+      terms: [
+        { en: 'Big / Small', zh: '大 / 小' },
+        { en: 'Odd / Even', zh: '单 / 双' },
+        { en: 'Triple', zh: '围骰' },
+        { en: 'Total', zh: '点数总和' },
+        { en: 'Combination', zh: '双骰组合' }
+      ],
+      faq: [
+        { q: '围骰是什么？', a: '围骰指三颗骰子点数完全相同（如 3-3-3）。出现围骰时，大小单双全部输。' },
+        { q: '大和小的概率一样吗？', a: '一样，各 48.61%。剩下 2.78% 是围骰。' },
+        { q: '押单骰最高能赢多少？', a: '押一个数字三颗都出现，赔率 1:3。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生，每次投掷相互独立。'
+    },
+
+    'Dice': {
+      zh: '骰子',
+      tagline: '单骰玩法——预设一个目标数字，押掷出结果大于或小于该数字即可，赔率随概率变动。',
+      quickStart: [
+        { n: 1, title: '设目标', desc: '滑动设置一个目标点数（如 50）。' },
+        { n: 2, title: '选方向', desc: '选择 Roll Over（大于）或 Roll Under（小于）。' },
+        { n: 3, title: '掷骰', desc: '系统随机生成 0.00 - 100.00 之间的数字。' },
+        { n: 4, title: '结算', desc: '结果落在你选的方向即中奖。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '数字范围', v: '0.00 - 100.00' },
+          { k: '目标点数', v: '可自定义' },
+          { k: 'Roll Over', v: '结果 > 目标' },
+          { k: 'Roll Under', v: '结果 < 目标' }
+        ],
+        note: '目标越极端（如 95），中奖概率越低但赔率越高。',
+        examples: [
+          '目标 50，Roll Over：50% 概率中奖，赔率约 1:1',
+          '目标 90，Roll Over：10% 概率中奖，赔率约 1:9',
+          '目标 10，Roll Under：10% 概率中奖，赔率约 1:9'
+        ],
+        order: 'Roll Under 目标越低赔率越高；Roll Over 目标越高赔率越高'
+      },
+      natural: {
+        desc: 'Dice 玩法特点：',
+        examples: [
+          '目标可自定义，赔率自动计算',
+          'Roll Over 与 Roll Under 可自由切换',
+          'Multiplier Dice：部分版本支持倍率加成',
+          'RTP 通常 99% 左右（庄家优势极小）'
+        ],
+        note: 'Dice 是即时游戏中最容易上手的玩法，适合新手。'
+      },
+      odds: [
+        { name: '目标 50 Roll Over', value: '约 1 赔 0.98' },
+        { name: '目标 75 Roll Over', value: '约 1 赔 2.96' },
+        { name: '目标 90 Roll Over', value: '约 1 赔 8.9' },
+        { name: '目标 25 Roll Under', value: '约 1 赔 2.96' },
+        { name: '目标 10 Roll Under', value: '约 1 赔 8.9' }
+      ],
+      oddsNote: '赔率随目标点数动态计算，具体以游戏内显示为准。',
+      terms: [
+        { en: 'Roll Over', zh: '大于' },
+        { en: 'Roll Under', zh: '小于' },
+        { en: 'Target', zh: '目标点数' },
+        { en: 'Win Chance', zh: '中奖概率' }
+      ],
+      faq: [
+        { q: '目标点数影响什么？', a: '影响中奖概率和赔率。目标越极端，中奖概率越低但赔率越高。' },
+        { q: 'Roll Over 和 Roll Under 哪个好？', a: '理论上 RTP 相同，看个人偏好。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Hi-Lo': {
+      zh: '高低',
+      tagline: '翻开一张牌，猜下一张比它大、小或相同。简单刺激，赔率随剩余牌组实时变化。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额。' },
+        { n: 2, title: '翻牌', desc: '系统翻出第一张牌。' },
+        { n: 3, title: '猜牌', desc: '猜下一张比当前牌更高（High）、更低（Low）或相同（Same）。' },
+        { n: 4, title: '翻下一张', desc: '系统翻出第二张牌，判定结果并结算。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '牌组', v: '52 张' },
+          { k: '牌面大小', v: 'A=1 < 2 < ... < K=13' },
+          { k: 'High', v: '下一张牌 > 当前牌' },
+          { k: 'Low', v: '下一张牌 < 当前牌' },
+          { k: 'Same', v: '下一张牌 = 当前牌（点数相同）' }
+        ],
+        note: '赔率随当前牌与剩余牌动态计算。当前牌越低，猜 High 越容易但赔率越低。',
+        examples: [
+          '当前牌 2 → 猜 High，赔率低但概率高',
+          '当前牌 K → 猜 High，赔率高但概率极低',
+          '当前牌 7 → 猜 High 或 Low 赔率约 1:1'
+        ],
+        order: '猜 Same 赔率最高但概率最低'
+      },
+      natural: {
+        desc: 'Hi-Lo 玩法特点：',
+        examples: [
+          '翻牌后实时计算赔率',
+          '可选择 Multi-Round 连续猜多轮',
+          '部分版本支持"跳过"，保留当前牌继续猜',
+          'RTP 通常 97% - 99%'
+        ],
+        note: 'Hi-Lo 强调"连续决策"，适合喜欢策略玩法的玩家。'
+      },
+      odds: [
+        { name: '当前牌 2 猜 High', value: '约 1 赔 1.04' },
+        { name: '当前牌 7 猜 High', value: '约 1 赔 1.08' },
+        { name: '当前牌 K 猜 High', value: '约 1 赔 12.4' },
+        { name: '猜 Same（任意）', value: '约 1 赔 13' }
+      ],
+      oddsNote: '赔率随当前牌实时变动，具体以游戏内显示为准。',
+      terms: [
+        { en: 'High', zh: '更高' },
+        { en: 'Low', zh: '更低' },
+        { en: 'Same', zh: '相同' },
+        { en: 'Multi-Round', zh: '多轮' }
+      ],
+      faq: [
+        { q: 'Same 是什么意思？', a: 'Same 指下一张牌与当前牌点数完全相同（如当前是 7，下一张也是 7）。' },
+        { q: '为什么赔率一直变？', a: '因为每一轮翻牌后，剩余牌组的构成会变化，赔率也随之调整。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Craps': {
+      zh: 'Craps',
+      tagline: '两颗骰子、多种下注、连续多轮——欧美赌场最热闹的赌桌游戏。规则复杂但赔率丰富，Pass Line 是最受欢迎的玩法。',
+      quickStart: [
+        { n: 1, title: 'Come Out Roll', desc: '首掷：掷出 7 或 11 直接赢，2 / 3 / 12 直接输。' },
+        { n: 2, title: '建立 Point', desc: '若掷出 4 / 5 / 6 / 8 / 9 / 10，该数成为 Point。' },
+        { n: 3, title: '继续掷', desc: '一直掷，直到 Point 出现（Pass 赢）或 7 出现（Pass 输）。' },
+        { n: 4, title: '结算', desc: 'Pass Line / Don\'t Pass 等按结果派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '骰子数', v: '2 颗' },
+          { k: 'Come Out Win', v: '7 或 11' },
+          { k: 'Come Out Lose', v: '2 / 3 / 12' },
+          { k: 'Point 数字', v: '4 / 5 / 6 / 8 / 9 / 10' }
+        ],
+        note: 'Craps 核心是 Pass Line 和 Don\'t Pass 两种基础下注。',
+        examples: [
+          'Come Out 掷 7 → Pass 赢',
+          'Come Out 掷 3 → Pass 输',
+          'Point = 6，掷 6 前掷 7 → Pass 输'
+        ],
+        order: 'Pass Line = Don\'t Pass（互为反向）'
+      },
+      natural: {
+        desc: 'Craps 常见下注类型：',
+        examples: [
+          'Pass Line：Come Out 7/11 赢，2/3/12 输；其他数字成 Point 后追赢',
+          'Don\'t Pass：与 Pass Line 相反',
+          'Come / Don\'t Come：独立下注，类似 Pass / Don\'t Pass',
+          'Field：一次押 2/3/4/9/10/11/12',
+          'Proposition：押特定组合（Any 7 / Any Craps 等）',
+          'Hardways：押 4/6/8/10 以对子形式出现'
+        ],
+        note: 'Craps RTP 约 98.6%（Pass Line）。'
+      },
+      odds: [
+        { name: 'Pass Line', value: '1 赔 1' },
+        { name: 'Don\'t Pass', value: '1 赔 1' },
+        { name: 'Come / Don\'t Come', value: '1 赔 1' },
+        { name: 'Field', value: '1 赔 1（部分数字 1 赔 2）' },
+        { name: 'Any 7', value: '1 赔 4' },
+        { name: 'Any Craps', value: '1 赔 7' },
+        { name: 'Hardway 4 / 10', value: '1 赔 7' },
+        { name: 'Hardway 6 / 8', value: '1 赔 9' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Come Out Roll', zh: '首掷' },
+        { en: 'Point', zh: '目标数' },
+        { en: 'Pass Line', zh: '过线' },
+        { en: 'Hardway', zh: '硬路（对子）' }
+      ],
+      faq: [
+        { q: 'Craps 规则复杂吗？', a: '基础规则简单（Pass / Don\'t Pass），但附加注种类多，需要学习。' },
+        { q: 'Pass Line 概率多少？', a: 'Pass Line 命中概率约 49.3%，RTP 约 98.6%。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Wheel': {
+      zh: '幸运转盘',
+      tagline: '转盘转动，指针停下即揭晓结果。不同槽位对应不同倍率，是老虎机与赌桌的中间形态，节奏明快。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额，部分版本可选下注区段。' },
+        { n: 2, title: '转动', desc: '点击 SPIN，转盘开始旋转。' },
+        { n: 3, title: '停下', desc: '转盘逐渐减速，指针停在某个槽位。' },
+        { n: 4, title: '结算', desc: '按该槽位对应赔率派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '槽位数', v: '通常 20 - 54 个' },
+          { k: '槽位类型', v: '普通 ×倍数 / 特殊奖励' },
+          { k: '主要倍率', v: '0x - 100x' },
+          { k: '特殊槽', v: 'Jackpot / Bonus / Free Spin' }
+        ],
+        note: '转盘槽位设计决定了 RTP，通常公开显示每个槽位的倍数。',
+        examples: [
+          'Dream Catcher：54 个槽，2x 到 40x',
+          'Money Wheel：24 个槽，1x 到 20x',
+          'Crazy Time：多阶段奖励机制'
+        ],
+        order: 'Jackpot > Bonus > 高倍率 > 低倍率 > 0x'
+      },
+      natural: {
+        desc: 'Wheel 常见类型：',
+        examples: [
+          'Number Wheel：数字槽位',
+          'Fortune Wheel：多种倍率混合',
+          'Multiplier Wheel：倍率槽位为主',
+          'Prize Wheel：奖品槽位（非现金）',
+          'Bonus Wheel：转动触发奖励小游戏'
+        ],
+        note: 'Wheel RTP 通常 94% - 97%，是"轻量级"赌桌游戏。'
+      },
+      odds: [
+        { name: '0x（空转）', value: '失去下注' },
+        { name: '1x / 2x', value: '1 赔 1 或 1 赔 2' },
+        { name: '5x / 10x', value: '1 赔 5 或 1 赔 10' },
+        { name: '20x / 40x', value: '1 赔 20 或 1 赔 40' },
+        { name: 'Jackpot', value: '1 赔 100+' }
+      ],
+      oddsNote: '赔率以槽位设计为准，具体以游戏内显示为准。',
+      terms: [
+        { en: 'Wheel', zh: '转盘' },
+        { en: 'Slot', zh: '槽位' },
+        { en: 'Multiplier', zh: '倍数' },
+        { en: 'Jackpot', zh: '奖池' }
+      ],
+      faq: [
+        { q: '转盘结果可以预测吗？', a: '不能。每次转动由 RNG 决定，结果独立随机。' },
+        { q: '0x 是什么意思？', a: '0x 表示空转，下注失去。是转盘游戏 RTP 的主要来源。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    }
 
   };
 
