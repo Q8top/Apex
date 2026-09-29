@@ -4292,6 +4292,302 @@
       ],
       disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
     }
+,
+    'Horse Racing': {
+      zh: '赛马',
+      tagline: '历史最悠久的竞技博彩项目。全球赛马赛事全年不断，从英国皇家赛马会到香港沙田马场，投注市场丰富。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场赛马比赛（如第 5 场）。' },
+        { n: 2, title: '查看马匹', desc: '查看马匹编号、骑师、近期战绩、赔率。' },
+        { n: 3, title: '选择下注', desc: 'Win / Place / Each-Way / Exacta 等。' },
+        { n: 4, title: '结算', desc: '比赛结束后按名次派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Win', v: '押中第一名' },
+          { k: 'Place', v: '押中前 2-3 名' },
+          { k: 'Each-Way', v: 'Win + Place 组合下注' },
+          { k: 'Exacta', v: '押中前两名（指定顺序）' },
+          { k: 'Trifecta', v: '押中前三名（指定顺序）' }
+        ],
+        note: '不同赛事名次判定规则不同，Place 通常为前 2-3 名（取决于参赛马匹数量）。',
+        examples: [
+          'Win 押 #7 号马 → 若 #7 跑第一，中奖',
+          'Place 押 #3 号马 → 若 #3 进前三，中奖',
+          'Exacta 押 7-3 → 需要 #7 第一、#3 第二',
+          'Trifecta 押 7-3-5 → 需要前 3 名按顺序'
+        ],
+        order: 'Trifecta > Superfecta > Exacta > Each-Way > Place > Win'
+      },
+      natural: {
+        desc: '赛马常见投注类型：',
+        examples: [
+          'Win：独赢',
+          'Place：位置（前 2-3 名）',
+          'Each-Way：独赢 + 位置组合下注',
+          'Exacta：连赢（前两名）',
+          'Quinella：连赢位置（前两名任意顺序）',
+          'Trifecta：三重彩（前三名指定顺序）',
+          'Superfecta：四重彩（前四名指定顺序）',
+          'Ante Post：赛前预测（提前下注）'
+        ],
+        note: '赛马 RTP 通常 80% - 90%（因奖金池分为返还与运营成本）。'
+      },
+      odds: [
+        { name: 'Win', value: '视马匹赔率（1:1 至 1:100+）' },
+        { name: 'Place', value: '通常为 Win 赔率的 1/4 - 1/5' },
+        { name: 'Each-Way', value: '一半 Win + 一半 Place' },
+        { name: 'Exacta', value: '数十倍至数百倍' },
+        { name: 'Trifecta', value: '数百倍至数千倍' },
+        { name: 'Superfecta', value: '数千倍至数万倍' }
+      ],
+      oddsNote: '赔率随下注情况动态变动，最终以派彩为准。',
+      terms: [
+        { en: 'Win', zh: '独赢' },
+        { en: 'Place', zh: '位置' },
+        { en: 'Each-Way', zh: '双向下注' },
+        { en: 'Exacta', zh: '连赢' },
+        { en: 'Trifecta', zh: '三重彩' },
+        { en: 'Handicap', zh: '让磅赛' },
+        { en: 'Furlong', zh: '距离单位（约 201 米）' }
+      ],
+      faq: [
+        { q: 'Place 通常赔几个名次？', a: 'Place 通常赔前 2-3 名，具体取决于参赛马匹数量。8 匹以上通常赔前 3 名。' },
+        { q: '让磅赛是什么？', a: 'Handicap：根据马匹实力，让强马背负更重的负担，使比赛更公平。' },
+        { q: '赛马结果可以预测吗？', a: '赛马结果受马匹状态、场地、天气、骑师等多因素影响，具有很大随机性。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Greyhound Racing': {
+      zh: '赛狗',
+      tagline: '速度与激情的比赛——格力犬以极快速度跑完赛道，投注市场与赛马类似但节奏更快，赛事频率更高。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场赛狗比赛。' },
+        { n: 2, title: '查看犬只', desc: '查看编号、赛道、近期战绩、赔率。' },
+        { n: 3, title: '选择下注', desc: 'Win / Place / Forecast / Tricast 等。' },
+        { n: 4, title: '结算', desc: '比赛结束后按名次派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Win', v: '押中第一名' },
+          { k: 'Place', v: '押中前 2-3 名' },
+          { k: 'Forecast', v: '押中前两名（任意顺序）' },
+          { k: 'Exacta', v: '押中前两名（指定顺序）' },
+          { k: 'Tricast', v: '押中前三名（任意顺序）' }
+        ],
+        note: '赛狗距离通常为 300-1000 米，一场比赛仅 20-40 秒。',
+        examples: [
+          'Win 押 #2 号犬 → 若 #2 跑第一，中奖',
+          'Forecast 押 2-5 → 若 #2 和 #5 分别前两名（任意顺序），中奖',
+          'Exacta 押 2-5 → 需要 #2 第一、#5 第二'
+        ],
+        order: 'Tricast > Exacta > Forecast > Place > Win'
+      },
+      natural: {
+        desc: '赛狗常见投注类型：',
+        examples: [
+          'Win：独赢',
+          'Place：位置',
+          'Forecast / Straight Forecast：连赢（指定顺序）',
+          'Reverse Forecast：连赢（任意顺序）',
+          'Tricast：三连（任意顺序）',
+          'Combination Forecast：多组合连赢'
+        ],
+        note: '赛狗 RTP 通常 80% - 88%，略低于赛马。'
+      },
+      odds: [
+        { name: 'Win', value: '视犬只赔率（1:1 至 1:50+）' },
+        { name: 'Place', value: '通常为 Win 赔率的 1/4 - 1/5' },
+        { name: 'Forecast', value: '数十倍至数百倍' },
+        { name: 'Tricast', value: '数百倍至数千倍' }
+      ],
+      oddsNote: '赔率随下注情况动态变动。',
+      terms: [
+        { en: 'Forecast', zh: '连赢（指定顺序）' },
+        { en: 'Reverse Forecast', zh: '连赢（任意顺序）' },
+        { en: 'Tricast', zh: '三连（任意顺序）' },
+        { en: 'Trap', zh: '起跑格' }
+      ],
+      faq: [
+        { q: '赛狗比比赛马快吗？', a: '赛狗单场仅 20-40 秒，赛马单场 1-3 分钟。赛狗节奏更快。' },
+        { q: '格力犬有退役年龄吗？', a: '通常 4-5 岁退役，之后转做宠物或种犬。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Motor Racing': {
+      zh: '赛车',
+      tagline: '速度极限的较量——F1 / MotoGP / NASCAR 等顶级赛事全年不断。押胜者、登台、最快圈速，是极具观赏性的博彩项目。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场赛车比赛（如 F1 摩纳哥大奖赛）。' },
+        { n: 2, title: '查看车手', desc: '查看车手、车队、发车顺位、赔率。' },
+        { n: 3, title: '选择下注', desc: 'Race Winner / Podium / Fastest Lap 等。' },
+        { n: 4, title: '结算', desc: '比赛结束后按结果派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Race Winner', v: '押中第一名' },
+          { k: 'Podium', v: '押中前三名' },
+          { k: 'Fastest Lap', v: '押中单圈最快者' },
+          { k: 'Pole Position', v: '押中排位赛第一名' },
+          { k: 'Top 10 Finish', v: '押中前十名完赛' }
+        ],
+        note: 'F1 比赛含排位赛 + 正赛，MotoGP 仅为正赛。NASCAR 规则略有不同。',
+        examples: [
+          'Race Winner 押 Verstappen → 若他赢得比赛，中奖',
+          'Podium 押 Norris → 若他进入前三，中奖',
+          'Fastest Lap 押 Hamilton → 若他跑出最快单圈，中奖'
+        ],
+        order: '正确名次赔率最高，Top 10 赔率最低'
+      },
+      natural: {
+        desc: '赛车常见投注类型：',
+        examples: [
+          'Race Winner：比赛第一名',
+          'Podium Finish：进入前三',
+          'Fastest Lap：最快单圈',
+          'Pole Position：排位赛第一',
+          'Top 6 / Top 10：进入指定名次',
+          'Head-to-Head：两位车手对比',
+          'Constructor：车队冠军'
+        ],
+        note: '赛车 RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Race Winner', value: '1 赔 1 至 1 赔 20+' },
+        { name: 'Podium', value: '1 赔 0.5 至 1 赔 3' },
+        { name: 'Fastest Lap', value: '1 赔 3 至 1 赔 15' },
+        { name: 'Pole Position', value: '1 赔 1 至 1 赔 10' },
+        { name: 'Top 10 Finish', value: '1 赔 0.1 至 1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Podium', zh: '领奖台（前三）' },
+        { en: 'Fastest Lap', zh: '最快单圈' },
+        { en: 'Pole Position', zh: '杆位' },
+        { en: 'DNF', zh: '未完赛（Did Not Finish）' },
+        { en: 'Safety Car', zh: '安全车' }
+      ],
+      faq: [
+        { q: 'DNF 怎么算？', a: 'DNF 表示未完赛，该车手相关投注视为输（不同平台规则略有不同）。' },
+        { q: 'F1 排位赛和正赛有什么区别？', a: '排位赛决定发车顺序，正赛为最终结果。两者独立结算。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Virtual Horse Racing': {
+      zh: '虚拟赛马',
+      tagline: '虚拟赛事——由 RNG 生成的赛马模拟，每场仅 30-60 秒。全天候不间断赛事，随时可下注。',
+      quickStart: [
+        { n: 1, title: '进入赛事', desc: '每小时有 6-12 场虚拟赛事。' },
+        { n: 2, title: '查看马匹', desc: '查看 6-12 匹马的赔率、近期"状态"。' },
+        { n: 3, title: '下注', desc: 'Win / Place / Exacta 等，下注窗口 20-30 秒。' },
+        { n: 4, title: '观看赛事', desc: '虚拟赛马动画演示比赛过程。' },
+        { n: 5, title: '结算', desc: '动画结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '马匹数', v: '通常 6 - 12 匹' },
+          { k: '赛事间隔', v: '每 5 - 10 分钟一场' },
+          { k: '下注窗口', v: '20 - 30 秒' },
+          { k: 'RNG', v: '每场结果独立随机' }
+        ],
+        note: '虚拟赛马结果由 RNG 生成，与真实马匹无关，每场独立。',
+        examples: [
+          '每小时 6-12 场赛事',
+          '每场下注窗口 20-30 秒',
+          '结果即时生成，动画演示'
+        ],
+        order: 'Trifecta > Exacta > Each-Way > Place > Win'
+      },
+      natural: {
+        desc: '虚拟赛马特点：',
+        examples: [
+          '全天候不停赛事，无需等待真实赛马',
+          '结果由 RNG 生成，公平透明',
+          '赛前 30 秒显示赔率，可观察下注情况',
+          '支持 Win / Place / Exacta 等多种下注',
+          'RTP 通常 92% - 96%'
+        ],
+        note: '虚拟赛马是"随时可下注"的博彩形式，适合喜欢高频下注的玩家。'
+      },
+      odds: [
+        { name: 'Win', value: '1 赔 0.5 至 1 赔 15' },
+        { name: 'Place', value: '1 赔 0.2 至 1 赔 3' },
+        { name: 'Exacta', value: '1 赔 10 至 1 赔 100' },
+        { name: 'Trifecta', value: '1 赔 50 至 1 赔 500' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Virtual', zh: '虚拟' },
+        { en: 'RNG', zh: '随机数生成器' },
+        { en: 'Animated Race', zh: '动画赛事' },
+        { en: 'Instant Result', zh: '即时结果' }
+      ],
+      faq: [
+        { q: '虚拟赛马公平吗？', a: '公平。每场结果由 RNG 独立生成，赔率公开透明。' },
+        { q: '可以连续下注吗？', a: '可以。每场赛事独立，随时可下注。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生，每次独立。'
+    },
+
+    'Virtual Racing': {
+      zh: '虚拟赛车',
+      tagline: '虚拟赛车赛事——包括虚拟 F1 / 虚拟摩托 / 虚拟拉力等，赛事节奏快、全天候不间断，是即时博彩的热门品类。',
+      quickStart: [
+        { n: 1, title: '进入赛事', desc: '每小时有 6-12 场虚拟赛事。' },
+        { n: 2, title: '查看赛车', desc: '查看赛车编号、赔率、近期"状态"。' },
+        { n: 3, title: '下注', desc: 'Win / Podium / Fastest Lap 等。' },
+        { n: 4, title: '观看赛事', desc: '虚拟赛车动画演示比赛过程。' },
+        { n: 5, title: '结算', desc: '动画结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛车数', v: '通常 6 - 20 辆' },
+          { k: '赛事类型', v: 'F1 / 摩托 / 拉力 / GT 等' },
+          { k: '赛事间隔', v: '每 5 - 10 分钟一场' },
+          { k: '下注窗口', v: '20 - 30 秒' }
+        ],
+        note: '虚拟赛车结果由 RNG 生成，与真实赛车无关，每场独立。',
+        examples: [
+          '虚拟 F1：6 辆赛车 3 圈',
+          '虚拟摩托：8 辆车 2 圈',
+          '虚拟拉力：多赛段积分制'
+        ],
+        order: 'Correct Order > Podium > Fastest Lap > Win > Top 10'
+      },
+      natural: {
+        desc: '虚拟赛车常见类型：',
+        examples: [
+          'Virtual Formula：虚拟 F1',
+          'Virtual Moto：虚拟摩托',
+          'Virtual Rally：虚拟拉力',
+          'Virtual GT：虚拟 GT 赛车',
+          'Virtual Stock Car：虚拟房车赛'
+        ],
+        note: '虚拟赛车 RTP 通常 92% - 96%，赛事节奏比虚拟赛马略快。'
+      },
+      odds: [
+        { name: 'Race Winner', value: '1 赔 0.5 至 1 赔 15' },
+        { name: 'Podium', value: '1 赔 0.2 至 1 赔 3' },
+        { name: 'Fastest Lap', value: '1 赔 2 至 1 赔 10' },
+        { name: 'Top 3', value: '1 赔 0.2 至 1 赔 3' },
+        { name: 'Correct Order', value: '1 赔 50 至 1 赔 1000' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Virtual Racing', zh: '虚拟赛车' },
+        { en: 'Podium', zh: '领奖台' },
+        { en: 'Fastest Lap', zh: '最快单圈' },
+        { en: 'Correct Order', zh: '正确顺序' }
+      ],
+      faq: [
+        { q: '虚拟赛车和真实赛车有什么不同？', a: '虚拟赛车结果由 RNG 生成，全天候不停，每场仅几分钟；真实赛车依赖实际赛事。' },
+        { q: '可以押具体名次顺序吗？', a: '可以。Correct Order 押中前几名精确顺序，赔率很高。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生，每次独立。'
+    }
 
   };
 
