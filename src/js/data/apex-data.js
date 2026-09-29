@@ -3998,6 +3998,300 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
     }
+,
+    'Football': {
+      zh: '足球',
+      tagline: '全球最受欢迎的体育项目。押比赛胜负、让球、总进球数或具体比分——从英超到欧冠，全年都有赛事可投注。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '从当日赛事列表中选择一场足球比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 让球 / 大小 / 双方进球 / 比分等。' },
+        { n: 3, title: '下注', desc: '输入金额并确认下注。' },
+        { n: 4, title: '结算', desc: '比赛结束后按结果自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Match Winner', v: '主胜 / 平局 / 客胜（1X2）' },
+          { k: 'Asian Handicap', v: '让球消除平局可能' },
+          { k: 'Over / Under', v: '总进球数大于或小于指定值' },
+          { k: 'BTTS', v: '双方是否都进球' },
+          { k: 'Correct Score', v: '精确预测比分' }
+        ],
+        note: '足球是全场 90 分钟 + 补时，不同赛事的加时规则不同（如杯赛加时另算）。',
+        examples: [
+          '曼城 vs 阿森纳：主胜 2.10 / 平局 3.40 / 客胜 3.20',
+          '大小球 2.5：大 1.85 / 小 1.95',
+          '让球 -1：主 -1 赔 1.95'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: '足球常见投注市场：',
+        examples: [
+          'Match Winner (1X2)：主胜 / 平局 / 客胜',
+          'Double Chance：主胜或平 / 客胜或平 / 主或客胜',
+          'Draw No Bet：猜胜负，平局退本金',
+          'Asian Handicap：亚洲让球',
+          'Over / Under：总进球大小',
+          'BTTS：双方进球',
+          'Correct Score：精确比分',
+          'First / Last Goal：首个 / 最后进球方',
+          'Corners / Cards：角球 / 黄牌数'
+        ],
+        note: '足球 RTP 通常 92% - 96%，不同赛事、不同市场有差异。'
+      },
+      odds: [
+        { name: 'Match Winner（胜负）', value: '1 赔 0.5 - 1 赔 20' },
+        { name: 'Asian Handicap（让球）', value: '1 赔 0.7 - 1 赔 1.5' },
+        { name: 'Over / Under（大小）', value: '1 赔 0.7 - 1 赔 1.5' },
+        { name: 'BTTS（双方进球）', value: '1 赔 0.5 - 1 赔 2' },
+        { name: 'Correct Score（比分）', value: '1 赔 5 - 1 赔 500' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '胜负' },
+        { en: 'Handicap', zh: '让球' },
+        { en: 'Over / Under', zh: '大小' },
+        { en: 'BTTS', zh: '双方进球' },
+        { en: 'Correct Score', zh: '正确比分' }
+      ],
+      faq: [
+        { q: '什么是亚洲让球？', a: '亚洲让球通过让分消除平局的可能，如主 -1 表示主队需要赢 2 球才算赢。' },
+        { q: '让球 0.5 是什么意思？', a: '主 -0.5 表示主队需要赢至少 1 球，平局或输则视为输。' },
+        { q: '大小球 2.5 怎么判？', a: '总进球 ≥ 3 为大，≤ 2 为小。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Basketball': {
+      zh: '篮球',
+      tagline: '节奏快、得分高的体育项目。NBA / CBA / EuroLeague 全年赛事不断，胜负、让分、总分是最常见的投注市场。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择 NBA / CBA / EuroLeague 等比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 让分 / 总分 / 单节等。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Match Winner', v: '主胜 / 客胜' },
+          { k: 'Point Spread', v: '让分，消除平局' },
+          { k: 'Over / Under', v: '两队总得分大小' },
+          { k: 'Quarter / Half', v: '单节 / 半场市场' },
+          { k: 'Player Props', v: '球员个人数据' }
+        ],
+        note: 'NBA 全场 4 节 × 12 分钟，FIBA 规则为 4 节 × 10 分钟。',
+        examples: [
+          '湖人 vs 勇士：主胜 1.85 / 客胜 2.00',
+          '让分 -5.5：湖人 -5.5 赔 1.90',
+          '总分 220.5：大 1.90 / 小 1.90'
+        ],
+        order: '球员数据赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: '篮球常见投注市场：',
+        examples: [
+          'Match Winner / Moneyline：胜负',
+          'Point Spread：让分',
+          'Over / Under：总分',
+          'Quarter / Half Markets：单节 / 半场',
+          'Player Props：球员数据（得分 / 助攻 / 篮板）',
+          'First Basket：首个得分球员',
+          'Winning Margin：胜分差'
+        ],
+        note: '篮球 RTP 通常 93% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.5 - 1 赔 5' },
+        { name: 'Point Spread', value: '1 赔 0.8 - 1 赔 1.1' },
+        { name: 'Over / Under', value: '1 赔 0.8 - 1 赔 1.1' },
+        { name: 'Player Props', value: '1 赔 0.8 - 1 赔 5' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Point Spread', zh: '让分' },
+        { en: 'Over / Under', zh: '总分大小' },
+        { en: 'Player Props', zh: '球员数据' },
+        { en: 'Quarter', zh: '单节' }
+      ],
+      faq: [
+        { q: '篮球让分怎么算？', a: '让分 -5.5 表示主队需要赢 6 分以上才算赢。' },
+        { q: '篮球有平局吗？', a: '常规赛无平局，会进入加时。让分投注通常以实际比分 + 让分判定。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Tennis': {
+      zh: '网球',
+      tagline: '个人对决，赛程密集。大满贯 / ATP / WTA 全年不断，胜负、盘数、局数、正确比分等市场丰富。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择某场网球比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 盘数 / 局数 / 比分等。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Match Winner', v: '胜负（含退赛规则）' },
+          { k: 'Set Winner', v: '盘数胜负' },
+          { k: 'Game Handicap', v: '局数让分' },
+          { k: 'Total Games', v: '总局数大小' },
+          { k: 'Correct Score', v: '盘数精确比分' }
+        ],
+        note: '大满贯男单为 5 盘 3 胜，其他比赛通常 3 盘 2 胜。',
+        examples: [
+          '德约科维奇 vs 阿尔卡拉斯：德约 1.90 / 阿尔卡拉斯 1.95',
+          '总盘数 3.5：大 1.85 / 小 1.95',
+          '正确比分 2-0：1 赔 2.5'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: '网球常见投注市场：',
+        examples: [
+          'Match Winner：比赛胜负',
+          'Set Winner：单盘胜负',
+          'Set Handicap：盘数让分',
+          'Total Games：总比赛局数',
+          'Correct Score：盘数比分',
+          'First Set Winner：首盘赢家',
+          'Tie-break：是否进入抢七'
+        ],
+        note: '网球 RTP 通常 93% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.1 - 1 赔 20' },
+        { name: 'Set Winner', value: '1 赔 0.5 - 1 赔 5' },
+        { name: 'Game Handicap', value: '1 赔 0.7 - 1 赔 1.5' },
+        { name: 'Total Games', value: '1 赔 0.7 - 1 赔 1.5' },
+        { name: 'Correct Score', value: '1 赔 2 - 1 赔 50' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '比赛胜负' },
+        { en: 'Set', zh: '盘' },
+        { en: 'Game', zh: '局' },
+        { en: 'Tie-break', zh: '抢七' }
+      ],
+      faq: [
+        { q: '退赛怎么算？', a: '不同平台规则不同，通常已完赛部分有效，未完赛部分退本金。' },
+        { q: '大满贯和其他比赛有什么不同？', a: '大满贯男单 5 盘 3 胜，其他通常 3 盘 2 胜。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Baseball': {
+      zh: '棒球',
+      tagline: 'MLB / NPB / KBO 三大联赛全年赛事密集。胜负、让分、总分、单局是主要投注市场，统计深度极高。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场棒球比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 让分 / 总分 / 单局等。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Moneyline', v: '胜负（无平局，加时决胜负）' },
+          { k: 'Run Line', v: '让分 ±1.5' },
+          { k: 'Total Runs', v: '总得分大小' },
+          { k: 'First 5 Innings', v: '前 5 局结果' },
+          { k: 'Player Props', v: '球员个人数据' }
+        ],
+        note: '棒球 9 局，主队领先到 9 局下半即可结束。',
+        examples: [
+          '洋基 vs 红袜：洋基 1.80 / 红袜 2.05',
+          'Run Line -1.5：洋基 -1.5 赔 2.20',
+          '总分 8.5：大 1.90 / 小 1.90'
+        ],
+        order: '球员数据赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: '棒球常见投注市场：',
+        examples: [
+          'Moneyline：胜负',
+          'Run Line：让分（-1.5 / +1.5）',
+          'Total Runs：总得分大小',
+          'Innings：单局市场',
+          'Player Props：球员数据（打击率 / 三振 / 全垒打）',
+          'First 5 Innings：前 5 局市场'
+        ],
+        note: '棒球 RTP 通常 94% - 96%。'
+      },
+      odds: [
+        { name: 'Moneyline', value: '1 赔 0.3 - 1 赔 3' },
+        { name: 'Run Line', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'Total Runs', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'Player Props', value: '1 赔 0.8 - 1 赔 5' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Moneyline', zh: '胜负' },
+        { en: 'Run Line', zh: '让分' },
+        { en: 'Innings', zh: '局' },
+        { en: 'Strikeout', zh: '三振' }
+      ],
+      faq: [
+        { q: 'Run Line -1.5 怎么算？', a: '主队需要赢 2 分以上才算赢。' },
+        { q: '棒球有平局吗？', a: 'MLB 没有平局，延长赛分胜负。NPB 有和局可能。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Ice Hockey': {
+      zh: '冰球',
+      tagline: 'NHL / KHL 赛季密集。快节奏、高对抗，胜负、让分、总分、单节、正确比分等市场一应俱全。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场冰球比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 让分 / 总分 / 单节等。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: 'Match Winner', v: '胜负（含加时 / 点球）' },
+          { k: 'Puck Line', v: '让分 ±1.5' },
+          { k: 'Total Goals', v: '总进球大小' },
+          { k: 'Period Markets', v: '单节市场' },
+          { k: 'Correct Score', v: '精确比分' }
+        ],
+        note: 'NHL 常规赛 60 分钟 + 加时 5 分钟 + 点球，季后赛加时 20 分钟。',
+        examples: [
+          '油人 vs 枫叶：油人 2.00 / 枫叶 1.90',
+          'Puck Line -1.5：油人 -1.5 赔 2.80',
+          '总进球 6.5：大 1.90 / 小 1.90'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: '冰球常见投注市场：',
+        examples: [
+          'Match Winner：胜负（60 分钟 / 含加时两种）',
+          'Puck Line：让分 ±1.5',
+          'Total Goals：总进球大小',
+          'Period Markets：单节胜负 / 总分',
+          'Correct Score：精确比分',
+          'Both Teams to Score：双方进球'
+        ],
+        note: '冰球 RTP 通常 93% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.4 - 1 赔 3' },
+        { name: 'Puck Line', value: '1 赔 0.8 - 1 赔 2.5' },
+        { name: 'Total Goals', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'Correct Score', value: '1 赔 5 - 1 赔 100' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Puck Line', zh: '让分' },
+        { en: 'Period', zh: '节' },
+        { en: 'Power Play', zh: '优势进攻' },
+        { en: 'Overtime', zh: '加时' }
+      ],
+      faq: [
+        { q: '冰球"60 分钟"和"含加时"市场有什么不同？', a: '"60 分钟"只算常规时间，"含加时"包括加时和点球结果。' },
+        { q: 'Puck Line -1.5 怎么算？', a: '主队需要赢 2 球以上才算赢。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    }
 
   };
 
