@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <link rel="preload" href="/login-hero.jpeg" as="image" type="image/jpeg" fetchpriority="high">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
@@ -138,6 +139,14 @@
 
   <!-- ============ Hero 区 ============ -->
   <div class="hero">
+    <img
+      src="/login-hero.jpeg"
+      alt="Apex Entertainment"
+      class="hero-image"
+      width="100%"
+      decoding="async"
+      fetchpriority="high"
+    >
     <div class="hero-content">
       <picture><source srcset="./logo.webp" type="image/webp"><img src="./logo.png" alt="Apex Logo" class="logo-img" width="90" height="90" decoding="async" fetchpriority="high"></picture>
       <div class="main-title" data-i18n="hero.title">全球娱乐游戏平台</div>
@@ -521,201 +530,153 @@
   <script src="/src/js/inline/block-09.js"></script>
   
   
-<div id="apex-homepage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#f5f5f7;z-index:100;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-
-  <header class="apex-hd">
-    <div class="apex-hd-inner">
-      <div class="apex-hd-brand">APEX</div>
-      <div class="apex-hd-actions">
-        <button class="apex-hd-btn" type="button" aria-label="通知" data-apex-action="coming-soon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-          <span class="apex-hd-badge">3</span>
-        </button>
-        <button class="apex-hd-btn" type="button" aria-label="客服" data-apex-action="coming-soon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
-        </button>
-        <button id="home-lang-btn" class="apex-lg-btn" type="button" aria-label="语言">
-          <span id="home-current-flag" class="apex-lg-flag">🇨🇳</span>
-          <span id="home-current-name" class="apex-lg-name">中文</span>
-          <svg class="apex-lg-chev" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 4.5 6 7.5 9 4.5"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div id="home-lang-menu" class="apex-lg-menu">
-      <div class="apex-lg-option" data-lang="zh-CN" data-flag="🇨🇳" data-name="中文">
-        <span class="apex-lg-opt-flag">🇨🇳</span>
-        <div class="apex-lg-opt-text">
-          <div class="apex-lg-opt-title">简体中文</div>
-          <div class="apex-lg-opt-sub">Chinese (Simplified)</div>
-        </div>
-        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
-      </div>
-      <div class="apex-lg-option" data-lang="en" data-flag="🇺🇸" data-name="English">
-        <span class="apex-lg-opt-flag">🇺🇸</span>
-        <div class="apex-lg-opt-text">
-          <div class="apex-lg-opt-title">English</div>
-          <div class="apex-lg-opt-sub">English (US)</div>
-        </div>
-        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
-      </div>
-      <div class="apex-lg-option" data-lang="ja" data-flag="🇯🇵" data-name="日本語">
-        <span class="apex-lg-opt-flag">🇯🇵</span>
-        <div class="apex-lg-opt-text">
-          <div class="apex-lg-opt-title">日本語</div>
-          <div class="apex-lg-opt-sub">Japanese</div>
-        </div>
-        <svg class="apex-lg-opt-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4"/></svg>
-      </div>
+<div id="apex-homepage" class="apx-home-v2">
+  <header class="apx-v2-header">
+    <button class="apx-v2-menu" aria-label="菜单">☰</button>
+    <div class="apx-v2-brand">APEX</div>
+    <div class="apx-v2-actions">
+      <button aria-label="通知">♧</button>
+      <button aria-label="账户">◉</button>
     </div>
   </header>
 
-  <section class="apex-cr">
-    <div class="apex-cr-viewport">
-      <div class="apex-cr-track" id="apex-cr-track">
-        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图一</div><div class="apex-cr-slide-sub">Banner 1</div></div>
-        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图二</div><div class="apex-cr-slide-sub">Banner 2</div></div>
-        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图三</div><div class="apex-cr-slide-sub">Banner 3</div></div>
-        <div class="apex-cr-slide"><div class="apex-cr-slide-title">图四</div><div class="apex-cr-slide-sub">Banner 4</div></div>
-      </div>
-    </div>
-    <div class="apex-cr-dots" id="apex-cr-dots">
-      <span class="apex-cr-dot is-active" data-i="0"></span>
-      <span class="apex-cr-dot" data-i="1"></span>
-      <span class="apex-cr-dot" data-i="2"></span>
-      <span class="apex-cr-dot" data-i="3"></span>
-    </div>
-  </section>
-
-  <!-- ============ 公告横排轮播 ============ -->
-  <section class="apex-nt">
-    <div class="apex-nt-card">
-      <div class="apex-nt-icon">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
-      </div>
-      <div class="apex-nt-viewport">
-        <div class="apex-nt-track">
-          <span class="apex-nt-item">🎉 欢迎使用 Apex Global Entertainment，平台正在开发中</span>
-          <span class="apex-nt-item">🔒 所有账号均支持 Passkey 无密码登录，更安全便捷</span>
-          <span class="apex-nt-item">📢 系统每日凌晨 3:00 自动备份，数据安全有保障</span>
-          <span class="apex-nt-item" aria-hidden="true">🎉 欢迎使用 Apex Global Entertainment，平台正在开发中</span>
-          <span class="apex-nt-item" aria-hidden="true">🔒 所有账号均支持 Passkey 无密码登录，更安全便捷</span>
-          <span class="apex-nt-item" aria-hidden="true">📢 系统每日凌晨 3:00 自动备份，数据安全有保障</span>
+  <main class="apx-v2-main">
+    <section class="apx-v2-account">
+      <div class="apx-v2-user">👤 <span>账户昵称</span></div>
+      <div class="apx-v2-balance">
+        <small>BALANCE</small>
+        <strong>0.00</strong>
+        <div>
+          <button>充值</button>
+          <button>提现</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ============ 二级导航栏（游戏大厅/最近/收藏） ============ -->
-  <nav class="apex-tabs">
-    <a class="apex-tabs-item is-active" data-tab="lobby" href="#">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4"/><path d="M8 10v4"/><circle cx="16" cy="11" r="0.8" fill="currentColor"/><circle cx="18.5" cy="13.5" r="0.8" fill="currentColor"/></svg>
-      <span>游戏大厅</span>
-    </a>
-    <a class="apex-tabs-item" data-tab="recent" href="#">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
-      <span>最近</span>
-    </a>
-    <a class="apex-tabs-item" data-tab="favorites" href="#">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 15.09 9.26 22 10.27 17 15.14 18.18 22.02 12 18.77 5.82 22.02 7 15.14 2 10.27 8.91 9.26"/></svg>
-      <span>收藏</span>
-    </a>
+    <section class="apx-v2-search">搜索游戏 / 玩法</section>
+
+    <section class="apx-v2-hero">
+      <small>APEX EXCLUSIVE</small>
+      <h1>发现新的娱乐世界</h1>
+      <button>立即探索 →</button>
+      <div class="apx-v2-dots">● ○ ○</div>
+    </section>
+
+    <section class="apx-v2-section">
+<h2>QUICK ACCESS</h2>
+<div class="apx-v2-quick-grid">
+<div class="apx-v2-quick-item"><b>⌂</b>首页</div>
+<div class="apx-v2-quick-item"><b>✦</b>热门</div>
+<div class="apx-v2-quick-item"><b>◈</b>活动</div>
+<div class="apx-v2-quick-item"><b>♡</b>收藏</div>
+<div class="apx-v2-quick-item"><b>•••</b>更多</div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>CONTINUE</h2>
+<div class="apx-v2-continue">
+<div class="apx-v2-mini-card"><strong>继续探索</strong></div>
+<div class="apx-v2-mini-card"><strong>最近访问</strong></div>
+<div class="apx-v2-mini-card"><strong>我的收藏</strong></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>FEATURED</h2>
+<div class="apx-v2-featured">
+<div class="apx-v2-feature-card"><small>APEX ORIGINAL</small><strong>全新娱乐体验</strong></div>
+<div class="apx-v2-feature-card alt"><small>SPOTLIGHT</small><strong>精选专题</strong></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>DISCOVER</h2>
+<div class="apx-v2-discover">
+<div class="apx-v2-discover-item"><span>01</span><strong>精选内容</strong></div>
+<div class="apx-v2-discover-item"><span>02</span><strong>热门玩法</strong></div>
+<div class="apx-v2-discover-item"><span>03</span><strong>快速体验</strong></div>
+<div class="apx-v2-discover-item"><span>04</span><strong>探索更多</strong></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>FEATURED UNIVERSE</h2>
+<div class="apx-v2-universe-card">
+<small>APEX UNIVERSE</small>
+<strong>探索专属娱乐宇宙</strong>
+<span>精选内容、专题体验与全新发现</span>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>SPECIAL AREA</h2>
+<div class="apx-v2-special">
+<div class="apx-v2-special-card dark"><small>LIVE</small><strong>实时精选</strong></div>
+<div class="apx-v2-special-card"><small>SPOTLIGHT</small><strong>今日焦点</strong></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>INSTANT</h2>
+<div class="apx-v2-instant">
+<div class="apx-v2-instant-item"><b>⚡</b><span>快速体验</span></div>
+<div class="apx-v2-instant-item"><b>◈</b><span>精选玩法</span></div>
+<div class="apx-v2-instant-item"><b>✦</b><span>热门内容</span></div>
+<div class="apx-v2-instant-item"><b>＋</b><span>更多发现</span></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>NEW</h2>
+<div class="apx-v2-new">
+<small>JUST ARRIVED</small>
+<strong>全新内容，正在上线</strong>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>TRENDING</h2>
+<div class="apx-v2-trending">
+<div class="apx-v2-rank"><div class="apx-v2-rank-num">01</div><strong>Trending One</strong><span>热门</span></div>
+<div class="apx-v2-rank"><div class="apx-v2-rank-num">02</div><strong>Trending Two</strong><span>热门</span></div>
+<div class="apx-v2-rank"><div class="apx-v2-rank-num">03</div><strong>Trending Three</strong><span>热门</span></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>FOR YOU</h2>
+<div class="apx-v2-for-you">
+<div class="apx-v2-recommend"><small>RECOMMENDED</small><strong>为你精选</strong></div>
+<div class="apx-v2-recommend"><small>PERSONAL</small><strong>专属推荐</strong></div>
+<div class="apx-v2-recommend"><small>DISCOVER</small><strong>发现新内容</strong></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>PROMOTION</h2>
+<div class="apx-v2-promotion">
+<small>APEX SPECIAL</small>
+<strong>精彩活动与限时专题</strong>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>GAME CATEGORIES</h2>
+<div class="apx-v2-categories">
+<div class="apx-v2-category"><b>◈</b><span>全部内容</span></div>
+<div class="apx-v2-category"><b>⚡</b><span>快速体验</span></div>
+<div class="apx-v2-category"><b>✦</b><span>热门精选</span></div>
+<div class="apx-v2-category"><b>○</b><span>更多分类</span></div>
+</div>
+</section>
+    <section class="apx-v2-section">
+<h2>SERVICE AREA</h2>
+<div class="apx-v2-service">
+<div class="apx-v2-service-item"><b>♡</b>收藏</div>
+<div class="apx-v2-service-item"><b>◷</b>历史</div>
+<div class="apx-v2-service-item"><b>♛</b>VIP</div>
+<div class="apx-v2-service-item"><b>?</b>帮助</div>
+<div class="apx-v2-service-item"><b>◉</b>服务</div>
+<div class="apx-v2-service-item"><b>•••</b>更多</div>
+</div>
+</section>
+
+    <footer class="apx-v2-footer">关于　条款　隐私　帮助<br><small>© 2026 Apex Global Entertainment</small></footer>
+  </main>
+
+  <nav class="apx-v2-bottom">
+    <span>首页</span><span>游戏</span><span>活动</span><span>我的</span>
   </nav>
-
-  <!-- ============ 分类网格 ============ -->
-  <nav class="apex-cats">
-    <button class="apex-cat" data-cat="hot">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 1-5 1 1 2 2 2 4 1-2 2-5 2-9z"/></svg>
-      </span>
-      <span class="apex-cat-text">热门</span>
-    </button>
-
-    <button class="apex-cat" data-cat="poker">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
-      </span>
-      <span class="apex-cat-text">棋牌</span>
-    </button>
-
-    <button class="apex-cat" data-cat="slot">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><path d="M7 2v3M17 2v3"/></svg>
-      </span>
-      <span class="apex-cat-text">电子</span>
-    </button>
-
-    <button class="apex-cat" data-cat="dice">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="8" cy="16" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg>
-      </span>
-      <span class="apex-cat-text">骰子</span>
-    </button>
-
-    <button class="apex-cat" data-cat="sports">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5 5l14 14M19 5L5 19"/></svg>
-      </span>
-      <span class="apex-cat-text">体育</span>
-    </button>
-
-    <button class="apex-cat" data-cat="events">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7h8M5 12h14M8 17h8"/></svg>
-      </span>
-      <span class="apex-cat-text">赛事</span>
-    </button>
-
-    <button class="apex-cat" data-cat="instant">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </span>
-      <span class="apex-cat-text">即时游戏</span>
-    </button>
-
-    <button class="apex-cat" data-cat="esports">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4"/><path d="M8 10v4"/><circle cx="16" cy="11" r="0.9" fill="currentColor"/><circle cx="18.5" cy="13.5" r="0.9" fill="currentColor"/></svg>
-      </span>
-      <span class="apex-cat-text">电竞</span>
-    </button>
-
-    <button class="apex-cat" data-cat="special">
-      <span class="apex-cat-icon">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </span>
-      <span class="apex-cat-text">特殊 / 新型</span>
-    </button>
-  </nav>
-
-  <!-- ============ 底部导航栏 ============ --><!-- ============ 底部导航栏 ============ --><!-- ============ 底部导航栏 ============ -->
-  <nav class="apex-nav">
-    <a class="apex-nav-item is-active" data-tab="home" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-      <span>首页</span>
-    </a>
-    <a class="apex-nav-item" data-tab="promo" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
-      <span>优惠</span>
-    </a>
-    <a class="apex-nav-item" data-tab="assets" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 11h20"/><path d="M6 15h2"/></svg>
-      <span>资产</span>
-    </a>
-    <a class="apex-nav-item" data-tab="service" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-5h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-5H3z"/></svg>
-      <span>客服</span>
-    </a>
-    <a class="apex-nav-item" data-tab="more" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-      <span>更多</span>
-    </a>
-    <a class="apex-nav-item" data-tab="mine" href="#">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      <span>我的</span>
-    </a>
-  </nav>
-
 </div>
 
 <div id="security-modal" role="dialog" aria-modal="true" aria-labelledby="security-modal-title" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
@@ -741,13 +702,15 @@
 
 
   <script src="/src/js/data/apex-data.js"></script>
+<script src="/src/js/data/homeData.js?v=20260929"></script>
 
-  <script src="/src/js/inline/block-10-apex-homepage-logic.js" id="apex-homepage-logic"></script>
+  
 
   <script src="/src/js/inline/block-11-apex-i18n.js" id="apex-i18n"></script>
 
 
 
   <script src="/src/js/inline/event-bindings.js"></script>
+<script src="/src/js/home-v2.js?v=20260929"></script>
 </body>
 </html>

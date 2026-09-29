@@ -1,11 +1,13 @@
 // Apex 主页逻辑
 
 window.showHomepage = function (user) {
+  var authCard = document.querySelector('.auth-card');
+  if (authCard) authCard.style.setProperty('display', 'none', 'important');
   user = user || {};
   document.querySelectorAll('body > div').forEach(function (el) {
     if (el.id === 'apex-homepage' || el.id === 'apex-toast') return;
     if (el.classList && el.classList.contains('header')) return;
-    el.style.display = 'none';
+    el.style.setProperty('display', 'none', 'important');
   });
   var header = document.querySelector('.header');
   if (header) header.style.display = 'none';
