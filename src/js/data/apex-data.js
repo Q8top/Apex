@@ -4588,6 +4588,292 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生，每次独立。'
     }
+,
+    'Crash': {
+      zh: 'Crash',
+      tagline: '曲线越飞越高，可随时兑现——但曲线随时可能崩溃，崩溃前不兑现则全部归零。是当下最火的即时博彩玩法。',
+      quickStart: [
+        { n: 1, title: '下注', desc: '设定下注额。' },
+        { n: 2, title: '等待起飞', desc: '曲线从 1.00x 开始向上增长。' },
+        { n: 3, title: '随时兑现', desc: '点击 Cash Out 以当前倍率兑现。' },
+        { n: 4, title: '曲线崩溃', desc: '曲线在某个倍率突然崩溃，未兑现者失去全部下注。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '起始倍率', v: '1.00x' },
+          { k: '增长方式', v: '指数增长，越来越快' },
+          { k: '崩溃点', v: '随机，理论从 1.00x 起' },
+          { k: '自动兑现', v: '可设目标倍率自动 Cash Out' }
+        ],
+        note: 'Crash 的核心是"何时兑现"——越晚兑现倍率越高，但崩溃风险也越大。',
+        examples: [
+          '曲线到 2.50x 时你 Cash Out → 获得下注额 × 2.50',
+          '曲线到 2.50x 崩溃，你没兑现 → 失去下注',
+          '曲线仅到 1.05x 就崩溃 → 未兑现者失去全部'
+        ],
+        order: 'Cash Out 时机越晚，潜在收益越高，风险越大'
+      },
+      natural: {
+        desc: 'Crash 常见类型：',
+        examples: [
+          'Classic Crash：经典版本，可手动或自动兑现',
+          'Turbo Crash：曲线增长更快，崩溃更频繁',
+          'Multiplier Crash：多个倍率层，每层独立兑现',
+          'Auto Cashout：预设目标倍率，到点自动兑现',
+          'Progressive Crash：连续安全飞行，倍率累加'
+        ],
+        note: 'Crash RTP 通常 97% - 99%，是即时游戏中玩家优势最大的玩法。'
+      },
+      odds: [
+        { name: '1.10x 兑现', value: '约 90% 概率成功' },
+        { name: '1.50x 兑现', value: '约 66% 概率成功' },
+        { name: '2.00x 兑现', value: '约 49% 概率成功' },
+        { name: '5.00x 兑现', value: '约 19% 概率成功' },
+        { name: '10.00x 兑现', value: '约 10% 概率成功' },
+        { name: '100x 兑现', value: '约 1% 概率成功' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Cash Out', zh: '兑现' },
+        { en: 'Crash Point', zh: '崩溃点' },
+        { en: 'Auto Cashout', zh: '自动兑现' },
+        { en: 'Multiplier', zh: '倍率' }
+      ],
+      faq: [
+        { q: '崩溃点会提前公布吗？', a: '不会。崩溃点在下注前已由 RNG 决定，但加密保存，游戏结束后才公开验证。' },
+        { q: '可以自动兑现吗？', a: '可以。设置目标倍率后，曲线达到该倍率时自动 Cash Out。' },
+        { q: 'Crash 公平吗？', a: '公平。崩溃点由可验证的随机数生成（Provably Fair），游戏结束后可验证。' }
+      ],
+      disclaimer: '本游戏结果由可验证随机数生成器（Provably Fair RNG）产生。'
+    },
+
+    'Mines': {
+      zh: 'Mines',
+      tagline: '踩地雷玩法——网格中隐藏若干地雷，每翻开一个安全格倍率增加，翻到地雷则失去全部。随时可兑现。',
+      quickStart: [
+        { n: 1, title: '下注 + 设雷数', desc: '设定下注额和地雷数量（通常 1-24 个）。' },
+        { n: 2, title: '翻格', desc: '点击任意格子，翻出安全格则倍率增加。' },
+        { n: 3, title: '继续或兑现', desc: '可继续翻或随时 Cash Out。' },
+        { n: 4, title: '踩雷', desc: '翻到地雷立即失去全部下注。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '网格', v: '通常 5x5 = 25 格' },
+          { k: '地雷数', v: '可自定义 1 - 24' },
+          { k: '每翻一格', v: '倍率增加' },
+          { k: '踩雷', v: '立即失去全部' }
+        ],
+        note: '地雷越多，每格倍率越高但踩雷风险越大。',
+        examples: [
+          '3 个雷，翻 5 个安全格 → 倍率约 1.5x',
+          '10 个雷，翻 5 个安全格 → 倍率约 5x',
+          '24 个雷，翻 1 个安全格 → 倍率约 25x'
+        ],
+        order: '雷数越多，单格倍率越高；安全格翻得越多，总倍率越高'
+      },
+      natural: {
+        desc: 'Mines 玩法特点：',
+        examples: [
+          'Classic Mines：经典 5x5 网格',
+          'Grid Mines：不同网格大小（4x4 / 6x6）',
+          'Multi-Mines：多个地雷等级',
+          'Progressive Mines：连续挑战更高倍率',
+          'Auto Pick：自动翻格至指定数量'
+        ],
+        note: 'Mines RTP 通常 97% - 99%。'
+      },
+      odds: [
+        { name: '3 雷翻 1 格', value: '约 1 赔 1.13' },
+        { name: '3 雷翻 5 格', value: '约 1 赔 1.5' },
+        { name: '3 雷翻 10 格', value: '约 1 赔 4' },
+        { name: '10 雷翻 5 格', value: '约 1 赔 5' },
+        { name: '10 雷翻 10 格', value: '约 1 赔 50' },
+        { name: '24 雷翻 1 格', value: '约 1 赔 25' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Mines', zh: '地雷' },
+        { en: 'Cell', zh: '格子' },
+        { en: 'Cash Out', zh: '兑现' },
+        { en: 'Auto Pick', zh: '自动翻格' }
+      ],
+      faq: [
+        { q: '地雷位置会变吗？', a: '不会。地雷位置在开始前由 RNG 决定，本次游戏中不变。' },
+        { q: '翻得越多倍率越高吗？', a: '是。每翻一个安全格，倍率都会增加。' },
+        { q: '可以随时兑现吗？', a: '可以。翻到任意安全格后都可以 Cash Out。' }
+      ],
+      disclaimer: '本游戏结果由可验证随机数生成器（Provably Fair RNG）产生。'
+    },
+
+    'Plinko': {
+      zh: 'Plinko',
+      tagline: '小球从顶部落下，经过针阵弹跳，落入底部不同赔率的槽位。可设置行数与风险等级，玩法简单直观。',
+      quickStart: [
+        { n: 1, title: '设置', desc: '选择行数（8-16 行）和风险等级（低/中/高）。' },
+        { n: 2, title: '下注', desc: '设定下注额。' },
+        { n: 3, title: '投球', desc: '点击投球，小球从顶部释放。' },
+        { n: 4, title: '结算', desc: '小球落入某个槽位，按该槽赔率派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '行数', v: '8 / 12 / 16 行' },
+          { k: '槽位数', v: '行数 + 1' },
+          { k: '风险等级', v: 'Low / Medium / High' },
+          { k: '赔率范围', v: '0.2x - 1000x' }
+        ],
+        note: '风险越高，边缘槽位赔率越高但中心槽位赔率越低。',
+        examples: [
+          'Low Risk：中心槽 0.5x，边缘槽 2x',
+          'Medium Risk：中心槽 0.2x，边缘槽 8x',
+          'High Risk：中心槽 0x，边缘槽 1000x'
+        ],
+        order: '高行数 + 高风险 = 极端赔率'
+      },
+      natural: {
+        desc: 'Plinko 常见类型：',
+        examples: [
+          'Classic Plinko：经典版本',
+          'Multiplier Plinko：槽位带倍率',
+          'Risk Plinko：可切换风险等级',
+          'Progressive Plinko：连击时倍率累加',
+          'Multi-Ball：一次投入多个球'
+        ],
+        note: 'Plinko RTP 通常 99%（Low/Medium）或 97%（High）。'
+      },
+      odds: [
+        { name: 'Low Risk 中心槽', value: '约 1 赔 0.5' },
+        { name: 'Low Risk 边缘槽', value: '约 1 赔 2' },
+        { name: 'Medium Risk 中心槽', value: '约 1 赔 0.2' },
+        { name: 'Medium Risk 边缘槽', value: '约 1 赔 8' },
+        { name: 'High Risk 中心槽', value: '约 1 赔 0' },
+        { name: 'High Risk 边缘槽', value: '约 1 赔 1000' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。中心槽概率最高但赔率最低。',
+      terms: [
+        { en: 'Row', zh: '行' },
+        { en: 'Slot', zh: '槽位' },
+        { en: 'Risk Level', zh: '风险等级' },
+        { en: 'Multiplier', zh: '倍率' }
+      ],
+      faq: [
+        { q: '小球落在哪个槽可以预测吗？', a: '不能。每次投球结果由 RNG 独立决定。' },
+        { q: '行数越多越好吗？', a: '不一定。行数越多，边缘槽越稀有但赔率越高；中心槽概率也更高。' },
+        { q: 'RTP 是多少？', a: 'Low/Medium 风险约 99%，High 风险约 97%。' }
+      ],
+      disclaimer: '本游戏结果由可验证随机数生成器（Provably Fair RNG）产生。'
+    },
+
+    'Keno': {
+      zh: '基诺',
+      tagline: '从 1-80 中选 1-20 个数字，系统随机抽取 20 个。命中越多赔率越高，玩法简单，中奖机会多样。',
+      quickStart: [
+        { n: 1, title: '选号', desc: '从 1-80 中选 1-20 个数字。' },
+        { n: 2, title: '下注', desc: '设定下注额。' },
+        { n: 3, title: '抽号', desc: '系统随机抽取 20 个数字。' },
+        { n: 4, title: '结算', desc: '命中越多，赔率越高。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '号码池', v: '1 - 80' },
+          { k: '玩家选号', v: '1 - 20 个' },
+          { k: '系统抽取', v: '20 个' },
+          { k: '中奖条件', v: '命中数量达阈值' }
+        ],
+        note: 'Keno 中奖概率取决于选号数量与命中数量。',
+        examples: [
+          '选 5 个命中 5 个 → 高赔（约 1:800）',
+          '选 10 个命中 10 个 → 极高赔（约 1:100,000）',
+          '选 20 个命中 0 个 → 部分版本也中奖'
+        ],
+        order: '命中全部 > 命中大部分 > 命中少量'
+      },
+      natural: {
+        desc: 'Keno 常见类型：',
+        examples: [
+          'Classic Keno：标准 1-80',
+          '20/80 Keno：必选 20 个数字',
+          'Speed Keno：抽号速度快',
+          'Multi-Draw：一次选号，连续多期抽奖',
+          'Progressive Keno：命中全部触发累进奖池'
+        ],
+        note: 'Keno RTP 通常 90% - 95%，取决于选号数量。'
+      },
+      odds: [
+        { name: '选 1 命中 1', value: '1 赔 3' },
+        { name: '选 3 命中 3', value: '1 赔 45' },
+        { name: '选 5 命中 5', value: '1 赔 800' },
+        { name: '选 10 命中 10', value: '1 赔 100,000' },
+        { name: '选 20 命中 0', value: '1 赔 3,000' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。具体赔率以游戏内为准。',
+      terms: [
+        { en: 'Spot', zh: '选号数量' },
+        { en: 'Catch', zh: '命中数量' },
+        { en: 'Draw', zh: '抽号' }
+      ],
+      faq: [
+        { q: '选几个号最容易中奖？', a: '选 1-3 个号命中概率最高，但赔率低；选 10+ 个号赔率高但难度大。' },
+        { q: 'Keno 可以预测吗？', a: '不能。每次抽号由 RNG 独立决定。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    },
+
+    'Bingo': {
+      zh: '宾果',
+      tagline: '5x5 数字卡片，系统随机抽号，先连成一条线者中奖。可同时玩多张卡，中奖机会多，是休闲玩家的最爱。',
+      quickStart: [
+        { n: 1, title: '选卡', desc: '选择 1-4 张宾果卡（每张 5x5 数字）。' },
+        { n: 2, title: '下注', desc: '每张卡单独下注。' },
+        { n: 3, title: '抽号', desc: '系统按随机顺序抽取数字，自动标记。' },
+        { n: 4, title: '中奖', desc: '连成一条线（横 / 竖 / 斜）即中奖。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '卡片', v: '5x5 = 25 格（通常中间为 Free）' },
+          { k: '号码范围', v: '1 - 75 或 1 - 90' },
+          { k: '中奖线', v: '横 / 竖 / 斜任意一条完整线' },
+          { k: '多卡', v: '可同时玩 1 - 4 张' }
+        ],
+        note: 'Video Bingo 与实体宾果规则一致，只是通过屏幕展示和自动标记。',
+        examples: [
+          '连成第一行 → Line 中奖',
+          '连成对角线 → 中奖',
+          '连成 4 条线 → 4-Line 中奖'
+        ],
+        order: 'Full House（全中）> 4-Line > 3-Line > 2-Line > 1-Line'
+      },
+      natural: {
+        desc: 'Bingo 常见类型：',
+        examples: [
+          '30-Ball Bingo：30 个号码',
+          '75-Ball Bingo：75 个号码（美式）',
+          '80-Ball Bingo：80 个号码',
+          '90-Ball Bingo：90 个号码（英式）',
+          'Pattern Bingo：中奖条件为特定图案',
+          'Speed Bingo：抽号速度快'
+        ],
+        note: 'Bingo RTP 通常 90% - 95%，不同版本有差异。'
+      },
+      odds: [
+        { name: '1-Line', value: '1-5 倍下注' },
+        { name: '2-Line', value: '5-15 倍下注' },
+        { name: '3-Line', value: '15-30 倍下注' },
+        { name: '4-Line', value: '30-100 倍下注' },
+        { name: 'Full House', value: '100-1,000 倍下注' }
+      ],
+      oddsNote: 'Xx 表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Bingo Card', zh: '宾果卡' },
+        { en: 'Line', zh: '连线' },
+        { en: 'Full House', zh: '全中' },
+        { en: 'Pattern', zh: '图案' }
+      ],
+      faq: [
+        { q: 'Bingo 和实体宾果一样吗？', a: '规则一致，只是通过屏幕展示，自动标记。' },
+        { q: '可以同时玩多张卡吗？', a: '可以，通常最多 4 张。' }
+      ],
+      disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
+    }
 
   };
 
