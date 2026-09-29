@@ -104,3 +104,26 @@ jobs:
           done
           echo "[FATAL] 部署后健康检查失败"
           exit 1
+
+      - name: Purge CDN cache
+        if: success()
+        env:
+          CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_CACHE_TOKEN }}
+        run: |
+          set -e
+          if [ -z "$CF_ZONE_ID" ] || [ -z "$CF_TOKEN" ]; then
+            echo "[SKIP] 未配置 CLOUDFLARE_ZONE_ID 或 CLOUDFLARE_CACHE_TOKEN"
+            exit 0
+          fi
+          echo "[PURGE] 清空 CDN 缓存..."
+          RESP=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          if echo "$RESP" | grep -q '"success":true'; then
+            echo "[OK] CDN 缓存已清空"
+          else
+            echo "[WARN] 清缓存失败（不阻塞部署）"
+            echo "$RESP"
+          fi
