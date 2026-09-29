@@ -4874,6 +4874,301 @@
       ],
       disclaimer: '本游戏结果由随机数生成器（RNG）产生。'
     }
+,
+    'League of Legends': {
+      zh: '英雄联盟',
+      tagline: '全球最大电竞项目——LPL / LCK / LEC / LCS 四大赛区 + 世界赛。押比赛胜负、单图胜负、总击杀、首杀、首塔等。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场 LoL 比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 单图 / 击杀 / 首杀 / 首塔。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛制', v: 'BO1 / BO3 / BO5' },
+          { k: '地图', v: '召唤师峡谷' },
+          { k: 'Match Winner', v: '比赛整体胜负' },
+          { k: 'Map Winner', v: '单图胜负' },
+          { k: 'Statistics', v: '击杀 / 首杀 / 首塔 / 大小龙' }
+        ],
+        note: 'BO3 需赢 2 图，BO5 需赢 3 图。',
+        examples: [
+          'T1 vs Gen.G：T1 胜 1.85',
+          'Total Kills 30.5：大 1.90',
+          'First Blood：T1 1.75'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: 'LoL 常见投注市场：',
+        examples: [
+          'Match Winner：比赛胜负',
+          'Map Winner：单图胜负',
+          'Map Handicap：单图让分',
+          'Total Kills：总击杀大小',
+          'First Blood：首杀',
+          'First Tower：首塔',
+          'First Dragon / Baron：首龙 / 首男爵',
+          'Correct Score：正确比分'
+        ],
+        note: 'LoL RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.1 - 1 赔 10' },
+        { name: 'Map Winner', value: '1 赔 0.3 - 1 赔 5' },
+        { name: 'Total Kills', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'First Blood', value: '1 赔 0.5 - 1 赔 2' },
+        { name: 'First Tower', value: '1 赔 0.5 - 1 赔 2' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '比赛胜负' },
+        { en: 'Map Winner', zh: '单图胜负' },
+        { en: 'First Blood', zh: '首杀' },
+        { en: 'First Tower', zh: '首塔' },
+        { en: 'Baron', zh: '大龙' }
+      ],
+      faq: [
+        { q: 'BO3 和 BO5 有什么区别？', a: 'BO3 需赢 2 图，BO5 需赢 3 图。赔付按实际胜图数结算。' },
+        { q: 'First Blood 是什么？', a: 'First Blood 指比赛中首个击杀的玩家所在队伍。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Counter-Strike': {
+      zh: 'Counter-Strike',
+      tagline: '经典 FPS 电竞项目——Major / ESL / BLAST 全年赛事不断。押胜负、单图、总回合、让分、选手表现等。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场 CS 比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 单图 / 回合 / 让分。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛制', v: 'BO1 / BO3 / BO5' },
+          { k: '地图', v: 'Mirage / Inferno / Dust II 等' },
+          { k: '单图回合', v: '30 回合（先赢 16 回合）' },
+          { k: 'Match Winner', v: '比赛整体胜负' }
+        ],
+        note: 'CS 单图 30 回合，先赢 16 回合者赢图。',
+        examples: [
+          'NaVi vs FaZe：NaVi 胜 1.75',
+          'Total Rounds 26.5：大 1.90',
+          'Map 1 让分 -3.5：NaVi 1.85'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: 'CS 常见投注市场：',
+        examples: [
+          'Match Winner：比赛胜负',
+          'Map Winner：单图胜负',
+          'Map Handicap：单图让分',
+          'Total Rounds：总回合数',
+          'Round Handicap：回合让分',
+          'First Half：上半场结果',
+          'Player Performance：选手表现（击杀 / 爆头率）'
+        ],
+        note: 'CS RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.1 - 1 赔 10' },
+        { name: 'Map Winner', value: '1 赔 0.3 - 1 赔 5' },
+        { name: 'Total Rounds', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'Map Handicap', value: '1 赔 0.7 - 1 赔 1.5' },
+        { name: 'Player Performance', value: '1 赔 0.5 - 1 赔 5' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '比赛胜负' },
+        { en: 'Map Winner', zh: '单图胜负' },
+        { en: 'Total Rounds', zh: '总回合数' },
+        { en: 'Pistol Round', zh: '手枪局' }
+      ],
+      faq: [
+        { q: 'CS 单图多少回合？', a: '标准 30 回合，先赢 16 回合者赢图。若 15-15 则进入加时。' },
+        { q: '让分怎么算？', a: '让分 -3.5 表示需要赢 4 回合以上（含）才算赢。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Dota 2': {
+      zh: 'Dota 2',
+      tagline: 'MOBA 经典之作——TI 国际邀请赛是全球奖金最高的电竞赛事。押胜负、单图、总击杀、首杀、首塔等。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场 Dota 2 比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 单图 / 击杀 / 首杀。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛制', v: 'BO1 / BO3 / BO5' },
+          { k: '地图', v: 'Dota 2 官方地图' },
+          { k: 'Match Winner', v: '比赛整体胜负' },
+          { k: 'Map Winner', v: '单图胜负' },
+          { k: 'Statistics', v: '击杀 / 首杀 / 首塔 / Roshan' }
+        ],
+        note: 'Dota 2 与 LoL 类似，但地图机制不同，节奏略有差异。',
+        examples: [
+          'Team Spirit vs OG：Team Spirit 1.90',
+          'Total Kills 45.5：大 1.85',
+          'First Blood：OG 1.80'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: 'Dota 2 常见投注市场：',
+        examples: [
+          'Match Winner：比赛胜负',
+          'Map Winner：单图胜负',
+          'Map Handicap：单图让分',
+          'Total Kills：总击杀大小',
+          'First Blood：首杀',
+          'First Tower：首塔',
+          'First Roshan：首 Roshan',
+          'Correct Score：正确比分'
+        ],
+        note: 'Dota 2 RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.1 - 1 赔 10' },
+        { name: 'Map Winner', value: '1 赔 0.3 - 1 赔 5' },
+        { name: 'Total Kills', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'First Blood', value: '1 赔 0.5 - 1 赔 2' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '比赛胜负' },
+        { en: 'Map Winner', zh: '单图胜负' },
+        { en: 'Roshan', zh: '肉山' },
+        { en: 'First Blood', zh: '首杀' }
+      ],
+      faq: [
+        { q: 'TI 是什么？', a: 'The International，Dota 2 年度总决赛，奖金池高达数千万美元。' },
+        { q: 'First Roshan 是什么？', a: '首 Roshan 指第一个击杀 Roshan 的队伍。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'Valorant': {
+      zh: '无畏契约',
+      tagline: 'Riot 出品的战术射击电竞——VCT 冠军赛是全球顶级赛事。押胜负、单图、回合、让分、选手表现。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场 Valorant 比赛。' },
+        { n: 2, title: '选择市场', desc: '胜负 / 单图 / 回合 / 让分。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后自动派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛制', v: 'BO1 / BO3 / BO5' },
+          { k: '地图', v: 'Ascent / Bind / Haven 等' },
+          { k: '单图回合', v: '25 回合（先赢 13 回合）' },
+          { k: 'Match Winner', v: '比赛整体胜负' }
+        ],
+        note: 'Valorant 单图 25 回合，先赢 13 回合者赢图。',
+        examples: [
+          'Sentinels vs Fnatic：Sentinels 1.85',
+          'Total Rounds 22.5：大 1.90',
+          'Map 1 让分 -2.5：Sentinels 1.80'
+        ],
+        order: '正确比分赔率最高，胜负赔率最低'
+      },
+      natural: {
+        desc: 'Valorant 常见投注市场：',
+        examples: [
+          'Match Winner：比赛胜负',
+          'Map Winner：单图胜负',
+          'Map Handicap：单图让分',
+          'Total Rounds：总回合数',
+          'Round Handicap：回合让分',
+          'First Half：上半场结果',
+          'First Kill：首杀'
+        ],
+        note: 'Valorant RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner', value: '1 赔 0.1 - 1 赔 10' },
+        { name: 'Map Winner', value: '1 赔 0.3 - 1 赔 5' },
+        { name: 'Total Rounds', value: '1 赔 0.8 - 1 赔 1.2' },
+        { name: 'Map Handicap', value: '1 赔 0.7 - 1 赔 1.5' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Match Winner', zh: '比赛胜负' },
+        { en: 'Map Winner', zh: '单图胜负' },
+        { en: 'Total Rounds', zh: '总回合数' },
+        { en: 'Ace', zh: '一个人击杀对方全队' }
+      ],
+      faq: [
+        { q: 'Valorant 和 CS 有什么区别？', a: 'Valorant 有角色技能系统，CS 更纯粹枪法对抗。' },
+        { q: '单图几回合？', a: '25 回合，先赢 13 回合者赢图。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    },
+
+    'PUBG': {
+      zh: 'PUBG',
+      tagline: '大逃杀电竞——全球锦标赛赛事不断。押比赛胜负、名次、击杀数等，玩法区别于传统对抗类游戏。',
+      quickStart: [
+        { n: 1, title: '选择赛事', desc: '选择一场 PUBG 比赛。' },
+        { n: 2, title: '选择市场', desc: '比赛胜负 / 锦标赛冠军 / 名次 / 击杀数。' },
+        { n: 3, title: '下注', desc: '输入金额并确认。' },
+        { n: 4, title: '结算', desc: '比赛结束后按结果派彩。' }
+      ],
+      pointCalc: {
+        rows: [
+          { k: '赛制', v: '多局积分制' },
+          { k: '地图', v: 'Erangel / Miramar / Sanhok 等' },
+          { k: 'Match Winner', v: '单局吃鸡（#1 名次）' },
+          { k: 'Tournament Winner', v: '整个锦标赛冠军' },
+          { k: 'Placement', v: 'Top 3 / Top 5 / Top 10' }
+        ],
+        note: 'PUBG 是大逃杀类游戏，名次与击杀数都影响积分。',
+        examples: [
+          '单局吃鸡：Gen.G 赔率 5.00',
+          '锦标赛冠军：Gen.G 赔率 8.00',
+          'Top 5 完赛：FaZe 1.80',
+          'Total Kills 25.5：大 1.90'
+        ],
+        order: '锦标赛冠军 > 单局吃鸡 > Top 3 > Top 5 > Top 10'
+      },
+      natural: {
+        desc: 'PUBG 常见投注市场：',
+        examples: [
+          'Match Winner：单局吃鸡',
+          'Tournament Winner：锦标赛冠军',
+          'Placement：名次（Top 3 / 5 / 10）',
+          'Total Kills：总击杀大小',
+          'Player Kills：选手击杀数',
+          'Team Kills：队伍击杀数',
+          'Most Kills：击杀王'
+        ],
+        note: 'PUBG RTP 通常 92% - 96%。'
+      },
+      odds: [
+        { name: 'Match Winner（吃鸡）', value: '1 赔 3 - 1 赔 30' },
+        { name: 'Tournament Winner', value: '1 赔 5 - 1 赔 50' },
+        { name: 'Top 3', value: '1 赔 1 - 1 赔 5' },
+        { name: 'Top 5', value: '1 赔 0.5 - 1 赔 3' },
+        { name: 'Top 10', value: '1 赔 0.1 - 1 赔 1' }
+      ],
+      oddsNote: '"1 赔 X"表示每下注 1 单位获胜后净赢取 X 单位。',
+      terms: [
+        { en: 'Chicken Dinner', zh: '吃鸡（#1 名次）' },
+        { en: 'Placement', zh: '名次' },
+        { en: 'Kill', zh: '击杀' },
+        { en: 'Blue Zone', zh: '毒圈' }
+      ],
+      faq: [
+        { q: '吃鸡是什么意思？', a: '吃鸡指单局获得第 1 名，源自游戏内 "Winner Winner Chicken Dinner" 台词。' },
+        { q: '为什么 PUBG 赔率和 LoL/CS 不同？', a: '因为 PUBG 是大逃杀类游戏，每局 100 人参赛，名次更分散，赔率设计不同。' }
+      ],
+      disclaimer: '本平台仅提供信息展示服务，实际投注需符合所在司法辖区的法律法规。'
+    }
 
   };
 
