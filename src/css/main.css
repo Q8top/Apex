@@ -1174,15 +1174,6 @@ body {
  * 避免把图片向下推，也避免遮住登录卡片。
  */
 
-/* 如果语言选择器位于 header 中，让 header 本身不占空间 */
-
-.header .lang-selector,
-.header #lang-selector,
-.header .language-selector,
-.header #language-selector {
-  pointer-events: auto !important;
-}
-
 /* 语言按钮本身 */
 
 /* 小屏幕 */
