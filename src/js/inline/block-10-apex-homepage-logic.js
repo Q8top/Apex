@@ -2,7 +2,20 @@
 
 window.showHomepage = function (user) {
   var authCard = document.querySelector('.auth-card');
-  if (authCard) authCard.style.setProperty('display', 'none', 'important');
+  var authRoot = authCard;
+  var homeRoot = document.getElementById('apex-homepage');
+
+  if (authCard) {
+    while (
+      authRoot.parentElement &&
+      authRoot.parentElement !== document.body &&
+      !(homeRoot && authRoot.parentElement.contains(homeRoot))
+    ) {
+      authRoot = authRoot.parentElement;
+    }
+    authRoot.style.setProperty('display', 'none', 'important');
+  }
+
   user = user || {};
   document.querySelectorAll('body > div').forEach(function (el) {
     if (el.id === 'apex-homepage' || el.id === 'apex-toast') return;
