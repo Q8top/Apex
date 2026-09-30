@@ -8,33 +8,30 @@
   <title>Apex · 首页</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <!-- Minora UI Kit (免费开源，暖金色点缀，极简风格) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ilzamafif/minora@v0.1.0/dist/minora.min.css">
+  <!-- Remix Icon 4.x（免费开源 2800+ 图标，ISC 协议）-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
 
-  <!-- 本地样式 -->
-  <link rel="stylesheet" href="/src/css/home.css?v=20260930e">
-
-  <!-- Google Fonts: Inter + Manrope -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- 本地样式 -->
+  <link rel="stylesheet" href="/src/css/home.css?v=20260930f">
 </head>
 <body>
 
 <div class="app">
 
   <!-- ============ 顶栏 ============ -->
-  <header class="topbar" data-apex-reveal="top">
+  <header class="topbar">
     <a class="profile" href="#" data-apex-action="profile">
       <span class="avatar-ring">
         <span class="avatar">
           <svg viewBox="0 0 40 40" width="38" height="38" fill="none">
-            <defs>
-              <linearGradient id="avGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#F0D187"/>
-                <stop offset="100%" stop-color="#C99A3D"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="avGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F5D77F"/><stop offset="100%" stop-color="#B8862D"/>
+            </linearGradient></defs>
             <circle cx="20" cy="20" r="20" fill="url(#avGrad)"/>
             <circle cx="20" cy="16" r="6" fill="#fff"/>
             <path d="M7 34a13 13 0 0 1 26 0v2H7z" fill="#fff"/>
@@ -44,7 +41,7 @@
       <span class="profile-info">
         <span class="username" id="topbar-username">用户</span>
         <span class="user-tag">
-          <svg viewBox="0 0 12 12" width="9" height="9" fill="none" stroke="#fff" stroke-width="1.8"><path d="M2 6.5 5 9.5 10 3"/></svg>
+          <i class="ri-vip-crown-fill"></i>
           VIP
         </span>
       </span>
@@ -52,231 +49,218 @@
 
     <div class="topbar-actions">
       <button class="glass-btn" type="button" data-apex-action="lang">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+        <i class="ri-global-line"></i>
         <span>中文</span>
       </button>
       <button class="glass-btn" type="button" data-apex-action="region">
-        <span>🇨🇳</span><span>CN</span>
+        <span>🇨🇳</span>
       </button>
     </div>
   </header>
 
-  <!-- ============ 搜索 + 快捷操作 ============ -->
-  <div class="search-row" data-apex-reveal="top" data-delay="60">
+  <!-- ============ 搜索行 ============ -->
+  <div class="search-row">
     <button class="search-pill" type="button" data-apex-action="search">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9ca3af" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <span class="search-text">搜索内容、玩法、分类……</span>
-      <span class="search-kbd">
-        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16M4 12h16"/></svg>
+      <i class="ri-search-2-line"></i>
+      <span class="search-text">搜索游戏、赛事、玩法……</span>
+      <span class="search-go">
+        <i class="ri-arrow-right-s-line"></i>
       </span>
     </button>
 
     <button class="round-btn" type="button" data-apex-action="support" aria-label="客服">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg>
+      <i class="ri-customer-service-2-fill blue"></i>
     </button>
 
     <button class="round-btn" type="button" data-apex-action="notice" aria-label="通知">
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-      <span class="badge-dot" aria-hidden="true"></span>
+      <i class="ri-notification-3-fill gold"></i>
+      <span class="badge-dot"></span>
     </button>
   </div>
 
   <!-- ============ Tabs ============ -->
-  <nav class="tabs" id="top-tabs" aria-label="主导航" data-apex-reveal="top" data-delay="120">
+  <nav class="tabs" id="top-tabs" aria-label="主导航">
     <a class="tab active" data-tab="home">首页</a>
-    <a class="tab" data-tab="c1">分类一</a>
-    <a class="tab" data-tab="c2">分类二</a>
-    <a class="tab" data-tab="c3">分类三</a>
-    <a class="tab" data-tab="c4">分类四</a>
-    <a class="tab tab-more" data-apex-action="menu">更多 ›</a>
+    <a class="tab" data-tab="c1">体育</a>
+    <a class="tab" data-tab="c2">电竞</a>
+    <a class="tab" data-tab="c3">捕鱼</a>
+    <a class="tab" data-tab="c4">棋牌</a>
+    <a class="tab" data-tab="c5">彩票</a>
+    <a class="tab tab-more" data-apex-action="menu">全部 <i class="ri-arrow-down-s-line"></i></a>
   </nav>
 
-  <!-- ============ Hero Banner ============ -->
-  <section class="hero" data-apex-action="banner" data-apex-reveal="hero">
-    <div class="hero-canvas">
-      <canvas id="hero-particles" aria-hidden="true"></canvas>
-    </div>
-
-    <div class="hero-glow"></div>
+  <!-- ============ Hero ============ -->
+  <section class="hero" data-apex-action="banner">
+    <span class="hero-orb hero-orb-1"></span>
+    <span class="hero-orb hero-orb-2"></span>
+    <span class="hero-orb hero-orb-3"></span>
+    <span class="hero-ring hero-ring-1"></span>
+    <span class="hero-ring hero-ring-2"></span>
 
     <div class="hero-body">
       <div class="hero-badge">
-        <span class="badge-dot-live"></span>
-        <span>LIVE · 限时活动</span>
+        <span class="live-dot"></span>
+        LIVE · 首存礼
       </div>
       <h1 class="hero-title">
-        <span class="hero-title-line">多种玩法</span>
-        <span class="hero-title-line">精彩不断</span>
+        <span>多种玩法</span>
+        <span class="grad">精彩不断</span>
       </h1>
-      <p class="hero-sub">全球热门游戏 · 一站式体验</p>
-      <button class="hero-cta" type="button" data-apex-magnetic>
-        <span>立即查看</span>
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      <p class="hero-sub">注册即享 <b>100%</b> 首存加赠</p>
+      <button class="hero-cta" type="button">
+        <i class="ri-flashlight-fill"></i>
+        <span>立即领取</span>
       </button>
     </div>
 
-    <div class="hero-rings" aria-hidden="true">
-      <span class="ring ring-1"></span>
-      <span class="ring ring-2"></span>
-      <span class="ring ring-3"></span>
-    </div>
-
-    <div class="hero-dots" aria-hidden="true">
+    <div class="hero-dots">
       <i class="active"></i><i></i><i></i><i></i>
     </div>
   </section>
 
-  <!-- ============ 快捷分类 ============ -->
-  <nav class="quick-cats" aria-label="快捷分类" data-apex-reveal="stagger">
-    <a class="quick-cat" data-apex-action="quick" data-key="sports">
-      <span class="qc-icon" style="--c1:#3b82f6;--c2:#1e40af">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2z"/></svg>
-      </span>
+  <!-- ============ 快捷分类（8 个）============ -->
+  <nav class="quick-cats" aria-label="快捷分类">
+    <a class="qc" data-apex-action="quick" data-key="sports">
+      <span class="qc-icon" data-tone="green"><i class="ri-football-fill"></i></span>
       <span class="qc-name">体育</span>
     </a>
-    <a class="quick-cat" data-apex-action="quick" data-key="games">
-      <span class="qc-icon" style="--c1:#10b981;--c2:#047857">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M8 12h2M9 11v2M15 11h.01M17 13h.01"/></svg>
-      </span>
-      <span class="qc-name">游戏</span>
+    <a class="qc" data-apex-action="quick" data-key="esport">
+      <span class="qc-icon" data-tone="purple"><i class="ri-gamepad-fill"></i></span>
+      <span class="qc-name">电竞</span>
     </a>
-    <a class="quick-cat" data-apex-action="quick" data-key="lottery">
-      <span class="qc-icon" style="--c1:#f59e0b;--c2:#b45309">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V4h8v2M12 11v4M9 15h6"/></svg>
-      </span>
+    <a class="qc" data-apex-action="quick" data-key="fish">
+      <span class="qc-icon" data-tone="cyan"><i class="ri-water-flash-fill"></i></span>
+      <span class="qc-name">捕鱼</span>
+    </a>
+    <a class="qc" data-apex-action="quick" data-key="cards">
+      <span class="qc-icon" data-tone="red"><i class="ri-spade-fill"></i></span>
+      <span class="qc-name">棋牌</span>
+    </a>
+    <a class="qc" data-apex-action="quick" data-key="lottery">
+      <span class="qc-icon" data-tone="orange"><i class="ri-ticket-2-fill"></i></span>
       <span class="qc-name">彩票</span>
     </a>
-    <a class="quick-cat" data-apex-action="quick" data-key="more">
-      <span class="qc-icon" style="--c1:#8b5cf6;--c2:#5b21b6">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-      </span>
+    <a class="qc" data-apex-action="quick" data-key="slots">
+      <span class="qc-icon" data-tone="gold"><i class="ri-vip-diamond-fill"></i></span>
+      <span class="qc-name">电子</span>
+    </a>
+    <a class="qc" data-apex-action="quick" data-key="live">
+      <span class="qc-icon" data-tone="pink"><i class="ri-live-fill"></i></span>
+      <span class="qc-name">真人</span>
+    </a>
+    <a class="qc" data-apex-action="quick" data-key="more">
+      <span class="qc-icon" data-tone="slate"><i class="ri-apps-2-fill"></i></span>
       <span class="qc-name">更多</span>
     </a>
   </nav>
 
 <!-- 后半继续 -->
 
-  <!-- ============ Chip 筛选 ============ -->
-  <nav class="chip-row" id="chip-row" aria-label="分类筛选" data-apex-reveal="top" data-delay="180">
+  <!-- ============ 分类 chip ============ -->
+  <nav class="chip-row" id="chip-row" aria-label="筛选">
     <button class="chip active" type="button">全部</button>
     <button class="chip" type="button">推荐</button>
     <button class="chip" type="button">最新</button>
-    <button class="chip" type="button">热门</button>
+    <button class="chip" type="button">最热</button>
     <button class="chip chip-more" type="button" data-apex-action="menu">
-      更多
-      <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l3 3 3-3"/></svg>
+      更多 <i class="ri-arrow-down-s-line"></i>
     </button>
   </nav>
 
   <!-- ============ 热门内容 ============ -->
-  <section class="section" data-apex-reveal="scroll">
+  <section class="section">
     <div class="section-head">
       <h2 class="section-title">
-        <span class="title-accent"></span>
+        <i class="ri-fire-fill title-icon"></i>
         热门内容
       </h2>
       <a class="section-more" data-apex-action="more" data-key="hot">
-        更多
-        <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+        更多 <i class="ri-arrow-right-s-line"></i>
       </a>
     </div>
 
-    <div class="h-scroll" id="hot-scroll">
-      <a class="content-card" data-apex-action="content">
-        <div class="cc-thumb" style="--a:#fbbf24;--b:#b45309">
-          <span class="cc-badge">#1</span>
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2z"/></svg>
+    <div class="h-scroll">
+      <a class="cc" data-apex-action="content">
+        <div class="cc-thumb tone-gold">
+          <span class="cc-rank">TOP 1</span>
+          <i class="ri-trophy-fill cc-icon"></i>
         </div>
-        <div class="cc-name">内容名称 A</div>
-        <div class="cc-meta">1.2k 热度</div>
+        <div class="cc-name">巅峰对决</div>
+        <div class="cc-meta"><i class="ri-fire-fill"></i> 2.3k 热度</div>
       </a>
-      <a class="content-card" data-apex-action="content">
-        <div class="cc-thumb" style="--a:#ef4444;--b:#991b1b">
-          <span class="cc-badge">#2</span>
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V4h8v2"/></svg>
+      <a class="cc" data-apex-action="content">
+        <div class="cc-thumb tone-red">
+          <span class="cc-rank">TOP 2</span>
+          <i class="ri-boxing-fill cc-icon"></i>
         </div>
-        <div class="cc-name">内容名称 B</div>
-        <div class="cc-meta">986 热度</div>
+        <div class="cc-name">拳王争霸</div>
+        <div class="cc-meta"><i class="ri-fire-fill"></i> 1.8k 热度</div>
       </a>
-      <a class="content-card" data-apex-action="content">
-        <div class="cc-thumb" style="--a:#8b5cf6;--b:#5b21b6">
-          <span class="cc-badge">#3</span>
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+      <a class="cc" data-apex-action="content">
+        <div class="cc-thumb tone-purple">
+          <span class="cc-rank">TOP 3</span>
+          <i class="ri-rocket-2-fill cc-icon"></i>
         </div>
-        <div class="cc-name">内容名称 C</div>
-        <div class="cc-meta">753 热度</div>
+        <div class="cc-name">极速飞行</div>
+        <div class="cc-meta"><i class="ri-fire-fill"></i> 1.5k 热度</div>
       </a>
-      <a class="content-card" data-apex-action="content">
-        <div class="cc-thumb" style="--a:#06b6d4;--b:#0e7490">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="1.6"><path d="M2 17 5.5 11 9 14l3-6 3 6 3.5-3L22 17z"/></svg>
+      <a class="cc" data-apex-action="content">
+        <div class="cc-thumb tone-cyan">
+          <i class="ri-ship-2-fill cc-icon"></i>
         </div>
-        <div class="cc-name">内容名称 D</div>
-        <div class="cc-meta">621 热度</div>
+        <div class="cc-name">深海探秘</div>
+        <div class="cc-meta"><i class="ri-fire-fill"></i> 986</div>
       </a>
-      <a class="content-card" data-apex-action="content">
-        <div class="cc-thumb" style="--a:#c99a3d;--b:#8b6f1f">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#fff" stroke-width="1.6"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
+      <a class="cc" data-apex-action="content">
+        <div class="cc-thumb tone-green">
+          <i class="ri-sword-fill cc-icon"></i>
         </div>
-        <div class="cc-name">内容名称 E</div>
-        <div class="cc-meta">518 热度</div>
+        <div class="cc-name">传奇之战</div>
+        <div class="cc-meta"><i class="ri-fire-fill"></i> 720</div>
       </a>
     </div>
   </section>
 
   <!-- ============ 精选内容 ============ -->
-  <section class="section" data-apex-reveal="scroll">
+  <section class="section">
     <div class="section-head">
       <h2 class="section-title">
-        <span class="title-accent"></span>
+        <i class="ri-star-smile-fill title-icon"></i>
         精选内容
       </h2>
       <a class="section-more" data-apex-action="more" data-key="featured">
-        更多
-        <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+        更多 <i class="ri-arrow-right-s-line"></i>
       </a>
     </div>
 
     <div class="feature-grid">
-      <a class="feature-card feature-card-large" data-apex-action="content">
-        <div class="fc-art" style="--a:#0f172a;--b:#1e293b">
-          <span class="fc-badge fc-badge-new">NEW</span>
-          <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#F0D187" stroke-width="1.4">
-            <path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6z"/>
-            <path d="m9 12 2 2 4-4" stroke-width="1.8"/>
-          </svg>
-          <div class="fc-glow"></div>
+      <a class="fc" data-apex-action="content">
+        <div class="fc-art tone-black">
+          <span class="fc-badge fc-new">NEW</span>
+          <i class="ri-shield-star-fill fc-icon gold-icon"></i>
+          <span class="fc-glow"></span>
         </div>
         <div class="fc-info">
-          <div class="fc-name">精选名称 1</div>
-          <div class="fc-desc">最受欢迎的内容之一</div>
+          <div class="fc-name">尊享体验</div>
+          <div class="fc-desc">最受欢迎内容</div>
           <div class="fc-stats">
-            <span class="fc-star">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="#F0D187" stroke="#F0D187" stroke-width="1"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
-              4.9
-            </span>
-            <span>2.3k</span>
+            <span class="star"><i class="ri-star-fill"></i> 4.9</span>
+            <span><i class="ri-user-3-line"></i> 2.3k</span>
           </div>
         </div>
       </a>
-
-      <a class="feature-card feature-card-large" data-apex-action="content">
-        <div class="fc-art" style="--a:#7c2d12;--b:#431407">
-          <span class="fc-badge fc-badge-hot">HOT</span>
-          <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#FBBF24" stroke-width="1.4">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M12 7v5l3 3" stroke-width="1.8"/>
-          </svg>
-          <div class="fc-glow"></div>
+      <a class="fc" data-apex-action="content">
+        <div class="fc-art tone-gold">
+          <span class="fc-badge fc-hot">HOT</span>
+          <i class="ri-timer-flash-fill fc-icon"></i>
+          <span class="fc-glow"></span>
         </div>
         <div class="fc-info">
-          <div class="fc-name">精选名称 2</div>
+          <div class="fc-name">限时活动</div>
           <div class="fc-desc">本周热门精选</div>
           <div class="fc-stats">
-            <span class="fc-star">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="#FBBF24" stroke="#FBBF24" stroke-width="1"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
-              4.7
-            </span>
-            <span>1.8k</span>
+            <span class="star"><i class="ri-star-fill"></i> 4.7</span>
+            <span><i class="ri-user-3-line"></i> 1.8k</span>
           </div>
         </div>
       </a>
@@ -284,183 +268,158 @@
   </section>
 
   <!-- ============ 全部分类 ============ -->
-  <section class="section" data-apex-reveal="scroll">
+  <section class="section">
     <div class="section-head">
       <h2 class="section-title">
-        <span class="title-accent"></span>
+        <i class="ri-apps-2-fill title-icon"></i>
         全部分类
       </h2>
       <a class="section-more" data-apex-action="more" data-key="all">
-        更多
-        <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+        更多 <i class="ri-arrow-right-s-line"></i>
       </a>
     </div>
 
     <div class="grid-cats">
-      <a class="grid-cat" data-apex-action="cat" data-key="c1">
-        <span class="gc-icon" style="--c1:#60a5fa;--c2:#1e40af">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/></svg>
-        </span>
-        <span class="gc-name">分类一</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-green"><i class="ri-football-fill"></i></span>
+        <span class="gc-name">体育</span>
         <span class="gc-count">128</span>
       </a>
-      <a class="grid-cat" data-apex-action="cat" data-key="c2">
-        <span class="gc-icon" style="--c1:#34d399;--c2:#047857">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
-        </span>
-        <span class="gc-name">分类二</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-purple"><i class="ri-gamepad-fill"></i></span>
+        <span class="gc-name">电竞</span>
         <span class="gc-count">96</span>
       </a>
-      <a class="grid-cat" data-apex-action="cat" data-key="c3">
-        <span class="gc-icon" style="--c1:#fbbf24;--c2:#b45309">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5h8v2"/></svg>
-        </span>
-        <span class="gc-name">分类三</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-cyan"><i class="ri-water-flash-fill"></i></span>
+        <span class="gc-name">捕鱼</span>
         <span class="gc-count">72</span>
       </a>
-      <a class="grid-cat" data-apex-action="cat" data-key="c4">
-        <span class="gc-icon" style="--c1:#f472b6;--c2:#9d174d">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
-        </span>
-        <span class="gc-name">分类四</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-red"><i class="ri-spade-fill"></i></span>
+        <span class="gc-name">棋牌</span>
         <span class="gc-count">64</span>
       </a>
-      <a class="grid-cat" data-apex-action="cat" data-key="c5">
-        <span class="gc-icon" style="--c1:#a78bfa;--c2:#5b21b6">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-        </span>
-        <span class="gc-name">分类五</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-orange"><i class="ri-ticket-2-fill"></i></span>
+        <span class="gc-name">彩票</span>
         <span class="gc-count">58</span>
       </a>
-      <a class="grid-cat" data-apex-action="cat" data-key="c6">
-        <span class="gc-icon" style="--c1:#22d3ee;--c2:#0e7490">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>
-        </span>
-        <span class="gc-name">分类六</span>
+      <a class="gc" data-apex-action="cat">
+        <span class="gc-icon tone-gold"><i class="ri-vip-diamond-fill"></i></span>
+        <span class="gc-name">电子</span>
         <span class="gc-count">42</span>
       </a>
     </div>
   </section>
 
   <!-- ============ 分类精选 ============ -->
-  <section class="section" data-apex-reveal="scroll">
+  <section class="section">
     <div class="section-head">
       <h2 class="section-title">
-        <span class="title-accent"></span>
+        <i class="ri-layout-grid-fill title-icon"></i>
         分类精选
       </h2>
       <a class="section-more" data-apex-action="more" data-key="cat-featured">
-        更多
-        <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+        更多 <i class="ri-arrow-right-s-line"></i>
       </a>
     </div>
 
     <div class="grid-content">
-      <a class="gt-thumb" data-apex-action="content" style="--a:#1e3a8a;--b:#0c1e4a">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#93c5fd" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2z"/></svg>
-        <span class="gt-name">名称 1</span>
+      <a class="gt tone-green" data-apex-action="content">
+        <i class="ri-football-fill gt-icon"></i>
+        <span class="gt-name">足球</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#065f46;--b:#022c22">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#6ee7b7" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/></svg>
-        <span class="gt-name">名称 2</span>
+      <a class="gt tone-purple" data-apex-action="content">
+        <i class="ri-gamepad-fill gt-icon"></i>
+        <span class="gt-name">电竞</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#7c2d12;--b:#431407">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fbbf24" stroke-width="1.6"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
-        <span class="gt-name">名称 3</span>
+      <a class="gt tone-cyan" data-apex-action="content">
+        <i class="ri-ship-2-fill gt-icon"></i>
+        <span class="gt-name">捕鱼</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#6d28d9;--b:#3b0764">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#c4b5fd" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-        <span class="gt-name">名称 4</span>
+      <a class="gt tone-red" data-apex-action="content">
+        <i class="ri-spade-fill gt-icon"></i>
+        <span class="gt-name">棋牌</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#be123c;--b:#4c0519">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fda4af" stroke-width="1.6"><circle cx="12" cy="12" r="4"/></svg>
-        <span class="gt-name">名称 5</span>
+      <a class="gt tone-orange" data-apex-action="content">
+        <i class="ri-ticket-2-fill gt-icon"></i>
+        <span class="gt-name">彩票</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#0e7490;--b:#042f2e">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#67e8f9" stroke-width="1.6"><path d="M2 17 5.5 11 9 14l3-6 3 6 3.5-3L22 17z"/></svg>
-        <span class="gt-name">名称 6</span>
+      <a class="gt tone-gold" data-apex-action="content">
+        <i class="ri-vip-diamond-fill gt-icon"></i>
+        <span class="gt-name">电子</span>
       </a>
     </div>
   </section>
 
   <!-- ============ 广告位 2 ============ -->
-  <section class="promo" data-apex-action="promo" data-apex-reveal="scroll">
-    <div class="promo-bg" aria-hidden="true"></div>
-    <div class="promo-deco" aria-hidden="true">
-      <span class="pd-orb pd-1"></span>
-      <span class="pd-orb pd-2"></span>
-    </div>
+  <section class="promo" data-apex-action="promo">
+    <span class="promo-orb"></span>
+    <span class="promo-orb promo-orb-2"></span>
     <div class="promo-body">
-      <div class="promo-kicker">新功能上线</div>
+      <span class="promo-tag">新功能</span>
       <div class="promo-title">完整账户体系 · 安全保障</div>
-      <div class="promo-desc">多层防护 · 极速体验 · 隐私优先</div>
+      <div class="promo-desc">Passkey · 加密备份 · 隐私优先</div>
     </div>
     <button class="promo-cta" type="button">
-      了解详情
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      了解 <i class="ri-arrow-right-line"></i>
     </button>
   </section>
 
   <!-- ============ 最近内容 ============ -->
-  <section class="section" data-apex-reveal="scroll">
+  <section class="section">
     <div class="section-head">
       <h2 class="section-title">
-        <span class="title-accent"></span>
+        <i class="ri-history-fill title-icon"></i>
         最近内容
       </h2>
       <a class="section-more" data-apex-action="more" data-key="recent">
-        更多
-        <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+        更多 <i class="ri-arrow-right-s-line"></i>
       </a>
     </div>
 
     <div class="grid-content">
-      <a class="gt-thumb" data-apex-action="content" style="--a:#0f0f0f;--b:#2a2a2a">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#F0D187" stroke-width="1.6"><circle cx="12" cy="12" r="9"/></svg>
-        <span class="gt-name">最近 A</span>
+      <a class="gt tone-black" data-apex-action="content">
+        <i class="ri-crown-fill gt-icon gold-icon"></i>
+        <span class="gt-name">巅峰对决</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#7c2d12;--b:#431407">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fbbf24" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="2"/></svg>
-        <span class="gt-name">最近 B</span>
+      <a class="gt tone-orange" data-apex-action="content">
+        <i class="ri-fire-fill gt-icon"></i>
+        <span class="gt-name">拳王争霸</span>
       </a>
-      <a class="gt-thumb" data-apex-action="content" style="--a:#0e7490;--b:#042f2e">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#67e8f9" stroke-width="1.6"><path d="M2 17 5.5 11 9 14l3-6 3 6 3.5-3L22 17z"/></svg>
-        <span class="gt-name">最近 C</span>
+      <a class="gt tone-cyan" data-apex-action="content">
+        <i class="ri-rocket-2-fill gt-icon"></i>
+        <span class="gt-name">极速飞行</span>
       </a>
     </div>
   </section>
 
   <!-- ============ 帮助中心 ============ -->
-  <section class="help-row" data-apex-reveal="scroll">
+  <section class="help-row">
     <a class="help-card" data-apex-action="help">
-      <span class="help-icon" style="--c1:#3b82f6;--c2:#1e40af">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4M12 17h.01"/></svg>
-      </span>
+      <span class="help-icon tone-blue"><i class="ri-question-fill"></i></span>
       <div class="help-info">
         <div class="help-title">帮助中心</div>
         <div class="help-desc">常见问题解答</div>
       </div>
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      <i class="ri-arrow-right-s-line help-arrow"></i>
     </a>
     <a class="help-card" data-apex-action="support">
-      <span class="help-icon" style="--c1:#10b981;--c2:#047857">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg>
-      </span>
+      <span class="help-icon tone-green"><i class="ri-customer-service-2-fill"></i></span>
       <div class="help-info">
         <div class="help-title">在线客服</div>
         <div class="help-desc">7×24 小时在线</div>
       </div>
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      <i class="ri-arrow-right-s-line help-arrow"></i>
     </a>
     <a class="help-card" data-apex-action="more" data-key="help-more">
-      <span class="help-icon" style="--c1:#94a3b8;--c2:#475569">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
-      </span>
+      <span class="help-icon tone-slate"><i class="ri-shield-check-fill"></i></span>
       <div class="help-info">
-        <div class="help-title">更多服务</div>
-        <div class="help-desc">安全与设置</div>
+        <div class="help-title">安全中心</div>
+        <div class="help-desc">账户 · 隐私 · 设备</div>
       </div>
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+      <i class="ri-arrow-right-s-line help-arrow"></i>
     </a>
   </section>
 
@@ -482,34 +441,29 @@
 <!-- ============ 底部导航 ============ -->
 <nav class="bottom-nav" id="bottom-nav" aria-label="底部导航">
   <button class="bn-item active" type="button" data-apex-action="nav" data-key="home">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+    <i class="ri-home-5-fill bn-icon"></i>
     <span>首页</span>
   </button>
   <button class="bn-item" type="button" data-apex-action="nav" data-key="cat">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+    <i class="ri-apps-2-fill bn-icon"></i>
     <span>分类</span>
   </button>
-  <button class="bn-item" type="button" data-apex-action="nav" data-key="content">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-    <span>内容</span>
-  </button>
   <button class="bn-item" type="button" data-apex-action="nav" data-key="wallet">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h3"/><path d="M2 10h20"/></svg>
+    <i class="ri-wallet-3-fill bn-icon"></i>
+    <span class="bn-badge">送3%</span>
     <span>钱包</span>
   </button>
+  <button class="bn-item" type="button" data-apex-action="nav" data-key="content">
+    <i class="ri-live-fill bn-icon"></i>
+    <span>内容</span>
+  </button>
   <button class="bn-item" type="button" data-apex-action="nav" data-key="me">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+    <i class="ri-user-3-fill bn-icon"></i>
     <span>我的</span>
   </button>
 </nav>
 
-<!-- ============ 动画库 (GSAP + Anime.js) ============ -->
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
-
-<!-- ============ 应用脚本 ============ -->
-<script src="/src/js/apiClient.js?v=20260930e"></script>
-<script src="/src/js/home.js?v=20260930e"></script>
+<script src="/src/js/apiClient.js?v=20260930f"></script>
+<script src="/src/js/home.js?v=20260930f"></script>
 </body>
 </html>
