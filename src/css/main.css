@@ -185,7 +185,7 @@ body {
 
 /* ------------------------------------------------------------
    顶部图片
-   使用刚刚复制进去的 login-hero.jpeg
+   使用刚刚复制进去的 login-hero.webp
    ------------------------------------------------------------ */
 
 .hero {
@@ -200,7 +200,7 @@ body {
   height: 235px !important;
   min-height: 0 !important;
 
-  background-image: url("/login-hero.jpeg") !important;
+  background-image: url("/login-hero.webp") !important;
   background-position: center center !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
