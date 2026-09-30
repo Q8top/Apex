@@ -2,6 +2,12 @@
   'use strict';
 
   window.showLoggedIn = function (user) {
+    // P82-Fix: 登录后隐藏整个登录页外壳（Hero / 卡片 / 链接行 / 页脚）
+    // 之前的实现只隐藏了认证卡片，但 .link-row 使用了 display:flex !important
+    // 覆盖了 JS 的 style.display='none'，导致"在线客服/忘记密码"仍残留。
+    // 现在通过在 <body> 上添加 class，让 CSS 用 !important 统一隐藏。
+
+    // 1) 隐藏所有认证表单
     var formIds = [
       'login-method-picker', 'register-method-picker',
       'passkey-signup-form', 'login-form', 'register-form',
@@ -11,13 +17,28 @@
       var el = document.getElementById(formIds[i]);
       if (el) el.style.display = 'none';
     }
-    var tabs = document.getElementById('auth-tabs');
-    if (tabs) tabs.style.display = 'none';
-    var cardSection = document.querySelector('.card-section');
-    if (cardSection) cardSection.style.display = 'none';
-    var linkRow = document.querySelector('.link-row');
-    if (linkRow) linkRow.style.display = 'none';
 
+    // 2) body 加 class，CSS 统一控制外壳显隐（!important 优先级最高）
+    try {
+      document.body.classList.add('apex-logged-in-active');
+    } catch (e) {}
+
+    // 3) 内联兜底（防止 CSS 未及时加载）
+    try {
+      var _hide = function (sel) {
+        var n = document.querySelector(sel);
+        if (n && n.style) {
+          n.style.setProperty('display', 'none', 'important');
+        }
+      };
+      _hide('.hero');
+      _hide('.card-section');
+      _hide('.link-row');
+      _hide('.footer');
+      _hide('#auth-tabs');
+    } catch (e) {}
+
+    // 4) 显示登录后欢迎页
     var el = document.getElementById('apex-logged-in');
     if (el) {
       el.style.display = 'block';

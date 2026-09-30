@@ -2504,3 +2504,28 @@ body {
 }
 /* APEX-LOGIN-UI-V3-STEP25-END */
 
+
+/* ============================================================
+   APEX-LOGGED-IN-STATE
+   登录后：隐藏所有登录页外壳（Hero / 卡片 / 链接行 / 页脚）
+   使用 body.apex-logged-in-active 类，由 block-07 的
+   showLoggedIn() 添加。用 !important 确保覆盖 .link-row
+   等使用了 display:flex !important 的规则。
+   ============================================================ */
+body.apex-logged-in-active .hero,
+body.apex-logged-in-active .card-section,
+body.apex-logged-in-active .link-row,
+body.apex-logged-in-active .footer,
+body.apex-logged-in-active #auth-tabs {
+  display: none !important;
+}
+
+/* 登录后欢迎页居中 */
+body.apex-logged-in-active #apex-logged-in {
+  display: block !important;
+  min-height: 70vh;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
