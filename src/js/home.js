@@ -2,6 +2,14 @@
 (function () {
   'use strict';
 
+  // P84-7: 统一 CSPRNG（避免 Math.random 触发安全扫描）
+  // 使用 Web Crypto，0..1 的浮点数。仅用于装饰性动画，非安全用途。
+  function cryptoRandom() {
+    var buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0] / 4294967296;
+  }
+
   // ============ 1. 认证检查：未登录 → 跳回登录页 ============
   function checkAuth() {
     var controller = new AbortController();
@@ -61,7 +69,7 @@
     if (!el) return;
 
     var target = 8888888;
-    var start = target - 120000 + Math.floor(Math.random() * 240000);
+    var start = target - 120000 + Math.floor(cryptoRandom() * 240000);
     var t0 = performance.now();
     var duration = 1800;
 
