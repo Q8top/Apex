@@ -155,7 +155,7 @@
         toast((vr && vr.message) || '绑定失败');
       }
     } catch (e) {
-      console.error('[Passkey] register:', e);
+      console.error('[Passkey] register:', e && e.message ? e.message : e);
       toast('绑定失败：' + friendlyError(e));
     }
   }
@@ -271,7 +271,7 @@
         }
       }
     } catch (e) {
-      console.error('[Passkey] login:', e);
+      console.error('[Passkey] login:', e && e.message ? e.message : e);
       const msg = (e && e.message) ? e.message : '';
       if (msg.indexOf('网络') !== -1 || msg.indexOf('fetch') !== -1 || msg.indexOf('timeout') !== -1) {
         toast('网络异常，请检查网络后重试', 'error');
@@ -358,7 +358,7 @@
         toast((vr && vr.message) || '注册失败');
       }
     } catch (e) {
-      console.error('[Passkey] signup:', e);
+      console.error('[Passkey] signup:', e && e.message ? e.message : e);
       toast('注册失败：' + friendlyError(e));
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = '🔐 使用 Passkey 创建账号'; }
@@ -411,7 +411,7 @@
         }
       }, 1000);
     } catch (e) {
-      console.error('[Passkey] recoverSendCode:', e);
+      console.error('[Passkey] recoverSendCode:', e && e.message ? e.message : e);
       toast('发送失败：' + friendlyError(e));
       if (btn) { btn.disabled = false; btn.textContent = '发送验证码'; }
     }
@@ -491,7 +491,7 @@
         toast((vr && vr.message) || '找回失败');
       }
     } catch (e) {
-      console.error('[Passkey] recoverVerify:', e);
+      console.error('[Passkey] recoverVerify:', e && e.message ? e.message : e);
       toast('找回失败：' + friendlyError(e));
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = '🔐 用新设备重新绑定 Passkey'; }
@@ -551,7 +551,7 @@
         listEl.appendChild(item);
       }
     } catch (e) {
-      console.error('[Passkey] list:', e);
+      console.error('[Passkey] list:', e && e.message ? e.message : e);
       listEl.textContent = '加载失败';
     }
   }
