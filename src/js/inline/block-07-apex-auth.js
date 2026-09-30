@@ -42,9 +42,9 @@
     //    home.html 会在加载时再次调用 /api/me 校验登录态，
     //    因此这里直接跳转是安全的。
     try {
-      var targetPath = '/home.html';
+      var targetPath = '/home?v=20260930c';
       var curPath = location.pathname;
-      if (curPath !== targetPath && curPath !== '/home') {
+      if (curPath !== '/home' && curPath !== '/home.html' && !curPath.startsWith('/home')) {
         location.replace(targetPath);
         return;
       }

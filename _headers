@@ -22,6 +22,12 @@
 /index.html
   Cache-Control: no-cache
 
+/home
+  Cache-Control: no-cache
+
+/home.html
+  Cache-Control: no-cache
+
 /privacy.html
   Cache-Control: public, max-age=3600
 
