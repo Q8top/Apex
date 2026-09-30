@@ -31,6 +31,9 @@ updates:
     ignore:
       - dependency-name: "wrangler"
         update-types: ["version-update:semver-major"]
+      # ws 是被 miniflare (wrangler 传递依赖) 锁死的 transitive dep，
+      # 无法独立升级；Dependabot 反复尝试失败会污染 workflow 状态。
+      - dependency-name: "ws"
 
   # GitHub Actions 工作流
   - package-ecosystem: github-actions
