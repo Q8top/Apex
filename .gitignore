@@ -72,3 +72,6 @@ audit-results-*/
 .audit-backup-*/
 audit-backup-*/
 .archive/
+
+# Apex: 未使用的 LQIP 缩略图（生成工具副产物）
+login-hero-lqip.webp
