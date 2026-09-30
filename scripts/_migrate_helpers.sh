@@ -107,6 +107,12 @@ run_sql_file() {
     rc=$?
     if echo "$out" | grep -q '"success": *true'; then return 0; fi
     if echo "$out" | grep -qE 'Executed [0-9]+ queries'; then return 0; fi
+    # P31-Fix: 远程表已有该列时 wrangler 返回 SQLITE_ERROR: duplicate column name
+    # 视为幂等已应用（返回码 2 由 migrate.sh 主循环特殊处理）
+    if echo "$out" | grep -q "duplicate column name"; then
+      echo "[IDEMPOTENT] $file 目标列已存在，视为已应用" >&2
+      return 2
+    fi
     echo "$out" >&2
     return $rc
   fi

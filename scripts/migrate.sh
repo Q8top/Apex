@@ -108,8 +108,14 @@ for f in $(list_migrations); do
   fi
 
   echo "[APPLY] $name"
-  if ! apply_one "$MODE" "$f"; then
-    echo "[ERROR] $name 执行失败"
+  apply_one "$MODE" "$f"
+  APPLY_RC=$?
+  # P31-Fix: 退出码 2 = 幂等已应用（如 duplicate column name）
+  # 正常继续并写入 _migrations 记录
+  if [ "$APPLY_RC" = "2" ]; then
+    echo "[IDEMPOTENT] $name 目标已存在，视为已应用"
+  elif [ "$APPLY_RC" != "0" ]; then
+    echo "[ERROR] $name 执行失败 (RC=$APPLY_RC)"
     exit 1
   fi
 
