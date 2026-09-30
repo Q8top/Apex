@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f8fb">
+  <meta name="theme-color" content="#f5f6f8">
   <meta name="robots" content="noindex,nofollow">
   <title>Apex</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
-  <link rel="stylesheet" href="/src/css/home.css?v=20260930a">
+  <link rel="stylesheet" href="/src/css/home.css?v=20260930b">
 </head>
 <body>
 
@@ -23,7 +23,6 @@
         <span class="lang-label" id="lang-label">中文</span>
         <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
       </button>
-
       <button class="notify-btn" id="notify-btn" type="button" aria-label="通知">
         <i class="ri-notification-3-line" aria-hidden="true"></i>
         <span class="notify-dot" aria-hidden="true"></span>
@@ -45,10 +44,11 @@
       </span>
       <span class="profile-meta">
         <span class="profile-name" id="profile-name">加载中…</span>
-        <span class="profile-id" id="profile-id">ID: --</span>
-        <span class="profile-tag">
-          <i class="ri-vip-crown-fill" aria-hidden="true"></i>
-          <span>点击查看个人资料</span>
+        <span class="profile-sub">
+          <span class="profile-id" id="profile-id">ID: --</span>
+          <span class="profile-vip">
+            <i class="ri-vip-crown-fill" aria-hidden="true"></i>VIP
+          </span>
         </span>
       </span>
       <i class="ri-arrow-right-s-line profile-arrow" aria-hidden="true"></i>
@@ -56,23 +56,21 @@
 
     <div class="quick-actions">
       <button class="qa-item" type="button" data-apex-action="support">
-        <span class="qa-icon tone-blue" aria-hidden="true">
-          <i class="ri-customer-service-2-fill"></i>
+        <span class="qa-icon qa-blue" aria-hidden="true">
+          <i class="ri-customer-service-2-line"></i>
         </span>
         <span class="qa-label">在线客服</span>
       </button>
-
       <button class="qa-item" type="button" data-apex-action="notify">
-        <span class="qa-icon tone-gold" aria-hidden="true">
-          <i class="ri-notification-3-fill"></i>
+        <span class="qa-icon qa-gold" aria-hidden="true">
+          <i class="ri-notification-3-line"></i>
           <span class="qa-badge">3</span>
         </span>
         <span class="qa-label">通知</span>
       </button>
-
       <button class="qa-item" type="button" data-apex-action="settings">
-        <span class="qa-icon tone-slate" aria-hidden="true">
-          <i class="ri-settings-3-fill"></i>
+        <span class="qa-icon qa-dark" aria-hidden="true">
+          <i class="ri-settings-3-line"></i>
         </span>
         <span class="qa-label">设置</span>
       </button>
@@ -80,12 +78,10 @@
 
   </section>
 
-  <section class="logout-row">
-    <button class="btn-logout" id="btn-logout" type="button" data-apex-action="logout">
-      <i class="ri-logout-box-r-line" aria-hidden="true"></i>
-      <span>退出登录</span>
-    </button>
-  </section>
+  <button class="btn-logout" id="btn-logout" type="button" data-apex-action="logout">
+    <i class="ri-logout-box-r-line" aria-hidden="true"></i>
+    <span>退出登录</span>
+  </button>
 
 </main>
 

@@ -1,32 +1,32 @@
 /* ============================================================
-   Apex · 登录后首页 v6（欢迎卡片）
-   白色为主 · 黑色为辅 · 金银点缀
+   Apex · 登录后首页 v6
+   白为主 · 黑为辅 · 金红点缀
    ============================================================ */
 
 :root {
-  --bg: #f7f8fb;
-  --card: #ffffff;
-  --ink: #0a0a0a;
-  --ink-2: #4b5563;
-  --ink-3: #94a3b8;
-  --line: rgba(15,23,42,.08);
-  --line-2: rgba(15,23,42,.05);
-
-  --gold:   #d4a03e;
-  --gold-2: #f5d77f;
+  --bg:     #f5f6f8;
+  --card:   #ffffff;
+  --ink:    #0a0a0a;
+  --ink-2:  #52525b;
+  --ink-3:  #a1a1aa;
+  --line:   rgba(10,10,10,.06);
+  --line-2: rgba(10,10,10,.04);
+  --gold-1: #f5d77f;
+  --gold-2: #d4a03e;
   --gold-3: #8b6a1f;
-  --blue:   #3b82f6;
+  --black:  #0a0a0a;
   --red:    #ef4444;
-  --slate:  #334155;
+  --blue-ink: #1e3a8a;
+  --dark-ink: #27272a;
 
-  --radius: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 26px;
-  --radius-pill: 999px;
+  --r: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
 
-  --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
-  --shadow-md: 0 6px 16px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.05);
-  --shadow-lg: 0 16px 40px rgba(15,23,42,.12);
+  --sh-1: 0 1px 2px rgba(10,10,10,.04);
+  --sh-2: 0 4px 16px rgba(10,10,10,.06), 0 1px 3px rgba(10,10,10,.03);
+  --sh-3: 0 16px 40px rgba(10,10,10,.10);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -34,10 +34,6 @@
 html, body {
   min-height: 100dvh;
   background: var(--bg);
-  background-image:
-    radial-gradient(900px 500px at 100% -10%, rgba(212,160,62,.08), transparent 60%),
-    radial-gradient(700px 400px at -20% 0%, rgba(59,130,246,.06), transparent 55%);
-  background-attachment: fixed;
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
@@ -48,34 +44,35 @@ html, body {
 body {
   display: flex;
   justify-content: center;
-  padding: max(18px, env(safe-area-inset-top)) 16px 24px;
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding: max(20px, env(safe-area-inset-top)) 16px 32px;
+  padding-bottom: max(32px, env(safe-area-inset-bottom));
 }
 
 .app {
   width: 100%;
   max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* ============================================================
-   欢迎卡片
-   ============================================================ */
+/* ============ 主卡片 ============ */
 .welcome-card {
   position: relative;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-xl);
   padding: 18px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--sh-2);
 }
 
-/* ---------- 顶栏（语言 + 通知） ---------- */
+/* ---------- 顶栏 ---------- */
 .wc-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
   position: relative;
+  margin-bottom: 18px;
 }
 
 .lang-btn {
@@ -84,25 +81,20 @@ body {
   gap: 8px;
   height: 36px;
   padding: 0 12px;
-  border-radius: var(--radius-pill);
-  background: #fff;
+  border-radius: var(--r-pill);
+  background: var(--card);
   border: 1px solid var(--line);
   color: var(--ink);
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform .18s ease, box-shadow .18s ease;
+  box-shadow: var(--sh-1);
+  transition: transform .18s ease;
 }
 .lang-btn:active { transform: scale(.96); }
 .lang-btn .lang-flag { font-size: 16px; line-height: 1; }
-.lang-btn .lang-label { letter-spacing: -.01em; }
-.lang-btn i {
-  font-size: 16px;
-  color: var(--ink-3);
-  transition: transform .2s ease;
-}
+.lang-btn i { font-size: 15px; color: var(--ink-3); transition: transform .2s; }
 .lang-btn[aria-expanded="true"] i { transform: rotate(180deg); }
 
 .notify-btn {
@@ -110,19 +102,19 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--line);
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--sh-1);
   transition: transform .18s ease;
 }
 .notify-btn:active { transform: scale(.94); }
 .notify-btn i {
   font-size: 18px;
-  color: var(--ink-2);
-  filter: drop-shadow(0 1px 2px rgba(15,23,42,.18));
+  color: var(--ink);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.10));
 }
 .notify-dot {
   position: absolute;
@@ -135,24 +127,23 @@ body {
   box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(239,68,68,.55);
   animation: pulseDot 2.2s ease-in-out infinite;
 }
-
 @keyframes pulseDot {
-  0%, 100% { transform: scale(1);   opacity: 1; }
-  50%      { transform: scale(.7);  opacity: .6; }
+  0%, 100% { transform: scale(1);  opacity: 1; }
+  50%      { transform: scale(.7); opacity: .6; }
 }
 
 /* ---------- 语言下拉 ---------- */
 .lang-menu {
   position: absolute;
-  top: 58px;
-  left: 0;
+  top: 62px;
+  left: 18px;
   z-index: 50;
-  min-width: 190px;
+  min-width: 200px;
   padding: 6px;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--r);
+  box-shadow: var(--sh-3);
   list-style: none;
 }
 .lang-menu[hidden] { display: none; }
@@ -166,19 +157,28 @@ body {
   font-weight: 500;
   color: var(--ink-2);
   cursor: pointer;
-  transition: background .15s ease, color .15s ease;
+  transition: background .15s ease;
 }
 .lang-menu li span:first-child { font-size: 16px; line-height: 1; }
 .lang-menu li:hover,
 .lang-menu li:focus-visible {
-  background: #f7f8fb;
+  background: var(--bg);
   color: var(--ink);
   outline: none;
 }
 .lang-menu li[aria-selected="true"] {
-  background: linear-gradient(135deg, rgba(245,215,127,.25), rgba(212,160,62,.12));
-  color: var(--gold-3);
+  background: var(--bg);
+  color: var(--ink);
   font-weight: 700;
+}
+.lang-menu li[aria-selected="true"]::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-2);
+  margin-left: auto;
+  box-shadow: 0 0 6px rgba(212,160,62,.7);
 }
 
 /* ---------- 用户信息块 ---------- */
@@ -187,47 +187,34 @@ body {
   align-items: center;
   gap: 14px;
   padding: 14px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #fafbfd 0%, #f3f4f8 100%);
-  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  border: 1px solid var(--line);
   text-decoration: none;
   color: inherit;
   cursor: pointer;
   transition: transform .18s ease, background .18s ease;
-  position: relative;
-  overflow: hidden;
-}
-.profile-block::before {
-  content: '';
-  position: absolute;
-  top: -60%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,215,127,.28), transparent 65%);
-  pointer-events: none;
 }
 .profile-block:active {
   transform: scale(.985);
-  background: linear-gradient(135deg, #f3f4f8 0%, #eaecf1 100%);
+  background: #fafbfc;
 }
 
 .profile-avatar {
+  position: relative;
   flex-shrink: 0;
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  padding: 2px;
+  padding: 2.5px;
   background: conic-gradient(from 210deg, #f5d77f, #d4a03e, #f5d77f, #8b6a1f, #f5d77f);
-  box-shadow: 0 6px 14px rgba(212,160,62,.35);
-  position: relative;
+  box-shadow: 0 4px 12px rgba(212,160,62,.28);
   display: inline-block;
 }
 .profile-avatar::after {
   content: '';
   position: absolute;
-  inset: 2px;
+  inset: 2.5px;
   border-radius: 50%;
   background: #fff;
   z-index: 1;
@@ -240,7 +227,7 @@ body {
   place-items: center;
   font-size: 24px;
   color: var(--gold-3);
-  filter: drop-shadow(0 2px 4px rgba(139,106,31,.4));
+  filter: drop-shadow(0 1px 2px rgba(139,106,31,.35));
 }
 
 .profile-meta {
@@ -248,12 +235,10 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  position: relative;
-  z-index: 2;
+  gap: 5px;
 }
 .profile-name {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
   color: var(--ink);
   letter-spacing: -.02em;
@@ -261,33 +246,42 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.profile-id {
+.profile-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
+}
+.profile-id {
   color: var(--ink-3);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.profile-tag {
+.profile-vip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 3px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--gold-3);
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #f5d77f, #d4a03e);
+  color: #4a2e00;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    0 1px 3px rgba(212,160,62,.4);
 }
-.profile-tag i {
-  font-size: 12px;
-  filter: drop-shadow(0 1px 3px rgba(212,160,62,.6));
+.profile-vip i {
+  font-size: 10px;
+  filter: drop-shadow(0 1px 1px rgba(74,46,0,.4));
 }
 
 .profile-arrow {
   flex-shrink: 0;
   font-size: 20px;
   color: var(--ink-3);
-  filter: drop-shadow(0 1px 2px rgba(15,23,42,.15));
-  position: relative;
-  z-index: 2;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.08));
 }
 
 /* ---------- 快捷入口 ---------- */
@@ -296,7 +290,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 16px;
-  padding-top: 16px;
+  padding-top: 18px;
   border-top: 1px solid var(--line-2);
 }
 
@@ -306,7 +300,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 12px 6px;
-  border-radius: var(--radius);
+  border-radius: var(--r);
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -315,40 +309,31 @@ body {
 }
 .qa-item:active {
   transform: scale(.95);
-  background: #f7f8fb;
+  background: var(--bg);
 }
 
 .qa-icon {
   position: relative;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--c1), var(--c2));
+  background: #fff;
+  border: 1px solid var(--line);
   box-shadow:
-    0 8px 16px -6px var(--c2),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 -2px 5px rgba(0,0,0,.15);
-  overflow: hidden;
-}
-.qa-icon::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.55), transparent 55%);
-  pointer-events: none;
+    0 2px 4px rgba(10,10,10,.05),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 2px rgba(10,10,10,.03);
 }
 .qa-icon i {
-  position: relative;
-  z-index: 2;
-  font-size: 20px;
-  color: #fff;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+  font-size: 22px;
+  color: var(--ink);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.10));
 }
-.qa-icon.tone-blue  { --c1: #60a5fa; --c2: #1d4ed8; }
-.qa-icon.tone-gold  { --c1: #f5d77f; --c2: #b8862d; }
-.qa-icon.tone-slate { --c1: #94a3b8; --c2: #334155; }
+.qa-blue i { color: var(--blue-ink); }
+.qa-gold i { color: var(--gold-3); }
+.qa-dark i { color: var(--dark-ink); }
 
 .qa-badge {
   position: absolute;
@@ -371,63 +356,52 @@ body {
 }
 
 .qa-label {
-  font-size: 11.5px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--ink-2);
-  white-space: nowrap;
   letter-spacing: -.01em;
 }
 
-/* ============================================================
-   退出按钮
-   ============================================================ */
-.logout-row {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-}
-
+/* ---------- 退出按钮 ---------- */
 .btn-logout {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
-  border-radius: var(--radius-pill);
-  background: #fff;
-  border: 1px solid var(--line);
-  color: var(--ink-2);
-  font-size: 13px;
+  padding: 14px 28px;
+  border-radius: var(--r-pill);
+  background: var(--black);
+  color: #fff;
+  border: 0;
+  font-size: 13.5px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform .18s ease, color .18s ease, border-color .18s ease;
+  align-self: center;
+  box-shadow:
+    0 6px 18px rgba(10,10,10,.20),
+    inset 0 1px 0 rgba(255,255,255,.12);
+  transition: transform .18s ease;
 }
-.btn-logout:active {
-  transform: scale(.97);
-  color: var(--red);
-  border-color: rgba(239,68,68,.3);
-}
+.btn-logout:active { transform: scale(.97); }
 .btn-logout i {
   font-size: 16px;
-  filter: drop-shadow(0 1px 2px rgba(15,23,42,.15));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.4));
 }
 
-/* ============================================================
-   Toast
-   ============================================================ */
+/* ---------- Toast ---------- */
 .toast {
   position: fixed;
   left: 50%;
   bottom: 40px;
   transform: translateX(-50%) translateY(12px);
   padding: 12px 22px;
-  border-radius: var(--radius-pill);
-  background: rgba(15,23,42,.94);
+  border-radius: var(--r-pill);
+  background: rgba(10,10,10,.94);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
-  box-shadow: 0 14px 34px rgba(15,23,42,.28);
+  box-shadow: 0 14px 34px rgba(10,10,10,.28);
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s ease, transform .28s cubic-bezier(.16,1,.3,1);
@@ -441,21 +415,15 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ============================================================
-   响应式
-   ============================================================ */
+/* ---------- 响应式 ---------- */
 @media (max-width: 380px) {
-  body { padding: 12px 12px 20px; }
+  body { padding: 12px 12px 24px; }
   .welcome-card { padding: 14px; }
-  .profile-avatar { width: 48px; height: 48px; }
+  .profile-avatar { width: 50px; height: 50px; }
   .profile-avatar i { font-size: 20px; }
-  .profile-name { font-size: 15px; }
-  .qa-icon { width: 38px; height: 38px; border-radius: 11px; }
-  .qa-icon i { font-size: 18px; }
-}
-
-@media (min-width: 481px) {
-  body { padding-top: 40px; }
+  .profile-name { font-size: 16px; }
+  .qa-icon { width: 42px; height: 42px; border-radius: 13px; }
+  .qa-icon i { font-size: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
