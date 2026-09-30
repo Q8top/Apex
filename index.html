@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <link rel="preload" href="/login-hero.jpeg" as="image" type="image/jpeg" fetchpriority="high">
+  <link rel="preload" href="/login-hero.webp" as="image" type="image/webp" fetchpriority="high">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
@@ -10,14 +10,12 @@
   <title>Apex - Global Entertainment</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.svg">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/fonts/fonts.css">
   <link rel="stylesheet" href="/src/css/main.css">
 
 <!-- APEX-PRELOAD-START -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/login-hero.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="preload" href="/fonts/fonts.css" as="style">
   <link rel="dns-prefetch" href="https://images.unsplash.com">
   <link rel="preload" as="image">
 <!-- APEX-PRELOAD-END -->
@@ -122,14 +120,18 @@
 
   <!-- ============ Hero 区 ============ -->
   <div class="hero">
-    <img
-      src="/login-hero.jpeg"
-      alt="Apex Entertainment"
-      class="hero-image"
-      width="100%"
-      decoding="async"
-      fetchpriority="high"
-    >
+    <picture>
+      <source srcset="/login-hero.webp" type="image/webp">
+      <img
+        src="/login-hero.jpeg"
+        alt="Apex Entertainment"
+        class="hero-image"
+        width="1600"
+        height="1000"
+        decoding="async"
+        fetchpriority="high"
+      >
+    </picture>
     <div class="hero-content">
       <picture><source srcset="./logo.webp" type="image/webp"><img alt="Apex Logo" class="logo-img" width="90" height="90" decoding="async" fetchpriority="high"></picture>
       <div class="main-title" data-i18n="hero.title">全球娱乐游戏平台</div>
