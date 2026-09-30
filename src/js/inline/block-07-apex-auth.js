@@ -38,6 +38,19 @@
       _hide('#auth-tabs');
     } catch (e) {}
 
+    // 4) 跳转到登录后首页（/home.html）
+    //    home.html 会在加载时再次调用 /api/me 校验登录态，
+    //    因此这里直接跳转是安全的。
+    try {
+      var targetPath = '/home.html';
+      var curPath = location.pathname;
+      if (curPath !== targetPath && curPath !== '/home') {
+        location.replace(targetPath);
+        return;
+      }
+    } catch (e) {}
+
+    // 5) 兜底：若已在 home.html（浏览器前进后退），显示原欢迎卡片
     // 4) 显示登录后欢迎页
     var el = document.getElementById('apex-logged-in');
     if (el) {
