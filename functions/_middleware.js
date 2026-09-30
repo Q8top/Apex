@@ -57,7 +57,17 @@ export async function onRequest(context) {
     }
 
     // ---------- CSRF 校验 ----------
-    if (!SAFE_METHODS.has(context.request.method.toUpperCase())) {
+    // 豁免路径：浏览器自动发送、无法携带 CSRF token 的端点
+    //  - /api/csp-report: CSP 违规报告，浏览器自动 POST，无 CSRF
+    //  - /api/log: 前端错误日志（含 keepalive 场景），无敏感操作
+    //  - /api/health, /api/ready: 只读探针（GET，SAFE_METHODS 已放行）
+    const csrfExemptPaths = new Set([
+      '/api/csp-report',
+      '/api/log',
+    ]);
+    const isCsrfExempt = csrfExemptPaths.has(url.pathname);
+
+    if (!SAFE_METHODS.has(context.request.method.toUpperCase()) && !isCsrfExempt) {
       const csrfOk = verifyCsrf(context.request);
       if (!csrfOk) {
         const headers = new Headers();
