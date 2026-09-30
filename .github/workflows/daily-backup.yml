@@ -6,8 +6,9 @@ on:
     - cron: '0 3 * * *'
   workflow_dispatch:  # 支持手动触发
 
+# 最小权限：Workflow 顶层只读。写权限由 backup job 单独声明。
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: daily-backup
@@ -17,11 +18,17 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # 该 job 需要上传 GitHub Release，因此单独声明 contents: write
+    # 其他 job 应保持顶层的最小权限
+    permissions:
+      contents: write
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_KV_NAMESPACE_ID: ${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # age 加密公钥（不是私钥）。私钥必须离线保存，绝不进 CI。
+      AGE_PUBLIC_KEY: ${{ secrets.AGE_PUBLIC_KEY }}
 
     steps:
       - name: Checkout main branch
@@ -29,7 +36,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -37,7 +44,16 @@ jobs:
           node-version: '20'
 
       - name: Install Wrangler
-        run: npm install -g wrangler@3
+        # 与本地 wrangler 4.86.0 对齐，避免 CI 与本地行为不一致
+        run: npm install -g wrangler@4
+
+      - name: Install age
+        run: |
+          set -euo pipefail
+          # age 用于备份加密。Ubuntu runner 默认可能没有 age，显式安装。
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq age
+          age --version
 
       # ============================================================
       # 双通道备份：GitHub Release + Cloudflare KV
@@ -53,22 +69,7 @@ jobs:
           set -euo pipefail
           bash scripts/restore-from-remote.sh --from-kv --dry-run
 
-      # ============================================================
-      # 保底：备份也提交到 backups 分支（历史兼容）
-      # ============================================================
-      - name: Commit to backups branch
-        run: |
-          set -euo pipefail
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f backups/
-          git diff --cached --quiet && { echo "[SKIP] 无变化"; exit 0; }
-          git commit -m "chore: daily backup $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git push origin HEAD:backups
-
-      # ============================================================
-      # 校验备份分支同步成功
-      # ============================================================
-      - name: Verify backups branch updated
-        run: |
-          git ls-remote origin backups | grep -q backups && echo "[OK] backups 分支存在"
+      # 注意：不再将数据库备份 commit 到 git 分支。
+      # 原因：备份包含用户数据，即使已 gzip 也未加密，属于明文数据库副本。
+      # 现在仅通过加密后的 GitHub Release + Cloudflare KV 双通道保存。
+      # 加密方式见 scripts/backup-remote.sh（age 公钥加密）。

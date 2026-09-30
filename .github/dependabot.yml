@@ -1,0 +1,49 @@
+# Apex Dependabot 配置
+# 目的：自动追踪 npm 依赖与 GitHub Actions 的安全更新
+# 策略：每周检查一次，PR 形式提醒，不自动合并（人工审阅后合并）
+#
+# 相关 GitHub 设置（需在仓库 Settings 手动开启）：
+#   - Dependabot alerts
+#   - Dependabot security updates
+#   - Secret scanning
+#   - Push protection
+#   - Dependency graph
+
+version: 2
+updates:
+  # npm 依赖
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - dependencies
+      - npm
+    # 排除主版本升级（避免 breaking change 被自动 PR）
+    # 若要接收主版本升级，删除下方 ignore 块
+    ignore:
+      - dependency-name: "wrangler"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions 工作流
+  - package-ecosystem: github-actions
+    directory: "/.github/workflows"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - dependencies
+      - github-actions

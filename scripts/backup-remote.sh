@@ -90,10 +90,48 @@ if [ "$SIZE" -lt "$MIN_BACKUP_BYTES" ]; then
 fi
 
 gzip -f "$RAW"
+
+# ============================================================
+# age 强制加密（备份安全核心）
+# ============================================================
+# 原则：数据库明文备份绝不允许上传到任何远程存储
+# 公钥通过环境变量 AGE_PUBLIC_KEY 注入（CI 用 GitHub Actions Secret）
+# 私钥（age keygen 生成的 .txt）必须离线保存，绝不进 git/CI/Cloudflare
+if [ -z "${AGE_PUBLIC_KEY:-}" ]; then
+  echo "[FATAL] 缺少 AGE_PUBLIC_KEY 环境变量"
+  echo "  生成密钥：age-keygen -o ~/apex-backup-key.txt"
+  echo "  公钥：把 age-keygen 输出的 public key 注入 AGE_PUBLIC_KEY"
+  rm -f "$RAW" "$GZ"
+  exit 1
+fi
+if ! command -v age >/dev/null 2>&1; then
+  echo "[FATAL] 缺少 age 命令"
+  echo "  安装：apt install age  /  brew install age  /  go install filippo.io/age/cmd/age@latest"
+  rm -f "$RAW" "$GZ"
+  exit 1
+fi
+
+AGE_FILE="${GZ}.age"
+echo "[AGE] 加密中：$GZ -> $AGE_FILE"
+if ! age -r "$AGE_PUBLIC_KEY" -o "$AGE_FILE" "$GZ"; then
+  echo "[FATAL] age 加密失败"
+  rm -f "$AGE_FILE" "$GZ" "$RAW"
+  exit 1
+fi
+if [ ! -s "$AGE_FILE" ]; then
+  echo "[FATAL] age 加密输出为空"
+  rm -f "$AGE_FILE" "$GZ" "$RAW"
+  exit 1
+fi
+
+# 删除未加密的 gzip，只保留 .age
+rm -f "$GZ"
+GZ="$AGE_FILE"
+
 sha256sum "$GZ" > "$SUM"
 HASH=$(awk '{print $1}' "$SUM")
 
-echo "[OK] 本地生成：$GZ (${SIZE}B, sha256=${HASH:0:16}...)"
+echo "[OK] 本地生成（加密）：$GZ (${SIZE}B 原始, sha256=${HASH:0:16}...)"
 
 # ============================================================
 # 2) 通道 1：GitHub Releases
@@ -197,6 +235,8 @@ fi
 # ============================================================
 # 4) 清理旧备份
 # ============================================================
+find "$OUTPUT_DIR" -name "apex-db-*.sql.gz.age" -mtime +$KV_KEEP_DAYS -delete 2>/dev/null || true
+find "$OUTPUT_DIR" -name "apex-db-*.sql.gz.age.sha256" -mtime +$KV_KEEP_DAYS -delete 2>/dev/null || true
 find "$OUTPUT_DIR" -name "apex-db-*.sql.gz" -mtime +$KV_KEEP_DAYS -delete 2>/dev/null || true
 find "$OUTPUT_DIR" -name "apex-db-*.sql.gz.sha256" -mtime +$KV_KEEP_DAYS -delete 2>/dev/null || true
 

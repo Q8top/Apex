@@ -222,8 +222,29 @@ if [ -n "$STAMP" ]; then
 fi
 
 # ============================================================
-# 3) 解压 + 导入临时 SQLite 验证
+# 3) age 解密（若备份是 .age 格式）+ 解压 + 导入临时 SQLite 验证
 # ============================================================
+if [[ "$TARGET" == *.age ]]; then
+  log "检测到 age 加密备份，开始解密..."
+  if [ -z "${AGE_SECRET_KEY_FILE:-}" ]; then
+    fail "缺少 AGE_SECRET_KEY_FILE 环境变量（指向 age 私钥文件路径）"
+  fi
+  if [ ! -f "$AGE_SECRET_KEY_FILE" ]; then
+    fail "AGE_SECRET_KEY_FILE 指向的文件不存在：$AGE_SECRET_KEY_FILE"
+  fi
+  if ! command -v age >/dev/null 2>&1; then
+    fail "缺少 age 命令"
+  fi
+  DECRYPTED="$WORK_DIR/restore-decrypted.sql.gz"
+  if ! age -d -i "$AGE_SECRET_KEY_FILE" -o "$DECRYPTED" "$TARGET"; then
+    fail "age 解密失败"
+  fi
+  ok "解密完成：$DECRYPTED"
+  TARGET="$DECRYPTED"
+else
+  warn "备份文件非 .age 格式，跳过解密（可能为旧格式）"
+fi
+
 log "解压..."
 TMP_SQL="$WORK_DIR/restore.sql"
 gunzip -c "$TARGET" > "$TMP_SQL"
