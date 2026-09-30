@@ -224,8 +224,17 @@ fi
 # ============================================================
 # 3) age 解密（若备份是 .age 格式）+ 解压 + 导入临时 SQLite 验证
 # ============================================================
+# 检测 age 加密：优先看文件内容（前 21 字节 magic），
+# 因为 KV 下载的文件可能没有 .age 后缀。
+IS_AGE=0
 if [[ "$TARGET" == *.age ]]; then
-  log "检测到 age 加密备份，开始解密..."
+  IS_AGE=1
+elif [ -f "$TARGET" ] && [ "$(head -c 21 "$TARGET" 2>/dev/null)" = "age-encryption.org/v1" ]; then
+  IS_AGE=1
+fi
+
+if [ "$IS_AGE" = "1" ]; then
+  log "检测到 age 加密备份（内容识别），开始解密..."
   if [ -z "${AGE_SECRET_KEY_FILE:-}" ]; then
     fail "缺少 AGE_SECRET_KEY_FILE 环境变量（指向 age 私钥文件路径）"
   fi
