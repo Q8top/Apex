@@ -1,9 +1,17 @@
-// Apex 首页 — 交互逻辑
-// 融合原内联脚本 + 保留认证检查 / 登出 / CSP 安全
+// Apex 首页 v4 — 现代白色系交互
 (function () {
   'use strict';
 
-  // ============ 1. 认证检查：未登录 → 跳回登录页 ============
+  // ============ 工具：触觉反馈 ============
+  function haptic(ms) {
+    try {
+      if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(ms || 6);
+      }
+    } catch (e) {}
+  }
+
+  // ============ 1. 认证检查 ============
   function checkAuth() {
     var controller = new AbortController();
     var tid = setTimeout(function () { controller.abort(); }, 8000);
@@ -27,6 +35,11 @@
           return;
         }
         window.__apexUser = data.user;
+        var nameEl = document.getElementById('topbar-username');
+        if (nameEl) {
+          var name = data.user.username || data.user.email || '用户';
+          nameEl.textContent = name.length > 10 ? name.slice(0, 9) + '…' : name;
+        }
       })
       .catch(function () {
         clearTimeout(tid);
@@ -36,6 +49,7 @@
   // ============ 2. 登出 ============
   function logout() {
     if (!window.confirm('确认登出？')) return;
+    haptic(20);
 
     var post = (window.apiClient && window.apiClient.post)
       ? window.apiClient.post('/api/logout', {})
@@ -50,104 +64,80 @@
         } catch (e) {}
         location.replace('/');
       })
-      .catch(function () {
-        location.replace('/');
-      });
+      .catch(function () { location.replace('/'); });
   }
 
-  // ============ 3. 顶部分类切换 ============
-  function bindTopCategories() {
-    var wrap = document.getElementById('casino-category');
-    if (!wrap) return;
+  // ============ 3. 一级 tabs ============
+  function bindTopTabs() {
+    var nav = document.getElementById('top-tabs');
+    if (!nav) return;
 
-    wrap.addEventListener('click', function (e) {
-      var item = e.target.closest('.casino-category');
-      if (!item) return;
+    nav.addEventListener('click', function (e) {
+      var tab = e.target.closest('.tab');
+      if (!tab || tab.classList.contains('tab-more')) return;
+      haptic(5);
 
-      var all = wrap.querySelectorAll('.casino-category');
+      var all = nav.querySelectorAll('.tab');
       for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
-      item.classList.add('active');
+      tab.classList.add('active');
 
-      console.log('[home] top category:', item.textContent.trim());
+      console.log('[home] tab:', tab.dataset.tab);
     });
   }
 
-  // ============ 4. 体育分类切换 ============
-  function bindSports() {
-    var wrap = document.getElementById('sports-tabs');
-    if (!wrap) return;
+  // ============ 4. 分类 chip ============
+  function bindChips() {
+    var row = document.getElementById('chip-row');
+    if (!row) return;
 
-    wrap.addEventListener('click', function (e) {
-      var btn = e.target.closest('.sport-tab');
-      if (!btn) return;
+    row.addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip');
+      if (!chip || chip.classList.contains('chip-more')) return;
+      haptic(5);
 
-      var all = wrap.querySelectorAll('.sport-tab');
+      var all = row.querySelectorAll('.chip');
       for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
-      btn.classList.add('active');
-
-      console.log('[home] sport tab:', btn.textContent.trim());
+      chip.classList.add('active');
     });
   }
 
-  // ============ 5. 底部导航切换 ============
+  // ============ 5. 底部导航 ============
   function bindBottomNav() {
     var nav = document.getElementById('bottom-nav');
     if (!nav) return;
 
     nav.addEventListener('click', function (e) {
-      var btn = e.target.closest('.bottom-nav-item');
+      var btn = e.target.closest('.bn-item');
       if (!btn) return;
+      haptic(8);
 
-      var all = nav.querySelectorAll('.bottom-nav-item');
+      var all = nav.querySelectorAll('.bn-item');
       for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
       btn.classList.add('active');
 
-      var key = btn.getAttribute('data-key');
-      console.log('[home] bottom nav:', key);
+      var key = btn.dataset.key;
+      console.log('[home] nav:', key);
 
-      // 后续可路由跳转：
-      // if (key === 'wallet') location.href = '/wallet.html';
-      // if (key === 'me') location.href = '/me.html';
-      // if (key === 'games') location.href = '/games.html';
-      // if (key === 'sports') location.href = '/sports.html';
+      // 未来路由：
+      // if (key === 'wallet') location.href = '/wallet';
+      // if (key === 'me') location.href = '/me';
+      // if (key === 'cat') location.href = '/categories';
     });
   }
 
-  // ============ 6. 语言切换 ============
-  function bindLanguage() {
-    var btn = document.querySelector('.language-selector');
-    if (!btn) return;
-
-    var LANGUAGES = ['中文', 'English', 'Español', 'Português', 'Français'];
-
-    btn.addEventListener('click', function () {
-      var strong = btn.querySelector('strong');
-      if (!strong) return;
-
-      var current = strong.textContent.trim();
-      var idx = LANGUAGES.indexOf(current);
-      idx = (idx + 1) % LANGUAGES.length;
-      strong.textContent = LANGUAGES[idx];
-
-      console.log('[home] language:', LANGUAGES[idx]);
-    });
-  }
-
-  // ============ 7. Banner 圆点自动切换 ============
+  // ============ 6. Hero 圆点自动切换 ============
   function bindHeroDots() {
     var dots = document.querySelectorAll('.hero-dots i');
     if (!dots || dots.length < 2) return;
-
-    var current = 0;
-
+    var cur = 0;
     setInterval(function () {
       for (var i = 0; i < dots.length; i++) dots[i].classList.remove('active');
-      current = (current + 1) % dots.length;
-      dots[current].classList.add('active');
+      cur = (cur + 1) % dots.length;
+      dots[cur].classList.add('active');
     }, 3500);
   }
 
-  // ============ 8. 全局事件委托（data-apex-action）============
+  // ============ 7. 全局事件委托 ============
   function bindActions() {
     document.addEventListener('click', function (e) {
       var el = e.target.closest('[data-apex-action]');
@@ -165,47 +155,40 @@
           break;
 
         case 'lang':
-          // 已由 bindLanguage 处理
+          var strong = el.querySelector('span');
+          if (strong) {
+            var langs = ['中文', 'EN', 'ES', 'PT', 'FR'];
+            var idx = langs.indexOf(strong.textContent.trim());
+            strong.textContent = langs[(idx + 1) % langs.length];
+            haptic(6);
+          }
           break;
 
-        case 'msg':
-        case 'notice':
-        case 'menu':
+        case 'region':
+          haptic(6);
+          console.log('[home] region');
+          break;
+
         case 'profile':
-        case 'banner':
-        case 'quick':
-        case 'game':
-        case 'hall':
-        case 'sport':
-        case 'jackpot':
-        case 'activity':
-        case 'vip':
-        case 'svc':
-        case 'foot':
-        case 'more-hot':
-        case 'more-hall':
-        case 'more-sports':
-        case 'more-recent':
-        case 'more-favorites':
-          console.log('[home] action:', action, el.dataset.key || '');
+          e.preventDefault();
+          console.log('[home] profile');
           break;
 
         default:
-          console.log('[home] action:', action);
+          console.log('[home] action:', action, el.dataset.key || '');
       }
-    });
+    }, true);
   }
 
-  // ============ 9. 初始化 ============
+  // ============ 8. 初始化 ============
   function init() {
     checkAuth();
-    bindTopCategories();
-    bindSports();
+    bindTopTabs();
+    bindChips();
     bindBottomNav();
-    bindLanguage();
     bindHeroDots();
     bindActions();
-    console.log('[Apex] Home 页面已加载');
+    console.log('[Apex] Home v4 已加载');
   }
 
   if (document.readyState === 'loading') {
