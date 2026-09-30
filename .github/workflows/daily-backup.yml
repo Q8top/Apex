@@ -62,12 +62,55 @@ jobs:
         run: bash scripts/backup-remote.sh
 
       # ============================================================
-      # 独立校验：确保备份可恢复
+      # CI 侧完整性校验
+      # ------------------------------------------------------------
+      # 注意：CI 里【绝不】持有 age 私钥（安全设计），因此不能做
+      # 完整解密 + SQLite integrity 校验。此处只验证上传到 KV 的
+      # 备份文件本身是完整的、且确实是 age 加密文件。
+      #
+      # 完整的"解密 + 导入临时 SQLite + integrity_check"必须由
+      # 你本地手动执行（见 docs/backup-rpo-rto.md 恢复 Runbook）：
+      #
+      #   AGE_SECRET_KEY_FILE=~/apex-backup-key.txt \
+      #     bash scripts/restore-from-remote.sh --from-kv --latest --dry-run
       # ============================================================
-      - name: Verify backup via restore dry-run
+      - name: Verify uploaded backup integrity
         run: |
           set -euo pipefail
-          bash scripts/restore-from-remote.sh --from-kv --dry-run
+          KEY="backup:latest"
+          TMP="$(mktemp)"
+          echo "[VERIFY] 下载 KV key: $KEY"
+          if ! wrangler kv key get \
+               --namespace-id="$CLOUDFLARE_KV_NAMESPACE_ID" \
+               "$KEY" \
+               --remote > "$TMP"; then
+            echo "[FATAL] 无法从 KV 下载备份"
+            rm -f "$TMP"
+            exit 1
+          fi
+
+          SIZE=$(stat -c%s "$TMP" 2>/dev/null || wc -c < "$TMP")
+          echo "[VERIFY] 备份大小: ${SIZE}B"
+          if [ "$SIZE" -lt 100 ]; then
+            echo "[FATAL] 备份文件过小（<${SIZE}B）"
+            rm -f "$TMP"
+            exit 1
+          fi
+
+          # age v1 加密文件的固定 header（二进制对比前 21 字节 ASCII）
+          EXPECTED="age-encryption.org/v1"
+          ACTUAL=$(head -c 21 "$TMP" 2>/dev/null || true)
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "[FATAL] 备份不是有效的 age 加密文件"
+            echo "  期望 header: $EXPECTED"
+            echo "  实际 header: $ACTUAL"
+            rm -f "$TMP"
+            exit 1
+          fi
+
+          echo "[OK] 备份完整性校验通过（age 加密，${SIZE}B）"
+          echo "[INFO] 完整解密与恢复演练请本地执行（CI 无私钥）"
+          rm -f "$TMP"
 
       # 注意：不再将数据库备份 commit 到 git 分支。
       # 原因：备份包含用户数据，即使已 gzip 也未加密，属于明文数据库副本。
