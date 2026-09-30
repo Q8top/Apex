@@ -3,231 +3,368 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#ffffff">
   <title>Apex · 首页</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/src/css/home.css">
 </head>
 <body>
-  <div class="app">
-    <!-- ============ 顶部栏 ============ -->
-    <header class="topbar">
-      <a class="topbar-home" href="/home.html" aria-label="首页">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+<div class="app">
+
+  <!-- ============ 顶部登录区 ============ -->
+  <header class="top-bar">
+    <a class="avatar-wrap" href="#" data-apex-action="profile">
+      <span class="avatar">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/>
         </svg>
-      </a>
-      <div class="topbar-search" role="button" tabindex="0" data-apex-action="search">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
-        </svg>
-        <span>搜索游戏 / 活动</span>
-      </div>
-      <button class="topbar-icon" aria-label="消息" data-apex-action="msg">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-      </button>
-      <button class="topbar-icon" aria-label="通知" data-apex-action="notice">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-        </svg>
-      </button>
-    </header>
+      </span>
+      <span class="vip-pill">VIP1</span>
+    </a>
 
-    <!-- ============ 分类导航 ============ -->
-    <nav class="cat-nav" aria-label="分类">
-      <a class="cat-item active">热门</a>
-      <a class="cat-item">电子</a>
-      <a class="cat-item">真人</a>
-      <a class="cat-item">体育</a>
-      <a class="cat-item">棋牌</a>
-      <a class="cat-item">彩票</a>
-      <a class="cat-item">捕鱼</a>
-    </nav>
+    <button class="search-box" data-apex-action="search">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+      </svg>
+      <span>搜索游戏、赛事、玩法、分类...</span>
+    </button>
 
-    <!-- ============ 主视觉 Banner ============ -->
-    <section class="banner" data-apex-action="banner">
-      <img src="/login-hero.webp" alt="Apex 活动主视觉" loading="lazy" decoding="async">
-      <div class="banner-overlay">
-        <div class="banner-tag">限时活动</div>
-        <div class="banner-title">新用户首存 100% 加赠</div>
-        <div class="banner-desc">立即参与，最高可得 8888 元</div>
-      </div>
-    </section>
+    <button class="top-icon" data-apex-action="msg" aria-label="消息">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span class="badge">3</span>
+    </button>
 
-    <!-- ============ 快捷入口 ============ -->
-    <section class="quick" aria-label="快捷入口">
-      <a class="quick-item" data-apex-action="quick-recharge">
-        <div class="quick-icon recharge"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div class="quick-label">充值</div>
-      </a>
-      <a class="quick-item" data-apex-action="quick-withdraw">
-        <div class="quick-icon withdraw"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V2M7 19h7.5a3.5 3.5 0 0 0 0-7h-5a3.5 3.5 0 0 1 0-7H18"/></svg></div>
-        <div class="quick-label">提现</div>
-      </a>
-      <a class="quick-item" data-apex-action="quick-activity">
-        <div class="quick-icon activity"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <div class="quick-label">活动</div>
-      </a>
-      <a class="quick-item" data-apex-action="quick-vip">
-        <div class="quick-icon vip"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7 6.5 12 12 4l5.5 8L22 7l-2 12H4L2 7z"/></svg></div>
-        <div class="quick-label">VIP</div>
-      </a>
-    </section>
+    <button class="top-icon" data-apex-action="notice" aria-label="通知">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </svg>
+      <span class="badge">8</span>
+    </button>
+  </header>
 
-    <!-- ============ 热门推荐 ============ -->
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title"><span class="dot"></span>热门推荐</h2>
-        <a class="section-more" href="#" data-apex-action="more-hot">更多 ›</a>
-      </div>
-      <div class="hot-scroll">
-        <a class="game-card" data-apex-action="game">
-          <div class="game-thumb" style="background-image:linear-gradient(135deg,#d4af37,#8b0000)"></div>
-          <div class="game-name">龙腾盛世</div>
-          <div class="game-tag">电子 · 热门</div>
-        </a>
-        <a class="game-card" data-apex-action="game">
-          <div class="game-thumb" style="background-image:linear-gradient(135deg,#ff7e5f,#feb47b)"></div>
-          <div class="game-name">幸运飞艇</div>
-          <div class="game-tag">彩票 · 推荐</div>
-        </a>
-        <a class="game-card" data-apex-action="game">
-          <div class="game-thumb" style="background-image:linear-gradient(135deg,#00b4db,#0083b0)"></div>
-          <div class="game-name">真人视讯</div>
-          <div class="game-tag">真人 · 新上线</div>
-        </a>
-        <a class="game-card" data-apex-action="game">
-          <div class="game-thumb" style="background-image:linear-gradient(135deg,#43cea2,#185a9d)"></div>
-          <div class="game-name">捕鱼王</div>
-          <div class="game-tag">捕鱼 · 爆款</div>
-        </a>
-      </div>
-    </section>
+  <!-- ============ 顶部分类 ============ -->
+  <nav class="tab-bar" id="top-tabs">
+    <button class="tab active" data-tab="首页">首页</button>
+    <button class="tab" data-tab="Casino">Casino</button>
+    <button class="tab" data-tab="Lottery">Lottery</button>
+    <button class="tab" data-tab="Sports">Sports</button>
+    <button class="tab" data-tab="Virtual Sports">Virtual Sports</button>
+    <button class="tab" data-tab="Instant Games">Instant Games</button>
+    <button class="tab" data-tab="P2P">P2P</button>
+    <button class="tab" data-tab="Skill & Hybrid">Skill &amp; Hybrid</button>
+    <button class="menu-btn" data-apex-action="menu" aria-label="更多">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </nav>
 
-    <!-- ============ 全部游戏大厅 ============ -->
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title"><span class="dot"></span>全部游戏大厅</h2>
-        <a class="section-more" href="#" data-apex-action="more-hall">更多 ›</a>
-      </div>
-      <div class="hall-grid">
-        <a class="hall-card" data-apex-action="game"><div class="hall-icon">🎰</div><div class="hall-name">电子游艺</div></a>
-        <a class="hall-card" data-apex-action="game"><div class="hall-icon">🎲</div><div class="hall-name">棋牌</div></a>
-        <a class="hall-card" data-apex-action="game"><div class="hall-icon">🎯</div><div class="hall-name">捕鱼</div></a>
-        <a class="hall-card" data-apex-action="game"><div class="hall-icon">🎫</div><div class="hall-name">彩票</div></a>
-      </div>
-    </section>
-
-    <!-- ============ 体育赛事 ============ -->
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title"><span class="dot"></span>体育赛事</h2>
-        <a class="section-more" href="#" data-apex-action="more-sports">更多 ›</a>
-      </div>
-      <div class="sports-card" data-apex-action="sports">
-        <div class="sports-left">
-          <div class="sports-name">英超 · 曼联 vs 利物浦</div>
-          <div class="sports-time">今晚 21:00 开赛</div>
-          <div class="sports-odds">
-            <span class="odd">2.10</span>
-            <span class="odd">3.40</span>
-            <span class="odd">3.10</span>
-          </div>
-        </div>
-        <div class="sports-right">
-          <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="m12 6 4 3-1.5 5h-5L8 9l4-3z"/></svg>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ Jackpot + 活动 ============ -->
-    <section class="section two-col">
-      <a class="mini-card jackpot" data-apex-action="jackpot">
-        <div class="mini-head">JACKPOT</div>
-        <div class="mini-num" id="jackpot-num">8,888,888</div>
-        <div class="mini-desc">累积奖池</div>
-      </a>
-      <a class="mini-card activity" data-apex-action="activity">
-        <div class="mini-head">每日活动</div>
-        <div class="mini-title">签到领彩金</div>
-        <div class="mini-desc">连续 7 天，奖励翻倍</div>
-      </a>
-    </section>
-
-    <!-- ============ VIP ============ -->
-    <section class="section">
-      <a class="vip-card" data-apex-action="vip">
-        <div class="vip-badge">VIP</div>
-        <div class="vip-text">
-          <div class="vip-title">开通 VIP，享专属特权</div>
-          <div class="vip-desc">更高返水 · 专属客服 · 生日豪礼</div>
-        </div>
-        <div class="vip-arrow">›</div>
-      </a>
-    </section>
-
-    <!-- ============ 最近游戏 + 收藏 ============ -->
-    <section class="section two-col">
-      <a class="mini-card recent" data-apex-action="recent">
-        <div class="mini-head">最近游戏</div>
-        <div class="mini-title" id="recent-title">—</div>
-        <div class="mini-desc">继续上次的对局</div>
-      </a>
-      <a class="mini-card favorites" data-apex-action="favorites">
-        <div class="mini-head">我的收藏</div>
-        <div class="mini-title" id="favorites-title">—</div>
-        <div class="mini-desc">查看收藏的游戏</div>
-      </a>
-    </section>
-
-    <!-- ============ 服务与安全 ============ -->
-    <section class="section">
-      <div class="service-grid">
-        <a class="service-item" data-apex-action="service-center">
-          <div class="service-icon">🛡️</div><div class="service-name">安全中心</div>
-        </a>
-        <a class="service-item" data-apex-action="service-support">
-          <div class="service-icon">💬</div><div class="service-name">在线客服</div>
-        </a>
-        <a class="service-item" data-apex-action="service-help">
-          <div class="service-icon">📖</div><div class="service-name">帮助中心</div>
-        </a>
-        <a class="service-item" data-apex-action="logout">
-          <div class="service-icon">🚪</div><div class="service-name">登出</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- ============ 底部信息 ============ -->
-    <div class="footer-info">
-      <span>© 2026 Apex Global Entertainment</span>
-      <span class="footer-lang" data-apex-action="lang">简体中文</span>
+  <!-- ============ Banner ============ -->
+  <section class="hero" data-apex-action="banner">
+    <div class="hero-copy">
+      <div class="hero-title">多种玩法　精彩不断</div>
+      <div class="hero-sub">全球热门游戏　尽在这里</div>
+      <span class="hero-btn">立即体验 →</span>
     </div>
+    <div class="hero-art">
+      <span class="art-cards">A A A</span>
+      <span class="art-roulette">◉</span>
+      <span class="art-chips">● ●</span>
+      <span class="art-dice">◆</span>
+    </div>
+    <div class="hero-dots">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </section>
 
-    <!-- ============ 底部导航 ============ -->
-    <nav class="bottom-nav" aria-label="主导航">
-      <a class="nav-item active" data-apex-action="nav-home">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
-        <span>首页</span>
-      </a>
-      <a class="nav-item" data-apex-action="nav-games">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        <span>游戏</span>
-      </a>
-      <a class="nav-item" data-apex-action="nav-wallet">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h3"/><path d="M2 10h20"/></svg>
-        <span>钱包</span>
-      </a>
-      <a class="nav-item" data-apex-action="nav-me">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
-        <span>我的</span>
-      </a>
-    </nav>
+  <!-- ============ 快捷入口（10 个）============ -->
+  <section class="quick-grid" aria-label="快捷入口">
+    <a class="quick-item" data-apex-action="quick" data-key="soccer">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2z"/><path d="M12 3v4M3 12l4-2M21 12l-4-2M6 21l3-4M18 21l-3-4"/></svg>
+      <span class="quick-label">足球</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="slot">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg>
+      <span class="quick-label">游戏</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="lottery">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><path d="M9 12h6"/></svg>
+      <span class="quick-label">彩票</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="cards">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="6" width="12" height="15" rx="1.5"/><path d="M9 3h10a1.5 1.5 0 0 1 1.5 1.5V17"/></svg>
+      <span class="quick-label">棋牌</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="desk">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#111"/></svg>
+      <span class="quick-label">桌面游戏</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="jackpot">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><path d="M2 17 5.5 11 9 14l3-6 3 6 3.5-3L22 17z"/><circle cx="3" cy="19" r="1.5"/><circle cx="21" cy="19" r="1.5"/></svg>
+      <span class="quick-label">Jackpot</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="trophy">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M5 4H3v2a4 4 0 0 0 4 4M19 4h2v2a4 4 0 0 1-4 4M9 19h6M12 14v5"/></svg>
+      <span class="quick-label">锦标赛</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="vip">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18M9 3 6 8M15 3l3 5"/></svg>
+      <span class="quick-label">VIP</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="gift">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 12h18M12 8v13M8 8a2.5 2.5 0 0 1 0-5c2 0 4 3 4 5M16 8a2.5 2.5 0 0 0 0-5c-2 0-4 3-4 5"/></svg>
+      <span class="quick-label">奖励</span>
+    </a>
+    <a class="quick-item" data-apex-action="quick" data-key="more">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span class="quick-label">更多</span>
+    </a>
+  </section>
+
+  <!-- ============ 热门推荐（横滑）============ -->
+  <div class="section-head">
+    <h2 class="section-title">🔥 热门推荐</h2>
+    <a class="section-more" href="#" data-apex-action="more-hot">查看全部 ›</a>
+  </div>
+  <div class="scroll-x">
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-777"><span class="thumb-txt seven">777</span></div>
+      <div class="hot-name">经典老虎机</div>
+    </a>
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-roulette"><span class="thumb-txt">◉</span></div>
+      <div class="hot-name">轮盘</div>
+    </a>
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-baccarat"><span class="thumb-txt">♠ ♥</span></div>
+      <div class="hot-name">百家乐</div>
+    </a>
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-poker"><span class="thumb-txt">A ♠</span></div>
+      <div class="hot-name">扑克</div>
+    </a>
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-777"><span class="thumb-txt seven">777</span></div>
+      <div class="hot-name">视频老虎机</div>
+    </a>
+    <a class="hot-card" data-apex-action="game">
+      <div class="thumb thumb-dice"><span class="thumb-txt dark">⚄ ⚂</span></div>
+      <div class="hot-name">骰子游戏</div>
+    </a>
   </div>
 
-  <script src="/src/js/apiClient.js"></script>
-  <script src="/src/js/home.js"></script>
+<!-- 后半部分继续 -->
+
+  <!-- ============ 全部游戏大厅 ============ -->
+  <div class="section-head">
+    <h2 class="section-title">全部游戏大厅</h2>
+  </div>
+  <div class="hall-grid">
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="6" width="18" height="14" rx="1.5"/><path d="M9 3h10a1.5 1.5 0 0 1 1.5 1.5V17"/></svg>
+      <div class="hall-text"><div class="hall-title">Casino</div><div class="hall-sub">电子赌场</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><path d="M9 12h6"/></svg>
+      <div class="hall-text"><div class="hall-title">Lottery</div><div class="hall-sub">彩票</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="m12 7 3 2-1 4h-4L9 9l3-2z"/></svg>
+      <div class="hall-text"><div class="hall-title">Sports Betting</div><div class="hall-sub">体育博彩</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 10h18M12 10v10"/></svg>
+      <div class="hall-text"><div class="hall-title">Virtual Sports</div><div class="hall-sub">虚拟博彩</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      <div class="hall-text"><div class="hall-title">Instant Games</div><div class="hall-sub">即时博彩</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="14" r="3"/><path d="M3 20a6 6 0 0 1 6-6M12 20a6 6 0 0 1 6-6"/></svg>
+      <div class="hall-text"><div class="hall-title">P2P</div><div class="hall-sub">玩家对玩家</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><path d="M6 4h4v6a4 4 0 0 1-4 4M14 4h4v6a4 4 0 0 1-4 4M9 14h6v6H9z"/></svg>
+      <div class="hall-text"><div class="hall-title">Skill &amp; Hybrid</div><div class="hall-sub">技能/混合</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><path d="M3 20 8 10l4 4 3-5 6 11z"/></svg>
+      <div class="hall-text"><div class="hall-title">Prediction &amp; Event</div><div class="hall-sub">预测/事件</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M8 8a2.5 2.5 0 0 1 0-5c2 0 4 3 4 5M16 8a2.5 2.5 0 0 0 0-5c-2 0-4 3-4 5"/></svg>
+      <div class="hall-text"><div class="hall-title">Prize Games</div><div class="hall-sub">奖品/抽奖</div></div>
+    </a>
+    <a class="hall-item" data-apex-action="hall">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="1.6"><path d="m12 2 2.6 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2L2 9.4h7.4z"/></svg>
+      <div class="hall-text"><div class="hall-title">Novelty / Emerging</div><div class="hall-sub">新型博彩</div></div>
+    </a>
+  </div>
+
+  <!-- ============ 体育赛事 ============ -->
+  <div class="section-head">
+    <h2 class="section-title">体育赛事</h2>
+  </div>
+  <div class="scroll-x sport-tabs" id="sport-tabs">
+    <button class="sport-tab active" data-sport="热门">热门</button>
+    <button class="sport-tab" data-sport="足球">足球</button>
+    <button class="sport-tab" data-sport="篮球">篮球</button>
+    <button class="sport-tab" data-sport="网球">网球</button>
+    <button class="sport-tab" data-sport="棒球">棒球</button>
+    <button class="sport-tab" data-sport="冰球">冰球</button>
+    <button class="sport-tab" data-sport="美式足球">美式足球</button>
+    <button class="sport-tab" data-sport="更多">更多⌄</button>
+  </div>
+  <div class="scroll-x">
+    <a class="sport-card" data-apex-action="sport">
+      <div class="sport-top">
+        <span class="sport-emoji">⚽</span>
+        <div><div class="sport-name">足球 · 赛事</div><div class="sport-time">05-17 20:00</div></div>
+      </div>
+      <div class="sport-vs"><span class="shield"></span><span class="vs">VS</span><span class="shield"></span></div>
+      <span class="bet-btn">进入投注</span>
+    </a>
+    <a class="sport-card" data-apex-action="sport">
+      <div class="sport-top">
+        <span class="sport-emoji">🏀</span>
+        <div><div class="sport-name">篮球 · 赛事</div><div class="sport-time">05-17 20:30</div></div>
+      </div>
+      <div class="sport-vs"><span class="shield"></span><span class="vs">VS</span><span class="shield"></span></div>
+      <span class="bet-btn">进入投注</span>
+    </a>
+    <a class="sport-card" data-apex-action="sport">
+      <div class="sport-top">
+        <span class="sport-emoji">🎾</span>
+        <div><div class="sport-name">网球 · 赛事</div><div class="sport-time">05-17 18:00</div></div>
+      </div>
+      <div class="sport-vs"><span class="shield"></span><span class="vs">VS</span><span class="shield"></span></div>
+      <span class="bet-btn">进入投注</span>
+    </a>
+  </div>
+
+  <!-- ============ Jackpot + 活动 ============ -->
+  <div class="two-col">
+    <a class="jackpot-card" data-apex-action="jackpot">
+      <span class="crown">♛</span>
+      <div class="jackpot-title">JACKPOT</div>
+      <div class="jackpot-sub">巨额奖池　等你来赢</div>
+      <span class="gold-btn">进入专区 →</span>
+    </a>
+    <div class="activity-card">
+      <div class="activity-tabs">
+        <span class="activity-tab active">活动</span>
+        <span class="activity-tab">锦标赛</span>
+        <span class="activity-tab">排行榜</span>
+        <span class="activity-more">查看全部 ›</span>
+      </div>
+      <a class="activity-row" data-apex-action="activity">
+        <span class="gift">🎁</span>
+        <div class="activity-info">
+          <div class="activity-title">专属活动　豪礼相送</div>
+          <div class="activity-sub">多重福利 等你来拿</div>
+        </div>
+        <span class="arrow">›</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ VIP ============ -->
+  <a class="vip-banner" data-apex-action="vip">
+    <span class="vip-crown">♛</span>
+    <div class="vip-content">
+      <div class="vip-title">VIP　尊享专属权益</div>
+      <div class="vip-progress"><span class="vip-progress-fill"></span></div>
+      <div class="vip-current">当前等级：<span class="vip-current-pill">普通会员</span></div>
+    </div>
+    <span class="vip-enter">进入VIP中心 →</span>
+  </a>
+
+  <!-- ============ 最近游戏 / 收藏 ============ -->
+  <div class="two-col">
+    <div class="list-box">
+      <div class="section-head mini-head"><h3 class="section-title small">● 最近游戏</h3></div>
+      <div class="mini-grid">
+        <div class="mini-item"><div class="thumb thumb-777 small"><span class="seven">777</span></div><div class="mini-label">经典老虎机</div></div>
+        <div class="mini-item"><div class="thumb thumb-roulette small"><span>◉</span></div><div class="mini-label">轮盘</div></div>
+        <div class="mini-item"><div class="thumb thumb-baccarat small"><span>♠♥</span></div><div class="mini-label">捕鱼</div></div>
+        <div class="mini-item"><div class="thumb thumb-poker small"><span>A♠</span></div><div class="mini-label">扑克</div></div>
+      </div>
+    </div>
+    <div class="list-box">
+      <div class="section-head mini-head"><h3 class="section-title small">★ 我的收藏</h3></div>
+      <div class="mini-grid">
+        <div class="mini-item"><div class="thumb thumb-777 small"><span class="seven">777</span></div><div class="mini-label">视频老虎机</div></div>
+        <div class="mini-item"><div class="thumb thumb-baccarat small"><span>♠♥</span></div><div class="mini-label">百家乐</div></div>
+        <div class="mini-item"><div class="thumb thumb-roulette small"><span>◉</span></div><div class="mini-label">体育</div></div>
+        <div class="mini-item"><div class="thumb thumb-dice small"><span class="dark">⚄⚂</span></div><div class="mini-label">彩票</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 服务与安全 ============ -->
+  <div class="section-head">
+    <h2 class="section-title">🛡 服务与安全</h2>
+  </div>
+  <div class="service-grid">
+    <a class="service-item" data-apex-action="svc" data-key="help"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4M12 17h.01"/></svg><span>帮助中心</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="support"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><path d="M3 18v-6a9 9 0 0 1 18 0v6M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg><span>客服中心</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="security"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span>账户安全</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="verify"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><circle cx="10" cy="8" r="4"/><path d="M2 21v-2a6 6 0 0 1 6-6h4M17 13l2 2 4-4"/></svg><span>身份验证</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="privacy"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>隐私设置</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="notify"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg><span>通知设置</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="responsible"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><path d="M12 3v18M5 8h14M5 16h14"/></svg><span>责任博彩</span></a>
+    <a class="service-item" data-apex-action="svc" data-key="limit"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#111" stroke-width="1.6"><circle cx="10" cy="8" r="4"/><path d="M2 21v-2a6 6 0 0 1 6-6h4M17 11v6M17 20h.01"/></svg><span>账户限制</span></a>
+  </div>
+
+  <!-- ============ 页脚 ============ -->
+  <div class="footer-info">
+    <div class="footer-links">
+      <a href="/about" data-apex-action="foot">关于我们</a>
+      <a href="/terms" data-apex-action="foot">条款与条件</a>
+      <a href="/privacy" data-apex-action="foot">隐私政策</a>
+      <a href="#" data-apex-action="foot">安全保障</a>
+      <a href="#" data-apex-action="foot">责任博彩</a>
+    </div>
+    <button class="lang-switch" data-apex-action="lang">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#111" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      <span>中文</span>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="meta-row">
+      <span>地区：未设定</span>
+      <span>货币：CNY</span>
+    </div>
+  </div>
+
+  <div class="bottom-space"></div>
+</div>
+
+<!-- ============ 底部导航 ============ -->
+<nav class="bottom-nav" aria-label="主导航">
+  <a class="bottom-item active" data-apex-action="nav-home">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+    <span>首页</span>
+  </a>
+  <a class="bottom-item" data-apex-action="nav-games">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 12h2M8 11v2M15 11h.01M17 13h.01"/></svg>
+    <span>游戏</span>
+  </a>
+  <a class="bottom-item" data-apex-action="nav-sports">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M9 19h6M12 14v5"/></svg>
+    <span>体育</span>
+  </a>
+  <a class="bottom-item" data-apex-action="nav-wallet">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h3"/><path d="M2 10h20"/></svg>
+    <span>钱包</span>
+  </a>
+  <a class="bottom-item" data-apex-action="nav-me">
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+    <span>我的</span>
+  </a>
+</nav>
+
+<script src="/src/js/apiClient.js"></script>
+<script src="/src/js/home.js"></script>
 </body>
 </html>
