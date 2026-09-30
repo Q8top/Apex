@@ -82,7 +82,7 @@ export async function onRequestPost(context) {
       pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
       timeout: 60000,
       attestation: 'none',
-      authenticatorSelection: { residentKey: 'preferred', userVerification: 'preferred' },
+      authenticatorSelection: { residentKey: 'preferred', userVerification: 'required' },
       excludeCredentials: [],
     },
   }, 200, requestId);

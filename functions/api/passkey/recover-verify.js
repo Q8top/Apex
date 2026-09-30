@@ -9,6 +9,7 @@ import { buildSessionCookie, createUserSession } from '../../_auth.js';
 import { getConfig } from '../../_config.js';
 import { enforceIpRateLimit, enforceKeyRateLimit } from '../../_rateLimit.js';
 import { writeAudit } from '../../_audit.js';
+import { sendEmail, emailTemplate } from '../../_email.js';
 import {
   b64uDecode, b64uEncode,
   parseAuthenticatorData, coseKeyToJwk,
@@ -131,6 +132,10 @@ export async function onRequestPost(context) {
     if (!authData.userPresent) {
       return errorResponse('缺少用户在场验证', 400, 'user_present_failed', requestId);
     }
+    // P58-Fix: Recovery 为最高风险操作，必须要求用户验证（UV）
+    if (!authData.userVerified) {
+      return errorResponse('需要设备验证（指纹 / 面容 / PIN）', 400, 'user_verification_required', requestId);
+    }
   } catch (e) {
     return errorResponse('authData 解析失败', 400, 'authdata_invalid', requestId);
   }
@@ -204,7 +209,48 @@ export async function onRequestPost(context) {
     return errorResponse('账号不存在', 404, 'user_not_found', requestId);
   }
 
-  // ============ 10) 创建新 session ============
+  // ============ 10) 发送安全通知邮件（不阻塞主流程）============
+  // 目的：让绑定邮箱知道 Passkey 已被重新绑定。
+  // 邮件绝不包含：密码、Token、Passkey 公钥/私钥、credential ID、OTP。
+  // 发送失败仅记录，不影响恢复结果（用户已成功建立 session）。
+  try {
+    const noticeIdempotencyKey = `passkey-recovery-notice/${userId}/${Date.now()}`;
+    await sendEmail(
+      env,
+      user.email,
+      '【Apex】您的 Passkey 已在新设备重新绑定',
+      [
+        `您好 ${user.username || ''}，`,
+        '',
+        '我们检测到您的 Apex 账号刚刚通过邮箱验证码，在新设备上重新绑定了 Passkey。',
+        '',
+        `设备名称：${deviceName || '未命名设备'}`,
+        `时间：${new Date().toISOString()}`,
+        '',
+        '此操作已使所有旧设备的 Passkey 失效。',
+        '',
+        '【如果这是您本人的操作】',
+        '无需任何操作，可以忽略此邮件。',
+        '',
+        '【如果这不是您本人的操作】',
+        '请立即：',
+        '1. 通过「忘记密码」入口重置账号密码',
+        '2. 检查您的邮箱是否有异常登录',
+        '3. 如有必要，联系平台支持',
+        '',
+        '本邮件由系统自动发送，请勿直接回复。',
+      ].join('\n'),
+      emailTemplate(
+        '您的 Passkey 已重新绑定',
+        `设备名称：${deviceName || '未命名设备'}<br>操作时间：${new Date().toISOString()}<br><br>此操作已使所有旧设备的 Passkey 失效。<br><br>如非本人操作，请立即重置密码。`
+      ),
+      noticeIdempotencyKey
+    );
+  } catch (noticeErr) {
+    console.error('[Passkey recover] notice email failed:', noticeErr && noticeErr.message ? noticeErr.message : noticeErr);
+  }
+
+  // ============ 11) 创建新 session ============
   const session = await createUserSession(env, userId, request);
 
   await env.apex_db.prepare(

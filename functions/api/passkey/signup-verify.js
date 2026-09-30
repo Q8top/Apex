@@ -97,6 +97,11 @@ export async function onRequestPost(context) {
     if (!authData.userPresent) {
       return errorResponse('缺少用户在场验证', 400, 'user_present_failed', requestId);
     }
+    // P58-Fix: 新账号创建为高风险操作，必须要求用户验证（UV）
+    // 认证器需支持指纹/面容/PIN。若认证器不支持则返回明确错误。
+    if (!authData.userVerified) {
+      return errorResponse('需要设备验证（指纹 / 面容 / PIN）', 400, 'user_verification_required', requestId);
+    }
   } catch (e) {
     return errorResponse('authData 解析失败', 400, 'authdata_invalid', requestId);
   }
