@@ -8,7 +8,7 @@
   <title>Apex</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
-  <link rel="stylesheet" href="/src/css/home.css?v=20260930b">
+  <link rel="stylesheet" href="/src/css/home.css?v=20260930c">
 </head>
 <body>
 
@@ -23,35 +23,29 @@
         <span class="lang-label" id="lang-label">中文</span>
         <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
       </button>
-      <button class="notify-btn" id="notify-btn" type="button" aria-label="通知">
-        <i class="ri-notification-3-line" aria-hidden="true"></i>
-        <span class="notify-dot" aria-hidden="true"></span>
-      </button>
     </header>
 
     <ul class="lang-menu" id="lang-menu" role="listbox" aria-label="语言列表" hidden>
-      <li role="option" data-lang="zh" data-flag="🇨🇳" data-label="中文" aria-selected="true"><span>🇨🇳</span><span>中文</span></li>
-      <li role="option" data-lang="en" data-flag="🇺🇸" data-label="English"><span>🇺🇸</span><span>English</span></li>
-      <li role="option" data-lang="es" data-flag="🇪🇸" data-label="Español"><span>🇪🇸</span><span>Español</span></li>
-      <li role="option" data-lang="pt" data-flag="🇵🇹" data-label="Português"><span>🇵🇹</span><span>Português</span></li>
-      <li role="option" data-lang="fr" data-flag="🇫🇷" data-label="Français"><span>🇫🇷</span><span>Français</span></li>
+      <li role="option" data-lang="zh" aria-selected="true"><span>🇨🇳</span><span>中文</span></li>
+      <li role="option" data-lang="en"><span>🇺🇸</span><span>English</span></li>
+      <li role="option" data-lang="es"><span>🇪🇸</span><span>Español</span></li>
+      <li role="option" data-lang="pt"><span>🇵🇹</span><span>Português</span></li>
+      <li role="option" data-lang="fr"><span>🇫🇷</span><span>Français</span></li>
     </ul>
 
     <a class="profile-block" id="profile-block" href="#" role="button"
        data-apex-action="profile" aria-label="查看个人资料">
       <span class="profile-avatar" aria-hidden="true">
         <i class="ri-user-3-fill"></i>
+        <span class="profile-status"></span>
       </span>
       <span class="profile-meta">
-        <span class="profile-name" id="profile-name">加载中…</span>
-        <span class="profile-sub">
-          <span class="profile-id" id="profile-id">ID: --</span>
-          <span class="profile-vip">
-            <i class="ri-vip-crown-fill" aria-hidden="true"></i>VIP
-          </span>
-        </span>
+        <span class="profile-name" id="profile-name">用户</span>
+        <span class="profile-id" id="profile-id">ID: --</span>
       </span>
-      <i class="ri-arrow-right-s-line profile-arrow" aria-hidden="true"></i>
+      <span class="profile-arrow" aria-hidden="true">
+        <i class="ri-arrow-right-s-line"></i>
+      </span>
     </a>
 
     <div class="quick-actions">
@@ -61,6 +55,7 @@
         </span>
         <span class="qa-label">在线客服</span>
       </button>
+
       <button class="qa-item" type="button" data-apex-action="notify">
         <span class="qa-icon qa-gold" aria-hidden="true">
           <i class="ri-notification-3-line"></i>
@@ -68,6 +63,7 @@
         </span>
         <span class="qa-label">通知</span>
       </button>
+
       <button class="qa-item" type="button" data-apex-action="settings">
         <span class="qa-icon qa-dark" aria-hidden="true">
           <i class="ri-settings-3-line"></i>
@@ -86,6 +82,6 @@
 </main>
 
 <script src="/src/js/apiClient.js?v=20260930f"></script>
-<script src="/src/js/home.js?v=20260930a"></script>
+<script src="/src/js/home.js?v=20260930c"></script>
 </body>
 </html>

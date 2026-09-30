@@ -1,5 +1,6 @@
 /* ============================================================
-   Apex · 登录后首页交互
+   Apex · 登录后首页交互 v7
+   用户名脱敏：只显示「用户 {id}」
    ============================================================ */
 (function () {
   'use strict';
@@ -46,7 +47,6 @@
     }
     return 0;
   }
-
   function paintLang(idx) {
     var cur = LANGS[idx];
     var flagEl  = $('#lang-flag');
@@ -61,7 +61,6 @@
       li.setAttribute('aria-selected', on ? 'true' : 'false');
     });
   }
-
   function closeMenu() {
     var menu = $('#lang-menu');
     var btn  = $('#lang-btn');
@@ -74,41 +73,29 @@
     if (menu) menu.hidden = false;
     if (btn)  btn.setAttribute('aria-expanded', 'true');
   }
-  function toggleMenu() {
-    var menu = $('#lang-menu');
-    if (!menu) return;
-    if (menu.hidden) openMenu(); else closeMenu();
-  }
-
   function initLang() {
     var saved = '';
     try { saved = localStorage.getItem(LANG_KEY) || ''; } catch (e) {}
-    var idx = saved ? findLang(saved) : 0;
-    paintLang(idx);
+    paintLang(saved ? findLang(saved) : 0);
 
     var btn = $('#lang-btn');
     if (btn) {
       btn.addEventListener('click', function (ev) {
         ev.stopPropagation();
         buzz(6);
-        toggleMenu();
+        var menu = $('#lang-menu');
+        if (menu && menu.hidden) openMenu(); else closeMenu();
       });
     }
-
     $$('.lang-menu li').forEach(function (li) {
       li.addEventListener('click', function () {
         var code = li.getAttribute('data-lang');
-        var i = findLang(code);
-        paintLang(i);
+        paintLang(findLang(code));
         try { localStorage.setItem(LANG_KEY, code); } catch (e) {}
         buzz(10);
         closeMenu();
       });
-      li.addEventListener('keydown', function (ev) {
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); li.click(); }
-      });
     });
-
     document.addEventListener('click', function (ev) {
       if (!ev.target.closest('.wc-head')) closeMenu();
     });
@@ -117,15 +104,14 @@
     });
   }
 
-  /* ---------- 用户信息 ---------- */
+  /* ---------- 用户信息（脱敏） ---------- */
   function paintUser(user) {
     if (!user) return;
-    var name = user.username || user.display_name || 'Apex 用户';
-    var id   = user.id || user.user_id || user.uid || '--';
+    var id = user.id || user.user_id || user.uid || '';
     var nEl = $('#profile-name');
     var iEl = $('#profile-id');
-    if (nEl) nEl.textContent = name;
-    if (iEl) iEl.textContent = 'ID: ' + id;
+    if (nEl) nEl.textContent = id ? ('用户 ' + id) : '用户';
+    if (iEl) iEl.textContent = id ? ('ID: ' + id) : 'ID: --';
   }
 
   function checkAuth() {
@@ -147,13 +133,12 @@
       })
       .then(function (data) {
         if (!data) return;
-        var u = data.user || data;
-        paintUser(u);
+        paintUser(data.user || data);
       })
       .catch(function () { clearTimeout(timeoutId); });
   }
 
-  /* ---------- 退出登录 ---------- */
+  /* ---------- 退出 ---------- */
   function doLogout() {
     buzz(12);
     var p;
@@ -172,7 +157,6 @@
     document.addEventListener('click', function (ev) {
       var t = ev.target;
       if (!(t instanceof Element)) return;
-
       var el = t.closest('[data-apex-action]');
       if (!el) return;
       var act = el.getAttribute('data-apex-action');
@@ -200,13 +184,11 @@
     }, false);
   }
 
-  /* ---------- 启动 ---------- */
   function boot() {
     initLang();
     bindDelegate();
     checkAuth();
   }
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {
