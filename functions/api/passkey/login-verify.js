@@ -160,8 +160,17 @@ export async function onRequestPost(context) {
     return errorResponse('账号已被禁用', 403, 'account_disabled', requestId);
   }
 
-  // 11) 更新计数器
-  await updatePasskeyCounter(env, rawId, newCounter);
+  // 11) 更新计数器（条件更新防竞态）
+  const counterUpdate = await updatePasskeyCounter(env, rawId, storedCounter, newCounter);
+  if (!counterUpdate.ok) {
+    await writeAudit(env, {
+      action: 'passkey_login_failed',
+      actorId: cred.user_id,
+      actorType: 'user',
+      metadata: { reason: 'concurrent_counter_update' },
+    }, request);
+    return errorResponse('凭证状态异常，请重试', 409, 'concurrent_update', requestId);
+  }
 
   // 12) 创建 session
   const session = await createUserSession(env, user.id, request);

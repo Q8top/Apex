@@ -80,6 +80,28 @@ export async function onRequestPost(context) {
     return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
   }
 
+  // P14-Fix: 密码正确后，若生产环境要求邮箱验证且该用户未验证，拒绝登录
+  // 说明：
+  //   - config.requireVerifiedEmailFrom 在 _config.js 中定义为 isProduction
+  //   - Passkey-only 用户（password_hash = 'passkey-only:no-password'）
+  //     本就走 passkey 登录流程，不会进入本端点；此处不特殊处理
+  //   - 未验证用户被拒绝后，应引导其使用「重发验证邮件」入口
+  //   - 检查放在 hash 升级之前，避免为将被拒绝的账号做无谓 PBKDF2 运算
+  if (config.requireVerifiedEmailFrom && !user.email_verified) {
+    await writeAudit(env, {
+      action: 'login_blocked',
+      actorId: user.id,
+      actorType: 'user',
+      metadata: { reason: 'email_not_verified' },
+    }, request);
+    return errorResponse(
+      '请先验证邮箱后再登录',
+      403,
+      'email_not_verified',
+      requestId
+    );
+  }
+
   await upgradePasswordHashIfNeeded(env, user, password);
 
   const session = await createUserSession(env, user.id, request);

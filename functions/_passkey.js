@@ -90,11 +90,27 @@ export async function deletePasskey(env, userId, credentialId) {
   return result.meta && result.meta.changes > 0;
 }
 
-// 更新计数器 + last_used_at
-export async function updatePasskeyCounter(env, credentialId, newCounter) {
-  await env.apex_db.prepare(
-    'UPDATE passkeys SET counter = ?, last_used_at = CURRENT_TIMESTAMP WHERE credential_id = ?'
-  ).bind(newCounter, credentialId).run();
+// 更新计数器 + last_used_at（P12-Fix: 条件更新防竞态）
+// 返回 { ok: true } 或 { ok: false, reason: 'concurrent_update' }
+// 只有 WHERE counter = oldCounter 命中时才更新，防止两个并发请求同时通过 counter 检查后
+// 一个写成功另一个覆盖，导致 counter 回退或跳过。
+export async function updatePasskeyCounter(env, credentialId, oldCounter, newCounter) {
+  const result = await env.apex_db.prepare(
+    `UPDATE passkeys
+     SET counter = ?, last_used_at = CURRENT_TIMESTAMP
+     WHERE credential_id = ?
+       AND counter = ?`
+  ).bind(newCounter, credentialId, oldCounter).run();
+
+  const changes =
+    result &&
+    result.meta &&
+    Number(result.meta.changes || 0);
+
+  if (changes !== 1) {
+    return { ok: false, reason: 'concurrent_update' };
+  }
+  return { ok: true };
 }
 
 // 清理过期 challenge

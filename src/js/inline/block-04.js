@@ -328,7 +328,12 @@
       } else {
         const code = result.code || '';
         const msg = result.message || '登录失败';
-        if (code === 'invalid_credentials' || code === 'invalid_account' || /账号|用户名|密码|account|username|password/i.test(msg)) {
+        if (code === 'email_not_verified') {
+          // P15-Fix: 邮箱未验证 —— 聚焦账号字段并提示前往忘记密码页重发验证邮件
+          // （send-verify-email 端点复用同一入口：用户填邮箱即可重发）
+          showFieldError(accEl, msg, true);
+          toast('请前往「忘记密码」页面，用注册邮箱重发验证邮件', 'error');
+        } else if (code === 'invalid_credentials' || code === 'invalid_account' || /账号|用户名|密码|account|username|password/i.test(msg)) {
           showFieldError(accEl, msg);
         } else {
           toast(msg, 'error');

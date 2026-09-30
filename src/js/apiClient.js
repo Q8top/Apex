@@ -22,7 +22,7 @@
 
     // Captcha Token 自动注入（如果存在且是对象请求体）
     let body = data;
-    if (data && typeof data === 'object' && !Array.isArray(data) && window.__captchaToken) {
+    if (data && typeof data === 'object' && !Array.isArray(data) && window.__captchaToken && data.captchaToken === undefined) {
       body = { ...data, captchaToken: window.__captchaToken };
     }
 

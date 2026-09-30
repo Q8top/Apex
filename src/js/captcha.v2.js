@@ -69,7 +69,7 @@
       if (verifyRes.success) {
         if (percent) percent.textContent = '100%';
         // 立即设置 status 和 token（防止用户点得快，200ms 延迟内读到旧值）
-        console.log('[Captcha] verify 响应:', verifyRes);
+        // P12-Fix: 不再打印包含 token/score 的完整对象，避免敏感数据进入控制台
         box.dataset.token = verifyRes.token || '';
         window.__captchaToken = verifyRes.token || '';
         box.dataset.status = 'success';

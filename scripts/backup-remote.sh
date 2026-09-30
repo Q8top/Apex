@@ -19,8 +19,10 @@ OUTPUT_DIR="$PROJECT_ROOT/backups"
 # CI 环境应通过 secrets.CLOUDFLARE_KV_NAMESPACE_ID 注入
 KV_NAMESPACE_ID="${CLOUDFLARE_KV_NAMESPACE_ID:-}"
 if [ -z "$KV_NAMESPACE_ID" ]; then
-  echo "[WARN] 未设置 CLOUDFLARE_KV_NAMESPACE_ID，使用内置默认值（建议在 CI 通过 secret 注入）"
-  KV_NAMESPACE_ID="24dc2e9b5cd649b7a0c866f3592e7a6a"
+  echo "[FATAL] 未设置 CLOUDFLARE_KV_NAMESPACE_ID"
+  echo "  本地：export CLOUDFLARE_KV_NAMESPACE_ID=<your_namespace_id>"
+  echo "  CI：通过 GitHub Actions Secret 注入"
+  exit 1
 fi
 KV_LATEST_KEY="backup:latest"
 KV_INDEX_KEY="backup:index"
