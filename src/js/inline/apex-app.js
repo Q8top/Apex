@@ -124,16 +124,19 @@ function initAnnounce(app){
     '\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u8D26\u53F7\u5BC6\u7801\u4E0E\u9A8C\u8BC1\u7801',
     '\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'
   ];
-  v.innerHTML=M.map(function(t,i){return '<div class="apex-announce-item'+(i===0?' active':'')+'">'+t+'</div>';}).join('');
-  var items=v.querySelectorAll('.apex-announce-item'),cur=0,AUTO=3500;
-  if(items.length<2)return;
-  setInterval(function(){
-    if(document.hidden)return;
-    var old=items[cur];cur=(cur+1)%items.length;var nxt=items[cur];
-    old.classList.add('leaving');old.classList.remove('active');
-    setTimeout(function(){old.classList.remove('leaving');},400);
-    nxt.classList.add('active');
-  },AUTO);
+  var SEP='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#c8c8cc;margin:0 26px;vertical-align:middle;"></span>';
+  var one=M.map(function(t){return '<span>'+t+'</span>';}).join(SEP);
+  // 双份内容，配合 translateX(-50%) 实现无缝循环
+  v.innerHTML='<div class="apex-announce-marquee" id="apex-announce-marquee">'+one+SEP+one+SEP+'</div>';
+  var el=v.querySelector('#apex-announce-marquee');
+  if(!el)return;
+  // 根据内容宽度动态调整时长：宽度越大滚得越快，视觉速度恒定
+  requestAnimationFrame(function(){
+    var half=el.scrollWidth/2;
+    if(!half)return;
+    var sec=Math.max(14,Math.round(half/55)); // 55px/s
+    el.style.animationDuration=sec+'s';
+  });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
