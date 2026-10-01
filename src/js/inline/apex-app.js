@@ -138,7 +138,7 @@ function initAnnounce(app){
   }
   wrap.addEventListener('click',function(e){
     if(e.target.closest && e.target.closest('a'))return;
-    location.href='/announcements';
+    location.href='/announcements.html';
   });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}
