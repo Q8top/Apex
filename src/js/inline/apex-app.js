@@ -85,24 +85,35 @@ function initCarousel(app){
   ];
   t.innerHTML=S.map(function(s){return '<div class="apex-carousel-slide"><span class="apex-carousel-tag">'+s.a+'</span><h2 class="apex-carousel-title">'+s.b+'</h2><p class="apex-carousel-desc">'+s.c+'</p></div>';}).join('');
   d.innerHTML=S.map(function(_,i){return '<button type="button" class="apex-dot'+(i===0?' active':'')+'" data-idx="'+i+'" aria-label="'+(i+1)+'"></button>';}).join('');
-  var dots=d.querySelectorAll('.apex-dot'),n=S.length;
+  var dots=d.querySelectorAll('.apex-dot'),n=S.length,cur=0,AUTO=3500,PAUSE=6000;
+  var timer=null,paused=false,pauseTimer=null;
   function setA(i){for(var k=0;k<dots.length;k++)dots[k].classList.toggle('active',k===i);}
-  var tick=false;
+  function goto(i){t.scrollTo({left:i*t.clientWidth,behavior:'smooth'});cur=i;setA(i);}
+  function tick(){if(paused||document.hidden)return;goto((cur+1)%n);}
+  function start(){stop();timer=setInterval(tick,AUTO);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  function pauseTemporarily(){paused=true;if(pauseTimer)clearTimeout(pauseTimer);pauseTimer=setTimeout(function(){paused=false;},PAUSE);}
+  start();
+  document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else start();});
+  t.addEventListener('pointerdown',pauseTemporarily,{passive:true});
+  t.addEventListener('wheel',pauseTemporarily,{passive:true});
+  t.addEventListener('touchstart',pauseTemporarily,{passive:true});
+  var tick2=false;
   t.addEventListener('scroll',function(){
-    if(tick)return;tick=true;
+    if(tick2)return;tick2=true;
     requestAnimationFrame(function(){
-      tick=false;
+      tick2=false;
       var w=t.clientWidth;if(!w)return;
       var i=Math.round(t.scrollLeft/w);
       if(i<0)i=0;if(i>n-1)i=n-1;
-      setA(i);
+      if(i!==cur){cur=i;setA(i);}
     });
   },{passive:true});
   d.addEventListener('click',function(e){
     var b=e.target.closest?e.target.closest('.apex-dot'):null;
     if(!b)return;
     var i=parseInt(b.getAttribute('data-idx'),10)||0;
-    t.scrollTo({left:i*t.clientWidth,behavior:'smooth'});
+    goto(i);pauseTemporarily();
   });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}
