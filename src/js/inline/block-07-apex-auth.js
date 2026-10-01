@@ -30,7 +30,10 @@
     var p = (window.apiClient && typeof window.apiClient.post === 'function')
       ? window.apiClient.post('/api/logout')
       : fetch('/api/logout', { method: 'POST', credentials: 'include' });
-    Promise.resolve(p).catch(function () {}).then(function () {
+    Promise.resolve(p).catch(function(){
+      clearTimeout(t);
+      try{document.body.classList.remove('apex-booting');}catch(e){}
+    }).then(function () {
       if (window.__apexApp && typeof window.__apexApp.hide === 'function') {
         try { window.__apexApp.hide(); } catch (e) {}
       }
@@ -49,8 +52,9 @@
     fetch('/api/me', { credentials: 'include', signal: c.signal, cache: 'no-store' })
       .then(function (r) { clearTimeout(t); return r.ok ? r.json().catch(function () { return null; }) : null; })
       .then(function(d){
+      try{document.body.classList.remove('apex-booting');}catch(e){}
       if(d&&d.success&&d.user){showLoggedIn(d.user);}
-      else{try{localStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
+      else{try{localStorage.removeItem('apex_auth_hint');}catch(e){}}
     })
       .catch(function () { clearTimeout(t); });
   }
