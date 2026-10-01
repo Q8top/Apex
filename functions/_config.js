@@ -50,7 +50,7 @@ export function getConfig(env = {}) {
     emailReplyTo: env.EMAIL_REPLY_TO || '',
     agentmailInboxId: env.AGENTMAIL_INBOX_ID || '',
 
-    requireVerifiedEmailFrom: isProduction,
+    requireVerifiedEmailFrom: false, // 登录不强制邮箱验证，仅密码找回时发邮件
   };
 }
 
