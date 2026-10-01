@@ -467,3 +467,11 @@
   .apex-notif-btn { padding: 0 8px 0 6px !important; }
   .apex-lang-btn { padding: 0 6px !important; }
 }
+
+/* ============================================================
+   Fix v5 · 通知按钮去背景
+   ============================================================ */
+
+.apex-notif-btn { background: transparent !important; }
+.apex-notif-btn:hover { background: #f4f4f5 !important; }
+.apex-notif-btn:active { transform: scale(.96) !important; }
