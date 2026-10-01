@@ -1,18 +1,13 @@
 /* ============================================================
-   Apex App · 登录后主界面
+   Apex App · 登录后主界面（clean v2）
    ============================================================ */
 
 .apex-app {
-  position: fixed;
-  inset: 0;
-  display: none;
-  flex-direction: column;
-  background: #ffffff;
-  color: #0a0a0a;
+  position: fixed; inset: 0;
+  display: none; flex-direction: column;
+  background: #fff; color: #0a0a0a;
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  z-index: 9000;
-  overflow-y: auto;
-  overflow-x: hidden;
+  z-index: 9000; overflow-y: auto; overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 .apex-app.show {
@@ -24,214 +19,137 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- 顶部栏 ---------- */
+/* ---------- 顶栏 ---------- */
 .apex-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  flex-shrink: 0;
+  position: sticky; top: 0; z-index: 100; flex-shrink: 0;
   background: rgba(255,255,255,.78);
   backdrop-filter: saturate(180%) blur(18px);
   -webkit-backdrop-filter: saturate(180%) blur(18px);
   border-bottom: 1px solid rgba(0,0,0,.06);
 }
 .apex-topbar-inner {
-  max-width: 1240px;
-  margin: 0 auto;
+  max-width: 1240px; margin: 0 auto;
   padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 12px;
 }
 
 /* ---------- 搜索框 ---------- */
 .apex-search {
-  position: relative;
-  flex: 1;
-  max-width: 520px;
-  display: flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 14px;
-  background: #f4f4f5;
-  border: 1px solid transparent;
-  border-radius: 12px;
+  position: relative; flex: 1; min-width: 0; max-width: 520px;
+  display: flex; align-items: center;
+  height: 42px; padding: 0 16px;
+  background: #f4f4f5; border: 1px solid transparent;
+  border-radius: 999px;
   transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 .apex-search:hover { background: #efeff1; }
 .apex-search:focus-within {
-  background: #fff;
-  border-color: #111;
-  box-shadow: 0 0 0 3px rgba(17,17,17,.06);
+  background: #fff; border-color: #0a0a0a;
+  box-shadow: 0 0 0 3px rgba(10,10,10,.06);
 }
 .apex-search > i {
-  font-size: 18px;
-  color: #8a8a8a;
-  margin-right: 9px;
-  flex-shrink: 0;
-  transition: color .18s ease;
+  font-size: 18px; color: #8a8a8a; margin-right: 9px;
+  flex-shrink: 0; transition: color .18s ease;
 }
-.apex-search:focus-within > i { color: #111; }
+.apex-search:focus-within > i { color: #0a0a0a; }
 .apex-search > input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0a0a0a;
-  line-height: 1;
-  appearance: none;
-  -webkit-appearance: none;
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  color: #0a0a0a; line-height: 1; appearance: none; -webkit-appearance: none;
 }
 .apex-search > input::placeholder { color: #999; font-weight: 400; }
 .apex-search > input::-webkit-search-cancel-button { -webkit-appearance: none; }
 .apex-search-kbd {
-  display: none;
-  margin-left: 8px;
-  padding: 3px 7px;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  color: #888;
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 6px;
-  line-height: 1;
-  letter-spacing: .3px;
+  display: none; margin-left: 8px; padding: 3px 7px;
+  font-family: inherit; font-size: 11px; font-weight: 600;
+  color: #888; background: #fff; border: 1px solid #e5e5e5;
+  border-radius: 6px; line-height: 1; letter-spacing: .3px;
 }
-@media (min-width: 768px) {
-  .apex-search-kbd { display: inline-block; }
-}
-
-/* ---------- 响应式 ---------- */
-@media (max-width: 600px) {
-  .apex-topbar-inner { padding: 10px 12px; gap: 8px; }
-  .apex-search { height: 42px; padding: 0 12px; }
-}
+@media (min-width: 768px) { .apex-search-kbd { display: inline-block; } }
 
 /* ---------- 右侧操作区 ---------- */
 .apex-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  margin-left: auto; flex-shrink: 0;
 }
 
-.apex-icon-btn {
-  position: relative;
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #333;
+/* 通知按钮（长方形圆角框） */
+.apex-notif-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0 14px;
+  gap: 8px;
+  border: 1px solid #e5e5e7; background: #fff;
   border-radius: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .15s ease, color .15s ease, transform .08s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  color: #0a0a0a; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  letter-spacing: .1px; white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease,
+              box-shadow .15s ease, transform .08s ease;
 }
-.apex-icon-btn:hover { background: #f4f4f5; color: #000; }
-.apex-icon-btn:active { transform: scale(.94); }
-.apex-icon-btn > i { font-size: 22px; line-height: 1; }
-
-/* 通知徽标 */
-.apex-badge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  background: #ff3b30;
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 999px;
-  box-sizing: content-box;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: -.2px;
+.apex-notif-btn:hover {
+  background: #fafafa; border-color: #d4d4d8;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
 }
+.apex-notif-btn:active { transform: scale(.97); }
+.apex-notif-btn > i {
+  font-size: 17px; color: #18181b;
+  flex-shrink: 0; line-height: 1;
+}
+.apex-notif-label { color: #18181b; line-height: 1; }
 
 /* ---------- 语言切换 ---------- */
-.apex-lang-wrap { position: relative; }
+.apex-lang-wrap { position: relative; flex-shrink: 0; }
 .apex-lang-btn {
-  display: inline-flex;
-  align-items: center;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0 12px;
   gap: 7px;
-  height: 42px;
-  padding: 0 12px;
-  border: 0;
-  background: transparent;
-  color: #333;
+  border: 1px solid #e5e5e7; background: #fff;
   border-radius: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background .15s ease, color .15s ease, transform .08s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  color: #18181b; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease,
+              box-shadow .15s ease, transform .08s ease;
 }
-.apex-lang-btn:hover { background: #f4f4f5; color: #000; }
+.apex-lang-btn:hover {
+  background: #fafafa; border-color: #d4d4d8;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
 .apex-lang-btn:active { transform: scale(.97); }
-.apex-lang-btn > .apex-flag { font-size: 18px; line-height: 1; }
-.apex-lang-btn > .apex-lang-label { white-space: nowrap; }
+.apex-lang-btn > .apex-flag { font-size: 16px; line-height: 1; flex-shrink: 0; }
+.apex-lang-btn > .apex-lang-label { line-height: 1; }
 .apex-lang-btn > i {
-  font-size: 16px;
-  color: #999;
+  display: inline-flex; align-items: center;
+  font-size: 14px; color: #71717a; flex-shrink: 0;
   transition: transform .18s cubic-bezier(.2,.8,.2,1);
 }
 .apex-lang-btn[aria-expanded="true"] > i { transform: rotate(180deg); }
 
-/* 下拉菜单 */
 .apex-lang-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 200px;
-  padding: 6px;
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.08);
+  position: absolute; top: calc(100% + 6px); right: 0;
+  min-width: 200px; padding: 6px;
+  background: #fff; border: 1px solid rgba(0,0,0,.08);
   border-radius: 14px;
   box-shadow: 0 16px 48px -12px rgba(0,0,0,.18),
               0 4px 12px rgba(0,0,0,.06);
   z-index: 200;
-  opacity: 0;
-  transform: translateY(-6px) scale(.97);
-  transform-origin: top right;
-  pointer-events: none;
-  transition:
-    opacity .18s cubic-bezier(.2,.8,.2,1),
-    transform .18s cubic-bezier(.2,.8,.2,1);
+  opacity: 0; transform: translateY(-6px) scale(.97);
+  transform-origin: top right; pointer-events: none;
+  transition: opacity .18s cubic-bezier(.2,.8,.2,1),
+              transform .18s cubic-bezier(.2,.8,.2,1);
 }
 .apex-lang-menu.open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+  opacity: 1; transform: translateY(0) scale(1);
   pointer-events: auto;
 }
 .apex-lang-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 9px 10px;
-  border: 0;
-  background: transparent;
-  border-radius: 9px;
-  cursor: pointer;
-  color: #333;
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 9px 10px;
+  border: 0; background: transparent; border-radius: 9px;
+  cursor: pointer; color: #333;
+  font-family: inherit; font-size: 13.5px; font-weight: 500;
   text-align: left;
   transition: background .12s ease, color .12s ease;
 }
@@ -241,369 +159,46 @@
 .apex-lang-item > .apex-lang-item-label { flex: 1; min-width: 0; }
 .apex-lang-item > .apex-check { font-size: 16px; color: #111; flex-shrink: 0; }
 
-/* ---------- 响应式 ---------- */
-@media (max-width: 600px) {
-  .apex-lang-btn { padding: 0 10px; gap: 5px; }
-  .apex-lang-btn > .apex-lang-label { display: none; }
-}
-@media (max-width: 360px) {
-  .apex-actions { gap: 2px; }
-  .apex-icon-btn { width: 38px; height: 38px; }
-  .apex-icon-btn > i { font-size: 20px; }
-}
-
 /* ---------- 主内容区 ---------- */
-.apex-main {
-  flex: 1;
-  padding: 24px 20px 60px;
-}
-.apex-main-inner {
-  max-width: 1240px;
-  margin: 0 auto;
-}
+.apex-main { flex: 1; padding: 24px 20px 60px; }
+.apex-main-inner { max-width: 1240px; margin: 0 auto; }
 .apex-welcome-card {
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
   padding: 32px 28px;
-  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
-  border: 1px solid #ededed;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #fafafa 0%, #fff 100%);
+  border: 1px solid #ededed; border-radius: 20px;
 }
 .apex-welcome-card::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 180px;
-  height: 180px;
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 180px; height: 180px;
   background: radial-gradient(circle, rgba(17,17,17,.04) 0%, transparent 70%);
   pointer-events: none;
 }
 .apex-welcome-hi {
-  font-size: 13px;
-  color: #888;
-  font-weight: 600;
-  letter-spacing: .3px;
-  margin-bottom: 6px;
-  text-transform: uppercase;
+  font-size: 13px; color: #888; font-weight: 600;
+  letter-spacing: .3px; margin-bottom: 6px; text-transform: uppercase;
 }
 .apex-welcome-title {
-  font-size: 24px;
-  font-weight: 800;
-  color: #0a0a0a;
-  margin: 0 0 8px;
-  letter-spacing: -.5px;
-  line-height: 1.2;
+  font-size: 24px; font-weight: 800; color: #0a0a0a;
+  margin: 0 0 8px; letter-spacing: -.5px; line-height: 1.2;
 }
-.apex-welcome-sub {
-  font-size: 14px;
-  color: #777;
-  margin: 0;
-  line-height: 1.6;
-}
+.apex-welcome-sub { font-size: 14px; color: #777; margin: 0; line-height: 1.6; }
 
+/* ---------- 响应式 ---------- */
 @media (max-width: 600px) {
+  .apex-topbar-inner { padding: 10px 14px; gap: 8px; }
+  .apex-search { height: 38px; padding: 0 13px; }
+  .apex-search > i { font-size: 16px; margin-right: 7px; }
+  .apex-search > input { font-size: 13px; }
+  .apex-actions { gap: 5px; }
+  .apex-notif-btn { height: 36px; padding: 0 11px; gap: 6px; border-radius: 10px; }
+  .apex-notif-btn > i { font-size: 15px; }
+  .apex-notif-label { font-size: 12px; }
+  .apex-lang-btn { height: 36px; padding: 0 10px; gap: 5px; border-radius: 10px; }
+  .apex-lang-btn > .apex-flag { font-size: 14px; }
+  .apex-lang-btn > .apex-lang-label { font-size: 12px; }
+  .apex-lang-btn > i { font-size: 13px; }
   .apex-main { padding: 16px 14px 60px; }
   .apex-welcome-card { padding: 24px 20px; border-radius: 18px; }
   .apex-welcome-title { font-size: 20px; }
-}
-
-/* ---------- 修正：移动端显示语言文字 ---------- */
-@media (max-width: 600px) {
-  .apex-lang-btn > .apex-lang-label { display: inline !important; }
-  .apex-lang-btn { padding: 0 9px; gap: 5px; font-size: 12px; }
-  .apex-lang-btn > .apex-flag { font-size: 16px; }
-}
-
-/* ---------- 修正：badge 位置（未来有通知时避免盖住铃铛） ---------- */
-.apex-badge {
-  top: 4px;
-  right: 4px;
-  min-width: 15px;
-  height: 15px;
-  padding: 0 3px;
-  font-size: 9px;
-  border-width: 1.5px;
-}
-
-/* ============================================================
-   Fix v2 · 现代 App 顶栏
-   ============================================================ */
-
-.apex-topbar-inner { padding: 11px 18px !important; gap: 12px !important; }
-
-/* 搜索框 pill 化 */
-.apex-search {
-  height: 42px !important;
-  border-radius: 999px !important;
-  padding: 0 16px !important;
-}
-.apex-search:focus-within {
-  border-color: #0a0a0a !important;
-  box-shadow: 0 0 0 3px rgba(10,10,10,.06) !important;
-}
-
-/* 图标按钮圆形 */
-.apex-icon-btn {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-}
-.apex-icon-btn:hover { background: #f2f2f3 !important; }
-
-/* 语言按钮 pill + 修复箭头 */
-.apex-lang-btn {
-  height: 40px !important;
-  padding: 0 11px !important;
-  border-radius: 999px !important;
-  gap: 6px !important;
-}
-.apex-lang-btn > i {
-  display: inline-flex !important;
-  align-items: center !important;
-  font-size: 15px !important;
-  color: #999 !important;
-  flex-shrink: 0 !important;
-}
-.apex-lang-btn:hover { background: #f2f2f3 !important; }
-
-/* 移动端微调（保留箭头） */
-@media (max-width: 600px) {
-  .apex-topbar-inner { padding: 10px 14px !important; gap: 8px !important; }
-  .apex-search { height: 40px !important; padding: 0 14px !important; }
-  .apex-search > input { font-size: 13.5px !important; }
-  .apex-icon-btn { width: 38px !important; height: 38px !important; }
-  .apex-lang-btn {
-    padding: 0 9px !important;
-    gap: 4px !important;
-    font-size: 12px !important;
-  }
-  .apex-lang-btn > .apex-flag { font-size: 15px !important; }
-  .apex-lang-btn > .apex-lang-label { display: inline !important; }
-  .apex-lang-btn > i { font-size: 13px !important; display: inline-flex !important; }
-}
-
-/* ============================================================
-   Fix v3 · 通知按钮 pill + 语言箭头 + 布局
-   ============================================================ */
-
-/* 通知按钮：pill 形状，图标 + 文字 */
-.apex-notif-btn {
-  width: auto !important;
-  min-width: 0 !important;
-  height: 40px !important;
-  padding: 0 14px 0 11px !important;
-  border-radius: 999px !important;
-  gap: 6px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  background: #f4f4f5 !important;
-}
-.apex-notif-btn:hover { background: #ececee !important; }
-.apex-notif-btn > i {
-  font-size: 18px !important;
-  color: #0a0a0a !important;
-  line-height: 1 !important;
-}
-.apex-notif-label {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: #0a0a0a !important;
-  white-space: nowrap !important;
-  letter-spacing: .1px !important;
-}
-
-/* 语言按钮：确保箭头不被裁 */
-.apex-lang-wrap { flex-shrink: 0 !important; }
-.apex-lang-btn {
-  overflow: visible !important;
-  min-width: 0 !important;
-}
-.apex-lang-btn > i { flex-shrink: 0 !important; }
-
-/* 移动端收紧 */
-@media (max-width: 600px) {
-  .apex-notif-btn { padding: 0 11px 0 9px !important; height: 38px !important; }
-  .apex-notif-btn > i { font-size: 17px !important; }
-  .apex-notif-label { font-size: 12.5px !important; }
-  .apex-lang-btn > .apex-lang-label { display: inline !important; font-size: 12.5px !important; }
-  .apex-lang-btn > i { display: inline-flex !important; font-size: 14px !important; }
-}
-@media (max-width: 380px) {
-  .apex-notif-label { display: none !important; }
-  .apex-notif-btn { padding: 0 !important; width: 38px !important; justify-content: center !important; }
-}
-
-/* ============================================================
-   Fix v4 · 手机端布局修复
-   ============================================================ */
-
-.apex-search { min-width: 0 !important; }
-.apex-search > input { min-width: 0 !important; }
-
-@media (max-width: 600px) {
-  .apex-topbar-inner { padding: 9px 12px !important; gap: 7px !important; }
-  .apex-search { height: 38px !important; padding: 0 12px !important; }
-  .apex-search > i { font-size: 16px !important; margin-right: 7px !important; }
-  .apex-search > input { font-size: 13px !important; }
-  .apex-actions { gap: 3px !important; }
-
-  .apex-notif-btn {
-    height: 36px !important;
-    padding: 0 10px 0 8px !important;
-    gap: 5px !important;
-  }
-  .apex-notif-btn > i { font-size: 16px !important; }
-  .apex-notif-label { display: inline !important; font-size: 12px !important; }
-
-  .apex-lang-btn { height: 36px !important; padding: 0 8px !important; gap: 4px !important; }
-  .apex-lang-btn > .apex-flag { font-size: 14px !important; }
-  .apex-lang-btn > .apex-lang-label { display: inline !important; font-size: 12px !important; }
-  .apex-lang-btn > i { display: inline-flex !important; font-size: 13px !important; }
-}
-
-@media (max-width: 380px) {
-  .apex-notif-label { display: inline !important; }
-  .apex-notif-btn { padding: 0 8px 0 6px !important; }
-  .apex-lang-btn { padding: 0 6px !important; }
-}
-
-/* ============================================================
-   Fix v5 · 通知按钮去背景
-   ============================================================ */
-
-.apex-notif-btn { background: transparent !important; }
-.apex-notif-btn:hover { background: #f4f4f5 !important; }
-.apex-notif-btn:active { transform: scale(.96) !important; }
-
-/* ============================================================
-   Fix v6 · 通知 + 语言统一为长方形框按钮
-   ============================================================ */
-
-.apex-notif-btn,
-.apex-lang-btn {
-  height: 40px !important;
-  padding: 0 14px !important;
-  border: 1px solid #e5e5e7 !important;
-  background: #ffffff !important;
-  border-radius: 12px !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
-  transition: background .15s ease, border-color .15s ease,
-              box-shadow .15s ease, transform .08s ease !important;
-}
-
-.apex-notif-btn:hover,
-.apex-lang-btn:hover {
-  background: #fafafa !important;
-  border-color: #d4d4d8 !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,.06) !important;
-}
-
-.apex-notif-btn:active,
-.apex-lang-btn:active {
-  transform: scale(.97) !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
-}
-
-/* 通知按钮布局 */
-.apex-notif-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.apex-notif-btn > i { color: #0a0a0a !important; }
-
-/* 语言按钮布局 */
-.apex-lang-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 7px !important;
-}
-.apex-lang-btn > i { color: #71717a !important; }
-
-/* 语言下拉菜单对齐到按钮右下角 */
-.apex-lang-menu { top: calc(100% + 6px) !important; }
-
-/* 移动端收紧 */
-@media (max-width: 600px) {
-  .apex-notif-btn,
-  .apex-lang-btn {
-    height: 36px !important;
-    padding: 0 11px !important;
-    border-radius: 10px !important;
-    gap: 5px !important;
-  }
-  .apex-notif-btn > i { font-size: 16px !important; }
-  .apex-lang-btn > .apex-flag { font-size: 14px !important; }
-}
-
-@media (max-width: 380px) {
-  .apex-notif-btn,
-  .apex-lang-btn {
-    padding: 0 9px !important;
-    gap: 4px !important;
-  }
-}
-
-/* ============================================================
-   Fix v7 · 通知按钮 padding 对齐语言按钮
-   ============================================================ */
-
-.apex-notif-btn {
-  padding: 0 14px !important;
-  gap: 7px !important;
-}
-.apex-notif-btn > i {
-  font-size: 18px !important;
-  color: #0a0a0a !important;
-}
-.apex-notif-label {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: #0a0a0a !important;
-  letter-spacing: .1px !important;
-}
-
-/* 移动端保持与语言按钮一致的对称 padding */
-@media (max-width: 600px) {
-  .apex-notif-btn { padding: 0 11px !important; gap: 6px !important; }
-  .apex-notif-btn > i { font-size: 16px !important; }
-  .apex-notif-label { font-size: 12px !important; }
-}
-@media (max-width: 380px) {
-  .apex-notif-btn { padding: 0 10px !important; gap: 5px !important; }
-  .apex-notif-btn > i { font-size: 15px !important; }
-  .apex-notif-label { font-size: 11.5px !important; }
-}
-
-/* ============================================================
-   Fix v8 · 通知按钮内容居中 + gap 加大
-   ============================================================ */
-
-.apex-notif-btn {
-  justify-content: center !important;
-  gap: 9px !important;
-  padding: 0 15px !important;
-}
-.apex-notif-btn > i {
-  font-size: 17px !important;
-  color: #18181b !important;
-  flex-shrink: 0 !important;
-}
-.apex-notif-label { color: #18181b !important; }
-
-/* 语言按钮 gap 同步微调，视觉对称 */
-.apex-lang-btn {
-  gap: 9px !important;
-  padding: 0 15px !important;
-}
-
-@media (max-width: 600px) {
-  .apex-notif-btn,
-  .apex-lang-btn {
-    padding: 0 12px !important;
-    gap: 7px !important;
-    height: 38px !important;
-  }
-  .apex-notif-btn > i { font-size: 16px !important; }
 }
