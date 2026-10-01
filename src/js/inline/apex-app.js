@@ -73,7 +73,7 @@ function show(user){
   }
   var hi=app.querySelector('.apex-welcome-hi');
   if(hi&&user&&user.username)hi.textContent='\u4F60\u597D\uFF0C'+user.username;
-  try{sessionStorage.setItem('apex_auth_hint','1');}catch(e){}
+  try{localStorage.setItem('apex_auth_hint','1');}catch(e){}
   try{document.documentElement.classList.add('apex-auth-hint');}catch(e){}
   app.classList.add('show');
 }
@@ -143,6 +143,6 @@ function initAnnounce(app){
     location.href='/announcements.html';
   });
 }
-function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');try{sessionStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
+function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');try{localStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
 })();

@@ -47,7 +47,7 @@
       .then(function (r) { clearTimeout(t); return r.ok ? r.json().catch(function () { return null; }) : null; })
       .then(function(d){
       if(d&&d.success&&d.user){showLoggedIn(d.user);}
-      else{try{sessionStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
+      else{try{localStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
     })
       .catch(function () { clearTimeout(t); });
   }

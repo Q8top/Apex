@@ -98,11 +98,14 @@
   <link rel="apple-touch-icon" sizes="512x512">
 <!-- APEX-AUTH-HINT -->
 <style>
-  html.apex-auth-hint body > *:not(#apex-app):not(#apex-toast):not(#apex-refresh-banner) { display: none !important; }
-  html.apex-auth-hint #apex-app { display: flex !important; }
+  html.apex-auth-hint .hero,
+  html.apex-auth-hint .card-section,
+  html.apex-auth-hint .link-row,
+  html.apex-auth-hint .footer,
+  html.apex-auth-hint #auth-tabs { display: none !important; }
 </style>
 <script>
-  (function(){try{if(sessionStorage.getItem('apex_auth_hint')==='1'){document.documentElement.classList.add('apex-auth-hint');}}catch(e){}})();
+  (function(){try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.classList.add('apex-auth-hint');}}catch(e){}})();
 </script>
 </head>
 <body>
