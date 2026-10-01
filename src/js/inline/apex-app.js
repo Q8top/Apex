@@ -125,7 +125,7 @@ function initAnnounce(app){
     '\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'
   ];
   var SEP='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#c8c8cc;margin:0 26px;vertical-align:middle;"></span>';
-  var one=M.map(function(t){return '<span>'+t+'</span>';}).join(SEP);
+  var one=M.map(function(t){return '<span class="apex-announce-text">'+t+'</span>';}).join(SEP);
   // 双份内容，配合 translateX(-50%) 实现无缝循环
   v.innerHTML='<div class="apex-announce-marquee" id="apex-announce-marquee">'+one+SEP+one+SEP+'</div>';
   var el=v.querySelector('#apex-announce-marquee');

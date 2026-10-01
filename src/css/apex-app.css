@@ -378,7 +378,7 @@
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-.apex-announce-marquee > span {
+.apex-announce-marquee > .apex-announce-text {
   display: inline-block;
   padding-right: 64px;
   color: #333;
