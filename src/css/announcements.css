@@ -101,7 +101,6 @@ body {
   line-height: 1;
 }
 
-
 /* ---------- 空态 ---------- */
 .ann-empty {
   display: flex;
@@ -132,30 +131,11 @@ body {
 }
 
 .ann-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  display: block;
   font-size: 14.5px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #18181b;
   word-break: break-word;
-}
-
-.ann-num {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  margin-top: 3px;
-  background: #0a0a0a;
-  color: #ffffff;
-  border-radius: 6px;
-  font-size font-weight: 700;
-  letter-spacing: -.2px;
-  line-height: 1;
 }
 
 .ann-text {
@@ -166,5 +146,5 @@ body {
 
 @media (max-width: 480px) {
   .ann-row { font-size: 14px; gap: 9px; }
-  .ann-num { min-width: 19px; height: 19px; font-size: 10.5px; }
+  
 }

@@ -22,8 +22,8 @@ if(!list)return;
 if(!M||!M.length){if(empty)empty.hidden=false;return;}
 list.innerHTML=M.map(function(g){
   var items=(g.items||[]).map(function(x,i){
-    var num=(g.items.length>1)?('<span class="ann-num">'+(i+1)+'</span>'):'';
-    return '<li class="ann-row">'+num+'<span class="ann-text">'+esc(x)+'</span></li>';
+    var pre=(g.items.length>1)?((i+1)+'. '):'';
+    return '<li class="ann-row"><span class="ann-text">'+pre+esc(x)+'</span></li>';
   }).join('');
   return '<li class="ann-item">'
     + '<div class="ann-time"><i class="ri-time-line" aria-hidden="true"></i>'

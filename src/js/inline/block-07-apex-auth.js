@@ -18,6 +18,7 @@
 
   function showLoggedIn(user) {
     try{localStorage.setItem('apex_auth_hint','1');}catch(e){}
+    try{document.body.classList.remove('apex-booting');}catch(e){}
     hideShell();
     if (window.__apexApp && typeof window.__apexApp.show === 'function') {
       window.__apexApp.show(user || null);
@@ -52,9 +53,12 @@
     fetch('/api/me', { credentials: 'include', signal: c.signal, cache: 'no-store' })
       .then(function (r) { clearTimeout(t); return r.ok ? r.json().catch(function () { return null; }) : null; })
       .then(function(d){
-      try{document.body.classList.remove('apex-booting');}catch(e){}
-      if(d&&d.success&&d.user){showLoggedIn(d.user);}
-      else{try{localStorage.removeItem('apex_auth_hint');}catch(e){}}
+      if(d&&d.success&&d.user){
+        showLoggedIn(d.user);
+      }else{
+        try{document.body.classList.remove('apex-booting');}catch(e){}
+        try{localStorage.removeItem('apex_auth_hint');}catch(e){}
+      }
     })
       .catch(function () { clearTimeout(t); });
   }
