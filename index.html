@@ -103,9 +103,16 @@
   html.apex-auth-hint .link-row,
   html.apex-auth-hint .footer,
   html.apex-auth-hint #auth-tabs { display: none !important; }
+  html.apex-auth-hint body::before {
+    content: ""; position: fixed; inset: 0; background: #fff; z-index: 1;
+  }
 </style>
 <script>
-  (function(){try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.classList.add('apex-auth-hint');}}catch(e){}})();
+  (function(){
+    function apply(){try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.classList.add('apex-auth-hint');return true;}}catch(e){}return false;}
+    apply();
+    window.addEventListener('pageshow',function(e){if(e.persisted){if(!apply())document.documentElement.classList.remove('apex-auth-hint');}else{apply();}});
+  })();
 </script>
 </head>
 <body>

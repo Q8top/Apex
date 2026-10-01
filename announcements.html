@@ -10,6 +10,18 @@
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
 <link rel="stylesheet" href="/src/css/announcements.css?v=202610011614">
+<style>
+  html.ann-auth-hint body { visibility: hidden; }
+</style>
+<script>
+  (function(){try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.style.visibility='hidden';}
+  }catch(e){}
+  window.addEventListener('pageshow',function(e){
+    try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.style.visibility='hidden';}
+    else{document.documentElement.style.visibility='';}
+    }catch(x){}
+  });
+  </script>
 </head>
 <body>
 <header class="ann-topbar">

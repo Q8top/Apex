@@ -103,3 +103,6 @@
 /i18n/*
   Cache-Control: public, max-age=3600
 # === APEX-CACHE-END ===
+
+/announcements.html
+  Cache-Control: no-cache

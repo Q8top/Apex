@@ -17,6 +17,7 @@
   }
 
   function showLoggedIn(user) {
+    try{localStorage.setItem('apex_auth_hint','1');}catch(e){}
     hideShell();
     if (window.__apexApp && typeof window.__apexApp.show === 'function') {
       window.__apexApp.show(user || null);
@@ -33,6 +34,8 @@
       if (window.__apexApp && typeof window.__apexApp.hide === 'function') {
         try { window.__apexApp.hide(); } catch (e) {}
       }
+      try{localStorage.removeItem('apex_auth_hint');}catch(e){}
+      try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}
       location.replace('/');
     });
   }
