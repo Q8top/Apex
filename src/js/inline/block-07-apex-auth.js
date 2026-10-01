@@ -60,7 +60,10 @@
         try{localStorage.removeItem('apex_auth_hint');}catch(e){}
       }
     })
-      .catch(function () { clearTimeout(t); });
+      .catch(function () {
+      clearTimeout(t);
+      try{document.body.classList.remove('apex-booting');}catch(e){}
+    });
   }
 
   if (document.readyState === 'loading') {

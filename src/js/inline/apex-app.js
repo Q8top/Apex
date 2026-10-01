@@ -129,7 +129,7 @@ function initAnnounce(app){
     {t:'2026-09-28 10:00',c:'\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'}
   ];
   window.__apexAnnouncements = M;
-  var html=M.map(function(x){return '<span class="apex-announce-text">'+x.c+'</span>';}).join('');
+  var html=M.map(function(x,i){return '<span class="apex-announce-text">'+(i+1)+'. '+x.c+'</span>';}).join('');
   v.innerHTML='<div class="apex-announce-marquee" id="apex-announce-marquee">'+html+html+'</div>';
   var el=v.querySelector('#apex-announce-marquee');
   if(el){
