@@ -144,6 +144,22 @@ function initAnnounce(app){
     location.href='/announcements.html';
   });
 }
+var APEX_GAMES={
+  hot:[
+    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',e:'\uD83C\uDF52',g:'linear-gradient(135deg,#ff5e62 0%,#ff9966 100%)'}
+  ]
+};
+function renderGames(box,catKey){
+  var list=APEX_GAMES[catKey]||[];
+  if(!list.length){box.innerHTML='';return;}
+  var html='<div class="apex-game-grid">'+list.map(function(g){
+    return '<div class="apex-game-card">'+
+      '<div class="apex-game-cover" style="background:'+g.g+'"><span>'+g.e+'</span></div>'+
+      '<div class="apex-game-name">'+g.n+'</div>'+
+      '</div>';
+  }).join('')+'</div>';
+  box.innerHTML=html;
+}
 function makeCats(){
   var CATS=[
     {k:'hot',   l:'\u70ED\u95E8\u6E38\u620F', i:'ri-fire-line'},
@@ -171,6 +187,7 @@ function makeCats(){
   var content=document.createElement('section');
   content.className='apex-cats-content';
   content.setAttribute('data-cat-content',CATS[0].k);
+  renderGames(content,CATS[0].k);
   wrap.appendChild(side);
   wrap.appendChild(content);
   side.addEventListener('click',function(e){
@@ -179,6 +196,7 @@ function makeCats(){
     var k=b.getAttribute('data-cat');
     side.querySelectorAll('.apex-cat-item').forEach(function(x){x.classList.toggle('active',x===b);});
     content.setAttribute('data-cat-content',k);
+    renderGames(content,k);
     try{window.dispatchEvent(new CustomEvent('apex:cat-changed',{detail:{cat:k}}));}catch(e2){}
   });
   return wrap;
