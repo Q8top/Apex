@@ -1,5 +1,10 @@
 // Apex Captcha - 行为验证前端逻辑
 (function() {
+  function cryptoRandom() {
+    var buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0] / 4294967296;
+  }
   // 行为信号采集
   const signals = {
     mouseMoves: 0,
