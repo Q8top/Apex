@@ -1,0 +1,6 @@
+/* Apex booting: 初始隐藏登录壳，避免已登录时闪现 */
+body.apex-booting .hero,
+body.apex-booting .card-section,
+body.apex-booting .link-row,
+body.apex-booting .footer,
+body.apex-booting #auth-tabs { display: none !important; }
