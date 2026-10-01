@@ -536,5 +536,50 @@
     <div style="font-size:14px; color:#888; margin-bottom:28px;">欢迎，<span id="apex-logged-in-user">用户</span></div>
     <button id="apex-logged-in-logout" style="padding:12px 32px; background:#111; color:#fff; border:1px solid #333; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">登出</button>
   </div>
+
+<!-- APEX-DIAG -->
+<script>
+(function(){
+  if (!/[?&]debug=1/.test(location.search)) return;
+  function log(msg, ok) {
+    var box = document.getElementById('apex-diag-box');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'apex-diag-box';
+      box.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#000;color:#0f0;padding:12px;font-family:monospace;font-size:11px;z-index:999999;max-height:60vh;overflow:auto;line-height:1.5;';
+      document.body.appendChild(box);
+    }
+    var line = document.createElement('div');
+    line.textContent = msg;
+    if (ok === false) line.style.color = '#f00';
+    box.appendChild(line);
+  }
+  log('URL: ' + location.href);
+  log('body.className: ' + document.body.className);
+  log('hint: ' + (localStorage.getItem('apex_auth_hint') || '(none)'));
+  var cs = document.querySelector('.card-section');
+  log('.card-section display: ' + (cs ? getComputedStyle(cs).display : 'N/A'));
+  log('__apexApp: ' + (typeof window.__apexApp));
+  var app = document.getElementById('apex-app');
+  log('#apex-app: ' + (app ? app.className : 'not exist'));
+  log('--- /api/me ---');
+  fetch('/api/me', {credentials:'include', cache:'no-store'})
+    .then(function(r){ log('status: ' + r.status); return r.json().catch(function(){return {raw:'json fail'};}); })
+    .then(function(j){
+      log('body: ' + JSON.stringify(j).slice(0, 200));
+      log('success: ' + j.success);
+      if (j.user) log('user: ' + j.user.username);
+    })
+    .catch(function(e){ log('fetch error: ' + e.message, false); });
+  setTimeout(function(){
+    log('--- after 3s ---');
+    log('body.className: ' + document.body.className);
+    var cs2 = document.querySelector('.card-section');
+    log('.card-section: ' + (cs2 ? getComputedStyle(cs2).display : 'N/A'));
+    var app2 = document.getElementById('apex-app');
+    log('#apex-app: ' + (app2 ? app2.className : 'not exist'));
+  }, 3000);
+})();
+</script>
 </body>
 </html>
