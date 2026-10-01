@@ -202,3 +202,118 @@
   .apex-welcome-card { padding: 24px 20px; border-radius: 18px; }
   .apex-welcome-title { font-size: 20px; }
 }
+
+/* ============================================================
+   轮播卡片（carousel）
+   ============================================================ */
+
+.apex-carousel {
+  position: relative;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #ededed;
+  background: #fafafa;
+}
+
+.apex-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.apex-carousel-track::-webkit-scrollbar { display: none; }
+
+.apex-carousel-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  height: 190px;
+  padding: 32px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  color: #0a0a0a;
+  user-select: none;
+}
+.apex-carousel-slide::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(17,17,17,.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.apex-carousel-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 8px;
+}
+.apex-carousel-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0a0a0a;
+  margin: 0 0 8px;
+  letter-spacing: -.4px;
+  line-height: 1.2;
+}
+.apex-carousel-desc {
+  font-size: 13.5px;
+  color: #666;
+  margin: 0;
+  line-height: 1.55;
+  max-width: 90%;
+}
+
+/* ---------- 圆点指示器 ---------- */
+.apex-carousel-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  z-index: 2;
+}
+.apex-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: #c8c8cc;
+  cursor: pointer;
+  transition: width .25s cubic-bezier(.2,.8,.2,1), background .25s ease;
+}
+.apex-dot:hover { background: #999; }
+.apex-dot.active {
+  width: 18px;
+  background: #0a0a0a;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 600px) {
+  .apex-carousel { border-radius: 18px; }
+  .apex-carousel-slide { height: 165px; padding: 24px 20px; }
+  .apex-carousel-title { font-size: 18px; }
+  .apex-carousel-desc { font-size: 12.5px; max-width: 100%; }
+  .apex-carousel-dots { bottom: 10px; padding: 4px 9px; }
+}

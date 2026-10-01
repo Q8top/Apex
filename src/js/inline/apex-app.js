@@ -20,7 +20,7 @@ function shellHTML(user){
   var lang=resolveLang();
   var name=(user&&user.username)?String(user.username):'';
   var hi=name?('\u4F60\u597D\uFF0C'+esc(name)):'\u4F60\u597D';
-  return '<header class="apex-topbar"><div class="apex-topbar-inner"><div class="apex-search" role="search"><i class="ri-search-line" aria-hidden="true"></i><input type="search" id="apex-search-input" placeholder="\u641C\u7D22\u5185\u5BB9" aria-label="\u641C\u7D22" autocomplete="off"><kbd class="apex-search-kbd" aria-hidden="true">\u2318K</kbd></div><div class="apex-actions"><button type="button" class="apex-icon-btn apex-notif-btn" id="apex-notif-btn" aria-label="通知"><i class="ri-notification-4-line" aria-hidden="true"></i><span class="apex-notif-label">通知</span></button><div class="apex-lang-wrap"><button type="button" class="apex-lang-btn" id="apex-lang-btn" aria-haspopup="menu" aria-expanded="false"><span class="apex-flag" aria-hidden="true">'+lang.f+'</span><span class="apex-lang-label">'+lang.n+'</span><i class="ri-arrow-down-s-line" aria-hidden="true"></i></button><div class="apex-lang-menu" id="apex-lang-menu" role="menu">'+langMenuHTML(lang.c)+'</div></div></div></div></header><main class="apex-main"><div class="apex-main-inner"><section class="apex-welcome-card"><div class="apex-welcome-hi">'+hi+'</div><h1 class="apex-welcome-title">\u6B22\u8FCE\u56DE\u5230 Apex</h1><p class="apex-welcome-sub">\u5168\u7403\u5A31\u4E50\u6E38\u620F\u5E73\u53F0</p></section></div></main>';
+  return '<header class="apex-topbar"><div class="apex-topbar-inner"><div class="apex-search" role="search"><i class="ri-search-line" aria-hidden="true"></i><input type="search" id="apex-search-input" placeholder="\u641C\u7D22\u5185\u5BB9" aria-label="\u641C\u7D22" autocomplete="off"><kbd class="apex-search-kbd" aria-hidden="true">\u2318K</kbd></div><div class="apex-actions"><button type="button" class="apex-icon-btn apex-notif-btn" id="apex-notif-btn" aria-label="通知"><i class="ri-notification-4-line" aria-hidden="true"></i><span class="apex-notif-label">通知</span></button><div class="apex-lang-wrap"><button type="button" class="apex-lang-btn" id="apex-lang-btn" aria-haspopup="menu" aria-expanded="false"><span class="apex-flag" aria-hidden="true">'+lang.f+'</span><span class="apex-lang-label">'+lang.n+'</span><i class="ri-arrow-down-s-line" aria-hidden="true"></i></button><div class="apex-lang-menu" id="apex-lang-menu" role="menu">'+langMenuHTML(lang.c)+'</div></div></div></div></header><main class="apex-main"><div class="apex-main-inner"><div class="apex-carousel" id="apex-carousel"><div class="apex-carousel-track" id="apex-carousel-track"></div><div class="apex-carousel-dots" id="apex-carousel-dots" role="tablist"></div></div></div></main>';
 }
 function initLang(app){
   var btn=app.querySelector('#apex-lang-btn'),menu=app.querySelector('#apex-lang-menu');
@@ -69,11 +69,41 @@ function show(user){
     app=document.createElement('div');app.id=APP_ID;app.className='apex-app';
     app.innerHTML=shellHTML(user);
     document.body.appendChild(app);
-    initLang(app);initNotif(app);initSearch(app);
+    initLang(app);initNotif(app);initSearch(app);initCarousel(app);
   }
   var hi=app.querySelector('.apex-welcome-hi');
   if(hi&&user&&user.username)hi.textContent='\u4F60\u597D\uFF0C'+user.username;
   app.classList.add('show');
+}
+function initCarousel(app){
+  var t=app.querySelector('#apex-carousel-track'),d=app.querySelector('#apex-carousel-dots');
+  if(!t||!d)return;
+  var S=[
+    {a:'WELCOME',b:'\u6B22\u8FCE\u56DE\u5230 Apex',c:'\u5168\u7403\u5A31\u4E50\u6E38\u620F\u5E73\u53F0 \u00B7 \u4E00\u7AD9\u5F0F\u4F53\u9A8C'},
+    {a:'NEW',b:'\u66F4\u591A\u73A9\u6CD5\u5373\u5C06\u4E0A\u7EBF',c:'\u656C\u8BF7\u671F\u5F85\u5168\u65B0\u5A31\u4E50\u4F53\u9A8C'},
+    {a:'NOTICE',b:'\u5B89\u5168\u63D0\u793A',c:'\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u60A8\u7684\u8D26\u53F7\u5BC6\u7801'}
+  ];
+  t.innerHTML=S.map(function(s){return '<div class="apex-carousel-slide"><span class="apex-carousel-tag">'+s.a+'</span><h2 class="apex-carousel-title">'+s.b+'</h2><p class="apex-carousel-desc">'+s.c+'</p></div>';}).join('');
+  d.innerHTML=S.map(function(_,i){return '<button type="button" class="apex-dot'+(i===0?' active':'')+'" data-idx="'+i+'" aria-label="'+(i+1)+'"></button>';}).join('');
+  var dots=d.querySelectorAll('.apex-dot'),n=S.length;
+  function setA(i){for(var k=0;k<dots.length;k++)dots[k].classList.toggle('active',k===i);}
+  var tick=false;
+  t.addEventListener('scroll',function(){
+    if(tick)return;tick=true;
+    requestAnimationFrame(function(){
+      tick=false;
+      var w=t.clientWidth;if(!w)return;
+      var i=Math.round(t.scrollLeft/w);
+      if(i<0)i=0;if(i>n-1)i=n-1;
+      setA(i);
+    });
+  },{passive:true});
+  d.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.apex-dot'):null;
+    if(!b)return;
+    var i=parseInt(b.getAttribute('data-idx'),10)||0;
+    t.scrollTo({left:i*t.clientWidth,behavior:'smooth'});
+  });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
