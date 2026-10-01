@@ -49,6 +49,12 @@ if [ -d "$ROOT/fonts" ]; then
   echo "  [COPY] fonts/"
 fi
 
+# 6.9 assets/ 目录（游戏封面图等）
+if [ -d "$ROOT/assets" ]; then
+  cp -r "$ROOT/assets" "$DIST/assets"
+  echo "  [COPY] assets/"
+fi
+
 # 7. i18n/ 目录（浏览器 fetch 加载的语言包）
 if [ -d "$ROOT/i18n" ]; then
   cp -r "$ROOT/i18n" "$DIST/i18n"

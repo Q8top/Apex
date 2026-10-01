@@ -153,8 +153,9 @@ function renderGames(box,catKey){
   var list=APEX_GAMES[catKey]||[];
   if(!list.length){box.innerHTML='';return;}
   var html='<div class="apex-game-grid">'+list.map(function(g){
+    var inner=(g.img)?('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">'):('<i class="'+g.i+'" aria-hidden="true"></i>');
     return '<div class="apex-game-card">'+
-      '<div class="apex-game-cover" style="--c1:'+g.c+'"><i class="'+g.i+'" aria-hidden="true"></i></div>'+
+      '<div class="apex-game-cover" style="--c1:'+g.c+'">'+inner+'</div>'+
       '<div class="apex-game-name">'+g.n+'</div>'+
       '</div>';
   }).join('')+'</div>';
