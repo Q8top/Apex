@@ -449,3 +449,71 @@ html, body {
   .slot-reels { padding: 8px !important; gap: 4px !important; }
   .slot-reel { padding: 4px !important; gap: 4px !important; }
 }
+
+/* ============================================================
+   Fix v3: 转轮 3 行强制 + 中文品牌字重
+   ============================================================ */
+
+/* reel 内部：grid 3 等分行，杜绝裁切 */
+.slot-reel {
+  display: grid !important;
+  grid-template-rows: repeat(3, 1fr) !important;
+  grid-auto-rows: 1fr !important;
+  gap: 5px !important;
+  min-height: 0 !important;
+  padding: 5px !important;
+}
+.slot-reel-cell {
+  flex: none !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 转轮框高度自适应，不再 max-height 裁切 */
+.slot-reels {
+  aspect-ratio: 5 / 3.35 !important;
+  max-height: none !important;
+  min-height: 200px !important;
+}
+
+/* 中文品牌字重 */
+.slot-brand-line {
+  font-family: 'Manrope', -apple-system, system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 20px !important;
+  letter-spacing: 6px !important;
+  padding-left: 6px !important;
+  color: var(--ink) !important;
+}
+.slot-brand-accent {
+  font-size: 13px !important;
+  letter-spacing: 6px !important;
+  padding-left: 6px !important;
+  font-weight: 700 !important;
+  color: var(--gold) !important;
+}
+
+/* 中文小标签字重略轻（原英文风字距太大） */
+.slot-win-label,
+.slot-balance-label,
+.slot-bet-label {
+  letter-spacing: 3px !important;
+  font-weight: 700 !important;
+}
+.slot-win-value { font-size: 36px !important; }
+.slot-balance-value { font-size: 22px !important; }
+
+/* 顶部按钮字重（开始 按钮中文字距收紧） */
+.slot-spin {
+  letter-spacing: 3px !important;
+  font-size: 17px !important;
+}
+.slot-nav-btn { font-size: 13.5px !important; }
+
+@media (max-width: 360px) {
+  .slot-brand-line { font-size: 18px !important; letter-spacing: 5px !important; }
+  .slot-brand-accent { font-size: 12px !important; letter-spacing: 5px !important; }
+}
