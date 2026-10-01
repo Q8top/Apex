@@ -307,3 +307,21 @@
   .apex-welcome-card { padding: 24px 20px; border-radius: 18px; }
   .apex-welcome-title { font-size: 20px; }
 }
+
+/* ---------- 修正：移动端显示语言文字 ---------- */
+@media (max-width: 600px) {
+  .apex-lang-btn > .apex-lang-label { display: inline !important; }
+  .apex-lang-btn { padding: 0 9px; gap: 5px; font-size: 12px; }
+  .apex-lang-btn > .apex-flag { font-size: 16px; }
+}
+
+/* ---------- 修正：badge 位置（未来有通知时避免盖住铃铛） ---------- */
+.apex-badge {
+  top: 4px;
+  right: 4px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  font-size: 9px;
+  border-width: 1.5px;
+}
