@@ -1,0 +1,309 @@
+/* ============================================================
+   Apex App · 登录后主界面
+   ============================================================ */
+
+.apex-app {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  z-index: 9000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.apex-app.show {
+  display: flex;
+  animation: apexAppFadeIn .32s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes apexAppFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 顶部栏 ---------- */
+.apex-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.78);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.apex-topbar-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ---------- 搜索框 ---------- */
+.apex-search {
+  position: relative;
+  flex: 1;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 14px;
+  background: #f4f4f5;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.apex-search:hover { background: #efeff1; }
+.apex-search:focus-within {
+  background: #fff;
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(17,17,17,.06);
+}
+.apex-search > i {
+  font-size: 18px;
+  color: #8a8a8a;
+  margin-right: 9px;
+  flex-shrink: 0;
+  transition: color .18s ease;
+}
+.apex-search:focus-within > i { color: #111; }
+.apex-search > input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+  line-height: 1;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.apex-search > input::placeholder { color: #999; font-weight: 400; }
+.apex-search > input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.apex-search-kbd {
+  display: none;
+  margin-left: 8px;
+  padding: 3px 7px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  line-height: 1;
+  letter-spacing: .3px;
+}
+@media (min-width: 768px) {
+  .apex-search-kbd { display: inline-block; }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 600px) {
+  .apex-topbar-inner { padding: 10px 12px; gap: 8px; }
+  .apex-search { height: 42px; padding: 0 12px; }
+}
+
+/* ---------- 右侧操作区 ---------- */
+.apex-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.apex-icon-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #333;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s ease, color .15s ease, transform .08s ease;
+}
+.apex-icon-btn:hover { background: #f4f4f5; color: #000; }
+.apex-icon-btn:active { transform: scale(.94); }
+.apex-icon-btn > i { font-size: 22px; line-height: 1; }
+
+/* 通知徽标 */
+.apex-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #ff3b30;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-sizing: content-box;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -.2px;
+}
+
+/* ---------- 语言切换 ---------- */
+.apex-lang-wrap { position: relative; }
+.apex-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: #333;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .15s ease, color .15s ease, transform .08s ease;
+}
+.apex-lang-btn:hover { background: #f4f4f5; color: #000; }
+.apex-lang-btn:active { transform: scale(.97); }
+.apex-lang-btn > .apex-flag { font-size: 18px; line-height: 1; }
+.apex-lang-btn > .apex-lang-label { white-space: nowrap; }
+.apex-lang-btn > i {
+  font-size: 16px;
+  color: #999;
+  transition: transform .18s cubic-bezier(.2,.8,.2,1);
+}
+.apex-lang-btn[aria-expanded="true"] > i { transform: rotate(180deg); }
+
+/* 下拉菜单 */
+.apex-lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px -12px rgba(0,0,0,.18),
+              0 4px 12px rgba(0,0,0,.06);
+  z-index: 200;
+  opacity: 0;
+  transform: translateY(-6px) scale(.97);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity .18s cubic-bezier(.2,.8,.2,1),
+    transform .18s cubic-bezier(.2,.8,.2,1);
+}
+.apex-lang-menu.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.apex-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  color: #333;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  transition: background .12s ease, color .12s ease;
+}
+.apex-lang-item:hover { background: #f4f4f5; color: #000; }
+.apex-lang-item.active { background: #f4f4f5; color: #000; font-weight: 700; }
+.apex-lang-item > .apex-flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.apex-lang-item > .apex-lang-item-label { flex: 1; min-width: 0; }
+.apex-lang-item > .apex-check { font-size: 16px; color: #111; flex-shrink: 0; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 600px) {
+  .apex-lang-btn { padding: 0 10px; gap: 5px; }
+  .apex-lang-btn > .apex-lang-label { display: none; }
+}
+@media (max-width: 360px) {
+  .apex-actions { gap: 2px; }
+  .apex-icon-btn { width: 38px; height: 38px; }
+  .apex-icon-btn > i { font-size: 20px; }
+}
+
+/* ---------- 主内容区 ---------- */
+.apex-main {
+  flex: 1;
+  padding: 24px 20px 60px;
+}
+.apex-main-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.apex-welcome-card {
+  position: relative;
+  overflow: hidden;
+  padding: 32px 28px;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+  border: 1px solid #ededed;
+  border-radius: 20px;
+}
+.apex-welcome-card::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(17,17,17,.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.apex-welcome-hi {
+  font-size: 13px;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: .3px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.apex-welcome-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0a0a0a;
+  margin: 0 0 8px;
+  letter-spacing: -.5px;
+  line-height: 1.2;
+}
+.apex-welcome-sub {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .apex-main { padding: 16px 14px 60px; }
+  .apex-welcome-card { padding: 24px 20px; border-radius: 18px; }
+  .apex-welcome-title { font-size: 20px; }
+}
