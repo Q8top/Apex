@@ -146,7 +146,7 @@ function initAnnounce(app){
 }
 var APEX_GAMES={
   hot:[
-    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',e:'\uD83C\uDF52',v:'--g1:#2a1216;--g2:#3e1621;--glow:rgba(255,110,120,.60)'}
+    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050'}
   ]
 };
 function renderGames(box,catKey){
@@ -154,7 +154,7 @@ function renderGames(box,catKey){
   if(!list.length){box.innerHTML='';return;}
   var html='<div class="apex-game-grid">'+list.map(function(g){
     return '<div class="apex-game-card">'+
-      '<div class="apex-game-cover" style="'+g.v+'"><span>'+g.e+'</span></div>'+
+      '<div class="apex-game-cover" style="--c1:'+g.c+'"><i class="'+g.i+'" aria-hidden="true"></i></div>'+
       '<div class="apex-game-name">'+g.n+'</div>'+
       '</div>';
   }).join('')+'</div>';
