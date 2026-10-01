@@ -16,26 +16,26 @@
 
 # HTML 页面（无缓存，保证用户看到最新版本）
 /
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
   X-Content-Type-Options: nosniff
 
 /index.html
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
 
 /home
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
 
 /home.html
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
 
 /privacy.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: no-store
 
 /terms.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: no-store
 
 /status.html
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
 
 
 # PWA manifest：短期缓存
@@ -53,7 +53,7 @@
 
 # 404 页面：不缓存
 /404.html
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
 
 # Service Worker：自杀版也必须 no-cache，让浏览器每次拉取最新版
 /sw.js
@@ -105,4 +105,4 @@
 # === APEX-CACHE-END ===
 
 /announcements.html
-  Cache-Control: max-age=60, must-revalidate
+  Cache-Control: no-store
