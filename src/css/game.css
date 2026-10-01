@@ -439,3 +439,70 @@ body {
   .gm-tool { font-size: 10px; }
   .gm-start { font-size: 14px; padding: 0 16px; }
 }
+
+/* ============================================================
+   Fix v3: 规则序号紧凑 + 底部按钮布局 + 去掉收藏阴影
+   ============================================================ */
+
+/* 规则序号：缩小 + 加大间距 */
+.gm-rules > li { padding-left: 34px; }
+.gm-rules > li::before {
+  min-width: 24px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: 10.5px;
+  top: 2px;
+  letter-spacing: -.3px;
+}
+
+/* 底部 4 格：收藏 / 客服 / 免费试玩 / 开始游戏 */
+.gm-tools {
+  display: grid;
+  grid-template-columns: 56px 56px 1fr 1.15fr;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.gm-tool {
+  padding: 6px 2px;
+  min-height: 50px;
+  gap: 2px;
+  font-size: 10px;
+}
+.gm-tool > i { font-size: 20px; }
+
+/* 免费试玩 → 大按钮（浅灰底，深色字） */
+.gm-tool-textonly {
+  flex-direction: row;
+  gap: 0;
+  padding: 0 12px;
+  min-height: 50px;
+  background: #f4f4f5;
+  color: #0a0a0a;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background .15s ease, transform .08s ease;
+}
+.gm-tool-textonly:hover { background: #ececee; }
+.gm-tool-textonly:active { transform: scale(.985); }
+.gm-tool-textonly > span { font-size: 14px; font-weight: 700; }
+
+/* 收藏激活：只改颜色，去掉阴影 */
+.gm-tool.active > i {
+  color: #f0b429;
+  filter: none;
+}
+.gm-tool.active { color: #f0b429; }
+
+/* 开始游戏按钮 */
+.gm-start { padding: 0 16px; font-size: 15px; }
+
+@media (max-width: 480px) {
+  .gm-tools { grid-template-columns: 52px 52px 1fr 1.15fr; gap: 6px; }
+  .gm-tool { font-size: 9.5px; }
+  .gm-tool > i { font-size: 19px; }
+  .gm-tool-textonly { font-size: 13px; padding: 0 10px; }
+  .gm-tool-textonly > span { font-size: 13px; }
+  .gm-start { font-size: 14px; padding: 0 14px; }
+}
