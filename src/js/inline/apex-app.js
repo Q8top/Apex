@@ -144,6 +144,45 @@ function initAnnounce(app){
     location.href='/announcements.html';
   });
 }
+function makeCats(){
+  var CATS=[
+    {k:'hot',   l:'\u70ED\u95E8\u6E38\u620F', i:'ri-fire-line'},
+    {k:'slot',  l:'\u7535\u5B50\u6E38\u620F', i:'ri-gamepad-line'},
+    {k:'roul',  l:'\u8F6E\u76D8\u6E38\u620F', i:'ri-loader-4-line'},
+    {k:'card',  l:'\u7EB8\u724C\u6E38\u620F', i:'ri-file-list-3-line'},
+    {k:'poker', l:'\u6251\u514B\u6E38\u620F', i:'ri-heart-3-line'},
+    {k:'lott',  l:'\u5F69\u7968\u6E38\u620F', i:'ri-ticket-2-line'},
+    {k:'bingo', l:'\u5BBE\u679C\u6E38\u620F', i:'ri-layout-grid-line'},
+    {k:'sport', l:'\u4F53\u80B2\u6295\u6CE8', i:'ri-basketball-line'},
+    {k:'virt',  l:'\u865A\u62DF\u8D5B\u4E8B', i:'ri-trophy-line'},
+    {k:'mult',  l:'\u500D\u6570\u6E38\u620F', i:'ri-percent-line'},
+    {k:'spec',  l:'\u7279\u8272\u73A9\u6CD5', i:'ri-star-line'}
+  ];
+  var wrap=document.createElement('div');
+  wrap.className='apex-cats';
+  var side=document.createElement('aside');
+  side.className='apex-cats-sidebar';
+  side.innerHTML=CATS.map(function(c,i){
+    return '<button type="button" class="apex-cat-item'+(i===0?' active':'')+'" data-cat="'+c.k+'">'+
+      '<i class="'+c.i+'" aria-hidden="true"></i>'+
+      '<span>'+c.l+'</span>'+
+      '</button>';
+  }).join('');
+  var content=document.createElement('section');
+  content.className='apex-cats-content';
+  content.setAttribute('data-cat-content',CATS[0].k);
+  wrap.appendChild(side);
+  wrap.appendChild(content);
+  side.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.apex-cat-item'):null;
+    if(!b)return;
+    var k=b.getAttribute('data-cat');
+    side.querySelectorAll('.apex-cat-item').forEach(function(x){x.classList.toggle('active',x===b);});
+    content.setAttribute('data-cat-content',k);
+    try{window.dispatchEvent(new CustomEvent('apex:cat-changed',{detail:{cat:k}}));}catch(e2){}
+  });
+  return wrap;
+}
 function mountTabbar(app){
   var main=app.querySelector('.apex-main');
   if(!main)return;
@@ -154,6 +193,7 @@ function mountTabbar(app){
   home.setAttribute('data-pane','home');
   inner.parentNode.removeChild(inner);
   home.appendChild(inner);
+  home.appendChild(makeCats());
   main.appendChild(home);
   var PANES=[
     {k:'activity',i:'ri-gift-line',t:'\u6D3B\u52A8\u529F\u80FD\u5373\u5C06\u4E0A\u7EBF'},
