@@ -575,3 +575,35 @@
   .apex-notif-btn > i { font-size: 15px !important; }
   .apex-notif-label { font-size: 11.5px !important; }
 }
+
+/* ============================================================
+   Fix v8 · 通知按钮内容居中 + gap 加大
+   ============================================================ */
+
+.apex-notif-btn {
+  justify-content: center !important;
+  gap: 9px !important;
+  padding: 0 15px !important;
+}
+.apex-notif-btn > i {
+  font-size: 17px !important;
+  color: #18181b !important;
+  flex-shrink: 0 !important;
+}
+.apex-notif-label { color: #18181b !important; }
+
+/* 语言按钮 gap 同步微调，视觉对称 */
+.apex-lang-btn {
+  gap: 9px !important;
+  padding: 0 15px !important;
+}
+
+@media (max-width: 600px) {
+  .apex-notif-btn,
+  .apex-lang-btn {
+    padding: 0 12px !important;
+    gap: 7px !important;
+    height: 38px !important;
+  }
+  .apex-notif-btn > i { font-size: 16px !important; }
+}
