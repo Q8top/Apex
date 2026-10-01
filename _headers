@@ -106,3 +106,6 @@
 
 /announcements.html
   Cache-Control: no-store
+
+/game.html
+  Cache-Control: no-store

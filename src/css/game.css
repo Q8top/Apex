@@ -1,0 +1,292 @@
+/* ============================================================
+   Apex · 游戏详情页
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 140px;
+}
+
+/* ---------- 顶栏 ---------- */
+.gm-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 12px;
+  background: rgba(255,255,255,.84);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.gm-back, .gm-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: #0a0a0a;
+  border-radius: 50%;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s ease, transform .08s ease;
+}
+.gm-back:hover, .gm-more:hover { background: #f4f4f5; }
+.gm-back:active, .gm-more:active { transform: scale(.94); }
+.gm-back > i, .gm-more > i { font-size: 22px; line-height: 1; }
+.gm-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+  text-align: center;
+}
+
+/* ---------- 主视觉 ---------- */
+.gm-main { flex: 1; max-width: 720px; margin: 0 auto; width: 100%; padding: 20px 16px 0; }
+
+.gm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px 20px;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+  border: 1px solid #ededed;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.gm-hero-cover {
+  width: 160px;
+  height: 160px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gm-hero-cover > img,
+.gm-hero-cover > svg { width: 82%; height: 82%; object-fit: contain; display: block; }
+.gm-hero-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  color: #0a0a0a;
+}
+.gm-hero-sub {
+  font-size: 13px;
+  color: #777;
+  letter-spacing: .2px;
+}
+
+/* ---------- 内容块 ---------- */
+.gm-block {
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid #ededed;
+  border-radius: 16px;
+}
+.gm-block-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f2;
+  letter-spacing: -.1px;
+}
+.gm-intro {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #4b4b4e;
+}
+
+/* ---------- 规则列表 ---------- */
+.gm-rules {
+  list-style: none;
+  counter-reset: r;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gm-rules > li {
+  position: relative;
+  padding-left: 36px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #333;
+  counter-increment: r;
+}
+.gm-rules > li::before {
+  content: counter(r, decimal-leading-zero);
+  position: absolute;
+  left: 0; top: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 6px;
+  background: #0a0a0a;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+  line-height: 1;
+}
+
+/* ---------- 中奖说明 ---------- */
+.gm-prizes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.gm-prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 6px;
+  background: #fafafa;
+  border-radius: 12px;
+}
+.gm-prize-icon { font-size: 26px; line-height: 1; }
+.gm-prize-mult {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0a0a0a;
+  letter-spacing: -.1px;
+}
+
+/* ---------- 赔付表 ---------- */
+.gm-paytable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.gm-paytable > thead > tr > th {
+  text-align: left;
+  padding: 8px 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  border-bottom: 1px solid #f0f0f2;
+  letter-spacing: .2px;
+}
+.gm-paytable > thead > tr > th:last-child { text-align: right; }
+.gm-paytable > tbody > tr > td {
+  padding: 11px 4px;
+  color: #222;
+  border-bottom: 1px solid #f5f5f7;
+}
+.gm-paytable > tbody > tr:last-child > td { border-bottom: 0; }
+.gm-paytable > tbody > tr > td:last-child {
+  text-align: right;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+.gm-paytable .gm-combo { font-size: 16px; letter-spacing: 2px; }
+
+/* ---------- 游戏信息 ---------- */
+.gm-info {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 10px 14px;
+  font-size: 13.5px;
+}
+.gm-info > dt { color: #888; }
+.gm-info > dd { color: #18181b; font-weight: 600; }
+
+/* ---------- 底部操作栏 ---------- */
+.gm-bottom-space { height: 8px; }
+
+.gm-actionbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 100;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+  background: rgba(255,255,255,.94);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  max-width: 720px;
+  margin: 0 auto;
+}
+.gm-tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.gm-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: #666;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background .15s ease, color .15s ease, transform .08s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.gm-tool:active { transform: scale(.95); }
+.gm-tool:hover { background: #f4f4f5; color: #0a0a0a; }
+.gm-tool > i { font-size: 20px; line-height: 1; }
+.gm-tool.active { color: #e63946; }
+.gm-tool.active > i::before { content: "\eb0c"; } /* heart-fill fallback */
+
+.gm-start {
+  width: 100%;
+  height: 50px;
+  border: 0;
+  border-radius: 14px;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(10,10,10,.18);
+  transition: background .15s ease, transform .08s ease, box-shadow .15s ease;
+}
+.gm-start:hover { background: #1a1a1a; }
+.gm-start:active { transform: scale(.985); box-shadow: 0 3px 10px rgba(10,10,10,.14); }
+
+/* ---------- 移动端 ---------- */
+@media (max-width: 480px) {
+  .gm-main { padding: 14px 12px 0; }
+  .gm-hero { padding: 20px 14px 16px; border-radius: 18px; margin-bottom: 16px; }
+  .gm-hero-cover { width: 130px; height: 130px; border-radius: 20px; }
+  .gm-hero-name { font-size: 20px; }
+  .gm-block { padding: 16px; border-radius: 14px; margin-bottom: 16px; }
+  .gm-prizes { gap: 8px; }
+  .gm-prize { padding: 12px 4px; }
+  .gm-prize-icon { font-size: 22px; }
+  .gm-prize-mult { font-size: 12px; }
+}

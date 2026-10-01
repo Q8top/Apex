@@ -146,7 +146,7 @@ function initAnnounce(app){
 }
 var APEX_GAMES={
   hot:[
-    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050',img:'/assets/games/lucky-fruit.svg'}
+    {id:'lucky-fruit',n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050',img:'/assets/games/lucky-fruit.svg'}
   ]
 };
 function renderGames(box,catKey){
@@ -154,12 +154,21 @@ function renderGames(box,catKey){
   if(!list.length){box.innerHTML='';return;}
   var html='<div class="apex-game-grid">'+list.map(function(g){
     var inner=(g.img)?('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">'):('<i class="'+g.i+'" aria-hidden="true"></i>');
-    return '<div class="apex-game-card">'+
+    return '<div class="apex-game-card" data-game="'+g.id+'">'+
       '<div class="apex-game-cover" style="--c1:'+g.c+'">'+inner+'</div>'+
       '<div class="apex-game-name">'+g.n+'</div>'+
       '</div>';
   }).join('')+'</div>';
   box.innerHTML=html;
+  if(!box.dataset.clickBound){
+    box.dataset.clickBound='1';
+    box.addEventListener('click',function(e){
+      var c=e.target.closest?e.target.closest('.apex-game-card'):null;
+      if(!c)return;
+      var gid=c.getAttribute('data-game');
+      if(gid)location.href='/game.html?id='+encodeURIComponent(gid);
+    });
+  }
 }
 function makeCats(){
   var CATS=[
