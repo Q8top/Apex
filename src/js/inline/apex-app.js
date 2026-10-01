@@ -69,7 +69,8 @@ function show(user){
     app=document.createElement('div');app.id=APP_ID;app.className='apex-app';
     app.innerHTML=shellHTML(user);
     document.body.appendChild(app);
-    initLang(app);initNotif(app);initSearch(app);initCarousel(app);initAnnounce(app);
+    mountTabbar(app);
+    initLang(app);initNotif(app);initSearch(app);initCarousel(app);initAnnounce(app);initTabbar(app);
   }
   var hi=app.querySelector('.apex-welcome-hi');
   if(hi&&user&&user.username)hi.textContent='\u4F60\u597D\uFF0C'+user.username;
@@ -141,6 +142,62 @@ function initAnnounce(app){
   wrap.addEventListener('click',function(e){
     if(e.target.closest && e.target.closest('a'))return;
     location.href='/announcements.html';
+  });
+}
+function mountTabbar(app){
+  var main=app.querySelector('.apex-main');
+  if(!main)return;
+  var inner=main.querySelector('.apex-main-inner');
+  if(!inner)return;
+  var home=document.createElement('div');
+  home.className='apex-pane active';
+  home.setAttribute('data-pane','home');
+  inner.parentNode.removeChild(inner);
+  home.appendChild(inner);
+  main.appendChild(home);
+  var PANES=[
+    {k:'activity',i:'ri-gift-line',t:'\u6D3B\u52A8\u529F\u80FD\u5373\u5C06\u4E0A\u7EBF'},
+    {k:'asset',i:'ri-wallet-3-line',t:'\u8D44\u4EA7\u529F\u80FD\u5373\u5C06\u4E0A\u7EBF'},
+    {k:'more',i:'ri-apps-2-line',t:'\u66F4\u591A\u529F\u80FD\u5373\u5C06\u4E0A\u7EBF'},
+    {k:'mine',i:'ri-user-3-line',t:'\u4E2A\u4EBA\u4E2D\u5FC3\u5373\u5C06\u4E0A\u7EBF'}
+  ];
+  PANES.forEach(function(p){
+    var el=document.createElement('div');
+    el.className='apex-pane';el.setAttribute('data-pane',p.k);
+    el.innerHTML='<div class="apex-placeholder"><i class="'+p.i+'" aria-hidden="true"></i><p>'+p.t+'</p></div>';
+    main.appendChild(el);
+  });
+  var TABS=[
+    {k:'home',l:'\u9996\u9875',li:'ri-home-5-line',fi:'ri-home-5-fill'},
+    {k:'activity',l:'\u6D3B\u52A8',li:'ri-gift-line',fi:'ri-gift-fill'},
+    {k:'asset',l:'\u8D44\u4EA7',li:'ri-wallet-3-line',fi:'ri-wallet-3-fill'},
+    {k:'more',l:'\u66F4\u591A',li:'ri-apps-2-line',fi:'ri-apps-2-fill'},
+    {k:'mine',l:'\u6211\u7684',li:'ri-user-3-line',fi:'ri-user-3-fill'}
+  ];
+  var nav=document.createElement('nav');
+  nav.className='apex-tabbar';
+  nav.setAttribute('role','tablist');
+  nav.innerHTML=TABS.map(function(t,i){
+    return '<button type="button" class="apex-tab'+(i===0?' active':'')+'" role="tab" data-tab="'+t.k+'">'+
+      '<i class="'+t.li+'" aria-hidden="true"></i>'+
+      '<i class="'+t.fi+'" aria-hidden="true"></i>'+
+      '<span class="apex-tab-label">'+t.l+'</span>'+
+      '</button>';
+  }).join('');
+  app.appendChild(nav);
+}
+function initTabbar(app){
+  var nav=app.querySelector('.apex-tabbar');
+  if(!nav)return;
+  var main=app.querySelector('.apex-main');
+  nav.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(!b)return;
+    var k=b.getAttribute('data-tab');
+    nav.querySelectorAll('.apex-tab').forEach(function(x){x.classList.toggle('active',x===b);});
+    main.querySelectorAll('.apex-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===k);});
+    main.scrollTop=0;
+    try{window.dispatchEvent(new CustomEvent('apex:tab-changed',{detail:{tab:k}}));}catch(e2){}
   });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');try{localStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}

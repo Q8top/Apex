@@ -7,7 +7,7 @@
   display: none; flex-direction: column;
   background: #fff; color: #0a0a0a;
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  z-index: 9000; overflow-y: auto; overflow-x: hidden;
+  z-index: 9000; overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 .apex-app.show {
@@ -160,7 +160,7 @@
 .apex-lang-item > .apex-check { font-size: 16px; color: #111; flex-shrink: 0; }
 
 /* ---------- 主内容区 ---------- */
-.apex-main { flex: 1; padding: 24px 20px 60px; }
+.apex-main { flex: 1; overflow-y: auto; padding: 24px 20px 60px; -webkit-overflow-scrolling: touch; }
 .apex-main-inner { max-width: 1240px; margin: 0 auto; }
 .apex-welcome-card {
   position: relative; overflow: hidden;
@@ -399,3 +399,87 @@
 .apex-announce { cursor: pointer; transition: background .15s ease, border-color .15s ease; }
 .apex-announce:hover { background: #f4f4f5; border-color: #e0e0e2; }
 .apex-announce:active { transform: scale(.995); }
+
+/* ============================================================
+   底部导航栏（tabbar）
+   ============================================================ */
+
+.apex-tabbar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: rgba(255,255,255,.94);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  z-index: 50;
+}
+
+.apex-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px 6px;
+  border: 0;
+  background: transparent;
+  color: #8a8a8e;
+  font-family: inherit;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s ease;
+}
+.apex-tab:active { transform: scale(.94); }
+.apex-tab > i {
+  font-size: 22px;
+  line-height: 1;
+  position: relative;
+}
+.apex-tab-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .1px;
+  line-height: 1.2;
+}
+.apex-tab.active { color: #0a0a0a; }
+.apex-tab.active .apex-tab-label { font-weight: 700; }
+
+/* 未选中显示 line，选中显示 fill */
+.apex-tab > i.ri-home-5-fill,
+.apex-tab > i.ri-gift-fill,
+.apex-tab > i.ri-wallet-3-fill,
+.apex-tab > i.ri-apps-2-fill,
+.apex-tab > i.ri-user-3-fill { display: none; }
+.apex-tab.active > i.ri-home-5-line,
+.apex-tab.active > i.ri-gift-line,
+.apex-tab.active > i.ri-wallet-3-line,
+.apex-tab.active > i.ri-apps-2-line,
+.apex-tab.active > i.ri-user-3-line { display: none; }
+.apex-tab.active > i.ri-home-5-fill,
+.apex-tab.active > i.ri-gift-fill,
+.apex-tab.active > i.ri-wallet-3-fill,
+.apex-tab.active > i.ri-apps-2-fill,
+.apex-tab.active > i.ri-user-3-fill { display: inline-block; }
+
+/* 其它 tab 的占位内容 */
+.apex-pane {
+  display: none;
+}
+.apex-pane.active {
+  display: block;
+}
+.apex-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #aaa;
+  gap: 14px;
+  text-align: center;
+}
+.apex-placeholder > i { font-size: 48px; }
+.apex-placeholder > p { font-size: 13.5px; font-weight: 500; margin: 0; }
