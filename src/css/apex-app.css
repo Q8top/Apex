@@ -544,3 +544,34 @@
     gap: 4px !important;
   }
 }
+
+/* ============================================================
+   Fix v7 · 通知按钮 padding 对齐语言按钮
+   ============================================================ */
+
+.apex-notif-btn {
+  padding: 0 14px !important;
+  gap: 7px !important;
+}
+.apex-notif-btn > i {
+  font-size: 18px !important;
+  color: #0a0a0a !important;
+}
+.apex-notif-label {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #0a0a0a !important;
+  letter-spacing: .1px !important;
+}
+
+/* 移动端保持与语言按钮一致的对称 padding */
+@media (max-width: 600px) {
+  .apex-notif-btn { padding: 0 11px !important; gap: 6px !important; }
+  .apex-notif-btn > i { font-size: 16px !important; }
+  .apex-notif-label { font-size: 12px !important; }
+}
+@media (max-width: 380px) {
+  .apex-notif-btn { padding: 0 10px !important; gap: 5px !important; }
+  .apex-notif-btn > i { font-size: 15px !important; }
+  .apex-notif-label { font-size: 11.5px !important; }
+}
