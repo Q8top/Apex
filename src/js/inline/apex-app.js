@@ -146,7 +146,7 @@ function initAnnounce(app){
 }
 var APEX_GAMES={
   hot:[
-    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050'}
+    {n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050',img:'/assets/games/lucky-fruit.png'}
   ]
 };
 function renderGames(box,catKey){
