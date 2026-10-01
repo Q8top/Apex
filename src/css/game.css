@@ -506,3 +506,16 @@ body {
   .gm-tool-textonly > span { font-size: 13px; }
   .gm-start { font-size: 14px; padding: 0 14px; }
 }
+
+/* Fix v4: 全局去点击高亮 + 去 active 缩放 */
+* { -webkit-tap-highlight-color: transparent !important; }
+.gm-back:active, .gm-more:active, .gm-tool:active, .gm-tool-textonly:active {
+  transform: none !important;
+  background: transparent;
+}
+.gm-tool-textonly:active { background: #f4f4f5 !important; }
+.gm-start:active {
+  transform: none !important;
+  background: #0a0a0a !important;
+  box-shadow: 0 6px 16px rgba(10,10,10,.18) !important;
+}
