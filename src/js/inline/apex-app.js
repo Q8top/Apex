@@ -20,7 +20,7 @@ function shellHTML(user){
   var lang=resolveLang();
   var name=(user&&user.username)?String(user.username):'';
   var hi=name?('\u4F60\u597D\uFF0C'+esc(name)):'\u4F60\u597D';
-  return '<header class="apex-topbar"><div class="apex-topbar-inner"><div class="apex-search" role="search"><i class="ri-search-line" aria-hidden="true"></i><input type="search" id="apex-search-input" placeholder="\u641C\u7D22\u5185\u5BB9" aria-label="\u641C\u7D22" autocomplete="off"><kbd class="apex-search-kbd" aria-hidden="true">\u2318K</kbd></div><div class="apex-actions"><button type="button" class="apex-icon-btn apex-notif-btn" id="apex-notif-btn" aria-label="通知"><i class="ri-notification-4-line" aria-hidden="true"></i><span class="apex-notif-label">通知</span></button><div class="apex-lang-wrap"><button type="button" class="apex-lang-btn" id="apex-lang-btn" aria-haspopup="menu" aria-expanded="false"><span class="apex-flag" aria-hidden="true">'+lang.f+'</span><span class="apex-lang-label">'+lang.n+'</span><i class="ri-arrow-down-s-line" aria-hidden="true"></i></button><div class="apex-lang-menu" id="apex-lang-menu" role="menu">'+langMenuHTML(lang.c)+'</div></div></div></div></header><main class="apex-main"><div class="apex-main-inner"><div class="apex-carousel" id="apex-carousel"><div class="apex-carousel-track" id="apex-carousel-track"></div><div class="apex-carousel-dots" id="apex-carousel-dots" role="tablist"></div></div></div></main>';
+  return '<header class="apex-topbar"><div class="apex-topbar-inner"><div class="apex-search" role="search"><i class="ri-search-line" aria-hidden="true"></i><input type="search" id="apex-search-input" placeholder="\u641C\u7D22\u5185\u5BB9" aria-label="\u641C\u7D22" autocomplete="off"><kbd class="apex-search-kbd" aria-hidden="true">\u2318K</kbd></div><div class="apex-actions"><button type="button" class="apex-icon-btn apex-notif-btn" id="apex-notif-btn" aria-label="通知"><i class="ri-notification-4-line" aria-hidden="true"></i><span class="apex-notif-label">通知</span></button><div class="apex-lang-wrap"><button type="button" class="apex-lang-btn" id="apex-lang-btn" aria-haspopup="menu" aria-expanded="false"><span class="apex-flag" aria-hidden="true">'+lang.f+'</span><span class="apex-lang-label">'+lang.n+'</span><i class="ri-arrow-down-s-line" aria-hidden="true"></i></button><div class="apex-lang-menu" id="apex-lang-menu" role="menu">'+langMenuHTML(lang.c)+'</div></div></div></div></header><main class="apex-main"><div class="apex-main-inner"><div class="apex-carousel" id="apex-carousel"><div class="apex-carousel-track" id="apex-carousel-track"></div><div class="apex-carousel-dots" id="apex-carousel-dots" role="tablist"></div></div><div class="apex-announce" id="apex-announce"><span class="apex-announce-icon"><i class="ri-megaphone-line" aria-hidden="true"></i></span><span class="apex-announce-label">公告</span><div class="apex-announce-view" id="apex-announce-view"></div></div></div></main>';
 }
 function initLang(app){
   var btn=app.querySelector('#apex-lang-btn'),menu=app.querySelector('#apex-lang-menu');
@@ -69,7 +69,7 @@ function show(user){
     app=document.createElement('div');app.id=APP_ID;app.className='apex-app';
     app.innerHTML=shellHTML(user);
     document.body.appendChild(app);
-    initLang(app);initNotif(app);initSearch(app);initCarousel(app);
+    initLang(app);initNotif(app);initSearch(app);initCarousel(app);initAnnounce(app);
   }
   var hi=app.querySelector('.apex-welcome-hi');
   if(hi&&user&&user.username)hi.textContent='\u4F60\u597D\uFF0C'+user.username;
@@ -115,6 +115,25 @@ function initCarousel(app){
     var i=parseInt(b.getAttribute('data-idx'),10)||0;
     goto(i);pauseTemporarily();
   });
+}
+function initAnnounce(app){
+  var v=app.querySelector('#apex-announce-view');
+  if(!v)return;
+  var M=[
+    '\u6B22\u8FCE\u6765\u5230 Apex\uFF0C\u795D\u60A8\u4F53\u9A8C\u6109\u5FEB\uFF01',
+    '\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u8D26\u53F7\u5BC6\u7801\u4E0E\u9A8C\u8BC1\u7801',
+    '\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'
+  ];
+  v.innerHTML=M.map(function(t,i){return '<div class="apex-announce-item'+(i===0?' active':'')+'">'+t+'</div>';}).join('');
+  var items=v.querySelectorAll('.apex-announce-item'),cur=0,AUTO=3500;
+  if(items.length<2)return;
+  setInterval(function(){
+    if(document.hidden)return;
+    var old=items[cur];cur=(cur+1)%items.length;var nxt=items[cur];
+    old.classList.add('leaving');old.classList.remove('active');
+    setTimeout(function(){old.classList.remove('leaving');},400);
+    nxt.classList.add('active');
+  },AUTO);
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
