@@ -380,7 +380,7 @@
 }
 .apex-announce-marquee > .apex-announce-text {
   display: inline-block;
-  padding-right: 28px;
+  padding-right: 16px;
   color: #333;
   font-size: 13px;
   font-weight: 500;
