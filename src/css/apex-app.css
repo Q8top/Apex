@@ -475,3 +475,72 @@
 .apex-notif-btn { background: transparent !important; }
 .apex-notif-btn:hover { background: #f4f4f5 !important; }
 .apex-notif-btn:active { transform: scale(.96) !important; }
+
+/* ============================================================
+   Fix v6 · 通知 + 语言统一为长方形框按钮
+   ============================================================ */
+
+.apex-notif-btn,
+.apex-lang-btn {
+  height: 40px !important;
+  padding: 0 14px !important;
+  border: 1px solid #e5e5e7 !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
+  transition: background .15s ease, border-color .15s ease,
+              box-shadow .15s ease, transform .08s ease !important;
+}
+
+.apex-notif-btn:hover,
+.apex-lang-btn:hover {
+  background: #fafafa !important;
+  border-color: #d4d4d8 !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06) !important;
+}
+
+.apex-notif-btn:active,
+.apex-lang-btn:active {
+  transform: scale(.97) !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04) !important;
+}
+
+/* 通知按钮布局 */
+.apex-notif-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.apex-notif-btn > i { color: #0a0a0a !important; }
+
+/* 语言按钮布局 */
+.apex-lang-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+.apex-lang-btn > i { color: #71717a !important; }
+
+/* 语言下拉菜单对齐到按钮右下角 */
+.apex-lang-menu { top: calc(100% + 6px) !important; }
+
+/* 移动端收紧 */
+@media (max-width: 600px) {
+  .apex-notif-btn,
+  .apex-lang-btn {
+    height: 36px !important;
+    padding: 0 11px !important;
+    border-radius: 10px !important;
+    gap: 5px !important;
+  }
+  .apex-notif-btn > i { font-size: 16px !important; }
+  .apex-lang-btn > .apex-flag { font-size: 14px !important; }
+}
+
+@media (max-width: 380px) {
+  .apex-notif-btn,
+  .apex-lang-btn {
+    padding: 0 9px !important;
+    gap: 4px !important;
+  }
+}
