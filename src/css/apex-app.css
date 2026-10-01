@@ -433,3 +433,37 @@
   .apex-notif-label { display: none !important; }
   .apex-notif-btn { padding: 0 !important; width: 38px !important; justify-content: center !important; }
 }
+
+/* ============================================================
+   Fix v4 · 手机端布局修复
+   ============================================================ */
+
+.apex-search { min-width: 0 !important; }
+.apex-search > input { min-width: 0 !important; }
+
+@media (max-width: 600px) {
+  .apex-topbar-inner { padding: 9px 12px !important; gap: 7px !important; }
+  .apex-search { height: 38px !important; padding: 0 12px !important; }
+  .apex-search > i { font-size: 16px !important; margin-right: 7px !important; }
+  .apex-search > input { font-size: 13px !important; }
+  .apex-actions { gap: 3px !important; }
+
+  .apex-notif-btn {
+    height: 36px !important;
+    padding: 0 10px 0 8px !important;
+    gap: 5px !important;
+  }
+  .apex-notif-btn > i { font-size: 16px !important; }
+  .apex-notif-label { display: inline !important; font-size: 12px !important; }
+
+  .apex-lang-btn { height: 36px !important; padding: 0 8px !important; gap: 4px !important; }
+  .apex-lang-btn > .apex-flag { font-size: 14px !important; }
+  .apex-lang-btn > .apex-lang-label { display: inline !important; font-size: 12px !important; }
+  .apex-lang-btn > i { display: inline-flex !important; font-size: 13px !important; }
+}
+
+@media (max-width: 380px) {
+  .apex-notif-label { display: inline !important; }
+  .apex-notif-btn { padding: 0 8px 0 6px !important; }
+  .apex-lang-btn { padding: 0 6px !important; }
+}
