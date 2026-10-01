@@ -519,3 +519,36 @@ body {
   background: #0a0a0a !important;
   box-shadow: 0 6px 16px rgba(10,10,10,.18) !important;
 }
+
+/* ============================================================
+   Fix v5: 彻底清除点击/触摸的所有视觉反馈
+   ============================================================ */
+
+/* 所有可交互元素：无 outline、无高亮、无背景变化 */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+button:focus, button:active, button:focus-visible, button:focus-within,
+a:focus, a:active, a:focus-visible, a:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 移动端：禁用一切 hover 造成的视觉变化 */
+@media (hover: none), (pointer: coarse) {
+  .gm-back:hover, .gm-more:hover { background: transparent !important; }
+  .gm-tool:hover { background: transparent !important; color: inherit !important; }
+  .gm-tool-textonly:hover { background: #f4f4f5 !important; }
+  .gm-start:hover { background: #0a0a0a !important; box-shadow: 0 6px 16px rgba(10,10,10,.18) !important; }
+}
+
+/* 已激活的收藏：绝对不带背景 */
+.gm-tool.active {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #f0b429 !important;
+}
+.gm-tool.active > i { color: #f0b429 !important; filter: none !important; }
