@@ -382,3 +382,54 @@
   .apex-lang-btn > .apex-lang-label { display: inline !important; }
   .apex-lang-btn > i { font-size: 13px !important; display: inline-flex !important; }
 }
+
+/* ============================================================
+   Fix v3 · 通知按钮 pill + 语言箭头 + 布局
+   ============================================================ */
+
+/* 通知按钮：pill 形状，图标 + 文字 */
+.apex-notif-btn {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  padding: 0 14px 0 11px !important;
+  border-radius: 999px !important;
+  gap: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #f4f4f5 !important;
+}
+.apex-notif-btn:hover { background: #ececee !important; }
+.apex-notif-btn > i {
+  font-size: 18px !important;
+  color: #0a0a0a !important;
+  line-height: 1 !important;
+}
+.apex-notif-label {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #0a0a0a !important;
+  white-space: nowrap !important;
+  letter-spacing: .1px !important;
+}
+
+/* 语言按钮：确保箭头不被裁 */
+.apex-lang-wrap { flex-shrink: 0 !important; }
+.apex-lang-btn {
+  overflow: visible !important;
+  min-width: 0 !important;
+}
+.apex-lang-btn > i { flex-shrink: 0 !important; }
+
+/* 移动端收紧 */
+@media (max-width: 600px) {
+  .apex-notif-btn { padding: 0 11px 0 9px !important; height: 38px !important; }
+  .apex-notif-btn > i { font-size: 17px !important; }
+  .apex-notif-label { font-size: 12.5px !important; }
+  .apex-lang-btn > .apex-lang-label { display: inline !important; font-size: 12.5px !important; }
+  .apex-lang-btn > i { display: inline-flex !important; font-size: 14px !important; }
+}
+@media (max-width: 380px) {
+  .apex-notif-label { display: none !important; }
+  .apex-notif-btn { padding: 0 !important; width: 38px !important; justify-content: center !important; }
+}
