@@ -325,3 +325,60 @@
   font-size: 9px;
   border-width: 1.5px;
 }
+
+/* ============================================================
+   Fix v2 · 现代 App 顶栏
+   ============================================================ */
+
+.apex-topbar-inner { padding: 11px 18px !important; gap: 12px !important; }
+
+/* 搜索框 pill 化 */
+.apex-search {
+  height: 42px !important;
+  border-radius: 999px !important;
+  padding: 0 16px !important;
+}
+.apex-search:focus-within {
+  border-color: #0a0a0a !important;
+  box-shadow: 0 0 0 3px rgba(10,10,10,.06) !important;
+}
+
+/* 图标按钮圆形 */
+.apex-icon-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+}
+.apex-icon-btn:hover { background: #f2f2f3 !important; }
+
+/* 语言按钮 pill + 修复箭头 */
+.apex-lang-btn {
+  height: 40px !important;
+  padding: 0 11px !important;
+  border-radius: 999px !important;
+  gap: 6px !important;
+}
+.apex-lang-btn > i {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 15px !important;
+  color: #999 !important;
+  flex-shrink: 0 !important;
+}
+.apex-lang-btn:hover { background: #f2f2f3 !important; }
+
+/* 移动端微调（保留箭头） */
+@media (max-width: 600px) {
+  .apex-topbar-inner { padding: 10px 14px !important; gap: 8px !important; }
+  .apex-search { height: 40px !important; padding: 0 14px !important; }
+  .apex-search > input { font-size: 13.5px !important; }
+  .apex-icon-btn { width: 38px !important; height: 38px !important; }
+  .apex-lang-btn {
+    padding: 0 9px !important;
+    gap: 4px !important;
+    font-size: 12px !important;
+  }
+  .apex-lang-btn > .apex-flag { font-size: 15px !important; }
+  .apex-lang-btn > .apex-lang-label { display: inline !important; }
+  .apex-lang-btn > i { font-size: 13px !important; display: inline-flex !important; }
+}
