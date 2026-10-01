@@ -101,13 +101,6 @@ body {
   line-height: 1;
 }
 
-.ann-body {
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: #18181b;
-  word-break: break-word;
-  white-space: pre-wrap;
-}
 
 /* ---------- 空态 ---------- */
 .ann-empty {
@@ -126,4 +119,52 @@ body {
   .ann-main { padding: 14px 12px 60px; }
   .ann-item { padding: 16px 16px; border-radius: 14px; }
   .ann-body { font-size: 14px; }
+}
+
+/* ---------- 分组内容行 ---------- */
+.ann-rows {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.ann-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #18181b;
+  word-break: break-word;
+}
+
+.ann-num {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-top: 3px;
+  background: #0a0a0a;
+  color: #ffffff;
+  border-radius: 6px;
+  font-size font-weight: 700;
+  letter-spacing: -.2px;
+  line-height: 1;
+}
+
+.ann-text {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+  .ann-row { font-size: 14px; gap: 9px; }
+  .ann-num { min-width: 19px; height: 19px; font-size: 10.5px; }
 }
