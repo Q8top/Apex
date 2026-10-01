@@ -80,6 +80,8 @@ export async function onRequestPost(context) {
     return errorResponse('账号或密码错误', 401, 'invalid_credentials', requestId);
   }
 
+  const config = getConfig(env);
+
   // P14-Fix: 密码正确后，若生产环境要求邮箱验证且该用户未验证，拒绝登录
   // 说明：
   //   - config.requireVerifiedEmailFrom 在 _config.js 中定义为 isProduction
@@ -105,7 +107,6 @@ export async function onRequestPost(context) {
   await upgradePasswordHashIfNeeded(env, user, password);
 
   const session = await createUserSession(env, user.id, request);
-  const config = getConfig(env);
 
   await env.apex_db.prepare(
     'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
