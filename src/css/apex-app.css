@@ -700,3 +700,6 @@
   height: 100% !important;
   object-fit: contain !important;
 }
+
+/* Fix v13: 收紧卡片间距 */
+.apex-game-card { gap: 5px !important; }
