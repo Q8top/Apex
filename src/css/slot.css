@@ -1,39 +1,43 @@
 /* ============================================================
-   Lucky Fruit · 现代化 Web 老虎机
-   白底 + 黑辅 + 金色点缀
+   Lucky Fruit · 现代极简奢侈品风格
+   白 / 黑 / 金 三色体系 · 多层阴影 · 微渐变
    ============================================================ */
 
 :root {
-  --s-bg: #ffffff;
-  --s-surface: #fafafa;
-  --s-surface-2: #f4f4f5;
-  --s-text: #0a0a0a;
-  --s-muted: #6b6b6b;
-  --s-muted-2: #999999;
-  --s-border: #eaeaea;
-  --s-border-2: #e0e0e0;
-  --s-gold: #d4af37;
-  --s-gold-soft: #f0b429;
-  --s-red: #e5484d;
-  --s-green: #2e8b57;
+  --bg: #ffffff;
+  --bg-2: #fafafa;
+  --bg-3: #f4f4f5;
+  --ink: #0a0a0a;
+  --ink-2: #18181b;
+  --muted: #71717a;
+  --muted-2: #a1a1aa;
+  --line: #ececee;
+  --line-2: #e4e4e7;
+  --gold: #c9a227;
+  --gold-2: #e0b83e;
+  --gold-soft: #f5d97a;
+  --red: #dc2626;
+  --green: #16a34a;
 
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 22px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.04);
-  --shadow-md: 0 6px 20px rgba(0,0,0,.07);
-  --shadow-lg: 0 16px 40px rgba(0,0,0,.10);
+  /* 多层阴影：近距离 + 远距离 */
+  --sh-1: 0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.02);
+  --sh-2: 0 2px 4px rgba(0,0,0,.04), 0 6px 16px -6px rgba(0,0,0,.08);
+  --sh-3: 0 4px 8px rgba(0,0,0,.04), 0 20px 40px -12px rgba(0,0,0,.14);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 html, body {
   height: 100%;
-  background: var(--s-bg);
-  color: var(--s-text);
+  background: var(--bg);
+  color: var(--ink);
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'tnum';
   overflow: hidden;
   overscroll-behavior: none;
   user-select: none;
@@ -44,22 +48,30 @@ html, body {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  max-width: 520px;
+  max-width: 480px;
   margin: 0 auto;
-  position: relative;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-/* ---------- 顶栏 ---------- */
+/* ============================================================
+   顶栏
+   ============================================================ */
 .slot-topbar {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  height: 56px;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--s-border);
-  background: rgba(255,255,255,.86);
-  backdrop-filter: saturate(180%) blur(18px);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  height: 64px;
+  padding: 0 16px;
+  position: relative;
+}
+.slot-topbar::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: .55;
 }
 .slot-back, .slot-icon-btn {
   display: inline-flex;
@@ -67,204 +79,304 @@ html, body {
   justify-content: center;
   width: 40px; height: 40px;
   border: 0; background: transparent;
-  color: var(--s-text);
+  color: var(--ink);
   border-radius: 50%;
   cursor: pointer;
   font-family: inherit;
 }
-.slot-back svg, .slot-icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slot-back svg, .slot-icon-btn svg {
+  width: 22px; height: 22px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
 .slot-brand {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1;
-  gap: 2px;
+  line-height: .95;
+  gap: 3px;
 }
 .slot-brand-line {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 2.5px;
+  font-family: 'Cinzel', 'Manrope', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: var(--ink);
+  padding-left: 5px; /* 抵消 letter-spacing 造成的视觉偏移 */
 }
-.slot-brand-accent { color: var(--s-gold); }
+.slot-brand-accent {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 6px;
+  padding-left: 6px;
+}
 
-/* ---------- 主区 ---------- */
+/* ============================================================
+   主区
+   ============================================================ */
 .slot-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 14px 16px 12px;
-  gap: 14px;
+  padding: 16px 18px 14px;
+  gap: 16px;
   min-height: 0;
 }
 
-/* ---------- 转轮区 ---------- */
+/* ============================================================
+   转轮框
+   ============================================================ */
 .slot-reels {
-  flex: 1;
-  min-height: 220px;
-  max-height: 360px;
   position: relative;
+  flex-shrink: 0;
+  aspect-ratio: 5 / 4.1;
+  max-height: 44vh;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
-  padding: 10px;
-  background: var(--s-surface);
-  border: 1px solid var(--s-border);
+  padding: 14px;
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fbfbfc 55%, #f6f6f8 100%);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    var(--sh-3);
   overflow: hidden;
 }
-.slot-reel {
-  position: relative;
-  background: var(--s-bg);
-  border-radius: var(--r-md);
-  box-shadow: inset 0 0 0 1px var(--s-border);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.slot-reel-cell {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
+/* 内层金色细线（奢侈品包装感） */
+.slot-reels::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 18px;
+  border: 1px solid rgba(201,162,39,.18);
+  pointer-events: none;
+  z-index: 3;
 }
 
-/* ---------- WIN 显示 ---------- */
+.slot-reel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fafafb 100%);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    inset 0 2px 6px rgba(0,0,0,.03);
+  overflow: hidden;
+}
+
+.slot-reel-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  position: relative;
+}
+.slot-reel-cell > svg {
+  width: 78%;
+  height: 78%;
+  max-width: 56px;
+  max-height: 56px;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.12));
+}
+
+/* ============================================================
+   WIN 区
+   ============================================================ */
 .slot-win {
   flex-shrink: 0;
   text-align: center;
-  padding: 4px 0;
+  padding: 6px 0 2px;
 }
 .slot-win-label {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--s-muted-2);
-  margin-bottom: 2px;
+  letter-spacing: 5px;
+  color: var(--muted-2);
+  margin-bottom: 4px;
+  padding-left: 5px;
 }
 .slot-win-value {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--s-text);
-  letter-spacing: -.5px;
-  line-height: 1.1;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -1.2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #0a0a0a 0%, #3a3a3a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
-.slot-win-value.winning { color: var(--s-gold-soft); }
+.slot-win-value.winning {
+  background: linear-gradient(180deg, #f0c952 0%, #b8892a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-/* ---------- 控制区 ---------- */
+/* ============================================================
+   控制区
+   ============================================================ */
 .slot-controls {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 12px;
+  height: 60px;
 }
+
 .slot-bet {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px;
-  background: var(--s-surface-2);
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg-3);
   border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 .slot-bet-btn {
-  width: 38px; height: 38px;
+  width: 38px; height: 100%;
   border: 0;
   background: #fff;
-  border-radius: 10px;
-  color: var(--s-text);
-  font-size: 22px;
-  font-weight: 700;
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
   font-family: inherit;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--sh-1);
+  transition: none;
 }
 .slot-bet-val {
-  min-width: 60px;
+  min-width: 58px;
   text-align: center;
-  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
 }
 .slot-bet-label {
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--s-muted-2);
+  letter-spacing: 2.5px;
+  color: var(--muted-2);
+  padding-left: 2px;
 }
 .slot-bet-num {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 800;
-  color: var(--s-text);
   letter-spacing: -.3px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .slot-spin {
   flex: 1;
-  height: 56px;
   border: 0;
   border-radius: var(--r-md);
-  background: var(--s-text);
+  background:
+    linear-gradient(180deg, #1e1e1e 0%, #0a0a0a 100%);
   color: #fff;
   font-family: inherit;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(10,10,10,.18);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 8px 20px -8px rgba(0,0,0,.4),
+    0 2px 4px rgba(0,0,0,.12);
 }
-.slot-spin:disabled { opacity: .45; cursor: not-allowed; }
+.slot-spin::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+  width: 40%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,.7), transparent);
+}
+.slot-spin:disabled { opacity: .35; cursor: not-allowed; }
 
-/* ---------- 余额 ---------- */
+/* ============================================================
+   余额
+   ============================================================ */
 .slot-balance {
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: baseline;
-  gap: 8px;
-  padding: 10px 14px;
-  background: var(--s-surface);
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%);
   border-radius: var(--r-md);
-  border: 1px solid var(--s-border);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--sh-1);
 }
 .slot-balance-label {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 2.5px;
-  color: var(--s-muted-2);
+  letter-spacing: 4px;
+  color: var(--muted-2);
 }
 .slot-balance-value {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--s-text);
-  letter-spacing: -.3px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -.5px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 底部导航 ---------- */
+/* ============================================================
+   底部导航
+   ============================================================ */
 .slot-nav {
   flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  gap: 8px;
 }
 .slot-nav-btn {
-  padding: 11px 8px;
-  border: 1px solid var(--s-border);
-  background: transparent;
+  padding: 13px 8px;
+  border: 0;
+  background: #fff;
   border-radius: var(--r-md);
-  color: var(--s-muted);
+  color: var(--ink-2);
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
+  letter-spacing: .2px;
   cursor: pointer;
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--sh-1);
 }
 
-/* ---------- 小屏 ---------- */
-@media (max-width: 380px) {
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-height: 720px) {
+  .slot-topbar { height: 56px; }
+  .slot-main { gap: 12px; padding: 12px 16px 10px; }
+  .slot-win-value { font-size: 30px; }
+  .slot-controls { height: 54px; }
+  .slot-balance { padding: 11px 18px; }
+  .slot-balance-value { font-size: 20px; }
+}
+@media (max-width: 360px) {
   .slot-main { padding: 10px 12px; gap: 10px; }
-  .slot-reels { padding: 8px; gap: 4px; }
-  .slot-spin { height: 52px; font-size: 15px; letter-spacing: 2px; }
-  .slot-win-value { font-size: 22px; }
+  .slot-reels { padding: 10px; gap: 4px; }
+  .slot-brand-line { font-size: 13px; letter-spacing: 4px; }
+  .slot-brand-accent { font-size: 11px; letter-spacing: 5px; }
 }
