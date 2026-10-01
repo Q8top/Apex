@@ -380,7 +380,7 @@
 }
 .apex-announce-marquee > .apex-announce-text {
   display: inline-block;
-  padding-right: 64px;
+  padding-right: 48px;
   color: #333;
   font-size: 13px;
   font-weight: 500;
@@ -394,3 +394,8 @@
   .apex-announce { padding: 10px 14px; gap: 10px; border-radius: 12px; }
   .apex-announce-label { display: none; }
 }
+
+/* 公告条可点击 */
+.apex-announce { cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.apex-announce:hover { background: #f4f4f5; border-color: #e0e0e2; }
+.apex-announce:active { transform: scale(.995); }

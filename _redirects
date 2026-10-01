@@ -50,3 +50,6 @@
 # --- 已下线的登录后页面，兜底重定向到首页 ---
 /home      /   302
 /home.html /   302
+
+# 公告页 clean URL
+/announcements      /announcements.html  200

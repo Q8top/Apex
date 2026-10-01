@@ -117,25 +117,28 @@ function initCarousel(app){
   });
 }
 function initAnnounce(app){
+  var wrap=app.querySelector('#apex-announce');
   var v=app.querySelector('#apex-announce-view');
-  if(!v)return;
+  if(!v||!wrap)return;
+  // 数据结构：{ t: 时间字符串, c: 内容 }；将来后台接口只需返回同结构数组
   var M=[
-    '\u6B22\u8FCE\u6765\u5230 Apex\uFF0C\u795D\u60A8\u4F53\u9A8C\u6109\u5FEB\uFF01',
-    '\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u8D26\u53F7\u5BC6\u7801\u4E0E\u9A8C\u8BC1\u7801',
-    '\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'
+    {t:'2026-10-01 15:00',c:'\u6B22\u8FCE\u6765\u5230 Apex\uFF0C\u795D\u60A8\u4F53\u9A8C\u6109\u5FEB\uFF01'},
+    {t:'2026-09-30 18:20',c:'\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u8D26\u53F7\u5BC6\u7801\u4E0E\u9A8C\u8BC1\u7801'},
+    {t:'2026-09-28 10:00',c:'\u5E73\u53F0\u6B63\u5728\u6301\u7EED\u4F18\u5316\uFF0C\u611F\u8C22\u60A8\u7684\u652F\u6301'}
   ];
-  var SEP='<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#c8c8cc;margin:0 26px;vertical-align:middle;"></span>';
-  var one=M.map(function(t){return '<span class="apex-announce-text">'+t+'</span>';}).join(SEP);
-  // 双份内容，配合 translateX(-50%) 实现无缝循环
-  v.innerHTML='<div class="apex-announce-marquee" id="apex-announce-marquee">'+one+SEP+one+SEP+'</div>';
+  window.__apexAnnouncements = M;
+  var html=M.map(function(x){return '<span class="apex-announce-text">'+x.c+'</span>';}).join('');
+  v.innerHTML='<div class="apex-announce-marquee" id="apex-announce-marquee">'+html+html+'</div>';
   var el=v.querySelector('#apex-announce-marquee');
-  if(!el)return;
-  // 根据内容宽度动态调整时长：宽度越大滚得越快，视觉速度恒定
-  requestAnimationFrame(function(){
-    var half=el.scrollWidth/2;
-    if(!half)return;
-    var sec=Math.max(14,Math.round(half/55)); // 55px/s
-    el.style.animationDuration=sec+'s';
+  if(el){
+    requestAnimationFrame(function(){
+      var half=el.scrollWidth/2;if(!half)return;
+      el.style.animationDuration=Math.max(14,Math.round(half/55))+'s';
+    });
+  }
+  wrap.addEventListener('click',function(e){
+    if(e.target.closest && e.target.closest('a'))return;
+    location.href='/announcements';
   });
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');}

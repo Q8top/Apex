@@ -1,0 +1,129 @@
+/* ============================================================
+   Apex · 公告详情页
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- 顶栏 ---------- */
+.ann-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 12px;
+  background: rgba(255,255,255,.82);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.ann-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #0a0a0a;
+  text-decoration: none;
+  transition: background .15s ease, transform .08s ease;
+}
+.ann-back:hover { background: #f4f4f5; }
+.ann-back:active { transform: scale(.94); }
+.ann-back > i { font-size: 26px; line-height: 1; }
+
+.ann-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+  text-align: center;
+}
+.ann-topbar-spacer { width: 40px; flex-shrink: 0; }
+
+/* ---------- 主区 ---------- */
+.ann-main {
+  flex: 1;
+  padding: 20px 16px 60px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.ann-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- 卡片 ---------- */
+.ann-item {
+  padding: 18px 20px;
+  background: #fafafa;
+  border: 1px solid #ededed;
+  border-radius: 16px;
+  transition: background .15s ease, border-color .15s ease;
+}
+.ann-item:hover {
+  background: #f6f6f7;
+  border-color: #e2e2e4;
+}
+
+.ann-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: .2px;
+  margin-bottom: 10px;
+}
+.ann-time > i {
+  font-size: 14px;
+  color: #999;
+  line-height: 1;
+}
+
+.ann-body {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #18181b;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* ---------- 空态 ---------- */
+.ann-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #aaa;
+  gap: 14px;
+}
+.ann-empty > i { font-size: 44px; }
+.ann-empty > p { font-size: 13.5px; font-weight: 500; }
+
+@media (max-width: 480px) {
+  .ann-main { padding: 14px 12px 60px; }
+  .ann-item { padding: 16px 16px; border-radius: 14px; }
+  .ann-body { font-size: 14px; }
+}
