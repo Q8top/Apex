@@ -109,3 +109,6 @@
 
 /game.html
   Cache-Control: no-store
+
+/slot.html
+  Cache-Control: no-store

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex">
+<title>Lucky Fruit · Apex</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/src/css/slot.css">
+</head>
+<body>
+<div id="slot-app">
+  <header class="slot-topbar">
+    <a class="slot-back" href="/game.html?id=lucky-fruit" aria-label="返回">
+      <i data-icon="back"></i>
+    </a>
+    <div class="slot-brand">
+      <div class="slot-brand-line">LUCKY</div>
+      <div class="slot-brand-line slot-brand-accent">FRUIT</div>
+    </div>
+    <button type="button" class="slot-icon-btn" id="slot-sound" aria-label="声音">
+      <i data-icon="sound-on"></i>
+    </button>
+  </header>
+
+  <main class="slot-main">
+    <section class="slot-reels" id="slot-reels">
+      <div class="slot-reels-mask"></div>
+    </section>
+
+    <section class="slot-win" id="slot-win">
+      <div class="slot-win-label">WIN</div>
+      <div class="slot-win-value" id="slot-win-value">0</div>
+    </section>
+
+    <section class="slot-controls">
+      <div class="slot-bet">
+        <button type="button" class="slot-bet-btn" id="slot-bet-minus" aria-label="减少下注">−</button>
+        <div class="slot-bet-val">
+          <div class="slot-bet-label">BET</div>
+          <div class="slot-bet-num" id="slot-bet-num">10</div>
+        </div>
+        <button type="button" class="slot-bet-btn" id="slot-bet-plus" aria-label="增加下注">+</button>
+      </div>
+      <button type="button" class="slot-spin" id="slot-spin">SPIN</button>
+    </section>
+
+    <section class="slot-balance">
+      <span class="slot-balance-label">BALANCE</span>
+      <span class="slot-balance-value" id="slot-balance-value">10,000</span>
+    </section>
+
+    <nav class="slot-nav">
+      <button type="button" class="slot-nav-btn" id="slot-paytable">赔付表</button>
+      <button type="button" class="slot-nav-btn" id="slot-help">玩法说明</button>
+      <button type="button" class="slot-nav-btn" id="slot-reset">重置余额</button>
+    </nav>
+  </main>
+</div>
+
+<script src="/src/js/slot/slot-config.js"></script>
+<script src="/src/js/slot/slot-symbols.js"></script>
+<script src="/src/js/slot/slot-engine.js"></script>
+<script src="/src/js/slot/slot-ui.js"></script>
+</body>
+</html>
