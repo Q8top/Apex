@@ -540,7 +540,7 @@
 <!-- APEX-DIAG -->
 <script>
 (function(){
-  if (!/[?&]debug=1/.test(location.search)) return;
+  if (location.href.indexOf('debug') === -1) return;
   function log(msg, ok) {
     var box = document.getElementById('apex-diag-box');
     if (!box) {
