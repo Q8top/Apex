@@ -703,3 +703,58 @@
 
 /* Fix v13: 收紧卡片间距 */
 .apex-game-card { gap: 5px !important; }
+
+/* ============================================================
+   Fix v6: 游戏卡片严格统一尺寸
+   ============================================================ */
+.apex-game-grid {
+  grid-auto-rows: auto;
+  align-items: start;
+}
+.apex-game-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.apex-game-cover {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  flex-shrink: 0;
+}
+.apex-game-name {
+  height: 16px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+}
+
+/* ============================================================
+   Fix v7: 游戏卡片强制统一尺寸
+   ============================================================ */
+.apex-game-grid {
+  align-items: stretch !important;
+}
+.apex-game-card {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+.apex-game-cover {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  flex-shrink: 0 !important;
+}
+.apex-game-name {
+  height: 16px !important;
+  line-height: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+}
