@@ -26,8 +26,8 @@ var WEIGHTS_REAL = {
 };
 /* demo：高命中，所有符号更常见，方便试玩看效果 */
 var WEIGHTS_DEMO = {
-  cherry: 16, lemon: 15, orange: 13, grape: 13, watermelon: 12,
-  bell: 10, bar: 8, seven: 6, goldenSeven: 5, wild: 14
+  cherry: 24, lemon: 22, orange: 20, grape: 18, watermelon: 16,
+  bell: 4, bar: 2, seven: 1.5, goldenSeven: 0.8, wild: 2.2
 };
 
 /* ---------- 5 条中奖线（3×3 网格）
@@ -42,7 +42,21 @@ var PAYLINES = [
 ];
 
 /* ---------- 赔率表：3 个相同符号 → 倍数（相对 lineBet）---------- */
-var PAYOUTS = {
+/* real：标准赔率 */
+var PAYOUTS_REAL = {
+  cherry:      14,
+  lemon:       22,
+  orange:      28,
+  grape:       42,
+  watermelon:  56,
+  bell:        84,
+  bar:         140,
+  seven:       280,
+  goldenSeven: 700,
+  wild:        840
+};
+/* demo：低赔率（配合高命中率，RTP 约 130%） */
+var PAYOUTS_DEMO = {
   cherry:      5,
   lemon:       8,
   orange:      10,
@@ -54,6 +68,7 @@ var PAYOUTS = {
   goldenSeven: 250,
   wild:        300
 };
+var PAYOUTS = PAYOUTS_REAL;
 
 /* ---------- 游戏参数 ---------- */
 var CONFIG = {
@@ -76,7 +91,9 @@ window.SlotConfig = {
   WEIGHTS_REAL: WEIGHTS_REAL,
   WEIGHTS_DEMO: WEIGHTS_DEMO,
   PAYLINES: PAYLINES,
-  PAYOUTS: PAYOUTS,
+  PAYOUTS: PAYOUTS_REAL,
+  PAYOUTS_REAL: PAYOUTS_REAL,
+  PAYOUTS_DEMO: PAYOUTS_DEMO,
   CONFIG: CONFIG,
   WILD_SUBSTITUTES: WILD_SUBSTITUTES
 };
