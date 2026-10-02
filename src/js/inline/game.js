@@ -142,7 +142,9 @@ function bindEvents() {
   });
   document.getElementById('gm-support').addEventListener('click', function(){ alert('客服功能开发中'); });
   document.getElementById('gm-demo').addEventListener('click', function(){ alert('试玩功能开发中'); });
-  document.getElementById('gm-start').addEventListener('click', function(){ alert('游戏引擎开发中'); });
+  document.getElementById('gm-start').addEventListener('click', function(){
+    location.href = '/slot.html';
+  });
   document.getElementById('gm-more').addEventListener('click', function(){ alert('更多操作开发中'); });
   var back = document.getElementById('gm-back');
   if (back) back.addEventListener('click', function(e){
