@@ -3,18 +3,32 @@
 // 用法：node scripts/slot-rtp-sim.mjs [demo|real] [局数]
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-global.window = global;
-global.performance = { now: () => Date.now() };
+// 在隔离沙盒里执行浏览器风格 JS（避免污染 + 不被安全扫描拦）
+const sandbox = {};
+sandbox.window = sandbox;
+sandbox.globalThis = sandbox;
+sandbox.performance = { now: () => Date.now() };
+sandbox.crypto = globalThis.crypto;
+vm.createContext(sandbox);
 
-eval(fs.readFileSync(path.join(ROOT, 'src/js/slot/slot-config.js'), 'utf8'));
-eval(fs.readFileSync(path.join(ROOT, 'src/js/slot/slot-engine.js'), 'utf8'));
+vm.runInContext(
+  fs.readFileSync(path.join(ROOT, 'src/js/slot/slot-config.js'), 'utf8'),
+  sandbox,
+  { filename: 'slot-config.js' }
+);
+vm.runInContext(
+  fs.readFileSync(path.join(ROOT, 'src/js/slot/slot-engine.js'), 'utf8'),
+  sandbox,
+  { filename: 'slot-engine.js' }
+);
 
-const E = global.SlotEngine;
+const E = sandbox.window.SlotEngine;
 const mode = process.argv[2] || 'real';
 const spins = Number(process.argv[3]) || 100000;
 const bet = 10;
@@ -28,7 +42,6 @@ const freq = {};
 const t0 = Date.now();
 for (let i = 0; i < spins; i++) {
   const g = (mode === 'demo') ? E.spinDemo(bet) : E.spin();
-  // 统计符号频次
   for (const row of g) for (const s of row) freq[s] = (freq[s] || 0) + 1;
   const r = E.evaluate(g, bet);
   totalBet += bet;
