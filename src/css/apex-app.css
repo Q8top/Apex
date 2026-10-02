@@ -797,3 +797,11 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
+
+/* Fix v17: 名字上移 */
+.apex-game-grid {
+  row-gap: 2px !important;
+}
+.apex-game-name {
+  margin-top: -4px !important;
+}

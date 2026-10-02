@@ -1,0 +1,201 @@
+/* 奥林匹斯之门 · 引擎
+   6×5 Cluster Pays + Tumble + Multiplier + Zeus Scatter
+*/
+(function(){
+'use strict';
+
+var C = window.OlympusConfig;
+
+function randFloat(){
+  var b = new Uint32Array(1);
+  crypto.getRandomValues(b);
+  return b[0] / 4294967296;
+}
+
+/* ---------- 权重池 ---------- */
+var _weights = C.WEIGHTS_REAL;
+var _payScale = C.CONFIG.payoutScaleReal;
+var _pool = null;
+function buildPool(){
+  var arr = [], total = 0;
+  for (var k in _weights) {
+    if (!_weights.hasOwnProperty(k)) continue;
+    total += _weights[k];
+    arr.push({ id: k, cum: total });
+  }
+  _pool = { arr: arr, total: total };
+}
+function pick(){
+  if (!_pool) buildPool();
+  var t = randFloat() * _pool.total, a = _pool.arr;
+  for (var i = 0; i < a.length; i++) if (t < a[i].cum) return a[i].id;
+  return a[a.length - 1].id;
+}
+
+/* ---------- 网格生成 ---------- */
+function spin(){
+  var g = [];
+  for (var r = 0; r < C.CONFIG.rows; r++) {
+    var row = [];
+    for (var c = 0; c < C.CONFIG.cols; c++) row.push(pick());
+    g.push(row);
+  }
+  return g;
+}
+
+/* ---------- Cluster 检测（BFS 4 邻，排除 zeus）---------- */
+function findClusters(grid){
+  var R = C.CONFIG.rows, Col = C.CONFIG.cols, minN = C.CONFIG.minCluster;
+  var vis = [];
+  for (var i = 0; i < R; i++) vis.push(new Array(Col).fill(false));
+  var out = [];
+
+  for (var r0 = 0; r0 < R; r0++) {
+    for (var c0 = 0; c0 < Col; c0++) {
+      if (vis[r0][c0]) continue;
+      var sym = grid[r0][c0];
+      vis[r0][c0] = true;
+      if (sym === 'zeus') continue;  // Zeus 单独处理
+
+      var q = [[r0,c0]], cells = [], head = 0;
+      while (head < q.length) {
+        var cur = q[head++];
+        cells.push(cur);
+        var dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+        for (var d = 0; d < 4; d++) {
+          var nr = cur[0]+dirs[d][0], nc = cur[1]+dirs[d][1];
+          if (nr<0||nr>=R||nc<0||nc>=Col) continue;
+          if (vis[nr][nc] || grid[nr][nc] !== sym) continue;
+          vis[nr][nc] = true;
+          q.push([nr,nc]);
+        }
+      }
+      if (cells.length >= minN) out.push({ symbol: sym, cells: cells, size: cells.length });
+    }
+  }
+  return out;
+}
+
+/* ---------- Zeus 检测 ---------- */
+function findZeus(grid){
+  var cells = [];
+  for (var r = 0; r < C.CONFIG.rows; r++)
+    for (var c = 0; c < C.CONFIG.cols; c++)
+      if (grid[r][c] === 'zeus') cells.push([r,c]);
+  return cells;
+}
+
+/* ---------- 单轮评估 ---------- */
+function evaluate(grid, totalBet){
+  var cellBet = totalBet / C.CONFIG.baseCellBet;
+  var clusters = findClusters(grid);
+  var wins = [], total = 0;
+  clusters.forEach(function(cl){
+    var tbl = C.PAYOUTS[cl.symbol]; if (!tbl) return;
+    var keys = Object.keys(tbl).map(Number).sort(function(a,b){ return a-b; });
+    var mult = 0;
+    for (var i = 0; i < keys.length; i++) if (cl.size >= keys[i]) mult = tbl[keys[i]];
+    if (mult > 0) {
+      var amt = mult * cellBet * _payScale;
+      wins.push({ symbol: cl.symbol, size: cl.size, cells: cl.cells, multiplier: mult, amount: amt });
+      total += amt;
+    }
+  });
+  // Zeus scatter 单独算
+  var zeus = findZeus(grid);
+  if (zeus.length >= 4) {
+    var zMult = C.ZEUS_PAYOUTS[Math.min(zeus.length, 6)] || 0;
+    if (zMult > 0) {
+      var zAmt = zMult * cellBet * _payScale;
+      wins.push({ symbol: 'zeus', size: zeus.length, cells: zeus, multiplier: zMult, amount: zAmt, isScatter: true });
+      total += zAmt;
+    }
+  }
+  return { wins: wins, totalWin: total };
+}
+
+/* ---------- Tumble ---------- */
+function tumble(grid, winCells){
+  var R = C.CONFIG.rows, Col = C.CONFIG.cols;
+  var set = {};
+  winCells.forEach(function(p){ set[p[0]+','+p[1]] = 1; });
+  var out = [];
+  for (var r = 0; r < R; r++) out.push(new Array(Col).fill(null));
+
+  for (var c = 0; c < Col; c++) {
+    var stack = [];
+    for (var r2 = R-1; r2 >= 0; r2--) {
+      if (set[r2+','+c]) continue;
+      stack.push(grid[r2][c]);
+    }
+    for (var i = 0; i < stack.length; i++) out[R-1-i][c] = stack[i];
+    for (var k = 0; k < R - stack.length; k++) out[k][c] = pick();
+  }
+  return out;
+}
+
+/* ---------- 乘法器掉落 ---------- */
+var _mwPool = null;
+function pickMultiplier(){
+  if (!_mwPool) {
+    var arr = [], total = 0;
+    for (var i = 0; i < C.MULTIPLIER_VALUES.length; i++) {
+      var v = C.MULTIPLIER_VALUES[i];
+      var w = C.MULTIPLIER_WEIGHTS[v] || 0;
+      total += w;
+      arr.push({ v: v, cum: total });
+    }
+    _mwPool = { arr: arr, total: total };
+  }
+  var t = randFloat() * _mwPool.total, a = _mwPool.arr;
+  for (var j = 0; j < a.length; j++) if (t < a[j].cum) return a[j].v;
+  return a[a.length - 1].v;
+}
+
+/* ---------- 完整 spin（含 tumble）---------- */
+function playFullSpin(totalBet){
+  var grid = spin();
+  var rounds = [];
+  var totalWin = 0;
+
+  for (var t = 0; t < C.CONFIG.maxTumbles; t++) {
+    var r = evaluate(grid, totalBet);
+    if (r.wins.length === 0) {
+      if (t === 0) rounds.push({ grid: grid, wins: [], roundWin: 0, multiplier: 0 });
+      break;
+    }
+    // 掉一个乘法器
+    var mult = pickMultiplier();
+    var roundWin = r.totalWin * mult;
+    totalWin += roundWin;
+
+    var winCells = [];
+    r.wins.forEach(function(w){ w.cells.forEach(function(p){ winCells.push(p); }); });
+    rounds.push({ grid: grid, wins: r.wins, roundWin: roundWin, multiplier: mult });
+
+    grid = tumble(grid, winCells);
+  }
+  return { rounds: rounds, totalWin: totalWin, finalGrid: grid };
+}
+
+function setMode(m){ _weights = (m === 'demo') ? C.WEIGHTS_DEMO : C.WEIGHTS_REAL; _payScale = (m === 'demo') ? C.CONFIG.payoutScaleDemo : C.CONFIG.payoutScaleReal; _pool = null; }
+
+/* demo 高命中：跑 2 次取最高 */
+function spinDemo(betAmount){
+  var a = playFullSpin(betAmount);
+  var b = playFullSpin(betAmount);
+  return (b.totalWin > a.totalWin) ? b : a;
+}
+
+window.OlympusEngine = {
+  spin: spin,
+  evaluate: evaluate,
+  findClusters: findClusters,
+  tumble: tumble,
+  playFullSpin: playFullSpin,
+  spinDemo: spinDemo,
+  setMode: setMode,
+  pickMultiplier: pickMultiplier,
+  randFloat: randFloat
+};
+})();
