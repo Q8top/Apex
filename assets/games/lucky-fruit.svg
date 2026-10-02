@@ -1,55 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 30 140 140" width="200" height="200">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="35%" r="75%">
+    <radialGradient id="lf-bg" cx="50%" cy="35%" r="75%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="100%" stop-color="#f4f4f6"/>
     </radialGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e8c25c"/>
-      <stop offset="100%" stop-color="#c49a2f"/>
+    <linearGradient id="lf-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7e08a"/>
+      <stop offset="100%" stop-color="#b88b24"/>
     </linearGradient>
-    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ef5350"/>
+    <linearGradient id="lf-red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff7070"/>
       <stop offset="100%" stop-color="#c62828"/>
     </linearGradient>
   </defs>
 
-  <!-- 背景 -->
-  <rect width="200" height="200" rx="36" fill="url(#bg)"/>
-  <rect x="0.5" y="0.5" width="199" height="199" rx="35.5" fill="none" stroke="#e5e5e7" stroke-width="1"/>
+  <!-- 白底卡片（内缩，对齐 olympus） -->
+  <rect x="42" y="42" width="116" height="116" rx="26" fill="url(#lf-bg)"/>
+  <rect x="42.5" y="42.5" width="115" height="115" rx="25.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="48" y="48" width="104" height="104" rx="20" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
-  <!-- 机身 -->
-  <rect x="38" y="52" width="124" height="108" rx="18" fill="#ffffff" stroke="#0a0a0a" stroke-width="2.5"/>
-  <!-- 顶部横条 -->
-  <rect x="38" y="52" width="124" height="22" rx="18" fill="#0a0a0a"/>
-  <rect x="38" y="66" width="124" height="8" fill="#0a0a0a"/>
-  <!-- 顶部装饰点 -->
-  <circle cx="52" cy="63" r="2.2" fill="#4ade80"/>
-  <circle cx="60" cy="63" r="2.2" fill="#e8c25c"/>
-  <circle cx="68" cy="63" r="2.2" fill="#ef5350"/>
-  <!-- 拉杆 -->
-  <rect x="162" y="58" width="4" height="14" rx="2" fill="#0a0a0a"/>
-  <circle cx="164" cy="56" r="5" fill="url(#red)" stroke="#0a0a0a" stroke-width="1.5"/>
+  <!-- 机头（黑条） -->
+  <path d="M58 66 L142 66 L142 78 L58 78 Z" fill="#0a0a0a"/>
+  <circle cx="66" cy="72" r="2" fill="#4ade80"/>
+  <circle cx="74" cy="72" r="2" fill="#e8c25c"/>
+  <circle cx="82" cy="72" r="2" fill="#ef5350"/>
 
   <!-- 三个转轮 -->
-  <rect x="50" y="86" width="32" height="58" rx="10" fill="#f4f4f6" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="84" y="86" width="32" height="58" rx="10" fill="#f4f4f6" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="118" y="86" width="32" height="58" rx="10" fill="#f4f4f6" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="58" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="1.8"/>
+  <rect x="88" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="1.8"/>
+  <rect x="118" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="1.8"/>
 
-  <!-- 转轮 1：樱桃 -->
-  <circle cx="60" cy="112" r="6" fill="url(#red)"/>
-  <circle cx="72" cy="116" r="6" fill="url(#red)"/>
-  <path d="M60 106 Q64 100 66 94" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  <path d="M72 110 Q70 102 66 94" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  <circle cx="60" cy="109" r="1.4" fill="#ffffff" opacity="0.7"/>
-  <circle cx="72" cy="113" r="1.4" fill="#ffffff" opacity="0.7"/>
+  <!-- 樱桃 -->
+  <circle cx="66" cy="112" r="5" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.2"/>
+  <circle cx="78" cy="116" r="5" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.2"/>
+  <path d="M66 106 Q70 100 72 96" stroke="#0a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M78 110 Q76 102 72 96" stroke="#0a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
 
-  <!-- 转轮 2：7 -->
-  <text x="100" y="126" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="900" fill="url(#gold)" stroke="#0a0a0a" stroke-width="1.4" paint-order="stroke">7</text>
+  <!-- 7 -->
+  <text x="100" y="122" text-anchor="middle" font-family="Georgia,serif" font-size="30" font-weight="900" fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.4" paint-order="stroke">7</text>
 
-  <!-- 转轮 3：星 -->
-  <path d="M134 96 L137 108 L150 108 L139 116 L143 128 L134 121 L125 128 L129 116 L118 108 L131 108 Z" fill="url(#gold)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- 星 -->
+  <path d="M126 100 L129 110 L139 110 L131 116 L134 126 L126 120 L118 126 L121 116 L113 110 L123 110 Z"
+        fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.4" stroke-linejoin="round"/>
 
-  <!-- 底部投币口 -->
-  <rect x="86" y="150" width="28" height="5" rx="2.5" fill="#0a0a0a"/>
+  <!-- 投币口 -->
+  <rect x="90" y="146" width="20" height="3" rx="1.5" fill="#0a0a0a"/>
 </svg>

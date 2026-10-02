@@ -809,3 +809,8 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
+
+/* Fix v9: 卡片名字上移 */
+.apex-game-name {
+  margin-top: -2px !important;
+}

@@ -19,7 +19,7 @@ var state = {
   balance: C.CONFIG.initialBalance,
   betIndex: C.CONFIG.defaultBetIndex,
   spinning: false, grid: null, history: [],
-  autoOn: false, soundOn: true, ready: false
+  autoOn: false, soundOn: true, ready: false, safetyTimer: null
 };
 
 function $(id){ return document.getElementById(id); }
@@ -120,7 +120,7 @@ function popCells(cells){
       var el = cellAt(p[0], p[1]);
       if (el) el.classList.add('popping');
     });
-    setTimeout(resolve, 320);
+    setTimeout(resolve, 220);
   });
 }
 
@@ -201,6 +201,16 @@ function doSpin(){
   var sb2 = $('ol-spin'); sb2.disabled = true; sb2.classList.add('spinning');
   A.spinStart();
 
+  // 安全兜底：10 秒内未完成强制结束
+  if (state.safetyTimer) clearTimeout(state.safetyTimer);
+  state.safetyTimer = setTimeout(function(){
+    if (state.spinning) {
+      console.warn('[Olympus] spin safety timeout');
+      state.spinning = false;
+      var sb = $('ol-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
+    }
+  }, 10000);
+
   // 生成完整结果（含 tumble）
   var result = (MODE === 'demo') ? E.spinDemo(b) : E.playFullSpin(b);
   state.grid = result.finalGrid;
@@ -256,12 +266,12 @@ function runTumbleSequence(result, betAmt){
         i++;
         if (i < rounds.length && rounds[i].grid) {
           paintGrid(rounds[i].grid, true);
-          setTimeout(next, 420);
+          setTimeout(next, 280);
         } else {
           finish(totalShown);
         }
       });
-    }, 700);
+    }, 450);
   }
   next();
 }
@@ -302,6 +312,7 @@ function afterSettle(totalWin){
 
 function releaseSpin(){
   state.spinning = false;
+  if (state.safetyTimer) { clearTimeout(state.safetyTimer); state.safetyTimer = null; }
   var sb = $('ol-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
 }
 
