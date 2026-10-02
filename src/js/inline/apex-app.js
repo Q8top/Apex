@@ -147,7 +147,8 @@ function initAnnounce(app){
 var APEX_GAMES={
   hot:[
     {id:'lucky-fruit',n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050',img:'/assets/games/lucky-fruit.svg'},
-    {id:'olympus',n:'\u5965\u6797\u5339\u65AF\u4E4B\u95E8',i:'ri-flashlight-fill',c:'#6a3fa8',img:'/assets/games/olympus.svg'}
+    {id:'olympus',n:'\u5965\u6797\u5339\u65AF\u4E4B\u95E8',i:'ri-flashlight-fill',c:'#6a3fa8',img:'/assets/games/olympus.svg'},
+    {id:'sweet',n:'\u751C\u871C\u871C',i:'ri-heart-3-fill',c:'#d63b8a',img:'/assets/games/sweet.svg'}
   ]
 };
 function renderGames(box,catKey){

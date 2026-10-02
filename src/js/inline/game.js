@@ -5,7 +5,8 @@
 /* ---------- 游戏路由 ---------- */
 var GAME_ROUTES = {
   'lucky-fruit': { html: '/slot.html',    symLib: 'SlotSymbols' },
-  'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' }
+  'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' },
+  'sweet':       { html: '/sweet.html',   symLib: 'SweetSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -96,6 +97,46 @@ var GAMES = {
       '最低下注': '¥1',
       '最高下注': '¥100',
       '最大倍率': '×5000（连击）',
+      '上线日期': '2026-10-02'
+    }
+  },
+  'sweet': {
+    name: '甜蜜蜜',
+    sub: 'Cluster Pays · 免费旋转',
+    images: [],
+    intro: '甜蜜蜜是一款 6×5 的 Cluster Pays 老虎机。相邻（水平/垂直）出现 8 个及以上相同符号即形成中奖。中奖符号消失后上方符号下落补位，可连续触发 Tumble 连击。',
+    rules: [
+      '点击 − / + 调整下注金额',
+      '点击「旋转」启动一局',
+      '6 列 × 5 行的网格生成 30 个符号',
+      '相邻（水平/垂直）相同符号 ≥8 个即形成中奖',
+      '中奖符号消失，上方符号下落，顶部补新',
+      '若再次中奖则触发 Tumble 连击',
+      '出现 4 个及以上棒棒糖（Scatter）触发免费旋转',
+      '免费旋转中每次 Tumble 会掉落炸弹倍数（×2 ~ ×100），累加后与本轮赢分相乘'
+    ],
+    prizes: [
+      { symbol: 'candyBlue', mult: '8个×0.25' },
+      { symbol: 'banana', mult: '8个×2' },
+      { symbol: 'plum', mult: '8个×10' }
+    ],
+    paytable: [
+      { symbol: 'candyBlue', mult: '8-9个×0.25 · 10-11个×0.75 · 12-30个×2' },
+      { symbol: 'candyGreen', mult: '8-9个×0.4 · 10-11个×0.9 · 12-30个×4' },
+      { symbol: 'candyPurple', mult: '8-9个×0.5 · 10-11个×1 · 12-30个×5' },
+      { symbol: 'candyRed', mult: '8-9个×0.8 · 10-11个×1.2 · 12-30个×8' },
+      { symbol: 'watermelon', mult: '8-9个×5 · 10-11个×15 · 12-30个×40' },
+      { symbol: 'plum', mult: '8-9个×10 · 10-11个×25 · 12-30个×50' },
+      { symbol: 'lollipop', mult: '4/5/6 个 → 免费旋转 10/12/15 次' }
+    ],
+    info: {
+      '游戏类型': 'Cluster Pays',
+      '游戏网格': '6 × 5',
+      '最小 cluster': '8 个',
+      '符号数量': '12 种',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '免费旋转': '支持',
       '上线日期': '2026-10-02'
     }
   }

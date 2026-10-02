@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="sw-bg" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/>
+    </radialGradient>
+    <radialGradient id="sw-pink" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#ffb0d8"/><stop offset="70%" stop-color="#d63b8a"/><stop offset="100%" stop-color="#8a1e5c"/>
+    </radialGradient>
+    <radialGradient id="sw-yellow" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fff2a0"/><stop offset="70%" stop-color="#f0c33e"/><stop offset="100%" stop-color="#a07020"/>
+    </radialGradient>
+  </defs>
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#sw-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(214,59,138,.35)" stroke-width="1"/>
+  <g transform="translate(100,100) scale(0.58) translate(-100,-100)">
+    <!-- 大棒棒糖 -->
+    <rect x="94" y="100" width="12" height="58" rx="6" fill="#fff" stroke="#0a0a0a" stroke-width="2"/>
+    <circle cx="100" cy="72" r="46" fill="url(#sw-pink)" stroke="#0a0a0a" stroke-width="3"/>
+    <path d="M100 72 Q100 42 128 52 Q138 78 110 88 Q84 94 82 72" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+    <circle cx="100" cy="72" r="7" fill="#fff" stroke="#0a0a0a" stroke-width="2.5"/>
+    <!-- 两侧小糖果 -->
+    <rect x="32" y="120" width="32" height="20" rx="8" fill="url(#sw-yellow)" stroke="#0a0a0a" stroke-width="2"/>
+    <path d="M20 130 L30 122 L30 138 Z" fill="url(#sw-yellow)" stroke="#0a0a0a" stroke-width="1.6"/>
+    <path d="M76 130 L66 122 L66 138 Z" fill="url(#sw-yellow)" stroke="#0a0a0a" stroke-width="1.6"/>
+  </g>
+</svg>

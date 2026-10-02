@@ -117,3 +117,6 @@
 
 /olympus.html
   Cache-Control: no-store
+
+/sweet.html
+  Cache-Control: no-store
