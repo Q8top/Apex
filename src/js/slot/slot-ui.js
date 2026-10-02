@@ -329,9 +329,9 @@ function setupModeUI(){
   var ma=$('btn-mode-action'); if (!ma) return;
   ma.style.display='';
   var ic = MODE==='demo'
-    ? '<svg class="foot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>'
-    : '<svg class="foot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>';
-  ma.innerHTML = ic + '<span>' + (MODE==='demo' ? '重置' : '充值') + '</span>';
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20M6 14h2"/></svg>';
+  ma.innerHTML = ic + '<span>' + (MODE==='demo' ? '重置余额' : '充值余额') + '</span>';
   var brand=document.querySelector('.brand');
   if (brand && MODE==='demo') brand.textContent='幸运水果 · 试玩';
 }
