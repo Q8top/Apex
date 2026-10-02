@@ -5,18 +5,11 @@ var ctx = null, master = null, comp = null, reverb = null, revGain = null, dryGa
 var enabled = true, VOL = 0.75;
 
 function init(){
-  // iOS 16.4+：绕过静音开关
-  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
-  if (ctx) {
-    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
-    return true;
-  }
+  if (ctx) return true;
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ctx = new AC();
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
-    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
 
     master = ctx.createGain(); master.gain.value = VOL;
     comp = ctx.createDynamicsCompressor();

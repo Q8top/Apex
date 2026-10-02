@@ -346,16 +346,7 @@ function actionMode(){
 }
 
 /* 绑定 */
-var _audioWarmed = false;
-function warmupAudio(){
-  if (_audioWarmed) return;
-  _audioWarmed = true;
-  safeAudio(A.init, "warmup");
-}
 function bind(){
-  document.addEventListener("pointerdown", warmupAudio, { capture: true, passive: true });
-  document.addEventListener("touchstart", warmupAudio, { capture: true, passive: true });
-  document.addEventListener("click", warmupAudio, { capture: true });
   $('ol-bet-minus').addEventListener('click', function(){ changeBet(-1); });
   $('ol-bet-plus').addEventListener('click', function(){ changeBet(1); });
   $('ol-spin').addEventListener('click', doSpin);
