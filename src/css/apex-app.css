@@ -758,3 +758,54 @@
   justify-content: center !important;
   margin: 0 !important;
 }
+
+/* ============================================================
+   Fix v8: 游戏卡片严格对齐（绝对尺寸锁定）
+   ============================================================ */
+.apex-game-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px 10px !important;
+  align-items: start !important;
+}
+.apex-game-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  height: auto !important;
+}
+.apex-game-cover {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  flex: none !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), inset 0 0 0 1px #ececee !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.apex-game-cover > svg,
+.apex-game-cover > img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+.apex-game-name {
+  font-size: 11.5px !important;
+  height: 16px !important;
+  line-height: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #18181b !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}

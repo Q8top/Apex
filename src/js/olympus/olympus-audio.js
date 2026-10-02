@@ -234,8 +234,6 @@ var API = {
     stringPad(329.63, .8, .06, t + .12);
     // 上升箭头
     tone(880, .35, .06, t + .2, 'sine', 1760, true);
-    // 30% 概率随机喊 "Oh Zeus!"
-    if (rand01() < 0.3) setTimeout(speakZeus, 200);
   },
 
   /* 停列：FM 金属咔 + 短促弦乐 */
@@ -293,8 +291,6 @@ var API = {
     });
     // 金币雨
     coinDrop(20, t + .5);
-    // 大赢喊 "Oh Zeus!"
-    setTimeout(speakZeus, 400);
   },
 
   lose: function(){
