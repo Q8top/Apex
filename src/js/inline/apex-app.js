@@ -150,7 +150,8 @@ var APEX_GAMES={
     {id:'olympus',n:'\u5965\u6797\u5339\u65AF\u4E4B\u95E8',i:'ri-flashlight-fill',c:'#6a3fa8',img:'/assets/games/olympus.svg'},
     {id:'sweet',n:'\u751C\u871C\u871C',i:'ri-heart-3-fill',c:'#d63b8a',img:'/assets/games/sweet.svg'},
     {id:'sugar',n:'\u7CD6\u679C\u72C2\u6B22',i:'ri-leaf-fill',c:'#ff4d94',img:'/assets/games/sugar.svg'},
-    {id:'starlight',n:'\u661F\u5149\u516C\u4E3B',i:'ri-star-fill',c:'#c54f9a',img:'/assets/games/starlight.svg'}
+    {id:'starlight',n:'\u661F\u5149\u516C\u4E3B',i:'ri-star-fill',c:'#c54f9a',img:'/assets/games/starlight.svg'},
+    {id:'bigbass',n:'\u5927\u9C7C\u5927\u4EA8',i:'ri-anchor-fill',c:'#2a6da8',img:'/assets/games/bigbass.svg'}
   ]
 };
 function renderGames(box,catKey){

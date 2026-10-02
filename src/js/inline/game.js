@@ -8,7 +8,8 @@ var GAME_ROUTES = {
   'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' },
   'sweet':       { html: '/sweet.html',   symLib: 'SweetSymbols' },
   'sugar':       { html: '/sugar.html',   symLib: 'SugarSymbols' },
-  'starlight':   { html: '/starlight.html', symLib: 'StarlightSymbols' }
+  'starlight':   { html: '/starlight.html', symLib: 'StarlightSymbols' },
+  'bigbass':     { html: '/bigbass.html',   symLib: 'BigBassSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -239,6 +240,51 @@ var GAMES = {
       '最高下注': '¥100',
       '免费旋转': '支持（4+ 星星）',
       '最大倍率': '×5000（连击）',
+      '上线日期': '2026-10-02'
+    }
+  },
+  'bigbass': {
+    name: '大鱼大亨',
+    sub: '线式老虎机 · 渔民收集 · 免费旋转',
+    images: [],
+    intro: '大鱼大亨是一款 5×3 线式老虎机。共 10 条固定中奖线，左起连续 3/4/5 个相同符号即中奖。渔民（Wild）可替代任意普通符号，同时是 Scatter，3+ 触发免费旋转。免费旋转中，金钱鱼（带金额）落地，渔民落地时收集它们。',
+    rules: [
+      '点击 − / + 调整下注金额',
+      '点击「旋转」启动一局',
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线，左起连续 3/4/5 个相同符号即中奖',
+      '渔民（Wild）可替代任意普通符号',
+      '出现 3/4/5 个渔民 → 免费旋转 10/15/20 次',
+      '免费旋转中金钱鱼随机落地，带金额 ×0.2 ~ ×2000 线注',
+      '每次 spin 落地的渔民会收集该 spin 所有金钱鱼金额',
+      '免费旋转分 3 档：收集倍数 ×1 / ×2 / ×3，4 个渔民升一档 +10 次'
+    ],
+    prizes: [
+      { symbol: 'ten', mult: '3个×0.2' },
+      { symbol: 'bass', mult: '3个×10' },
+      { symbol: 'fisherman', mult: '3个→免费旋转 10 次' }
+    ],
+    paytable: [
+      { symbol: 'ten',   mult: '3个×0.2 · 4个×0.5 · 5个×2' },
+      { symbol: 'jack',  mult: '3个×0.2 · 4个×0.5 · 5个×2' },
+      { symbol: 'queen', mult: '3个×0.5 · 4个×1 · 5个×5' },
+      { symbol: 'king',  mult: '3个×0.5 · 4个×1 · 5个×5' },
+      { symbol: 'ace',   mult: '3个×1 · 4个×2 · 5个×10' },
+      { symbol: 'fishingRod', mult: '3个×1 · 4个×2.5 · 5个×15' },
+      { symbol: 'tackleBox',  mult: '3个×2 · 4个×10 · 5个×40' },
+      { symbol: 'dragonfly',  mult: '3个×5 · 4个×15 · 5个×75' },
+      { symbol: 'bass',       mult: '3个×10 · 4个×50 · 5个×200' },
+      { symbol: 'fisherman',  mult: 'Wild/Scatter · 3/4/5 个 → 10/15/20 免费旋转' },
+      { symbol: 'moneyFish',  mult: '免费旋转中掉落 · ×0.2 ~ ×2000 · 渔民收集' }
+    ],
+    info: {
+      '游戏类型': '线式老虎机',
+      '游戏网格': '5 × 3',
+      '中奖线': '10 条',
+      '符号数量': '11 种',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '免费旋转': '支持（3+渔民）',
       '上线日期': '2026-10-02'
     }
   }

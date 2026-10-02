@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="bb2-bg" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/>
+    </radialGradient>
+    <linearGradient id="bb2-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c9e6ff"/><stop offset="55%" stop-color="#5b9cd6"/><stop offset="100%" stop-color="#1e4a7a"/>
+    </linearGradient>
+    <radialGradient id="bb2-fish" cx="40%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffe8a0"/><stop offset="55%" stop-color="#e8b840"/><stop offset="100%" stop-color="#8a5a08"/>
+    </radialGradient>
+  </defs>
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#bb2-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(42,109,168,.35)" stroke-width="1"/>
+  <g transform="translate(100,100) scale(0.82) translate(-100,-100)">
+    <ellipse cx="88" cy="106" rx="46" ry="26" fill="url(#bb2-water)" stroke="#0a0a0a" stroke-width="3"/>
+    <path d="M134 106 L158 88 L154 106 L158 124 Z" fill="url(#bb2-water)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+    <circle cx="62" cy="100" r="4.5" fill="#0a0a0a"/>
+    <circle cx="63.5" cy="98.5" r="1.5" fill="#fff"/>
+    <path d="M74 114 Q80 120 86 114" stroke="#0a0a0a" stroke-width="2" fill="none"/>
+    <path d="M52 88 L62 98 M84 84 L90 94 M100 86 L106 94" stroke="#0a0a0a" stroke-width="1.4" opacity=".35"/>
+    <circle cx="118" cy="60" r="17" fill="url(#bb2-fish)" stroke="#0a0a0a" stroke-width="2.4"/>
+    <path d="M135 60 L148 50 L146 60 L148 70 Z" fill="url(#bb2-fish)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="111" cy="55" r="2.5" fill="#0a0a0a"/>
+    <path d="M56 66 L44 50" stroke="#8a5a38" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 50 L44 62 Q50 68 56 62" stroke="#0a0a0a" stroke-width="1" fill="none"/>
+  </g>
+</svg>
