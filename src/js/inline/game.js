@@ -141,9 +141,11 @@ function bindEvents() {
     saveFav(arr); updateFavUI();
   });
   document.getElementById('gm-support').addEventListener('click', function(){ alert('客服功能开发中'); });
-  document.getElementById('gm-demo').addEventListener('click', function(){ alert('试玩功能开发中'); });
+  document.getElementById('gm-demo').addEventListener('click', function(){
+    location.href = '/slot.html?mode=demo';
+  });
   document.getElementById('gm-start').addEventListener('click', function(){
-    location.href = '/slot.html';
+    location.href = '/slot.html?mode=real';
   });
   document.getElementById('gm-more').addEventListener('click', function(){ alert('更多操作开发中'); });
   var back = document.getElementById('gm-back');
