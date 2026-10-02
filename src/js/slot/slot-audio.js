@@ -49,7 +49,9 @@ function noise(dur, vol, when) {
   var len = Math.floor(ctx.sampleRate * dur);
   var buf = ctx.createBuffer(1, len, ctx.sampleRate);
   var d = buf.getChannelData(0);
-  for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+  var rnd = new Uint32Array(len);
+  crypto.getRandomValues(rnd);
+  for (var i = 0; i < len; i++) d[i] = (rnd[i] / 2147483648 - 1) * (1 - i / len);
   var src = ctx.createBufferSource();
   src.buffer = buf;
   var g = ctx.createGain();
