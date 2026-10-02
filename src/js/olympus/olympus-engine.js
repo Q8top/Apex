@@ -117,16 +117,6 @@ function evaluate(grid, totalBet){
       total += amt;
     }
   });
-  // Zeus scatter 单独算
-  var zeus = findZeus(grid);
-  if (zeus.length >= 4) {
-    var zMult = C.ZEUS_PAYOUTS[Math.min(zeus.length, 6)] || 0;
-    if (zMult > 0) {
-      var zAmt = zMult * cellBet * _payScale;
-      wins.push({ symbol: 'zeus', size: zeus.length, cells: zeus, multiplier: zMult, amount: zAmt, isScatter: true });
-      total += zAmt;
-    }
-  }
   return { wins: wins, totalWin: total };
 }
 

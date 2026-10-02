@@ -21,11 +21,11 @@ var SYMBOLS = {
 /* 出现权重（越高越常见） */
 var WEIGHTS_REAL = {
   gemBlue: 50, gemGreen: 40, gemYellow: 22, gemPurple: 12, gemRed: 6,
-  cup: 4, ring: 2, hourglass: 1.2, crown: 0.6, zeus: 0.4
+  cup: 4, ring: 2, hourglass: 1.2, crown: 0.6, zeus: 4
 };
 var WEIGHTS_DEMO = {
   gemBlue: 45, gemGreen: 38, gemYellow: 22, gemPurple: 13, gemRed: 8,
-  cup: 5, ring: 2.5, hourglass: 1.8, crown: 1, zeus: 0.8
+  cup: 5, ring: 2.5, hourglass: 1.8, crown: 1, zeus: 5
 };
 
 /* Cluster 赔付（值 = × 总下注 / 20 的倍数）
@@ -61,7 +61,7 @@ var CONFIG = {
   betSteps: [1, 2, 5, 10, 20, 50, 100],
   defaultBetIndex: 3,
   baseCellBet: 20,
-  payoutScaleReal: 9.8,
+  payoutScaleReal: 11.0,
   payoutScaleDemo: 19,
   reelStopDelayMs: 140,
   minSpinMs: 550
