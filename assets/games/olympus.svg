@@ -1,32 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 30 140 140" width="200" height="200">
   <defs>
-    <radialGradient id="ol-bg3" cx="50%" cy="35%" r="75%">
+    <radialGradient id="ol-bg4" cx="50%" cy="35%" r="75%">
       <stop offset="0%" stop-color="#7a52c0"/>
       <stop offset="100%" stop-color="#2a1650"/>
     </radialGradient>
-    <linearGradient id="ol-gold3" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="ol-gold4" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f7e08a"/>
       <stop offset="100%" stop-color="#b88b24"/>
     </linearGradient>
   </defs>
 
-  <!-- 圆角正方形底（占满画布） -->
-  <rect x="30" y="30" width="140" height="140" rx="32" fill="url(#ol-bg3)"/>
-  <rect x="30.5" y="30.5" width="139" height="139" rx="31.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="38" y="38" width="124" height="124" rx="24" fill="none" stroke="rgba(240,200,80,.4)" stroke-width="1.2"/>
+  <!-- 紫底卡片：内缩 8% 与 lucky-fruit 视觉一致 -->
+  <rect x="42" y="42" width="116" height="116" rx="26" fill="url(#ol-bg4)"/>
+  <rect x="42.5" y="42.5" width="115" height="115" rx="25.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="48" y="48" width="104" height="104" rx="20" fill="none" stroke="rgba(240,200,80,.35)" stroke-width="1"/>
 
-  <!-- 金色闪电（大，占满画面中心） -->
-  <path d="M112 40 L68 106 L96 106 L86 168 L132 100 L102 100 Z"
-        fill="url(#ol-gold3)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
-  <path d="M112 40 L78 94 L90 94" fill="none" stroke="#fff8d0" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+  <!-- 金色闪电（缩放到紫底中央） -->
+  <path d="M108 54 L74 104 L94 104 L86 150 L120 98 L98 98 Z"
+        fill="url(#ol-gold4)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M108 54 L82 96 L92 96" fill="none" stroke="#fff8d0" stroke-width="2" stroke-linecap="round" opacity=".8"/>
 
   <!-- 王冠（顶部） -->
-  <path d="M60 62 L60 48 L70 56 L82 44 L94 56 L104 48 L104 62 Z"
-        fill="url(#ol-gold3)" stroke="#0a0a0a" stroke-width="1.8" stroke-linejoin="round"/>
-  <circle cx="82" cy="56" r="1.8" fill="#e5484d" stroke="#0a0a0a" stroke-width=".8"/>
+  <path d="M64 72 L64 60 L72 66 L82 56 L92 66 L100 60 L100 72 Z"
+        fill="url(#ol-gold4)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="82" cy="66" r="1.6" fill="#e5484d" stroke="#0a0a0a" stroke-width=".7"/>
 
   <!-- 星点 -->
-  <circle cx="140" cy="58" r="2" fill="#f7e08a"/>
-  <circle cx="54" cy="150" r="1.6" fill="#f7e08a" opacity=".85"/>
-  <circle cx="146" cy="140" r="1.4" fill="#f7e08a" opacity=".7"/>
+  <circle cx="132" cy="70" r="1.6" fill="#f7e08a"/>
+  <circle cx="60" cy="142" r="1.4" fill="#f7e08a" opacity=".85"/>
 </svg>
