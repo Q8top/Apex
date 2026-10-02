@@ -107,6 +107,24 @@ function noise(dur, vol, when, centerF, Q){
   src.start(t);
 }
 
+/* 免费旋转背景音：循环激烈 chord */
+var _fsBgTimer = null;
+function fsBgStart(){
+  if (_fsBgTimer) return;
+  if (!ctx) init(); if (!ctx) return;
+  function chord(){
+    if (!enabled) return;
+    var t = now();
+    [330, 440, 554, 659].forEach(function(f, i){ pad(f, .55, .05, t + i*.02); });
+    ping(1320, .15, .04, t, "sine", true);
+  }
+  chord();
+  _fsBgTimer = setInterval(chord, 700);
+}
+function fsBgStop(){
+  if (_fsBgTimer) { clearInterval(_fsBgTimer); _fsBgTimer = null; }
+}
+
 var API = {
   init: init,
   enabled: function(v){
@@ -176,7 +194,18 @@ var API = {
     });
     [523, 659, 784, 1047].forEach(function(f){ pad(f, 1.8, .09, t + .55); });
   },
-  lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(330, .15, .05, t+.1, 'sine', true); }
+  lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(330, .15, .05, t+.1, 'sine', true); },
+  fsBgStart: fsBgStart,
+  fsBgStop: fsBgStop,
+  fsSummary: function(){
+    if (!ctx) init(); var t = now();
+    noise(.8, .18, t, 600, 1);
+    [523, 659, 784, 1047, 1319, 1568, 2093, 2637].forEach(function(f, i){
+      pad(f, .55, .09, t + i*.07);
+      ping(f*2, .18, .10, t + i*.07, "sine", true);
+    });
+    [523, 659, 784, 1047].forEach(function(f){ pad(f, 2, .09, t + .55); });
+  }
 };
 
 window.SweetAudio = API;

@@ -102,16 +102,30 @@ function renderWin(amount, combo){
 }
 
 /* 免费旋转横幅 */
-function showFsBanner(remaining){
+function showFsBanner(remaining, mult){
   var b = $('sw-freespin-banner');
   if (!b) return;
   if (remaining > 0) {
     b.hidden = false;
     $('sw-fs-count').textContent = remaining;
+    var m = $('sw-fs-mult');
+    if (m) m.textContent = mult ? '· ×' + mult : '';
   } else {
     b.hidden = true;
+    var m2 = $('sw-fs-mult');
+    if (m2) m2.textContent = '';
   }
 }
+
+/* 免费旋转总赢分 banner */
+function showFsSummary(amount){
+  var el = $('sw-fs-summary');
+  if (!el) return;
+  $('sw-fs-total').textContent = fmt(amount);
+  el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 3000);
+}
+
 
 /* 炸弹飘入 */
 function spawnBombs(bombs, stage){
@@ -126,7 +140,8 @@ function spawnBombs(bombs, stage){
     el.style.top = gy + '%';
     stage.appendChild(el);
     setTimeout(function(){ el.classList.add('show'); }, i * 100);
-    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 2200 + i * 100);
+    safeAudio(A.bomb, 'bomb');
+    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 2600 + i * 100);
   });
 }
 
@@ -212,12 +227,17 @@ function doSpin(){
 /* 免费旋转 */
 function runFreeSpins(b){
   state.freeSpinMode = true;
+  var stage = document.querySelector('.sw-stage');
+  if (stage) stage.classList.add('fs-mode');
+  safeAudio(A.fsBgStart, 'fsBgStart');
   var fsResult;
   try {
     fsResult = E.playFreeSpins(b);
   } catch(e) {
     console.error('[Sweet] freespin error:', e);
     state.freeSpinMode = false;
+    if (stage) stage.classList.remove('fs-mode');
+    safeAudio(A.fsBgStop, 'fsBgStop');
     releaseSpin();
     return;
   }
@@ -227,8 +247,11 @@ function runFreeSpins(b){
   function nextFs(){
     if (idx >= spins.length) {
       state.freeSpinMode = false;
+      if (stage) stage.classList.remove('fs-mode');
+      safeAudio(A.fsBgStop, 'fsBgStop');
       showFsBanner(0);
-      finish(totalWin);
+      if (totalWin > 0) { safeAudio(A.fsSummary, 'fsSummary'); showFsSummary(totalWin); }
+      setTimeout(function(){ finish(totalWin); }, totalWin > 0 ? 1800 : 200);
       return;
     }
     var s = spins[idx];
@@ -246,6 +269,7 @@ function runFreeSpins(b){
           if (rd.bombs && rd.bombs.length) spawnBombs(rd.bombs, document.querySelector('.sw-stage'));
           shown += rd.roundWin;
           renderWin(shown, rd.bombMult ? '×' + rd.bombMult + ' 炸弹' : '');
+          showFsBanner(s.remaining, rd.bombMult);
           safeAudio(A.tumble, 'tumble');
           if (rd.bombs && rd.bombs.length) safeAudio(A.bomb, 'bomb');
           setTimeout(function(){
