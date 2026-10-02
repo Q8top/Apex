@@ -135,7 +135,7 @@ function doSpin(){
 
   state.spinning = true;
   var sb = $('ol-spin'); sb.disabled = true; sb.classList.add('spinning');
-  A.spinStart();
+  safeAudio(A.init, 'init'); safeAudio(A.spinStart, 'spinStart');
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
     if (state.spinning) {
@@ -349,8 +349,8 @@ function actionMode(){
 function bind(){
   $('ol-bet-minus').addEventListener('click', function(){ changeBet(-1); });
   $('ol-bet-plus').addEventListener('click', function(){ changeBet(1); });
-  $('ol-spin').addEventListener('click', function(){ A.init(); doSpin(); });
-  $('ol-auto').addEventListener('click', function(){ A.init(); if (state.autoOn) stopAuto(); else startAuto(); });
+  $('ol-spin').addEventListener('click', doSpin);
+  $('ol-auto').addEventListener('click', function(){ if (state.autoOn) stopAuto(); else startAuto(); });
   $('ol-history').addEventListener('click', showHistory);
   $('ol-paytable').addEventListener('click', showPaytable);
   $('ol-menu').addEventListener('click', actionMode);
