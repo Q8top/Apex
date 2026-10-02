@@ -20,7 +20,7 @@
   <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
   <!-- 内容缩到 60% 居中 -->
-  <g transform="translate(100,100) scale(0.58) translate(-100,-100)">
+  <g transform="translate(100,100) scale(0.85) translate(-100,-100)">
     <path d="M52 62 L148 62 L148 76 L52 76 Z" fill="#0a0a0a"/>
     <circle cx="62" cy="69" r="2.4" fill="#4ade80"/>
     <circle cx="72" cy="69" r="2.4" fill="#e8c25c"/>

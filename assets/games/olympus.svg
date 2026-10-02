@@ -21,7 +21,7 @@
   <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
   <!-- 内容缩到 58% 居中 -->
-  <g transform="translate(100,100) scale(0.58) translate(-100,-100)">
+  <g transform="translate(100,100) scale(0.85) translate(-100,-100)">
     <!-- 紫色圆盘 -->
     <circle cx="100" cy="110" r="58" fill="url(#ol-disc)" stroke="#0a0a0a" stroke-width="3"/>
     <circle cx="100" cy="110" r="50" fill="none" stroke="rgba(245,217,122,.4)" stroke-width="1.4"/>
