@@ -172,6 +172,7 @@ function pickMultiplier(){
 function playFullSpin(totalBet){
   var grid = spin();
   var rounds = [];
+  var scatterCount = findZeus(grid).length;
   var totalWin = 0;
 
   for (var t = 0; t < C.CONFIG.maxTumbles; t++) {
@@ -193,7 +194,7 @@ function playFullSpin(totalBet){
 
     grid = tumble(grid, winCells);
   }
-  return { rounds: rounds, totalWin: totalWin, finalGrid: grid };
+  return { rounds: rounds, totalWin: totalWin, finalGrid: grid, scatterCount: scatterCount };
 }
 
 function setMode(m){ _weights = (m === 'demo') ? C.WEIGHTS_DEMO : C.WEIGHTS_REAL; _payScale = (m === 'demo') ? C.CONFIG.payoutScaleDemo : C.CONFIG.payoutScaleReal; _pool = null; }
@@ -208,8 +209,108 @@ function spinDemo(betAmount){
   return best;
 }
 
+/* Zeus 倍数抽取 */
+var _zmPool = null;
+function pickZeusMult(){
+  if (!_zmPool) {
+    var arr = [], total = 0;
+    for (var i = 0; i < C.ZEUS_MULT_VALUES.length; i++) {
+      var v = C.ZEUS_MULT_VALUES[i], w = C.ZEUS_MULT_WEIGHTS[v] || 0;
+      total += w; arr.push({ v: v, cum: total });
+    }
+    _zmPool = { arr: arr, total: total };
+  }
+  var t = randFloat() * _zmPool.total, a = _zmPool.arr;
+  for (var j = 0; j < a.length; j++) if (t < a[j].cum) return a[j].v;
+  return a[a.length - 1].v;
+}
+function pickZeusCount(){
+  var r = randFloat();
+  if (r < 0.45) return 0;
+  if (r < 0.75) return 1;
+  if (r < 0.92) return 2;
+  return C.ZEUS_MAX_PER_SPIN || 3;
+}
+/* 在 grid 上随机落 n 个 Zeus，返回 [{r,c,mult}] */
+function dropZeus(grid, n){
+  var placed = [];
+  var tries = 0;
+  while (placed.length < n && tries < 30) {
+    tries++;
+    var r = Math.floor(randFloat() * C.CONFIG.rows);
+    var c = Math.floor(randFloat() * C.CONFIG.cols);
+    if (grid[r][c] === "zeus") continue;
+    var ok = false;
+    for (var k = 0; k < placed.length; k++) {
+      if (placed[k].r === r && placed[k].c === c) { ok = false; break; }
+    }
+    var dup = false;
+    for (var k2 = 0; k2 < placed.length; k2++) if (placed[k2].r === r && placed[k2].c === c) dup = true;
+    if (dup) continue;
+    var mult = pickZeusMult();
+    grid[r][c] = "zeus";
+    placed.push({ r: r, c: c, mult: mult });
+  }
+  return placed;
+}
+/* 完整免费旋转 */
+function playFreeSpins(totalBet){
+  var remaining = 15;
+  var totalWin = 0;
+  var spins = [];
+  var spinIdx = 0;
+  while (remaining > 0 && spinIdx < 100) {
+    remaining--;
+    spinIdx++;
+    var grid = spin();
+    var rounds = [];
+    var spinWin = 0;
+    var zeusMult = 0;
+    var zeusDrops = [];
+    // 初始 drop（0-3 个 Zeus）
+    var initN = pickZeusCount();
+    var initDrops = dropZeus(grid, initN);
+    initDrops.forEach(function(d){ zeusMult += d.mult; zeusDrops.push(d); });
+    // Tumble 循环
+    for (var t = 0; t < C.CONFIG.maxTumbles; t++) {
+      var r = evaluate(grid, totalBet);
+      if (r.wins.length === 0) {
+        if (t === 0) rounds.push({ grid: grid, wins: [], roundWin: 0, multiplier: 0 });
+        break;
+      }
+      var roundWin = r.totalWin;
+      spinWin += roundWin;
+      var winCells = [];
+      r.wins.forEach(function(w){ w.cells.forEach(function(p){ winCells.push(p); }); });
+      rounds.push({ grid: grid, wins: r.wins, roundWin: roundWin, multiplier: 1 });
+      grid = tumble(grid, winCells);
+      // 额外 drop Zeus
+      if (randFloat() < (C.ZEUS_DROP_CHANCE || 0.15)) {
+        var extraN = (randFloat() < 0.3) ? 2 : 1;
+        var extraDrops = dropZeus(grid, extraN);
+        extraDrops.forEach(function(d){ zeusMult += d.mult; zeusDrops.push(d); });
+      }
+    }
+    var fsWin = spinWin * zeusMult;
+    totalWin += fsWin;
+    spins.push({
+      idx: spinIdx,
+      remaining: remaining,
+      grid: grid,
+      rounds: rounds,
+      win: fsWin,
+      baseWin: spinWin,
+      zeusMult: zeusMult,
+      zeusDrops: zeusDrops
+    });
+  }
+  return { spins: spins, totalWin: totalWin, count: spinIdx };
+}
+
 window.OlympusEngine = {
   spin: spin,
+  playFreeSpins: playFreeSpins,
+  pickZeusMult: pickZeusMult,
   evaluate: evaluate,
   findClusters: findClusters,
   tumble: tumble,

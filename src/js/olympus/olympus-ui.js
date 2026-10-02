@@ -157,6 +157,7 @@ function doSpin(){
   }
 
   var firstGrid = result.rounds.length ? result.rounds[0].grid : result.finalGrid;
+  var triggeredFS = (result.scatterCount || 0) >= 4;
   var baseDelay = 500, stagger = 120, done = 0;
   [0,1,2,3,4,5].forEach(function(c){
     var dur = baseDelay + c * stagger;
@@ -164,7 +165,15 @@ function doSpin(){
       done++;
       if (done === 6) {
         paintGrid(firstGrid, false);
-        setTimeout(function(){ playRounds(result, b); }, 250);
+        setTimeout(function(){
+          if (triggeredFS) {
+            safeAudio(A.winBig, "fsTrigger");
+            toast("🎉 免费旋转触发！15 次", 2200);
+            setTimeout(function(){ runOlympusFreeSpins(b); }, 900);
+          } else {
+            playRounds(result, b);
+          }
+        }, 250);
       }
     });
   });
@@ -320,6 +329,72 @@ function showCelebrate(ratio, totalWin){
   el.classList.toggle("mega", ratio >= 50);
   el.classList.add("show");
   setTimeout(function(){ el.classList.remove("show", "mega"); }, 2400);
+}
+
+function showOlFsBanner(remaining, mult){
+  var b = $("ol-freespin-banner");
+  if (!b) return;
+  if (remaining > 0) {
+    b.hidden = false;
+    $("ol-fs-count").textContent = remaining;
+    var m = $("ol-fs-mult");
+    if (m) m.textContent = mult ? "×" + mult : "";
+  } else {
+    b.hidden = true;
+    var m2 = $("ol-fs-mult");
+    if (m2) m2.textContent = "";
+  }
+}
+function showOlFsSummary(amount){
+  var el = $("ol-fs-summary");
+  if (!el) return;
+  $("ol-fs-total").textContent = fmt(amount);
+  el.classList.add("show");
+  setTimeout(function(){ el.classList.remove("show"); }, 3000);
+}
+function runOlympusFreeSpins(b){
+  var stage = document.querySelector(".ol-stage");
+  if (stage) stage.classList.add("fs-mode");
+  var fsResult;
+  try { fsResult = E.playFreeSpins(b); }
+  catch(e){ console.error("[Olympus] fs error:", e); if (stage) stage.classList.remove("fs-mode"); releaseSpin(); return; }
+  var spins = fsResult.spins;
+  var idx = 0;
+  var cumMult = 0;
+  function nextFs(){
+    if (idx >= spins.length) {
+      if (stage) stage.classList.remove("fs-mode");
+      showOlFsBanner(0);
+      if (fsResult.totalWin > 0) { safeAudio(A.winBig, "fsWin"); showOlFsSummary(fsResult.totalWin); }
+      setTimeout(function(){ finish(fsResult.totalWin); }, fsResult.totalWin > 0 ? 1800 : 200);
+      return;
+    }
+    var sp = spins[idx]; idx++;
+    cumMult = sp.zeusMult;
+    showOlFsBanner(sp.remaining, cumMult);
+    paintGrid(sp.grid, false);
+    if (sp.zeusDrops && sp.zeusDrops.length) { safeAudio(A.tumble, "zeus"); spawnZeusMult(sp.zeusDrops, stage); }
+    if (sp.win > 0) renderWin(sp.win, "×" + sp.zeusMult + " 倍");
+    setTimeout(nextFs, sp.win > 0 ? 1600 : 800);
+  }
+  nextFs();
+}
+
+function spawnZeusMult(drops, stage){
+  if (!drops || !drops.length) return;
+  drops.forEach(function(d, i){
+    var el = document.createElement("div");
+    el.className = "ol-mult";
+    el.textContent = "×" + d.mult;
+    var gx = (d.c + 0.5) / C.CONFIG.cols * 100;
+    var gy = (d.r + 0.5) / C.CONFIG.rows * 100;
+    el.style.left = gx + "%";
+    el.style.top = gy + "%";
+    stage.appendChild(el);
+    setTimeout(function(){ el.classList.add("show"); }, i * 100);
+    setTimeout(function(){ el.classList.add("fly"); }, i * 100 + 300);
+    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, i * 100 + 1400);
+  });
 }
 
 function openModal(t, h){

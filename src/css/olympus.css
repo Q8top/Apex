@@ -390,3 +390,90 @@ html, body {
   55%  { transform: scale(1.13); }
   100% { transform: scale(1); }
 }
+
+/* ============================================================
+   免费旋转（Olympius）
+   ============================================================ */
+.ol-freespin-banner {
+  position: absolute;
+  top: 8px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(180deg, #f5d97a 0%, #c9a227 60%, #8a6020 100%);
+  color: #0a0a0a; padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 800; letter-spacing: 2px;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 6px 20px rgba(240,185,41,.8), 0 0 24px rgba(245,217,122,.5);
+  border: 2px solid #fff;
+  z-index: 20;
+  animation: olFsPulse 1.4s ease-in-out infinite;
+}
+.ol-freespin-banner[hidden] { display: none; }
+.ol-fs-count { font-size: 15px; font-weight: 900; }
+.ol-fs-mult {
+  font-size: 14px; font-weight: 900;
+  color: #0a0a0a;
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  min-width: 34px; text-align: center;
+}
+.ol-fs-mult:empty { display: none; }
+@keyframes olFsPulse { 0%,100%{ transform: translateX(-50%) scale(1);} 50%{ transform: translateX(-50%) scale(1.05);} }
+
+/* 免费旋转期间舞台脉冲 */
+.ol-stage.fs-mode {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,220,140,.55) 0%, transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(201,162,39,.5) 0%, transparent 60%),
+    linear-gradient(180deg, #4a2e08 0%, #1a0e02 100%) !important;
+  animation: olStageGlow 2.5s ease-in-out infinite;
+}
+@keyframes olStageGlow {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), 0 24px 48px -16px rgba(120,80,10,.5); }
+  50%      { box-shadow: inset 0 0 0 1px rgba(255,255,255,.2), 0 24px 60px -16px rgba(255,180,50,.7), 0 0 40px rgba(255,180,50,.4); }
+}
+
+/* 总赢分 banner */
+.ol-fs-summary {
+  position: fixed; inset: 0; z-index: 960;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  pointer-events: none; opacity: 0;
+  transition: opacity .3s ease;
+}
+.ol-fs-summary.show { opacity: 1; }
+.ol-fs-summary-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,240,180,.65) 0%, rgba(240,185,41,.35) 30%, transparent 65%);
+  animation: olSumGlow 3s ease-in-out forwards;
+}
+@keyframes olSumGlow {
+  0% { opacity: 0; transform: scale(.6); }
+  30% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+.ol-fs-summary-content {
+  position: relative; text-align: center;
+  animation: olSumPop 3s cubic-bezier(.2,1,.3,1) forwards;
+}
+@keyframes olSumPop {
+  0%   { opacity: 0; transform: scale(.6) translateY(30px); }
+  15%  { opacity: 1; transform: scale(1.08) translateY(0); }
+  25%  { transform: scale(1); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.05) translateY(-10px); }
+}
+.ol-fs-summary-title {
+  font-size: 24px; font-weight: 900; letter-spacing: 6px;
+  background: linear-gradient(180deg, #fff 0%, #f5d97a 40%, #c9a227 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 20px rgba(240,185,41,.9));
+  margin-bottom: 12px; padding-left: 6px;
+}
+.ol-fs-summary-amount {
+  font-size: 52px; font-weight: 900; letter-spacing: -2px;
+  color: #0a0a0a;
+  text-shadow: 0 4px 28px rgba(255,255,255,.95), 0 0 20px rgba(240,185,41,.7), 0 2px 8px rgba(201,162,39,.4);
+  font-variant-numeric: tabular-nums;
+}
