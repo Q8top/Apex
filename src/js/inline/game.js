@@ -149,8 +149,7 @@ function bindEvents() {
   var back = document.getElementById('gm-back');
   if (back) back.addEventListener('click', function(e){
     e.preventDefault();
-    if (history.length > 1) history.back();
-    else location.href = '/';
+    location.href = '/';
   });
 }
 
