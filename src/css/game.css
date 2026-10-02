@@ -552,3 +552,29 @@ a:focus, a:active, a:focus-visible, a:focus-within {
   color: #f0b429 !important;
 }
 .gm-tool.active > i { color: #f0b429 !important; filter: none !important; }
+
+/* ============================================================
+   详情页内嵌符号 SVG
+   ============================================================ */
+.gm-sym-inline {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin: 0 3px;
+}
+.gm-sym-inline > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.gm-prize-icon .gm-sym-inline {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .gm-sym-inline { width: 26px; height: 26px; margin: 0 2px; }
+  .gm-prize-icon .gm-sym-inline { width: 36px; height: 36px; }
+}

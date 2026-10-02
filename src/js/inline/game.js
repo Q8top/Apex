@@ -18,21 +18,21 @@ var GAMES = {
       '中奖金额 = 对应符号赔率 × 单线下注额'
     ],
     prizes: [
-      { icon: '🍒', mult: '×14' },
-      { icon: '🍋', mult: '×22' },
-      { icon: '7️⃣', mult: '×280' }
+      { symbol: 'cherry', mult: '×14' },
+      { symbol: 'lemon', mult: '×22' },
+      { symbol: 'seven', mult: '×280' }
     ],
     paytable: [
-      { combo: '🍒 🍒 🍒', mult: '×14' },
-      { combo: '🍋 🍋 🍋', mult: '×22' },
-      { combo: '🍊 🍊 🍊', mult: '×28' },
-      { combo: '🍇 🍇 🍇', mult: '×42' },
-      { combo: '🍉 🍉 🍉', mult: '×56' },
-      { combo: '🔔 🔔 🔔', mult: '×84' },
-      { combo: 'BAR BAR BAR', mult: '×140' },
-      { combo: '7️⃣ 7️⃣ 7️⃣', mult: '×280' },
-      { combo: '金 7 金 7 金 7', mult: '×700' },
-      { combo: '★ ★ ★（Wild）', mult: '×840' }
+      { symbol: 'cherry', mult: '×14' },
+      { symbol: 'lemon', mult: '×22' },
+      { symbol: 'orange', mult: '×28' },
+      { symbol: 'grape', mult: '×42' },
+      { symbol: 'watermelon', mult: '×56' },
+      { symbol: 'bell', mult: '×84' },
+      { symbol: 'bar', mult: '×140' },
+      { symbol: 'seven', mult: '×280' },
+      { symbol: 'goldenSeven', mult: '×700' },
+      { symbol: 'wild', mult: '×840' }
     ],
     info: {
       '游戏类型': '经典老虎机',
@@ -118,11 +118,24 @@ function render() {
   document.getElementById('gm-sub').textContent = g.sub;
   document.getElementById('gm-intro').textContent = g.intro;
   document.getElementById('gm-rules').innerHTML = g.rules.map(function(r){ return '<li>' + esc(r) + '</li>'; }).join('');
-  document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(p){
-    return '<div class="gm-prize"><div class="gm-prize-icon">' + p.icon + '</div><div class="gm-prize-mult">' + esc(p.mult) + '</div></div>';
+  document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(pr){
+    var svg = (window.SlotSymbols && pr.symbol && window.SlotSymbols[pr.symbol])
+      ? '<span class="gm-sym-inline">' + window.SlotSymbols[pr.symbol]() + '</span>'
+      : (pr.icon || '');
+    return '<div class="gm-prize"><div class="gm-prize-icon">' + svg + '</div>'
+      + '<div class="gm-prize-mult">' + esc(pr.mult) + '</div></div>';
   }).join('');
-  document.getElementById('gm-paytable').innerHTML = g.paytable.map(function(p){
-    return '<tr><td class="gm-combo">' + p.combo + '</td><td>' + esc(p.mult) + '</td></tr>';
+  document.getElementById('gm-paytable').innerHTML = g.paytable.map(function(pt){
+    var symHtml;
+    if (window.SlotSymbols && pt.symbol && window.SlotSymbols[pt.symbol]) {
+      var svg = window.SlotSymbols[pt.symbol]();
+      symHtml = '<span class="gm-sym-inline">' + svg + '</span>'
+              + '<span class="gm-sym-inline">' + svg + '</span>'
+              + '<span class="gm-sym-inline">' + svg + '</span>';
+    } else {
+      symHtml = esc(pt.combo || '');
+    }
+    return '<tr><td class="gm-combo">' + symHtml + '</td><td>' + esc(pt.mult) + '</td></tr>';
   }).join('');
   var infoHtml = '';
   for (var k in g.info) { if (g.info.hasOwnProperty(k)) infoHtml += '<dt>' + esc(k) + '</dt><dd>' + esc(g.info[k]) + '</dd>'; }
