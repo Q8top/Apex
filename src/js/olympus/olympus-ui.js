@@ -135,7 +135,7 @@ function doSpin(){
 
   state.spinning = true;
   var sb = $('ol-spin'); sb.disabled = true; sb.classList.add('spinning');
-  safeAudio(A.init, 'init'); safeAudio(A.spinStart, 'spinStart');
+  safeAudio(A.init, 'init'); A.spinStart(); console.log('[Olympus] spinStart called, ctx state:', A && A._ctxState && A._ctxState());
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
     if (state.spinning) {
@@ -410,6 +410,9 @@ function init(){
     paintGrid(E.spin(), false);
   }
 }
+window.addEventListener('error', function(e){
+  try { if (typeof toast === 'function') toast('JS错误: ' + (e.message || '').slice(0, 60), 5000); } catch(x){}
+});
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 

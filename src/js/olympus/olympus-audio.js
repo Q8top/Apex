@@ -19,7 +19,7 @@ function init(){
     comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.25;
     master.connect(comp); comp.connect(ctx.destination);
 
-    var revLen = Math.floor(ctx.sampleRate * 2.5);
+    var revLen = Math.floor(ctx.sampleRate * 0.9);
     var buf = ctx.createBuffer(2, revLen, ctx.sampleRate);
     for (var ch = 0; ch < 2; ch++) {
       var d = buf.getChannelData(ch);
@@ -35,12 +35,13 @@ function init(){
     reverb.connect(revGain); revGain.connect(master);
     dryGain.connect(master);
     return true;
-  } catch(e){ return false; }
+  } catch(e){ var msg = 'Audio 初始化失败: ' + (e && e.message ? e.message : String(e)); console.error('[OlympusAudio.init]', msg); try { if (typeof alert === 'function') alert(msg); } catch(x){} return false; }
 }
 function now(){ return ctx ? ctx.currentTime : 0; }
 
 function ping(freq, dur, vol, when, type, rev){
-  if (!enabled || !ctx) return;
+  if (!enabled) return;
+  if (!ctx && !init()) { console.error('[OlympusAudio.ping] ctx 初始化失败'); return; }
   var t = when != null ? when : now();
   var o = ctx.createOscillator(), g = ctx.createGain();
   o.type = type || 'sine';
@@ -151,7 +152,7 @@ var API = {
   },
   click: function(){ if (!ctx) init(); var t = now(); fm(2800, 900, 3, .04, .12, t); ping(1600, .03, .08, t+.005); },
   spinStart: function(){
-    if (!ctx) init(); var t = now();
+    if (!ctx) { if (!init()) { console.error('[OlympusAudio.spinStart] ctx 建不起来'); return; } } var t = now();
     pad(220, .8, .07, t); pad(330, .7, .06, t+.06);
     sweep(600, 2400, .4, .14, t);
     fm(2400, 800, 2.5, .12, .16, t, true);
@@ -196,7 +197,8 @@ var API = {
     [523, 659, 784, 1047].forEach(function(f){ pad(f, 1.8, .09, t + .6); });
     coins(16, t + .5);
   },
-  lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(220, .18, .05, t+.1, 'sine', true); }
+  lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(220, .18, .05, t+.1, 'sine', true); },
+  _ctxState: function(){ return ctx ? (ctx.state || '?') : 'null'; }
 };
 
 window.OlympusAudio = API;
