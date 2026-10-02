@@ -245,3 +245,73 @@ html, body {
 .ol-celebrate-amount { font-size: 46px; font-weight: 900; letter-spacing: -1.5px; color: #0a0a0a; text-shadow: 0 4px 24px rgba(255,255,255,.9), 0 2px 8px rgba(240,185,41,.4); }
 .ol-celebrate.mega .ol-celebrate-tier { animation: olMega 1.2s ease-in-out infinite; }
 @keyframes olMega { 0%, 100% { filter: drop-shadow(0 4px 20px rgba(240,185,41,.7)); } 50% { filter: drop-shadow(0 4px 40px rgba(240,185,41,1)); } }
+
+/* ============================================================
+   乘法器飞入动画
+   ============================================================ */
+.ol-mult {
+  position: absolute;
+  z-index: 30;
+  pointer-events: none;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #fff;
+  background: radial-gradient(circle at 50% 35%, #ffe58a 0%, #d9a83e 40%, #8a5a18 100%);
+  border: 2.5px solid #0a0a0a;
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(240,185,41,.65));
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  transition:
+    opacity .22s ease,
+    transform .5s cubic-bezier(.3,1.6,.4,1);
+  font-family: 'Manrope', system-ui, sans-serif;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+.ol-mult.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+/* 飞到中心：整体容器做 translate */
+.ol-mult.fly {
+  transition:
+    opacity .35s ease .2s,
+    transform .9s cubic-bezier(.4,.7,.3,1);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+}
+/* 中心累加显示 */
+.ol-mult-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+  z-index: 35;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: #fff3b8;
+  text-shadow:
+    0 0 20px rgba(240,185,41,.95),
+    0 0 40px rgba(240,185,41,.5),
+    0 4px 12px rgba(0,0,0,.6);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease, transform .45s cubic-bezier(.3,1.4,.4,1);
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+.ol-mult-center.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.ol-mult-center.fade {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.25);
+  transition: opacity .4s ease, transform .4s ease;
+}

@@ -169,6 +169,45 @@ function doSpin(){
 }
 
 /* 逐轮播放（无递归） */
+function spawnMultipliers(rd){
+  var stage = document.querySelector(".ol-stage");
+  if (!stage) return;
+  var mult = rd.multiplier || 0;
+  if (!mult) return;
+  // 根据 mult 拆成 1~2 个虚拟乘法器
+  var parts = [];
+  if (mult <= 25) parts.push(mult);
+  else if (mult <= 100) { parts.push(Math.round(mult/2)); parts.push(mult - Math.round(mult/2)); }
+  else { parts.push(Math.round(mult/2)); parts.push(mult - Math.round(mult/2)); }
+  // 随机位置（stage 内 30%~70% 区域）
+  var cells = [];
+  if (rd.wins) rd.wins.forEach(function(w){ w.cells.forEach(function(p){ cells.push(p); }); });
+  for (var i = 0; i < parts.length; i++) {
+    var el = document.createElement("div");
+    el.className = "ol-mult";
+    el.textContent = "×" + parts[i];
+    var src = cells[i] || cells[0] || [0,0];
+    var gx = (src[1] + 0.5) / 6 * 100;
+    var gy = (src[0] + 0.5) / 5 * 100;
+    el.style.left = gx + "%";
+    el.style.top = gy + "%";
+    stage.appendChild(el);
+    (function(el2, delay){
+      setTimeout(function(){ el2.classList.add("show"); }, delay);
+      setTimeout(function(){ el2.classList.add("fly"); }, delay + 300);
+      setTimeout(function(){ if (el2.parentNode) el2.parentNode.removeChild(el2); }, delay + 1400);
+    })(el, i * 120);
+  }
+  // 中心累加显示
+  var center = document.createElement("div");
+  center.className = "ol-mult-center";
+  center.textContent = "×" + mult;
+  stage.appendChild(center);
+  setTimeout(function(){ center.classList.add("show"); }, 500);
+  setTimeout(function(){ center.classList.add("fade"); }, 1200);
+  setTimeout(function(){ if (center.parentNode) center.parentNode.removeChild(center); }, 1700);
+}
+
 function playRounds(result, betAmt){
   var rounds = result.rounds;
   var totalShown = 0;
@@ -183,6 +222,7 @@ function playRounds(result, betAmt){
     highlightCells(cells, true);
     totalShown += rd.roundWin;
     renderWin(totalShown, '×' + rd.multiplier + ' 倍');
+    spawnMultipliers(rd);
     safeAudio(A.tumble, 'tumble');
     setTimeout(function(){
       cells.forEach(function(p){
