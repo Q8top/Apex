@@ -726,3 +726,10 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
+
+/* Fix v13: SVG 内容放大到 82%（因为 SVG 里已经画满 viewBox） */
+.apex-game-cover > svg,
+.apex-game-cover > img {
+  width: 82% !important;
+  height: 82% !important;
+}

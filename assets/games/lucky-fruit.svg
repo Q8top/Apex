@@ -11,31 +11,31 @@
   </defs>
 
   <g>
-    <!-- 机头 -->
-    <path d="M52 62 L148 62 L148 76 L52 76 Z" fill="#0a0a0a"/>
-    <circle cx="62" cy="69" r="2.4" fill="#4ade80"/>
-    <circle cx="72" cy="69" r="2.4" fill="#e8c25c"/>
-    <circle cx="82" cy="69" r="2.4" fill="#ef5350"/>
+    <!-- 机头黑条 -->
+    <path d="M22 36 L178 36 L178 60 L22 60 Z" fill="#0a0a0a"/>
+    <circle cx="38" cy="48" r="4" fill="#4ade80"/>
+    <circle cx="56" cy="48" r="4" fill="#e8c25c"/>
+    <circle cx="74" cy="48" r="4" fill="#ef5350"/>
 
-    <!-- 三转轮 -->
-    <rect x="52" y="84" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.6"/>
-    <rect x="86" y="84" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.6"/>
-    <rect x="120" y="84" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.6"/>
+    <!-- 三个转轮 -->
+    <rect x="22" y="72" width="46" height="98" rx="14" fill="#fff" stroke="#0a0a0a" stroke-width="4"/>
+    <rect x="77" y="72" width="46" height="98" rx="14" fill="#fff" stroke="#0a0a0a" stroke-width="4"/>
+    <rect x="132" y="72" width="46" height="98" rx="14" fill="#fff" stroke="#0a0a0a" stroke-width="4"/>
 
     <!-- 樱桃 -->
-    <circle cx="62" cy="118" r="6" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <circle cx="76" cy="122" r="6" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <path d="M62 110 Q66 102 70 98" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    <path d="M76 114 Q74 106 70 98" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <circle cx="38" cy="128" r="10" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="2.4"/>
+    <circle cx="58" cy="134" r="10" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="2.4"/>
+    <path d="M38 118 Q44 106 50 100" stroke="#0a0a0a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M58 124 Q55 110 50 100" stroke="#0a0a0a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
 
     <!-- 7 -->
-    <text x="100" y="130" text-anchor="middle" font-family="Georgia,serif" font-size="36" font-weight="900" fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.8" paint-order="stroke">7</text>
+    <text x="100" y="152" text-anchor="middle" font-family="Georgia,serif" font-size="60" font-weight="900" fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="3" paint-order="stroke">7</text>
 
     <!-- 星 -->
-    <path d="M134 100 L137 112 L149 112 L139 119 L142 131 L134 124 L126 131 L129 119 L119 112 L131 112 Z"
-          fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M155 102 L160 122 L181 122 L164 135 L170 155 L155 143 L140 155 L146 135 L129 122 L150 122 Z"
+          fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
 
-    <!-- 投币口 -->
-    <rect x="88" y="160" width="24" height="3" rx="1.5" fill="#0a0a0a"/>
+    <!-- 底部投币口 -->
+    <rect x="70" y="180" width="60" height="6" rx="3" fill="#0a0a0a"/>
   </g>
 </svg>
