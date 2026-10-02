@@ -225,15 +225,17 @@ function finishSpin(result, bAmt, grid){
 
 function showResult(result, bAmt, grid){
   if (result.totalWin>0){
+    if (is777Grid(grid)) { show777(grid); }
     renderWin(result.totalWin); bump($('balance')); bump($('won'));
     result.wins.forEach(function(w){ w.positions.forEach(function(p){
       var el=cellAt(p.row,p.col); if (el) el.classList.add('winning');
     }); });
     setTimeout(function(){ drawWinLines(result.wins); }, 80);
     var ratio=result.totalWin/bAmt;
-    if (ratio>=10){ A.winBig(); flash(true); }
-    else if (ratio>=2){ A.winMedium(); flash(false); }
-    else A.winSmall();
+    if (ratio>=30){ A.winBig(); flash(true); showCelebrate(ratio, result.totalWin); }
+    else if (ratio>=10){ A.winBig(); flash(true); showCelebrate(ratio, result.totalWin); }
+    else if (ratio>=2){ A.winMedium(); flash(false); showCelebrate(ratio, result.totalWin); }
+    else { A.winSmall(); }
   } else A.lose();
 
   var delta=result.totalWin - bAmt;
@@ -276,6 +278,61 @@ function changeBet(dir){
 }
 
 /* ---- 弹窗 ---- */
+function is777Grid(grid){
+  if (!grid) return false;
+  var lines = C.PAYLINES;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i], hit = 0;
+    for (var c = 0; c < line.length; c++) {
+      var sym = grid[line[c]][c];
+      if (sym === 'seven' || sym === 'goldenSeven') hit++; else break;
+    }
+    if (hit === 3) return true;
+  }
+  return false;
+}
+
+function show777(grid){
+  if (!is777Grid(grid)) return;
+  var el = document.getElementById('celebrate');
+  var tier = document.getElementById('celebrate-tier');
+  var amt = document.getElementById('celebrate-amount');
+  if (!el || !tier || !amt) return;
+  setTimeout(function(){
+    tier.textContent = 'LUCKY 777';
+    amt.textContent = '';
+    el.classList.add('show', 'mega');
+    el.setAttribute('aria-hidden','false');
+    A.winBig();
+    flash(true);
+    setTimeout(function(){
+      el.classList.remove('show', 'mega');
+      el.setAttribute('aria-hidden','true');
+    }, 2400);
+  }, 600);
+}
+
+function showCelebrate(ratio, totalWin){
+  var el = document.getElementById('celebrate');
+  var tier = document.getElementById('celebrate-tier');
+  var amt = document.getElementById('celebrate-amount');
+  if (!el || !tier || !amt) return;
+  var label = '';
+  if (ratio >= 30)      label = 'MEGA WIN';
+  else if (ratio >= 10) label = 'BIG WIN';
+  else if (ratio >= 2)  label = 'NICE WIN';
+  else return; // 小赢不进 banner
+  tier.textContent = label;
+  amt.textContent = '+' + fmt(totalWin);
+  el.classList.toggle('mega', ratio >= 30);
+  el.classList.add('show');
+  el.setAttribute('aria-hidden', 'false');
+  setTimeout(function(){
+    el.classList.remove('show', 'mega');
+    el.setAttribute('aria-hidden', 'true');
+  }, 2400);
+}
+
 function openModal(t,h){ $('modal-title').textContent=t; $('modal-body').innerHTML=h;
   $('modal').classList.add('show'); $('modal').setAttribute('aria-hidden','false'); }
 function closeModal(){ $('modal').classList.remove('show'); $('modal').setAttribute('aria-hidden','true'); }
@@ -353,12 +410,18 @@ function bind(){
   document.querySelector('.modal-mask').addEventListener('click', closeModal);
 
   document.addEventListener('keydown', function(e){
+    var k = String(e.key || '').toLowerCase();
     if (e.key===' '||e.key==='Enter'){
       if (document.activeElement && document.activeElement.tagName==='BUTTON') return;
-      e.preventDefault(); A.init(); doSpin();
-    } else if (e.key==='ArrowUp'){ e.preventDefault(); changeBet(1); }
-    else if (e.key==='ArrowDown'){ e.preventDefault(); changeBet(-1); }
-    else if (e.key==='Escape'){ closeModal(); stopAuto(); }
+      e.preventDefault(); A.init(); doSpin(); return;
+    }
+    if (e.key==='ArrowUp'){ e.preventDefault(); changeBet(1); return; }
+    if (e.key==='ArrowDown'){ e.preventDefault(); changeBet(-1); return; }
+    if (e.key==='Escape'){ closeModal(); stopAuto(); return; }
+    if (k==='m'){ toggleSound(); return; }
+    if (k==='h'){ showHistory(); return; }
+    if (k==='p'){ showPaytable(); return; }
+    if (k==='a'){ if (state.autoOn) stopAuto(); else startAuto(); return; }
   });
 
   document.addEventListener('visibilitychange', function(){ if (document.hidden && state.autoOn) stopAuto(); });
