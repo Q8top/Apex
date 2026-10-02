@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
+    <radialGradient id="ol-bg" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f4f6"/>
+    </radialGradient>
     <linearGradient id="ol-gold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f5e08c"/>
       <stop offset="45%" stop-color="#d9b04a"/>
@@ -9,40 +13,33 @@
       <stop offset="0%" stop-color="#7a4bc0"/>
       <stop offset="100%" stop-color="#3a1e6a"/>
     </radialGradient>
-    <radialGradient id="ol-halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f5d97a" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#f5d97a" stop-opacity="0"/>
-    </radialGradient>
   </defs>
 
-  <g>
-    <!-- 外圈金色光晕 -->
-    <circle cx="100" cy="110" r="82" fill="url(#ol-halo)"/>
+  <!-- 白底外框（与 lucky-fruit 完全一致） -->
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#ol-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
-    <!-- 中心紫色圆盘 -->
-    <circle cx="100" cy="110" r="62" fill="url(#ol-disc)" stroke="#0a0a0a" stroke-width="3.5"/>
-    <circle cx="100" cy="110" r="54" fill="none" stroke="rgba(245,217,122,.45)" stroke-width="1.5"/>
+  <!-- 内容缩到 58% 居中 -->
+  <g transform="translate(100,100) scale(0.58) translate(-100,-100)">
+    <!-- 紫色圆盘 -->
+    <circle cx="100" cy="110" r="58" fill="url(#ol-disc)" stroke="#0a0a0a" stroke-width="3"/>
+    <circle cx="100" cy="110" r="50" fill="none" stroke="rgba(245,217,122,.4)" stroke-width="1.4"/>
 
-    <!-- 金色闪电（主体，撑满圆盘） -->
-    <path d="M116 66 L76 116 L94 116 L82 156 L128 106 L108 106 Z"
-          fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="3.5" stroke-linejoin="round"/>
-    <!-- 内高光 -->
-    <path d="M116 66 L88 100 L98 100" fill="none" stroke="#fff8d0" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>
-
-    <!-- 顶部皇冠（超出圆盘，形成层次） -->
-    <path d="M62 52 L62 24 L82 40 L100 18 L118 40 L138 24 L138 52 Z"
+    <!-- 闪电 -->
+    <path d="M114 68 L76 116 L94 116 L82 154 L126 106 L106 106 Z"
           fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round"/>
-    <rect x="62" y="52" width="76" height="8" rx="2.5" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2"/>
-    <!-- 皇冠宝石 -->
-    <circle cx="100" cy="40" r="3.5" fill="#e5484d" stroke="#0a0a0a" stroke-width="1.2"/>
-    <circle cx="78" cy="46" r="2.4" fill="#4a90d0" stroke="#0a0a0a" stroke-width="1"/>
-    <circle cx="122" cy="46" r="2.4" fill="#3f9a4a" stroke="#0a0a0a" stroke-width="1"/>
+    <path d="M114 68 L88 100 L98 100" fill="none" stroke="#fff8d0" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>
 
-    <!-- 底部横线装饰 -->
-    <rect x="70" y="184" width="60" height="6" rx="3" fill="#0a0a0a"/>
+    <!-- 皇冠（顶部超出圆盘） -->
+    <path d="M66 56 L66 32 L82 46 L100 28 L118 46 L134 32 L134 56 Z"
+          fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+    <rect x="66" y="56" width="68" height="7" rx="2" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1.8"/>
+    <circle cx="100" cy="44" r="3" fill="#e5484d" stroke="#0a0a0a" stroke-width="1"/>
+    <circle cx="80" cy="49" r="2" fill="#4a90d0" stroke="#0a0a0a" stroke-width=".8"/>
+    <circle cx="120" cy="49" r="2" fill="#3f9a4a" stroke="#0a0a0a" stroke-width=".8"/>
 
-    <!-- 星点 -->
-    <circle cx="172" cy="82" r="3" fill="#d9b04a" stroke="#0a0a0a" stroke-width="1"/>
-    <circle cx="28" cy="150" r="2.4" fill="#d9b04a" stroke="#0a0a0a" stroke-width="1"/>
+    <!-- 投币口装饰 -->
+    <rect x="82" y="162" width="36" height="3" rx="1.5" fill="#0a0a0a"/>
   </g>
 </svg>
