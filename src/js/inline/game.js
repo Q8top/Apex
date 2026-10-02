@@ -7,7 +7,8 @@ var GAME_ROUTES = {
   'lucky-fruit': { html: '/slot.html',    symLib: 'SlotSymbols' },
   'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' },
   'sweet':       { html: '/sweet.html',   symLib: 'SweetSymbols' },
-  'sugar':       { html: '/sugar.html',   symLib: 'SugarSymbols' }
+  'sugar':       { html: '/sugar.html',   symLib: 'SugarSymbols' },
+  'starlight':   { html: '/starlight.html', symLib: 'StarlightSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -193,6 +194,51 @@ var GAMES = {
       '最高下注': '¥100',
       '免费旋转': '支持（3+ 棒棒糖）',
       '位置倍率': '×2 ~ ×128',
+      '上线日期': '2026-10-02'
+    }
+  },
+  'starlight': {
+    name: '星光公主',
+    sub: 'Cluster Pays · Tumble 连击 · 乘法器 · 免费旋转',
+    images: [],
+    intro: '星光公主是一款 6×5 的 Cluster Pays 老虎机。相邻（水平/垂直）出现 8 个及以上相同符号即形成中奖。中奖符号消失后上方符号下落补位，若再次形成中奖则触发连击。每个连击轮次会掉落随机乘法器，作用于当轮赢分。4 个及以上星星（Scatter）触发免费旋转。',
+    rules: [
+      '点击 − / + 调整下注金额',
+      '点击「旋转」启动一局',
+      '6 列 × 5 行网格生成 30 个符号',
+      '相邻（水平/垂直）相同符号 ≥8 个即形成中奖',
+      '中奖符号消失，上方符号下落，顶部补新',
+      '若再次形成中奖则触发 Tumble 连击',
+      '每个 Tumble 轮次随机掉落 1~2 个乘法器（×2 ~ ×1000），累加后与当轮赢分相乘',
+      '出现 4 个及以上星星（Scatter）触发免费旋转 15 次',
+      '免费旋转中每次 Tumble 后可能额外掉落星星，继续累积倍数'
+    ],
+    prizes: [
+      { symbol: 'gemBlue', mult: '8个×0.25' },
+      { symbol: 'gemRed', mult: '8个×1.00' },
+      { symbol: 'heart', mult: '8个×10.00' }
+    ],
+    paytable: [
+      { symbol: 'gemBlue',    mult: '8-9个×0.25 · 10-11个×0.75 · 12+个×2' },
+      { symbol: 'gemGreen',   mult: '8-9个×0.40 · 10-11个×0.90 · 12+个×4' },
+      { symbol: 'gemYellow',  mult: '8-9个×0.50 · 10-11个×1.00 · 12+个×5' },
+      { symbol: 'gemPurple',  mult: '8-9个×0.80 · 10-11个×1.20 · 12+个×8' },
+      { symbol: 'gemRed',     mult: '8-9个×1.00 · 10-11个×1.50 · 12+个×10' },
+      { symbol: 'moon',       mult: '8-9个×1.50 · 10-11个×2.00 · 12+个×12' },
+      { symbol: 'crown',      mult: '8-9个×2.00 · 10-11个×5.00 · 12+个×15' },
+      { symbol: 'princess',   mult: '8-9个×2.50 · 10-11个×10.0 · 12+个×25' },
+      { symbol: 'heart',      mult: '8-9个×10.0 · 10-11个×25.0 · 12+个×50' },
+      { symbol: 'star',       mult: '4+ 个 → 免费旋转 15 次' }
+    ],
+    info: {
+      '游戏类型': 'Cluster Pays',
+      '游戏网格': '6 × 5',
+      '最小 cluster': '8 个',
+      '符号数量': '10 种',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '免费旋转': '支持（4+ 星星）',
+      '最大倍率': '×5000（连击）',
       '上线日期': '2026-10-02'
     }
   }
