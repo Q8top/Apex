@@ -369,3 +369,113 @@ button, .icon-btn, .bet-btn, .spin-btn, .foot-btn, .modal-x {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Fix v4: 余额卡 —— 顶部行（标签 + 按钮），下方金额 */
+.stat.stat-balance {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 2px !important;
+  padding: 8px 10px !important;
+  text-align: left !important;
+}
+.stat-balance-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 20px;
+}
+.stat.stat-balance .stat-label {
+  text-align: left !important;
+  margin-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+.stat.stat-balance .stat-value {
+  text-align: left !important;
+  font-size: 15px !important;
+}
+.stat-action {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.stat-action:active { background: #f4f4f5; }
+.stat-action > svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+@media (max-width: 360px) {
+  .stat-action { padding: 3px 6px; font-size: 10px; }
+  .stat.stat-balance .stat-value { font-size: 14px !important; }
+}
+
+/* Fix v5: 余额卡最终布局 */
+.stat.stat-balance {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 3px !important;
+  padding: 8px 10px !important;
+  text-align: left !important;
+}
+.stat-balance-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.stat.stat-balance .stat-label {
+  text-align: left !important;
+  margin-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+.stat.stat-balance .stat-value {
+  text-align: left !important;
+  font-size: 15px !important;
+}
+.stat-action {
+  flex-shrink: 0;
+  height: 20px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  line-height: 1;
+}
+.stat-action:active { background: #f4f4f5; }
+.stat-action > svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+}
