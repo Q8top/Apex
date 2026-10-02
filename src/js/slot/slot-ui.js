@@ -116,7 +116,8 @@ function renderWin(amount){
 /* ---- 转轮动画 ---- */
 function spinReel(col, target, dur, onDone){
   var cells=[cellAt(0,col),cellAt(1,col),cellAt(2,col)];
-  var pool=Object.keys(C.WEIGHTS);
+  var wobj=(MODE==='demo')?C.WEIGHTS_DEMO:C.WEIGHTS_REAL;
+  var pool=Object.keys(wobj);
   cells.forEach(function(c){ c.classList.remove('winning'); c.classList.add('spinning'); });
   var start=performance.now(), lastTick=0, every=60;
   function loop(now){
@@ -157,7 +158,8 @@ function doSpin(){
   var sb2=$('spin'); sb2.disabled=true; sb2.classList.add('spinning');
   $('reels').classList.add('active'); A.spinStart();
 
-  var grid=E.spin(); var result=E.evaluate(grid,b); state.grid=grid;
+  var grid = (MODE==='demo') ? E.spinDemo(b) : E.spin();
+  var result=E.evaluate(grid,b); state.grid=grid;
   var cols=[[],[],[]];
   for (var c=0;c<3;c++) for (var r=0;r<3;r++) cols[c].push(grid[r][c]);
 
@@ -339,6 +341,7 @@ function setupModeUI(){
 /* ---- 启动 ---- */
 function init(){
   loadSettings(); loadHistory();
+  E.setMode(MODE);
   A.enabled(state.soundOn);
   $('btn-sound').style.opacity = state.soundOn?'1':'0.35';
   buildGrid(); renderWin(0); bind(); setupModeUI();

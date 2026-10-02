@@ -6,6 +6,7 @@
 'use strict';
 
 var C = window.SlotConfig;
+var _weights = C.WEIGHTS_REAL;
 
 /* ---------- CSPRNG：拒绝采样，无 modulo bias ---------- */
 function randFloat() {
@@ -18,9 +19,9 @@ function randFloat() {
 var _pool = null;
 function buildPool() {
   var arr = [], total = 0;
-  for (var k in C.WEIGHTS) {
-    if (!C.WEIGHTS.hasOwnProperty(k)) continue;
-    total += C.WEIGHTS[k];
+  for (var k in _weights) {
+    if (!_weights.hasOwnProperty(k)) continue;
+    total += _weights[k];
     arr.push({ id: k, cum: total });
   }
   _pool = { arr: arr, total: total };
@@ -120,8 +121,25 @@ function spinForced(symbolId) {
   return grid;
 }
 
+function setMode(mode) {
+  _weights = (mode === 'demo') ? C.WEIGHTS_DEMO : C.WEIGHTS_REAL;
+  _pool = null;
+}
+
+/* demo 高命中：最多重 roll 20 次保证至少 1 条线中奖 */
+function spinDemo(betAmount) {
+  for (var i = 0; i < 20; i++) {
+    var g = spin();
+    var r = evaluate(g, betAmount);
+    if (r.wins.length > 0) return g;
+  }
+  return spin();
+}
+
 window.SlotEngine = {
   spin: spin,
+  spinDemo: spinDemo,
+  setMode: setMode,
   evaluate: evaluate,
   spinForced: spinForced,
   randFloat: randFloat

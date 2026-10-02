@@ -18,18 +18,16 @@ var SYMBOLS = {
   wild:        { id:'wild',        name:'百搭'   }
 };
 
-/* ---------- 出现权重（越高越常见）---------- */
-var WEIGHTS = {
-  cherry: 22,
-  lemon: 20,
-  orange: 18,
-  grape: 16,
-  watermelon: 12,
-  bell: 6,
-  bar: 3,
-  seven: 1.6,
-  goldenSeven: 0.6,
-  wild: 0.8
+/* ---------- 出现权重 ---------- */
+/* real：标准赔率，稀有符号权重低 */
+var WEIGHTS_REAL = {
+  cherry: 22, lemon: 20, orange: 18, grape: 16, watermelon: 12,
+  bell: 6, bar: 3, seven: 1.6, goldenSeven: 0.6, wild: 0.8
+};
+/* demo：高命中，所有符号更常见，方便试玩看效果 */
+var WEIGHTS_DEMO = {
+  cherry: 16, lemon: 15, orange: 13, grape: 13, watermelon: 12,
+  bell: 10, bar: 8, seven: 6, goldenSeven: 5, wild: 14
 };
 
 /* ---------- 5 条中奖线（3×3 网格）
@@ -74,7 +72,9 @@ var WILD_SUBSTITUTES = ['cherry','lemon','orange','grape','watermelon','bell','b
 
 window.SlotConfig = {
   SYMBOLS: SYMBOLS,
-  WEIGHTS: WEIGHTS,
+  WEIGHTS: WEIGHTS_REAL,
+  WEIGHTS_REAL: WEIGHTS_REAL,
+  WEIGHTS_DEMO: WEIGHTS_DEMO,
   PAYLINES: PAYLINES,
   PAYOUTS: PAYOUTS,
   CONFIG: CONFIG,
