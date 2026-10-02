@@ -2,6 +2,20 @@
 (function(){
 'use strict';
 
+var GAME_ROUTES = {
+  'lucky-fruit': { html: '/slot.html',    symLib: 'SlotSymbols' },
+  'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' }
+};
+function currentGame() {
+  var id = getParam('id') || 'lucky-fruit';
+  return { id: id, route: GAME_ROUTES[id] || GAME_ROUTES['lucky-fruit'] };
+}
+function getSymLib() {
+  var r = currentGame().route;
+  return window[r.symLib] || null;
+}
+
+
 var GAMES = {
   'lucky-fruit': {
     name: '幸运水果机',
@@ -157,16 +171,16 @@ function render() {
   document.getElementById('gm-intro').textContent = g.intro;
   document.getElementById('gm-rules').innerHTML = g.rules.map(function(r){ return '<li>' + esc(r) + '</li>'; }).join('');
   document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(pr){
-    var svg = (window.SlotSymbols && pr.symbol && window.SlotSymbols[pr.symbol])
-      ? '<span class="gm-sym-inline">' + window.SlotSymbols[pr.symbol]() + '</span>'
+    var svg = (getSymLib() && pr.symbol && getSymLib()[pr.symbol])
+      ? '<span class="gm-sym-inline">' + getSymLib()[pr.symbol]() + '</span>'
       : (pr.icon || '');
     return '<div class="gm-prize"><div class="gm-prize-icon">' + svg + '</div>'
       + '<div class="gm-prize-mult">' + esc(pr.mult) + '</div></div>';
   }).join('');
   document.getElementById('gm-paytable').innerHTML = g.paytable.map(function(pt){
     var symHtml;
-    if (window.SlotSymbols && pt.symbol && window.SlotSymbols[pt.symbol]) {
-      var svg = window.SlotSymbols[pt.symbol]();
+    if (getSymLib() && pt.symbol && getSymLib()[pt.symbol]) {
+      var svg = getSymLib()[pt.symbol]();
       symHtml = '<span class="gm-sym-inline">' + svg + '</span>'
               + '<span class="gm-sym-inline">' + svg + '</span>'
               + '<span class="gm-sym-inline">' + svg + '</span>';
@@ -201,10 +215,10 @@ function bindEvents() {
   });
   document.getElementById('gm-support').addEventListener('click', function(){ alert('客服功能开发中'); });
   document.getElementById('gm-demo').addEventListener('click', function(){
-    location.href = '/slot.html?mode=demo';
+    location.href = currentGame().route.html + '?mode=demo';
   });
   document.getElementById('gm-start').addEventListener('click', function(){
-    location.href = '/slot.html?mode=real';
+    location.href = currentGame().route.html + '?mode=real';
   });
   document.getElementById('gm-more').addEventListener('click', function(){ alert('更多操作开发中'); });
   var back = document.getElementById('gm-back');
