@@ -120,3 +120,6 @@
 
 /sweet.html
   Cache-Control: no-store
+
+/sugar.html
+  Cache-Control: no-store
