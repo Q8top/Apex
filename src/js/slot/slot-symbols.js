@@ -5,7 +5,38 @@
 (function(){
 'use strict';
 
+var DEFS_ID = 'apex-slot-defs-global';
+function ensureDefs() {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById(DEFS_ID)) return;
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.id = DEFS_ID;
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.setAttribute('style', 'position:absolute;overflow:hidden');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML =
+    '<defs>' +
+    '<radialGradient id="c-red1" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="70%" stop-color="#dc3a3a"/><stop offset="100%" stop-color="#a81f1f"/></radialGradient>' +
+    '<radialGradient id="c-red2" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#f56b6b"/><stop offset="70%" stop-color="#c93030"/><stop offset="100%" stop-color="#951515"/></radialGradient>' +
+    '<radialGradient id="c-lemon" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="#fef2a0"/><stop offset="60%" stop-color="#f0d550"/><stop offset="100%" stop-color="#d4a828"/></radialGradient>' +
+    '<radialGradient id="c-orange" cx="35%" cy="28%" r="80%"><stop offset="0%" stop-color="#ffb877"/><stop offset="60%" stop-color="#ef8a3e"/><stop offset="100%" stop-color="#c86320"/></radialGradient>' +
+    '<radialGradient id="c-gp1" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#c89cf0"/><stop offset="60%" stop-color="#9060c0"/><stop offset="100%" stop-color="#603a90"/></radialGradient>' +
+    '<radialGradient id="c-gp2" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#b088e0"/><stop offset="60%" stop-color="#7a4aa8"/><stop offset="100%" stop-color="#522e80"/></radialGradient>' +
+    '<radialGradient id="c-wm" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="#7ec26a"/><stop offset="70%" stop-color="#3f8f3f"/><stop offset="100%" stop-color="#1f6028"/></radialGradient>' +
+    '<radialGradient id="c-wm2" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="#ff8080"/><stop offset="70%" stop-color="#e5484d"/><stop offset="100%" stop-color="#b02028"/></radialGradient>' +
+    '<linearGradient id="c-bell" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fbe88a"/><stop offset="45%" stop-color="#e8b842"/><stop offset="100%" stop-color="#a07812"/></linearGradient>' +
+    '<linearGradient id="c-bell2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d8a830"/><stop offset="100%" stop-color="#8a6010"/></linearGradient>' +
+    '<linearGradient id="c-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="50%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#000"/></linearGradient>' +
+    '<linearGradient id="c-7" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff7a7a"/><stop offset="55%" stop-color="#e53838"/><stop offset="100%" stop-color="#a01818"/></linearGradient>' +
+    '<linearGradient id="c-g7" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3a8"/><stop offset="45%" stop-color="#f0c33e"/><stop offset="100%" stop-color="#a07020"/></linearGradient>' +
+    '<radialGradient id="c-wg" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#fff3b8"/><stop offset="60%" stop-color="#e8b83e"/><stop offset="100%" stop-color="#a07810"/></radialGradient>' +
+    '</defs>';
+  document.body.appendChild(svg);
+}
+
 function wrap(inner) {
+  ensureDefs();
   return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">' + inner + '</svg>';
 }
 function hl(cx, cy, rx, ry, op) {
