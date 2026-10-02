@@ -128,16 +128,15 @@ var API = {
   click: function(){ if (!ctx) init(); var t = now(); fm(1600, 2800, 3, .04, .08, t); tone(800, .05, .04, t+.005, 'triangle'); },
   spinStart: function(){
     if (!ctx) init(); var t = now();
-    noise(.5, .16, t, 'lowpass', 380, true);
-    pad(220, .9, .08, t);
-    pad(261.63, .8, .06, t+.06);
-    pad(329.63, .7, .05, t+.12);
-    tone(880, .3, .05, t+.2, 'sine', true, 1760);
+    fm(2200, 800, 2.5, .05, .15, t);
+    tone(1500, .18, .12, t+.02, 'triangle');
+    tone(800, .22, .10, t+.05, 'sine', true);
+    tone(1800, .15, .08, t+.10, 'triangle');
   },
   reelStop: function(i){
     if (!ctx) init(); var t = now();
-    fm(500 + i*90, 180 + i*20, 2.8, .13, .22, t, true);
-    tone(140 - i*6, .08, .12, t, 'triangle');
+    fm(1800 + i*180, 500, 3, .08, .22, t);
+    tone(2400 + i*150, .05, .10, t);
   },
   tumble: function(){
     if (!ctx) init(); var t = now();
