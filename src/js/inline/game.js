@@ -149,7 +149,7 @@ function bindEvents() {
   var back = document.getElementById('gm-back');
   if (back) back.addEventListener('click', function(e){
     e.preventDefault();
-    location.href = '/';
+    location.replace('/');
   });
 }
 

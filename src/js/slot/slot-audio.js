@@ -119,18 +119,44 @@ var API = {
   spinStart: function() {
     if (!ctx) init();
     var t = now();
-    // 低频 whoosh + 上行音符
-    tone(180, 0.28, 'sawtooth', 0.12, t);
-    tone(270, 0.22, 'sawtooth', 0.09, t + 0.06);
-    tone(360, 0.18, 'sawtooth', 0.06, t + 0.12);
+    // 柔和上行扫频（sine，不刺耳）
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, t);
+    osc.frequency.exponentialRampToValueAtTime(340, t + 0.35);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.13, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+    osc.connect(g);
+    g.connect(master);
+    if (reverb) g.connect(reverb);
+    osc.start(t);
+    osc.stop(t + 0.5);
+    // 轻巧的高音点缀
+    tone(880, 0.06, 'triangle', 0.06, t + 0.1);
   },
 
   reelStop: function(index) {
     if (!ctx) init();
     var t = now();
-    // 机械咔 + 音高随列递增
-    noise(0.05, 0.24, t, 2200);
-    tone(120 - index * 6, 0.18, 'square', 0.22, t + 0.01);
+    // 短促正弦击打（清亮机械感，不用噪声）
+    var baseF = 620 + index * 40;
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseF, t);
+    osc.frequency.exponentialRampToValueAtTime(baseF * 0.6, t + 0.08);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.26, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+    osc.connect(g);
+    g.connect(master);
+    if (reverb) g.connect(reverb);
+    osc.start(t);
+    osc.stop(t + 0.16);
+    // 高八度轻击
+    tone(baseF * 2, 0.05, 'triangle', 0.08, t);
   },
 
   /* ---------- 中奖分级 ---------- */
