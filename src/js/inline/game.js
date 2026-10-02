@@ -4,7 +4,8 @@
 
 /* ---------- 游戏路由 ---------- */
 var GAME_ROUTES = {
-  'lucky-fruit': { html: '/slot.html', symLib: 'SlotSymbols' }
+  'lucky-fruit': { html: '/slot.html',    symLib: 'SlotSymbols' },
+  'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -56,6 +57,45 @@ var GAMES = {
       '最低下注': '¥1',
       '最高下注': '¥100',
       '最大倍数': '×840',
+      '上线日期': '2026-10-02'
+    }
+  },
+  'olympus': {
+    name: '奥林匹斯之门',
+    sub: 'Cluster Pays · Tumble 连击',
+    images: [],
+    intro: '奥林匹斯之门是一款 6×5 的 Cluster Pays 老虎机。相邻（水平/垂直）出现 8 个及以上相同符号即形成中奖。中奖符号消失后上方符号下落补位，若再次形成中奖则触发连击，倍率依次递增。',
+    rules: [
+      '点击 − / + 调整下注金额',
+      '点击「旋转」启动一局',
+      '6 列 × 5 行网格生成 30 个符号',
+      '相邻（水平/垂直）相同符号 ≥8 个即形成中奖',
+      '中奖符号消失，上方符号下落，顶部补新',
+      '若再次形成中奖则触发连击，倍率依次递增',
+      '每个连击轮次可能掉落随机倍率，倍率相加后与当轮赢分相乘',
+      '单局内可连续多次连击，直到不再形成新 cluster'
+    ],
+    prizes: [
+      { symbol: 'gemBlue', mult: '8个×0.25' },
+      { symbol: 'gemRed', mult: '8个×1.00' },
+      { symbol: 'crown', mult: '8个×10.00' }
+    ],
+    paytable: [
+      { symbol: 'gemBlue', mult: '8-9个×0.25 · 10-11个×0.75 · 12-30个×2' },
+      { symbol: 'gemGreen', mult: '8-9个×0.40 · 10-11个×0.90 · 12-30个×4' },
+      { symbol: 'gemYellow', mult: '8-9个×0.50 · 10-11个×1.00 · 12-30个×5' },
+      { symbol: 'gemPurple', mult: '8-9个×0.80 · 10-11个×1.20 · 12-30个×8' },
+      { symbol: 'gemRed', mult: '8-9个×1.00 · 10-11个×1.50 · 12-30个×10' },
+      { symbol: 'crown', mult: '8-9个×10 · 10-11个×25 · 12-30个×50' }
+    ],
+    info: {
+      '游戏类型': 'Cluster Pays',
+      '游戏网格': '6 × 5',
+      '最小 cluster': '8 个',
+      '符号数量': '8 种',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '最大倍率': '×5000（连击）',
       '上线日期': '2026-10-02'
     }
   }
