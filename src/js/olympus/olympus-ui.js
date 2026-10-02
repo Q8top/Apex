@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-var C = window.OlympusConfig, E = window.OlympusEngine, S = window.OlympusSymbols;
+var C = window.OlympusConfig, E = window.OlympusEngine, S = window.OlympusSymbols, A = window.OlympusAudio;
 
 var MODE = (function(){
   var m = String(location.search).match(/[?&]mode=([a-z]+)/i);
@@ -20,6 +20,7 @@ var state = {
   autoOn: false, ready: false, safetyTimer: null
 };
 
+function safeAudio(fn, n){ try { if (typeof fn === "function") fn(); } catch(e){ console.warn("[Olympus] audio@"+n, e && e.message); } }
 function $(id){ return document.getElementById(id); }
 function fmt(n, sign){
   var v = Math.round(n * 100) / 100;
@@ -114,7 +115,7 @@ function spinReel(c, duration, onDone){
       }
     }
     if (el < duration) requestAnimationFrame(loop);
-    else { if (onDone) onDone(); }
+    else { safeAudio(function(){ A.reelStop(c); }, 'reelStop'); if (onDone) onDone(); }
   }
   requestAnimationFrame(loop);
 }
@@ -134,6 +135,7 @@ function doSpin(){
 
   state.spinning = true;
   var sb = $('ol-spin'); sb.disabled = true; sb.classList.add('spinning');
+  safeAudio(A.init, 'init'); safeAudio(A.spinStart, 'spinStart');
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
     if (state.spinning) {
@@ -181,6 +183,7 @@ function playRounds(result, betAmt){
     highlightCells(cells, true);
     totalShown += rd.roundWin;
     renderWin(totalShown, '×' + rd.multiplier + ' 倍');
+    safeAudio(A.tumble, 'tumble');
     setTimeout(function(){
       cells.forEach(function(p){
         var el = cellAt(p[0], p[1]);
@@ -218,6 +221,12 @@ function finish(totalWin){
 }
 
 function afterSettle(totalWin){
+  if (totalWin > 0) {
+    var ratio = totalWin / bet();
+    if (ratio >= 10) { safeAudio(A.winBig, 'winBig'); showCelebrate(ratio, totalWin); }
+    else if (ratio >= 2) { safeAudio(A.winMedium, 'winMedium'); }
+    else { safeAudio(A.winSmall, 'winSmall'); }
+  } else { safeAudio(A.lose, 'lose'); }
   state.history.unshift({bet: bet(), win: totalWin, delta: totalWin - bet(), ts: Date.now()});
   state.history = state.history.slice(0, 30); saveHist();
   releaseSpin();
@@ -251,10 +260,25 @@ function changeBet(dir){
   if (n < 0) n = 0;
   if (n >= C.CONFIG.betSteps.length) n = C.CONFIG.betSteps.length - 1;
   if (n === state.betIndex) return;
-  state.betIndex = n; renderBet(); saveState();
+  state.betIndex = n; renderBet(); saveState(); safeAudio(A.click, 'click');
 }
 
 /* 弹窗 */
+function showCelebrate(ratio, totalWin){
+  var el = $("ol-celebrate"), tier = $("ol-celebrate-tier"), amt = $("ol-celebrate-amount");
+  if (!el || !tier || !amt) return;
+  var label = "";
+  if (ratio >= 50) label = "MEGA WIN";
+  else if (ratio >= 20) label = "BIG WIN";
+  else if (ratio >= 10) label = "NICE WIN";
+  else return;
+  tier.textContent = label;
+  amt.textContent = "+" + fmt(totalWin);
+  el.classList.toggle("mega", ratio >= 50);
+  el.classList.add("show");
+  setTimeout(function(){ el.classList.remove("show", "mega"); }, 2400);
+}
+
 function openModal(t, h){
   $('ol-modal-title').textContent = t;
   $('ol-modal-body').innerHTML = h;
@@ -331,8 +355,12 @@ function bind(){
   $('ol-paytable').addEventListener('click', showPaytable);
   $('ol-menu').addEventListener('click', actionMode);
   $('ol-mode-action').addEventListener('click', actionMode);
+  var _soundOn = true;
   $('ol-sound').addEventListener('click', function(){
-    toast('音效开关开发中');
+    _soundOn = !_soundOn;
+    safeAudio(function(){ A.enabled(_soundOn); }, 'toggle');
+    $('ol-sound').style.opacity = _soundOn ? '1' : '0.35';
+    toast(_soundOn ? '音效已开' : '音效已关', 900);
   });
   $('ol-modal-x').addEventListener('click', closeModal);
   document.querySelector('.ol-modal-mask').addEventListener('click', closeModal);
@@ -364,6 +392,7 @@ function setupMode(){
 /* 启动 */
 function init(){
   E.setMode(MODE);
+  safeAudio(A.init, 'initAudio');
   buildGrid(); renderWin(0); bind(); setupMode();
 
   if (MODE === 'real') {
