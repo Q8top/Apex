@@ -775,3 +775,25 @@
   text-overflow: ellipsis !important;
   color: #18181b !important;
 }
+
+/* Fix v16: 游戏卡片紧凑 + 名字对齐 */
+.apex-game-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px 8px !important;
+  padding: 10px 8px !important;
+  align-items: start !important;
+}
+.apex-game-card {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+.apex-game-name {
+  font-size: 11px !important;
+  height: 15px !important;
+  line-height: 15px !important;
+  margin-top: 4px !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
