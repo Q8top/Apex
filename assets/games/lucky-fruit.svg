@@ -1,41 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
-    <linearGradient id="lf-gold" x1="0" y1="0" x2="0" y2="1">
+    <radialGradient id="lf-bg2" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f4f6"/>
+    </radialGradient>
+    <linearGradient id="lf-gold2" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#e8c25c"/>
       <stop offset="100%" stop-color="#c49a2f"/>
     </linearGradient>
-    <linearGradient id="lf-red" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="lf-red2" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#ff7070"/>
       <stop offset="100%" stop-color="#c62828"/>
     </linearGradient>
   </defs>
 
-  <g>
-    <!-- 机头 -->
-    <path d="M52 58 L148 58 L148 72 L52 72 Z" fill="#0a0a0a"/>
-    <circle cx="62" cy="65" r="2.4" fill="#4ade80"/>
-    <circle cx="72" cy="65" r="2.4" fill="#e8c25c"/>
-    <circle cx="82" cy="65" r="2.4" fill="#ef5350"/>
+  <!-- 外框（140×140 居中，黑描边 + 内金线） -->
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#lf-bg2)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
-    <!-- 三个转轮 -->
-    <rect x="52" y="80" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.4"/>
-    <rect x="86" y="80" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.4"/>
-    <rect x="120" y="80" width="28" height="68" rx="10" fill="#fff" stroke="#0a0a0a" stroke-width="2.4"/>
+  <!-- 内容（缩到 60% 居中） -->
+  <g transform="translate(100,100) scale(0.6) translate(-100,-100)">
+    <path d="M58 66 L142 66 L142 78 L58 78 Z" fill="#0a0a0a"/>
+    <circle cx="66" cy="72" r="2" fill="#4ade80"/>
+    <circle cx="74" cy="72" r="2" fill="#e8c25c"/>
+    <circle cx="82" cy="72" r="2" fill="#ef5350"/>
 
-    <!-- 樱桃 -->
-    <circle cx="62" cy="116" r="6" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <circle cx="76" cy="120" r="6" fill="url(#lf-red)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <path d="M62 108 Q66 100 70 96" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-    <path d="M76 112 Q74 104 70 96" stroke="#0a0a0a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <rect x="58" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="2"/>
+    <rect x="88" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="2"/>
+    <rect x="118" y="84" width="24" height="52" rx="8" fill="#fff" stroke="#0a0a0a" stroke-width="2"/>
 
-    <!-- 7 -->
-    <text x="100" y="128" text-anchor="middle" font-family="Georgia,serif" font-size="34" font-weight="900" fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.6" paint-order="stroke">7</text>
+    <circle cx="66" cy="112" r="5" fill="url(#lf-red2)" stroke="#0a0a0a" stroke-width="1.4"/>
+    <circle cx="78" cy="116" r="5" fill="url(#lf-red2)" stroke="#0a0a0a" stroke-width="1.4"/>
+    <path d="M66 106 Q70 100 72 96" stroke="#0a0a0a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M78 110 Q76 102 72 96" stroke="#0a0a0a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
 
-    <!-- 星 -->
-    <path d="M130 100 L133 111 L144 111 L135 118 L138 129 L130 122 L122 129 L125 118 L116 111 L127 111 Z"
-          fill="url(#lf-gold)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+    <text x="100" y="122" text-anchor="middle" font-family="Georgia,serif" font-size="30" font-weight="900" fill="url(#lf-gold2)" stroke="#0a0a0a" stroke-width="1.4" paint-order="stroke">7</text>
 
-    <!-- 投币口 -->
-    <rect x="88" y="156" width="24" height="3" rx="1.5" fill="#0a0a0a"/>
+    <path d="M126 100 L129 110 L139 110 L131 116 L134 126 L126 120 L118 126 L121 116 L113 110 L123 110 Z"
+          fill="url(#lf-gold2)" stroke="#0a0a0a" stroke-width="1.4" stroke-linejoin="round"/>
+
+    <rect x="90" y="146" width="20" height="3" rx="1.5" fill="#0a0a0a"/>
   </g>
 </svg>

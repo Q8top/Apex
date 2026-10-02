@@ -2,9 +2,9 @@
 (function(){
 'use strict';
 
+/* ---------- 游戏路由 ---------- */
 var GAME_ROUTES = {
-  'lucky-fruit': { html: '/slot.html',    symLib: 'SlotSymbols' },
-  'olympus':     { html: '/olympus.html', symLib: 'OlympusSymbols' }
+  'lucky-fruit': { html: '/slot.html', symLib: 'SlotSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -15,7 +15,7 @@ function getSymLib() {
   return window[r.symLib] || null;
 }
 
-
+/* ---------- 游戏数据 ---------- */
 var GAMES = {
   'lucky-fruit': {
     name: '幸运水果机',
@@ -59,46 +59,9 @@ var GAMES = {
       '上线日期': '2026-10-02'
     }
   }
-  ,'olympus': {
-    name: '奥林匹斯之门',
-    sub: 'Cluster Pays · Tumble 连击',
-    images: [],
-    intro: '奥林匹斯之门是一款 6×5 的 Cluster Pays 老虎机。相邻（水平/垂直）出现 5 个及以上相同符号即形成中奖。中奖符号消失后上方符号下落补位，若再次形成中奖则连击倍数递增（最高 ×100）。',
-    rules: [
-      '点击 − / + 调整下注金额',
-      '点击「旋转」启动一局',
-      '6 列 × 5 行的网格生成 30 个符号',
-      '相邻（水平/垂直）相同符号 ≥5 个即形成 cluster 中奖',
-      '中奖符号消失，上方符号下落，顶部补新',
-      '若再次形成中奖则触发连击，倍数依次 ×1 → ×2 → ×3 → ×5 → ×10 → ×15 → ×25 → ×50 → ×100',
-      '单局内可连续多次连击，直到不再形成新 cluster'
-    ],
-    prizes: [
-      { symbol: 'gemBlue', mult: '5连×25' },
-      { symbol: 'gemRed', mult: '5连×25' },
-      { symbol: 'zeus', mult: '5连×125' }
-    ],
-    paytable: [
-      { symbol: 'gemBlue', mult: '5连×25 · 6连×50 · 8连×100' },
-      { symbol: 'gemGreen', mult: '5连×25 · 6连×50 · 8连×100' },
-      { symbol: 'gemYellow', mult: '5连×25 · 6连×50 · 8连×125' },
-      { symbol: 'gemPurple', mult: '5连×25 · 6连×50 · 8连×125' },
-      { symbol: 'gemRed', mult: '5连×25 · 6连×75 · 8连×200' },
-      { symbol: 'zeus', mult: '5连×125 · 6连×375 · 8连×1000' }
-    ],
-    info: {
-      '游戏类型': 'Cluster Pays',
-      '游戏网格': '6 × 5',
-      '最小 cluster': '5 个',
-      '符号数量': '6 种',
-      '最低下注': '¥1',
-      '最高下注': '¥100',
-      '最大倍数': '×100（连击）',
-      '上线日期': '2026-10-02'
-    }
-  }
 };
 
+/* ---------- 工具 ---------- */
 function getParam(n) {
   var m = location.search.match(new RegExp('[?&]' + n + '=([^&]*)'));
   return m ? decodeURIComponent(m[1]) : '';
@@ -118,11 +81,12 @@ function notFound() {
   document.getElementById('gm-intro').textContent = '未找到该游戏，请返回首页重新选择。';
 }
 
+/* ---------- 轮播 ---------- */
 function renderCarousel() {
   var track = document.getElementById('gm-carousel-track');
   var dots = document.getElementById('gm-carousel-dots');
   if (!track || !dots) return;
-  var imgs = g.images && g.images.length ? g.images : [null, null, null];
+  var imgs = (g.images && g.images.length) ? g.images : [null, null, null];
   track.innerHTML = imgs.map(function(src){
     if (src) return '<div class="gm-carousel-slide"><img src="' + esc(src) + '" alt=""></div>';
     return '<div class="gm-carousel-slide"><div class="gm-slide-ph"><i class="ri-image-line" aria-hidden="true"></i><span>游戏画面</span></div></div>';
@@ -134,12 +98,7 @@ function renderCarousel() {
   var n = imgs.length, cur = 0;
   function setA(i) { for (var k = 0; k < dotEls.length; k++) dotEls[k].classList.toggle('active', k === i); }
   function goto(i) { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); cur = i; setA(i); }
-  // 自动轮播
-  var timer = setInterval(function(){
-    if (document.hidden) return;
-    goto((cur + 1) % n);
-  }, 3500);
-  // 手动滑动时暂停 6s
+  setInterval(function(){ if (document.hidden) return; goto((cur + 1) % n); }, 3500);
   var paused = false;
   function pause() { paused = true; setTimeout(function(){ paused = false; }, 6000); }
   track.addEventListener('pointerdown', pause, { passive: true });
@@ -163,39 +122,51 @@ function renderCarousel() {
   });
 }
 
+/* ---------- 渲染 ---------- */
 function render() {
   document.title = g.name + ' · Apex';
   document.getElementById('gm-top-title').textContent = g.name;
   document.getElementById('gm-name').textContent = g.name;
   document.getElementById('gm-sub').textContent = g.sub;
   document.getElementById('gm-intro').textContent = g.intro;
-  document.getElementById('gm-rules').innerHTML = g.rules.map(function(r){ return '<li>' + esc(r) + '</li>'; }).join('');
-  document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(pr){
-    var svg = (getSymLib() && pr.symbol && getSymLib()[pr.symbol])
-      ? '<span class="gm-sym-inline">' + getSymLib()[pr.symbol]() + '</span>'
-      : (pr.icon || '');
-    return '<div class="gm-prize"><div class="gm-prize-icon">' + svg + '</div>'
-      + '<div class="gm-prize-mult">' + esc(pr.mult) + '</div></div>';
+
+  document.getElementById('gm-rules').innerHTML = g.rules.map(function(r){
+    return '<li>' + esc(r) + '</li>';
   }).join('');
+
+  document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(pr){
+    var lib = getSymLib();
+    var svg = (lib && pr.symbol && lib[pr.symbol])
+      ? '<span class="gm-sym-inline">' + lib[pr.symbol]() + '</span>'
+      : (pr.icon || '');
+    return '<div class="gm-prize"><div class="gm-prize-icon">' + svg + '</div>' +
+      '<div class="gm-prize-mult">' + esc(pr.mult) + '</div></div>';
+  }).join('');
+
   document.getElementById('gm-paytable').innerHTML = g.paytable.map(function(pt){
+    var lib = getSymLib();
     var symHtml;
-    if (getSymLib() && pt.symbol && getSymLib()[pt.symbol]) {
-      var svg = getSymLib()[pt.symbol]();
-      symHtml = '<span class="gm-sym-inline">' + svg + '</span>'
-              + '<span class="gm-sym-inline">' + svg + '</span>'
-              + '<span class="gm-sym-inline">' + svg + '</span>';
+    if (lib && pt.symbol && lib[pt.symbol]) {
+      var svg = lib[pt.symbol]();
+      symHtml = '<span class="gm-sym-inline">' + svg + '</span>' +
+                '<span class="gm-sym-inline">' + svg + '</span>' +
+                '<span class="gm-sym-inline">' + svg + '</span>';
     } else {
       symHtml = esc(pt.combo || '');
     }
     return '<tr><td class="gm-combo">' + symHtml + '</td><td>' + esc(pt.mult) + '</td></tr>';
   }).join('');
+
   var infoHtml = '';
-  for (var k in g.info) { if (g.info.hasOwnProperty(k)) infoHtml += '<dt>' + esc(k) + '</dt><dd>' + esc(g.info[k]) + '</dd>'; }
+  for (var k in g.info) {
+    if (g.info.hasOwnProperty(k)) infoHtml += '<dt>' + esc(k) + '</dt><dd>' + esc(g.info[k]) + '</dd>';
+  }
   document.getElementById('gm-info').innerHTML = infoHtml;
+
   renderCarousel();
 }
 
-/* 收藏（金色星星） */
+/* ---------- 收藏 ---------- */
 var FAV_KEY = 'apex_fav_games';
 function loadFav(){ try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch(e){ return []; } }
 function saveFav(a){ try { localStorage.setItem(FAV_KEY, JSON.stringify(a)); } catch(e){} }
@@ -207,6 +178,7 @@ function updateFavUI(){
   else { b.classList.remove('active'); i.className = 'ri-star-line'; }
 }
 
+/* ---------- 事件 ---------- */
 function bindEvents() {
   document.getElementById('gm-fav').addEventListener('click', function(){
     var arr = loadFav(); var idx = arr.indexOf(id);
@@ -221,6 +193,7 @@ function bindEvents() {
     location.href = currentGame().route.html + '?mode=real';
   });
   document.getElementById('gm-more').addEventListener('click', function(){ alert('更多操作开发中'); });
+
   var back = document.getElementById('gm-back');
   if (back) back.addEventListener('click', function(e){
     e.preventDefault();
