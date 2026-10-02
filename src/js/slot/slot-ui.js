@@ -92,10 +92,47 @@ function remoteSpin(betAmt, totalWin){
 
 /* ---- 网格 ---- */
 function buildGrid(){
-  var box = $('reels'); box.innerHTML='';
+  var box = $('reels');
+  var svg = document.getElementById('win-lines');
+  box.innerHTML='';
+  if (!svg) {
+    svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('class','win-lines');
+    svg.id='win-lines';
+    svg.setAttribute('preserveAspectRatio','none');
+  }
+  box.appendChild(svg);
   for (var i=0;i<9;i++){ var c=document.createElement('div'); c.className='cell'; box.appendChild(c); }
 }
 function cellAt(r,c){ return document.querySelectorAll('#reels .cell')[r*3+c]; }
+function drawWinLines(wins){
+  var svg = document.getElementById('win-lines');
+  if (!svg) return;
+  var box = document.getElementById('reels');
+  var boxRect = box.getBoundingClientRect();
+  svg.setAttribute('viewBox', '0 0 ' + boxRect.width + ' ' + boxRect.height);
+  var cells = document.querySelectorAll('#reels .cell');
+  var html = '';
+  wins.forEach(function(w){
+    var pts = w.positions.map(function(p){
+      var cell = cells[p.row * 3 + p.col]; if (!cell) return null;
+      var r = cell.getBoundingClientRect();
+      return { x: r.left - boxRect.left + r.width/2, y: r.top - boxRect.top + r.height/2 };
+    }).filter(Boolean);
+    if (pts.length < 2) return;
+    var d = 'M' + pts.map(function(pt){ return pt.x + ' ' + pt.y; }).join(' L');
+    html += '<path d="' + d + '"/>';
+    pts.forEach(function(pt, i){
+      html += '<circle cx="' + pt.x + '" cy="' + pt.y + '" style="animation-delay:' + (i*0.1) + 's"/>';
+    });
+  });
+  svg.innerHTML = html;
+}
+function clearWinLines(){
+  var svg = document.getElementById('win-lines');
+  if (svg) svg.innerHTML = '';
+}
+
 function paintColStatic(col, syms){
   for (var r=0;r<3;r++){ var el=cellAt(r,col); var fn=S[syms[r]]; el.innerHTML=fn?fn():'';
     el.classList.remove('spinning','settling','winning'); }
@@ -152,6 +189,7 @@ function doSpin(){
     var sb=$('spin'); sb.classList.add('shake'); setTimeout(function(){ sb.classList.remove('shake'); },420);
     stopAuto(); return;
   }
+  clearWinLines();
   document.querySelectorAll('#reels .cell').forEach(function(c){ c.classList.remove('winning','settling'); });
   renderWin(0);
   state.spinning=true;
@@ -191,6 +229,7 @@ function showResult(result, bAmt, grid){
     result.wins.forEach(function(w){ w.positions.forEach(function(p){
       var el=cellAt(p.row,p.col); if (el) el.classList.add('winning');
     }); });
+    setTimeout(function(){ drawWinLines(result.wins); }, 80);
     var ratio=result.totalWin/bAmt;
     if (ratio>=10){ A.winBig(); flash(true); }
     else if (ratio>=2){ A.winMedium(); flash(false); }
