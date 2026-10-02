@@ -32,6 +32,22 @@ function pick(){
   return a[a.length - 1].id;
 }
 
+/* ---------- Tumble 补新符号：更集中的热门池 ---------- */
+var _tumblePool = null;
+function buildTumblePool(){
+  var arr = [], total = 0;
+  var W = { gemBlue: 50, gemGreen: 45, gemYellow: 30, gemPurple: 10, gemRed: 5,
+            cup: 2, ring: 1.2, hourglass: 0.8, crown: 0.4, zeus: 0.5 };
+  for (var k in W) { total += W[k]; arr.push({ id: k, cum: total }); }
+  _tumblePool = { arr: arr, total: total };
+}
+function pickTumble(){
+  if (!_tumblePool) buildTumblePool();
+  var t = randFloat() * _tumblePool.total, a = _tumblePool.arr;
+  for (var i = 0; i < a.length; i++) if (t < a[i].cum) return a[i].id;
+  return a[a.length - 1].id;
+}
+
 /* ---------- 网格生成 ---------- */
 function spin(){
   var g = [];
@@ -129,7 +145,7 @@ function tumble(grid, winCells){
       stack.push(grid[r2][c]);
     }
     for (var i = 0; i < stack.length; i++) out[R-1-i][c] = stack[i];
-    for (var k = 0; k < R - stack.length; k++) out[k][c] = pick();
+    for (var k = 0; k < R - stack.length; k++) out[k][c] = pickTumble();
   }
   return out;
 }
@@ -164,8 +180,10 @@ function playFullSpin(totalBet){
       if (t === 0) rounds.push({ grid: grid, wins: [], roundWin: 0, multiplier: 0 });
       break;
     }
-    // 掉一个乘法器
-    var mult = pickMultiplier();
+    // 每回合掉 1~2 个乘法器，加法叠加
+    var multCount = (randFloat() < 0.4) ? 2 : 1;
+    var mult = 0;
+    for (var mc = 0; mc < multCount; mc++) mult += pickMultiplier();
     var roundWin = r.totalWin * mult;
     totalWin += roundWin;
 
