@@ -112,3 +112,6 @@
 
 /slot.html
   Cache-Control: no-store
+
+/olympus.html
+  Cache-Control: no-store
