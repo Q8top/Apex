@@ -308,3 +308,64 @@ html,body{
 .hist-summary>div{display:flex;justify-content:space-between;padding:8px 12px;
   background:var(--bg-2,#fafafa);border-radius:10px;font-size:12.5px;color:#555;}
 .hist-summary>div b{color:var(--ink);font-weight:800;}
+
+/* ============================================================
+   Fix v3: 允许滚动 + 防双击放大 + 底部不被遮
+   ============================================================ */
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+body {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+}
+* {
+  touch-action: manipulation;
+}
+
+#app {
+  height: auto !important;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding-top: 8px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+  overflow: visible !important;
+}
+
+/* 按钮禁止双击放大（iOS 400ms 问题） */
+button, .icon-btn, .bet-btn, .spin-btn, .foot-btn, .modal-x {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 底部按钮保证可见 */
+.foot {
+  margin-bottom: 8px;
+}
+
+/* 转轮区不再挤压 */
+.reels {
+  min-height: 240px;
+  max-height: 46vh;
+}
+
+@media (max-height: 780px) {
+  .reels { min-height: 200px; max-height: 40vh; }
+}
+@media (max-height: 700px) {
+  .reels { min-height: 180px; max-height: 36vh; }
+}
+
+/* 弹窗也允许滚动 */
+.modal-body {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
