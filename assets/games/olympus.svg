@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="og-bg" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f4f6"/>
+    </radialGradient>
+    <linearGradient id="og-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8c25c"/>
+      <stop offset="100%" stop-color="#b8892a"/>
+    </linearGradient>
+    <linearGradient id="og-purple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6a3fa8"/>
+      <stop offset="100%" stop-color="#3a1e6a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 外框：140×140 居中 -->
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#og-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
+
+  <!-- 内容缩到 60% 居中 -->
+  <g transform="translate(100,100) scale(0.6) translate(-100,-100)">
+    <!-- 紫色光晕 -->
+    <circle cx="100" cy="100" r="48" fill="url(#og-purple)" opacity=".15"/>
+
+    <!-- 金色闪电 -->
+    <path d="M112 50 L72 104 L92 104 L82 156 L124 98 L102 98 Z"
+          fill="url(#og-gold)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M112 50 L82 98 L92 98" fill="none" stroke="#fff8d0" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+
+    <!-- 皇冠 -->
+    <path d="M64 66 L64 52 L76 60 L88 48 L100 60 L112 52 L112 66 Z"
+          fill="url(#og-gold)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="88" cy="60" r="2" fill="#e5484d" stroke="#0a0a0a" stroke-width=".8"/>
+
+    <!-- 底部横线 -->
+    <rect x="82" y="160" width="36" height="3" rx="1.5" fill="#0a0a0a"/>
+  </g>
+</svg>

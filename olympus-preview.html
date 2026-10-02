@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图标预览</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  body { margin:0; padding:40px 20px; font-family:'Manrope',system-ui; background:#fafafa; }
+  h2 { text-align:center; font-size:16px; color:#555; margin-bottom:24px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:480px; margin:0 auto; }
+  .card { text-align:center; }
+  .cover { aspect-ratio:1/1; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.06), inset 0 0 0 1px #ececee; }
+  .cover > svg { width:100%; height:100%; display:block; }
+  .name { font-size:11.5px; margin-top:6px; color:#18181b; }
+</style>
+</head>
+<body>
+<h2>图标预览（幸运水果机 / 奥林匹斯之门）</h2>
+<div class="grid">
+  <div class="card">
+    <div class="cover" id="c1"></div>
+    <div class="name">幸运水果机</div>
+  </div>
+  <div class="card">
+    <div class="cover" id="c2"></div>
+    <div class="name">奥林匹斯之门</div>
+  </div>
+  <div class="card">
+    <div class="cover" id="c3"></div>
+    <div class="name">空占位</div>
+  </div>
+</div>
+<script>
+fetch('/assets/games/lucky-fruit.svg').then(r=>r.text()).then(t=>{document.getElementById('c1').innerHTML=t;});
+fetch('/assets/games/olympus.svg').then(r=>r.text()).then(t=>{document.getElementById('c2').innerHTML=t;});
+document.getElementById('c3').style.background='linear-gradient(135deg,#f8f8fa,#ececee)';
+</script>
+</body>
+</html>
