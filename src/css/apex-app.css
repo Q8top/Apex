@@ -814,3 +814,11 @@
 .apex-game-name {
   margin-top: -2px !important;
 }
+
+/* Fix v10: 名字上移 + 图标统一 */
+.apex-game-grid { row-gap: 6px !important; }
+.apex-game-name {
+  margin-top: -6px !important;
+  height: 14px !important;
+  line-height: 14px !important;
+}

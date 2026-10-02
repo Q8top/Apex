@@ -200,82 +200,47 @@ function doSpin(){
   var sb2 = $('ol-spin'); sb2.disabled = true; sb2.classList.add('spinning');
   A.spinStart();
 
+  // 安全兜底：5 秒后强制解锁
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
     if (state.spinning) {
-      console.warn('[Olympus] safety timeout');
+      console.warn('[Olympus] safety release');
       paintGrid(state.grid || E.spin(), false);
       releaseSpin();
       stopAuto();
     }
-  }, 6000);
+  }, 5000);
 
-  var result = (MODE === 'demo') ? E.spinDemo(b) : E.playFullSpin(b);
-  state.grid = result.finalGrid;
-  var firstGrid = result.rounds.length ? result.rounds[0].grid : result.finalGrid;
+  // 生成完整结果（同步，很快）
+  var result;
+  try {
+    result = (MODE === 'demo') ? E.spinDemo(b) : E.playFullSpin(b);
+    state.grid = result.finalGrid;
+  } catch (e) {
+    console.error('[Olympus] engine error:', e);
+    releaseSpin();
+    return;
+  }
 
-  // 阶段 1：6 列落停
-  var baseDelay = C.CONFIG.minSpinMs, stagger = 140;
-  var colDone = 0;
-
+  // 6 列落停动画
+  var baseDelay = 500, stagger = 130, done = 0;
   [0,1,2,3,4,5].forEach(function(c){
-    var dur = baseDelay + c * stagger * 1.4;
+    var dur = baseDelay + c * stagger;
     spinReel(c, dur, function(){
-      colDone++;
-      if (colDone === 6) {
-        paintGrid(firstGrid, false);
-        setTimeout(function(){ playRounds(result, b); }, 250);
+      done++;
+      if (done === 6) {
+        // 落停后直接显示最终结果 + 高亮所有中奖格
+        paintGrid(result.finalGrid, false);
+        var allWins = [];
+        result.rounds.forEach(function(rd){
+          if (rd.wins) rd.wins.forEach(function(w){ w.cells.forEach(function(p){ allWins.push(p); }); });
+        });
+        if (allWins.length) highlightCells(allWins, true);
+        renderWin(result.totalWin, '');
+        setTimeout(function(){ finish(result.totalWin); }, 500);
       }
     });
   });
-}
-
-/* 逐轮播放（非递归，用 setTimeout 链式） */
-function playRounds(result, betAmt){
-  var rounds = result.rounds;
-  var totalShown = 0;
-  var i = 0;
-
-  function playOne(){
-    if (i >= rounds.length) {
-      finish(totalShown);
-      return;
-    }
-    var rd = rounds[i];
-    if (!rd || !rd.wins || rd.wins.length === 0) {
-      i++;
-      playOne();
-      return;
-    }
-    // 收集本回合中奖格
-    var cells = [];
-    rd.wins.forEach(function(w){ w.cells.forEach(function(p){ cells.push(p); }); });
-
-    // 高亮 + 计数
-    highlightCells(cells, true);
-    totalShown += rd.roundWin;
-    renderWin(totalShown, '×' + rd.multiplier + ' 连击');
-    A.tumble();
-
-    // 450ms 后消失，进入下一轮
-    setTimeout(function(){
-      cells.forEach(function(p){
-        var el = cellAt(p[0], p[1]);
-        if (el) el.classList.add('popping');
-      });
-      setTimeout(function(){
-        highlightCells(cells, false);
-        i++;
-        if (i < rounds.length && rounds[i] && rounds[i].grid) {
-          paintGrid(rounds[i].grid, true);
-          setTimeout(playOne, 280);
-        } else {
-          finish(totalShown);
-        }
-      }, 220);
-    }, 450);
-  }
-  playOne();
 }
 
 function releaseSpin(){
