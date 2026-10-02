@@ -12,6 +12,7 @@ var enabled = true;
 var VOLUME = 0.55;
 
 function init(){
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
   if (ctx) {
     if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
     return true;
