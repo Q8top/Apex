@@ -191,7 +191,6 @@ function doSpin(){
     stopAuto(); return;
   }
 
-  // 清空状态
   document.querySelectorAll('#ol-grid .ol-cell').forEach(function(c){
     c.classList.remove('winning', 'popping', 'dropping');
   });
@@ -201,113 +200,82 @@ function doSpin(){
   var sb2 = $('ol-spin'); sb2.disabled = true; sb2.classList.add('spinning');
   A.spinStart();
 
-  // 安全兜底：10 秒内未完成强制结束
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
     if (state.spinning) {
-      console.warn('[Olympus] spin safety timeout');
-      state.spinning = false;
-      var sb = $('ol-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
+      console.warn('[Olympus] safety timeout');
+      paintGrid(state.grid || E.spin(), false);
+      releaseSpin();
+      stopAuto();
     }
-  }, 10000);
+  }, 6000);
 
-  // 生成完整结果（含 tumble）
   var result = (MODE === 'demo') ? E.spinDemo(b) : E.playFullSpin(b);
   state.grid = result.finalGrid;
+  var firstGrid = result.rounds.length ? result.rounds[0].grid : result.finalGrid;
 
   // 阶段 1：6 列落停
   var baseDelay = C.CONFIG.minSpinMs, stagger = 140;
   var colDone = 0;
-  var finalGrid = result.rounds.length ? result.rounds[0].grid : result.finalGrid;
 
   [0,1,2,3,4,5].forEach(function(c){
     var dur = baseDelay + c * stagger * 1.4;
     spinReel(c, dur, function(){
       colDone++;
       if (colDone === 6) {
-        // 落停后显示第一轮结果
-        paintGrid(finalGrid, false);
-        setTimeout(function(){ runTumbleSequence(result, b); }, 300);
+        paintGrid(firstGrid, false);
+        setTimeout(function(){ playRounds(result, b); }, 250);
       }
     });
   });
 }
 
-/* 逐轮展示 tumble */
-function runTumbleSequence(result, betAmt){
+/* 逐轮播放（非递归，用 setTimeout 链式） */
+function playRounds(result, betAmt){
   var rounds = result.rounds;
-  var i = 0;
   var totalShown = 0;
+  var i = 0;
 
-  function next(){
+  function playOne(){
     if (i >= rounds.length) {
       finish(totalShown);
       return;
     }
     var rd = rounds[i];
-    if (rd.wins.length === 0) {
-      // 无中奖，直接结束
+    if (!rd || !rd.wins || rd.wins.length === 0) {
       i++;
-      next();
+      playOne();
       return;
     }
-    // 高亮中奖格
+    // 收集本回合中奖格
     var cells = [];
     rd.wins.forEach(function(w){ w.cells.forEach(function(p){ cells.push(p); }); });
+
+    // 高亮 + 计数
     highlightCells(cells, true);
     totalShown += rd.roundWin;
     renderWin(totalShown, '×' + rd.multiplier + ' 连击');
     A.tumble();
 
-    // 0.7s 后 pop + 进入下一轮
+    // 450ms 后消失，进入下一轮
     setTimeout(function(){
-      popCells(cells).then(function(){
+      cells.forEach(function(p){
+        var el = cellAt(p[0], p[1]);
+        if (el) el.classList.add('popping');
+      });
+      setTimeout(function(){
         highlightCells(cells, false);
         i++;
-        if (i < rounds.length && rounds[i].grid) {
+        if (i < rounds.length && rounds[i] && rounds[i].grid) {
           paintGrid(rounds[i].grid, true);
-          setTimeout(next, 280);
+          setTimeout(playOne, 280);
         } else {
           finish(totalShown);
         }
-      });
+      }, 220);
     }, 450);
   }
-  next();
-}
-
-function finish(totalWin){
-  // 结算
-  if (MODE === 'demo') {
-    state.balance = state.balance - bet() + totalWin;
-    renderBalance(); saveDemo();
-    afterSettle(totalWin);
-  } else {
-    remoteSpin(bet(), totalWin).then(function(res){
-      if (res.ok) { state.balance = res.balance; renderBalance(); afterSettle(totalWin); }
-      else if (res.reason === 'NO_BALANCE') { toast('余额不足，请充值'); state.balance = 0; renderBalance(); releaseSpin(); stopAuto(); }
-      else { toast('结算失败，请稍后重试'); releaseSpin(); stopAuto(); }
-    });
-  }
-}
-
-function afterSettle(totalWin){
-  if (totalWin > 0) {
-    bump($('ol-balance'));
-    var ratio = totalWin / bet();
-    if (ratio >= 10) { A.winBig(); showCelebrate(ratio, totalWin); }
-    else if (ratio >= 2) { A.winMedium(); showCelebrate(ratio, totalWin); }
-    else { A.winSmall(); }
-  } else {
-    A.lose();
-  }
-  // 记录
-  state.history.unshift({bet: bet(), win: totalWin, delta: totalWin - bet(), ts: Date.now(), mode: MODE});
-  state.history = state.history.slice(0, 30);
-  saveHistory();
-
-  releaseSpin();
-  if (state.autoOn) setTimeout(function(){ if (state.autoOn) doSpin(); }, 900);
+  playOne();
 }
 
 function releaseSpin(){

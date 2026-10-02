@@ -1,36 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 30 140 140" width="200" height="200">
   <defs>
-    <radialGradient id="ol-bg5" cx="50%" cy="35%" r="75%">
-      <stop offset="0%" stop-color="#8a5dd0"/>
-      <stop offset="100%" stop-color="#2a1650"/>
-    </radialGradient>
-    <linearGradient id="ol-gold5" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fff3b8"/>
-      <stop offset="40%" stop-color="#f0c33e"/>
-      <stop offset="100%" stop-color="#a07020"/>
+    <linearGradient id="ol-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8c25c"/>
+      <stop offset="100%" stop-color="#c49a2f"/>
     </linearGradient>
   </defs>
 
-  <!-- 紫底卡片（与 lucky-fruit 对齐内缩） -->
-  <rect x="42" y="42" width="116" height="116" rx="26" fill="url(#ol-bg5)"/>
+  <!-- 白底卡片（与 lucky-fruit 完全相同的 116x116 圆角方块） -->
+  <rect x="42" y="42" width="116" height="116" rx="26" fill="#ffffff"/>
   <rect x="42.5" y="42.5" width="115" height="115" rx="25.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="48" y="48" width="104" height="104" rx="20" fill="none" stroke="rgba(240,200,80,.45)" stroke-width="1"/>
+  <rect x="48" y="48" width="104" height="104" rx="20" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
 
-  <!-- 光晕 -->
-  <circle cx="100" cy="102" r="34" fill="rgba(255,240,180,.12)"/>
+  <!-- 闪电（扁平黑描边 + 单色金填充，与 lucky-fruit 同风格） -->
+  <path d="M108 58 L76 100 L92 100 L86 144 L118 96 L100 96 Z"
+        fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>
 
-  <!-- 金色闪电（更精致：双段折线 + 内高光） -->
-  <path d="M106 56 L74 100 L90 100 L84 146 L118 96 L100 96 Z"
-        fill="url(#ol-gold5)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/>
-  <path d="M106 56 L80 94 L90 94" fill="none" stroke="#fff8d0" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+  <!-- 顶部小皇冠（同黑描边金填充） -->
+  <path d="M64 70 L64 60 L72 66 L82 56 L92 66 L100 60 L100 70 Z"
+        fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="82" cy="65" r="1.6" fill="#e5484d" stroke="#0a0a0a" stroke-width=".7"/>
 
-  <!-- 顶部小皇冠 -->
-  <path d="M66 70 L66 60 L74 65 L82 56 L90 65 L98 60 L98 70 Z"
-        fill="url(#ol-gold5)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
-  <circle cx="82" cy="65" r="1.4" fill="#e5484d" stroke="#0a0a0a" stroke-width=".6"/>
-
-  <!-- 星点 -->
-  <circle cx="130" cy="72" r="1.6" fill="#fff3b8"/>
-  <circle cx="62" cy="140" r="1.4" fill="#fff3b8" opacity=".8"/>
-  <circle cx="128" cy="132" r="1.2" fill="#fff3b8" opacity=".65"/>
+  <!-- 底部横线装饰（对应 lucky-fruit 的投币口） -->
+  <rect x="88" y="146" width="24" height="3" rx="1.5" fill="#0a0a0a"/>
 </svg>

@@ -46,7 +46,7 @@ var CONFIG = {
   defaultBetIndex: 3,
   baseCellBet: 30,
   reelStopDelayMs: 200,
-  minSpinMs: 800
+  minSpinMs: 550
 };
 
 window.OlympusConfig = {
