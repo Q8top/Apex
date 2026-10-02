@@ -1,60 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
-    <radialGradient id="ol-bg" cx="50%" cy="35%" r="75%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f4f4f6"/>
-    </radialGradient>
     <linearGradient id="ol-gold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f0d878"/>
       <stop offset="45%" stop-color="#d9b04a"/>
       <stop offset="100%" stop-color="#a87c1c"/>
     </linearGradient>
-    <linearGradient id="ol-gold-hl" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fff8d0"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </linearGradient>
-    <radialGradient id="ol-purple-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#6a3fa8" stop-opacity=".25"/>
+    <radialGradient id="ol-glow" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#6a3fa8" stop-opacity=".22"/>
       <stop offset="100%" stop-color="#6a3fa8" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <!-- 外框 -->
-  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#ol-bg)"/>
-  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(201,162,39,.35)" stroke-width="1"/>
-
-  <!-- 内容缩到 60% 居中 -->
-  <g transform="translate(100,100) scale(0.6) translate(-100,-100)">
+  <g>
     <!-- 紫色光晕 -->
-    <circle cx="100" cy="102" r="54" fill="url(#ol-purple-glow)"/>
+    <circle cx="100" cy="105" r="58" fill="url(#ol-glow)"/>
 
-    <!-- 闪电外层（阴影） -->
-    <path d="M114 46 L70 106 L92 106 L80 160 L128 96 L104 96 Z"
-          fill="#8a6020" opacity=".35" transform="translate(2,2)"/>
+    <!-- 闪电阴影 -->
+    <path d="M116 54 L70 108 L92 108 L80 158 L128 100 L104 100 Z"
+          fill="#8a6020" opacity=".22" transform="translate(3,3)"/>
     <!-- 闪电主体 -->
-    <path d="M114 46 L70 106 L92 106 L80 160 L128 96 L104 96 Z"
+    <path d="M116 54 L70 108 L92 108 L80 158 L128 100 L104 100 Z"
           fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
-    <!-- 闪电内高光 -->
-    <path d="M114 46 L88 88 L98 88 L92 118" fill="none" stroke="url(#ol-gold-hl)" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
+    <!-- 内高光 -->
+    <path d="M116 54 L88 90 L98 90" fill="none" stroke="#fff8d0" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
 
-    <!-- 皇冠（更精致） -->
-    <path d="M60 68 L60 50 L74 60 L88 46 L102 60 L116 50 L116 68 Z"
+    <!-- 皇冠 -->
+    <path d="M60 70 L60 50 L74 60 L88 46 L102 60 L116 50 L116 70 Z"
           fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/>
-    <!-- 皇冠底边 -->
-    <rect x="60" y="68" width="56" height="6" rx="2" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <!-- 皇冠宝石 -->
+    <rect x="60" y="70" width="56" height="6" rx="2" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1.6"/>
     <circle cx="88" cy="58" r="2.4" fill="#e5484d" stroke="#0a0a0a" stroke-width=".9"/>
-    <circle cx="72" cy="63" r="1.6" fill="#4a90d0" stroke="#0a0a0a" stroke-width=".7"/>
-    <circle cx="104" cy="63" r="1.6" fill="#3f9a4a" stroke="#0a0a0a" stroke-width=".7"/>
-    <!-- 皇冠高光 -->
-    <path d="M66 54 L74 60" stroke="#fff8d0" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".75"/>
+    <circle cx="72" cy="64" r="1.6" fill="#4a90d0" stroke="#0a0a0a" stroke-width=".7"/>
+    <circle cx="104" cy="64" r="1.6" fill="#3f9a4a" stroke="#0a0a0a" stroke-width=".7"/>
 
-    <!-- 底部横线 -->
-    <rect x="82" y="164" width="36" height="3" rx="1.5" fill="#0a0a0a"/>
+    <!-- 底部投币口（与 lucky-fruit 呼应） -->
+    <rect x="82" y="162" width="36" height="3" rx="1.5" fill="#0a0a0a"/>
 
-    <!-- 星点装饰 -->
-    <circle cx="140" cy="80" r="1.8" fill="#d9b04a"/>
-    <circle cx="62" cy="130" r="1.4" fill="#d9b04a" opacity=".7"/>
+    <!-- 星点 -->
+    <circle cx="146" cy="82" r="1.8" fill="#d9b04a"/>
+    <circle cx="56" cy="128" r="1.4" fill="#d9b04a" opacity=".7"/>
   </g>
 </svg>
