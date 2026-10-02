@@ -37,9 +37,16 @@ var GAMES = {
       '中奖金额 = 对应符号赔率 × 单线下注额'
     ],
     prizes: [
-      { symbol: 'cherry', mult: '×14' },
-      { symbol: 'lemon', mult: '×22' },
-      { symbol: 'seven', mult: '×280' }
+      { symbol: 'cherry',      mult: '×14' },
+      { symbol: 'lemon',       mult: '×22' },
+      { symbol: 'orange',      mult: '×28' },
+      { symbol: 'grape',       mult: '×42' },
+      { symbol: 'watermelon',  mult: '×56' },
+      { symbol: 'bell',        mult: '×84' },
+      { symbol: 'bar',         mult: '×140' },
+      { symbol: 'seven',       mult: '×280' },
+      { symbol: 'goldenSeven', mult: '×700' },
+      { symbol: 'wild',        mult: '×840' }
     ],
     paytable: [
       { symbol: 'cherry', mult: '×14' },
@@ -81,9 +88,16 @@ var GAMES = {
       '免费旋转中每次 Tumble 后可能额外掉落 Zeus，继续累积倍数'
     ],
     prizes: [
-      { symbol: 'gemBlue', mult: '8个×0.25' },
-      { symbol: 'gemRed', mult: '8个×1.00' },
-      { symbol: 'crown', mult: '8个×10.00' }
+      { symbol: 'gemBlue',   mult: '8个×0.25' },
+      { symbol: 'gemGreen',  mult: '8个×0.4' },
+      { symbol: 'gemYellow', mult: '8个×0.5' },
+      { symbol: 'gemPurple', mult: '8个×0.8' },
+      { symbol: 'gemRed',    mult: '8个×1' },
+      { symbol: 'cup',       mult: '8个×1.5' },
+      { symbol: 'ring',      mult: '8个×2' },
+      { symbol: 'hourglass', mult: '8个×2.5' },
+      { symbol: 'crown',     mult: '8个×10' },
+      { symbol: 'zeus',      mult: '4个→FS' }
     ],
     paytable: [
       { symbol: 'gemBlue',    mult: '8-9个×0.25 · 10-11个×0.75 · 12+个×2' },
@@ -125,9 +139,18 @@ var GAMES = {
       '免费旋转中每次 Tumble 会掉落炸弹倍数（×2 ~ ×100），跨轮累积后与赢分相乘'
     ],
     prizes: [
-      { symbol: 'candyBlue', mult: '8个×0.25' },
-      { symbol: 'banana', mult: '8个×2' },
-      { symbol: 'plum', mult: '8个×10' }
+      { symbol: 'candyBlue',   mult: '8个×0.25' },
+      { symbol: 'candyGreen',  mult: '8个×0.4' },
+      { symbol: 'candyPurple', mult: '8个×0.5' },
+      { symbol: 'candyRed',    mult: '8个×0.8' },
+      { symbol: 'candyOrange', mult: '8个×1' },
+      { symbol: 'candyYellow', mult: '8个×1.5' },
+      { symbol: 'banana',      mult: '8个×2' },
+      { symbol: 'grape',       mult: '8个×2.5' },
+      { symbol: 'watermelon',  mult: '8个×5' },
+      { symbol: 'apple',       mult: '8个×8' },
+      { symbol: 'plum',        mult: '8个×10' },
+      { symbol: 'lollipop',    mult: '4个→FS' }
     ],
     paytable: [
       { symbol: 'candyBlue',    mult: '8-9个×0.25 · 10-11个×0.75 · 12+个×2' },
@@ -171,9 +194,15 @@ var GAMES = {
       '免费旋转中每次 Tumble 也会持续附加位置倍率，倍数可长期累积'
     ],
     prizes: [
-      { symbol: 'candyBlue', mult: '5个×0.2' },
-      { symbol: 'heart', mult: '5个×0.8' },
-      { symbol: 'rainbow', mult: '15个×250' }
+      { symbol: 'candyBlue',   mult: '5个×0.2' },
+      { symbol: 'candyGreen',  mult: '5个×0.25' },
+      { symbol: 'candyYellow', mult: '5个×0.3' },
+      { symbol: 'candyRed',    mult: '5个×0.4' },
+      { symbol: 'candyPurple', mult: '5个×0.5' },
+      { symbol: 'heart',       mult: '5个×0.8' },
+      { symbol: 'star',        mult: '5个×1' },
+      { symbol: 'rainbow',     mult: '5个×2' },
+      { symbol: 'lollipop',    mult: '3个→FS' }
     ],
     paytable: [
       { symbol: 'candyBlue',   mult: '5-6个×0.2 · 7-8个×0.5 · 9-10个×1.5 · 11-12个×3 · 13-14个×6 · 15+个×15' },
@@ -215,9 +244,16 @@ var GAMES = {
       '免费旋转中每次 Tumble 后可能额外掉落星星，继续累积倍数'
     ],
     prizes: [
-      { symbol: 'gemBlue', mult: '8个×0.25' },
-      { symbol: 'gemRed', mult: '8个×1.00' },
-      { symbol: 'heart', mult: '8个×10.00' }
+      { symbol: 'gemBlue',   mult: '8个×0.25' },
+      { symbol: 'gemGreen',  mult: '8个×0.4' },
+      { symbol: 'gemYellow', mult: '8个×0.5' },
+      { symbol: 'gemPurple', mult: '8个×0.8' },
+      { symbol: 'gemRed',    mult: '8个×1' },
+      { symbol: 'moon',      mult: '8个×1.5' },
+      { symbol: 'crown',     mult: '8个×2' },
+      { symbol: 'princess',  mult: '8个×2.5' },
+      { symbol: 'heart',     mult: '8个×10' },
+      { symbol: 'star',      mult: '4个→FS' }
     ],
     paytable: [
       { symbol: 'gemBlue',    mult: '8-9个×0.25 · 10-11个×0.75 · 12+个×2' },
@@ -260,16 +296,24 @@ var GAMES = {
       '免费旋转分 3 档：收集倍数 ×1 / ×2 / ×3，4 个渔民升一档 +10 次'
     ],
     prizes: [
-      { symbol: 'ten', mult: '3个×0.2' },
-      { symbol: 'bass', mult: '3个×10' },
-      { symbol: 'fisherman', mult: '3个→免费旋转 10 次' }
+      { symbol: 'ten',        mult: '3个×0.2' },
+      { symbol: 'jack',       mult: '3个×0.2' },
+      { symbol: 'queen',      mult: '3个×0.5' },
+      { symbol: 'king',       mult: '3个×0.5' },
+      { symbol: 'ace',        mult: '3个×1' },
+      { symbol: 'fishingRod', mult: '3个×1' },
+      { symbol: 'tackleBox',  mult: '3个×2' },
+      { symbol: 'dragonfly',  mult: '3个×5' },
+      { symbol: 'bass',       mult: '3个×10' },
+      { symbol: 'fisherman',  mult: '3个→FS' },
+      { symbol: 'moneyFish',  mult: '×0.2~2000' }
     ],
     paytable: [
-      { symbol: 'ten',   mult: '3个×0.2 · 4个×0.5 · 5个×2' },
-      { symbol: 'jack',  mult: '3个×0.2 · 4个×0.5 · 5个×2' },
-      { symbol: 'queen', mult: '3个×0.5 · 4个×1 · 5个×5' },
-      { symbol: 'king',  mult: '3个×0.5 · 4个×1 · 5个×5' },
-      { symbol: 'ace',   mult: '3个×1 · 4个×2 · 5个×10' },
+      { symbol: 'ten',        mult: '3个×0.2 · 4个×0.5 · 5个×2' },
+      { symbol: 'jack',       mult: '3个×0.2 · 4个×0.5 · 5个×2' },
+      { symbol: 'queen',      mult: '3个×0.5 · 4个×1 · 5个×5' },
+      { symbol: 'king',       mult: '3个×0.5 · 4个×1 · 5个×5' },
+      { symbol: 'ace',        mult: '3个×1 · 4个×2 · 5个×10' },
       { symbol: 'fishingRod', mult: '3个×1 · 4个×2.5 · 5个×15' },
       { symbol: 'tackleBox',  mult: '3个×2 · 4个×10 · 5个×40' },
       { symbol: 'dragonfly',  mult: '3个×5 · 4个×15 · 5个×75' },
