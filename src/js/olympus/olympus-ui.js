@@ -22,6 +22,10 @@ var state = {
   autoOn: false, soundOn: true, ready: false, safetyTimer: null
 };
 
+function safeAudioCall(fn, name){
+  try { if (typeof fn === "function") fn(); }
+  catch(e){ console.warn("[Olympus] audio error @ " + name + ":", e && e.message); }
+}
 function $(id){ return document.getElementById(id); }
 function fmt(n, sign){
   var v = Math.round(n * 100) / 100;
@@ -173,7 +177,7 @@ function spinReel(c, duration, onDone){
     }
     if (el < duration) requestAnimationFrame(loop);
     else {
-      A.reelStop(c);
+      safeAudioCall(function(){ A.reelStop(c); }, "reelStop");
       if (onDone) onDone();
     }
   }
@@ -185,7 +189,7 @@ function doSpin(){
   if (state.spinning || !state.ready) return;
   var b = bet();
   if (state.balance < b) {
-    A.lose(); toast('余额不足' + (MODE === 'demo' ? '，请重置' : '，请充值'));
+    safeAudioCall(A.lose, "lose"); toast('余额不足' + (MODE === 'demo' ? '，请重置' : '，请充值'));
     var sb = $('ol-spin'); sb.classList.add('shake');
     setTimeout(function(){ sb.classList.remove('shake'); }, 420);
     stopAuto(); return;
@@ -198,7 +202,7 @@ function doSpin(){
 
   state.spinning = true;
   var sb2 = $('ol-spin'); sb2.disabled = true; sb2.classList.add('spinning');
-  A.spinStart();
+  safeAudioCall(A.spinStart, "spinStart");
 
   // 安全兜底：5 秒后强制解锁
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
@@ -270,7 +274,7 @@ function changeBet(dir){
   if (n < 0) n = 0;
   if (n >= C.CONFIG.betSteps.length) n = C.CONFIG.betSteps.length - 1;
   if (n === state.betIndex) return;
-  state.betIndex = n; renderBet(); A.click();
+  state.betIndex = n; renderBet(); safeAudioCall(A.click, "click");
   if (MODE === 'demo') saveDemo();
 }
 
@@ -338,7 +342,7 @@ function actionMode(){
 function toggleSound(){
   state.soundOn = !state.soundOn; A.enabled(state.soundOn);
   $('ol-sound').style.opacity = state.soundOn ? '1' : '0.35';
-  saveSettings(); if (state.soundOn) A.click();
+  saveSettings(); if (state.soundOn) safeAudioCall(A.click, "click");
 }
 
 /* ---------- 绑定 ---------- */
