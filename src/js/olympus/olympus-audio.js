@@ -175,6 +175,35 @@ function coinDrop(count, when){
   }
 }
 
+/* 合成人声 "Oh Zeus!" —— 强制女声 + 高亢拖尾 */
+var FEMALE_NAMES = ['Samantha','Victoria','Karen','Moira','Tessa','Serena','Allison','Ava','Susan','Zira','Jenny','Aria','Female','Woman','女'];
+function speakZeus(){
+  if (!enabled) return;
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance('Oh Zeus');
+    u.lang = 'en-US';
+    u.pitch = 1.5;
+    u.rate = 0.7;
+    u.volume = 0.85;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var female = null;
+    for (var i = 0; i < voices.length; i++) {
+      var v = voices[i];
+      if (!v.lang || v.lang.toLowerCase().indexOf('en') !== 0) continue;
+      var nm = String(v.name || '');
+      for (var j = 0; j < FEMALE_NAMES.length; j++) {
+        if (nm.indexOf(FEMALE_NAMES[j]) !== -1) { female = v; break; }
+      }
+      if (female) break;
+      if (/female/i.test(nm)) { female = v; break; }
+    }
+    if (female) u.voice = female;
+    window.speechSynthesis.speak(u);
+  } catch(e) {}
+}
+function rand01(){ var b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] / 4294967296; }
 var API = {
   init: init,
   enabled: function(v){
@@ -205,6 +234,8 @@ var API = {
     stringPad(329.63, .8, .06, t + .12);
     // 上升箭头
     tone(880, .35, .06, t + .2, 'sine', 1760, true);
+    // 30% 概率随机喊 "Oh Zeus!"
+    if (rand01() < 0.3) setTimeout(speakZeus, 200);
   },
 
   /* 停列：FM 金属咔 + 短促弦乐 */
@@ -262,6 +293,8 @@ var API = {
     });
     // 金币雨
     coinDrop(20, t + .5);
+    // 大赢喊 "Oh Zeus!"
+    setTimeout(speakZeus, 400);
   },
 
   lose: function(){
