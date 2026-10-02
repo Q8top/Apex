@@ -28,6 +28,7 @@ function fmt(n, sign){
   return (sign && v > 0 ? '+' : '') + '¥' + s;
 }
 function bet(){ return C.CONFIG.betSteps[state.betIndex]; }
+function bump(el){ if (!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
 function toast(m, ms){
   var t = $('ol-toast'); t.textContent = m; t.classList.add('show');
   clearTimeout(t._timer); t._timer = setTimeout(function(){ t.classList.remove('show'); }, ms || 1500);
@@ -84,7 +85,7 @@ function highlightCells(cells, on){
 }
 
 /* 渲染 */
-function renderBalance(){ $('ol-balance').textContent = fmt(state.balance); }
+function renderBalance(animate){ $('ol-balance').textContent = fmt(state.balance); if (animate) bump($('ol-balance')); }
 function renderBet(){
   $('ol-bet').textContent = fmt(bet());
   $('ol-bet-txt').textContent = '下注 ' + fmt(bet());
@@ -93,6 +94,7 @@ function renderWin(amount, combo){
   var el = $('ol-win-value');
   el.textContent = amount > 0 ? fmt(amount, true) : fmt(0);
   el.classList.toggle('winning', amount > 0);
+  if (amount > 0) { el.classList.remove('pulsing'); void el.offsetWidth; el.classList.add('pulsing'); }
   $('ol-win-label').textContent = amount > 0 ? '恭喜中奖' : '本局中奖';
   var cb = $('ol-combo');
   if (combo) { cb.textContent = combo; cb.classList.add('show'); }
@@ -261,6 +263,7 @@ function finish(totalWin){
 }
 
 function afterSettle(totalWin){
+  if (totalWin > 0) { bump($('ol-balance')); bump($('ol-won')); }
   if (totalWin > 0) {
     var ratio = totalWin / bet();
     if (ratio >= 10) { safeAudio(A.winBig, 'winBig'); showCelebrate(ratio, totalWin); }
