@@ -115,3 +115,6 @@
 
 /olympus.html
   Cache-Control: no-store
+
+/tts-preview.html
+  Cache-Control: no-store
