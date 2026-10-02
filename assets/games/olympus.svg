@@ -1,37 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 30 140 140" width="200" height="200">
   <defs>
-    <radialGradient id="ol-bg" cx="50%" cy="35%" r="75%">
+    <radialGradient id="ol-bg2" cx="50%" cy="35%" r="75%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="100%" stop-color="#f4f4f6"/>
     </radialGradient>
-    <linearGradient id="ol-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e8c25c"/>
-      <stop offset="100%" stop-color="#c49a2f"/>
+    <linearGradient id="ol-gold2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0d878"/>
+      <stop offset="100%" stop-color="#b88b24"/>
+    </linearGradient>
+    <linearGradient id="ol-royal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6a3fa8"/>
+      <stop offset="100%" stop-color="#2a1650"/>
     </linearGradient>
   </defs>
 
-  <!-- 背景 -->
-  <rect x="32" y="32" width="136" height="136" rx="24" fill="url(#ol-bg)"/>
-  <rect x="32.5" y="32.5" width="135" height="135" rx="23.5" fill="none" stroke="#e5e5e7" stroke-width="1"/>
+  <!-- 背景卡片 -->
+  <rect x="32" y="32" width="136" height="136" rx="26" fill="url(#ol-bg2)"/>
+  <rect x="32.5" y="32.5" width="135" height="135" rx="25.5" fill="none" stroke="#e5e5e7" stroke-width="1"/>
 
-  <!-- 立柱（神庙双柱） -->
-  <rect x="46" y="70" width="6" height="60" fill="#fafafa" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="148" y="70" width="6" height="60" fill="#fafafa" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="42" y="66" width="14" height="6" rx="1" fill="#0a0a0a"/>
-  <rect x="144" y="66" width="14" height="6" rx="1" fill="#0a0a0a"/>
+  <!-- 紫金底圆（视觉锚点） -->
+  <circle cx="100" cy="100" r="50" fill="url(#ol-royal)" opacity=".92"/>
+  <circle cx="100" cy="100" r="50" fill="none" stroke="#0a0a0a" stroke-width="2.2"/>
+  <circle cx="100" cy="100" r="45" fill="none" stroke="rgba(240,200,80,.55)" stroke-width="1.2"/>
 
-  <!-- 山形屋顶 -->
-  <path d="M38 66 L100 40 L162 66 Z" fill="#0a0a0a"/>
-  <path d="M48 66 L100 46 L152 66 Z" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1"/>
+  <!-- 金色闪电（主视觉，占满内圆） -->
+  <path d="M108 48 L74 102 L96 102 L88 152 L124 96 L100 96 Z"
+        fill="url(#ol-gold2)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>
+  <!-- 闪电高光 -->
+  <path d="M108 48 L82 92 L92 92" fill="none" stroke="#fff8d0" stroke-width="2" stroke-linecap="round" opacity=".75"/>
 
-  <!-- 王冠 -->
-  <path d="M74 108 L74 88 L86 98 L100 84 L114 98 L126 88 L126 108 Z" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
-  <rect x="74" y="108" width="52" height="6" rx="1.5" fill="url(#ol-gold)" stroke="#0a0a0a" stroke-width="1.6"/>
-  <circle cx="100" cy="98" r="2.4" fill="#e5484d" stroke="#0a0a0a" stroke-width="1"/>
-  <circle cx="86" cy="103" r="1.6" fill="#4a90d0" stroke="#0a0a0a" stroke-width=".8"/>
-  <circle cx="114" cy="103" r="1.6" fill="#3f9a4a" stroke="#0a0a0a" stroke-width=".8"/>
+  <!-- 王冠（顶部小装饰，强化身份） -->
+  <path d="M62 62 L62 52 L70 58 L78 48 L86 58 L94 52 L94 62 Z"
+        fill="url(#ol-gold2)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="78" cy="58" r="1.4" fill="#e5484d" stroke="#0a0a0a" stroke-width=".6"/>
 
-  <!-- 底部台阶 -->
-  <rect x="40" y="130" width="120" height="5" rx="1" fill="#0a0a0a"/>
-  <rect x="48" y="137" width="104" height="3" rx="1" fill="#0a0a0a" opacity=".6"/>
+  <!-- 橄榄枝（底部装饰） -->
+  <path d="M64 148 Q80 140 100 144 Q120 140 136 148"
+        stroke="#3f9a4a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <ellipse cx="76" cy="146" rx="3" ry="5" fill="#3f9a4a" transform="rotate(-30 76 146)"/>
+  <ellipse cx="124" cy="146" rx="3" ry="5" fill="#3f9a4a" transform="rotate(30 124 146)"/>
+
+  <!-- 星点 -->
+  <circle cx="118" cy="60" r="1.6" fill="#f0d878"/>
+  <circle cx="82" cy="142" r="1.4" fill="#f0d878" opacity=".8"/>
+  <circle cx="136" cy="120" r="1.2" fill="#f0d878" opacity=".6"/>
 </svg>
