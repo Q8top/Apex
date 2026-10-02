@@ -392,7 +392,6 @@ function setupMode(){
 /* 启动 */
 function init(){
   E.setMode(MODE);
-  safeAudio(A.init, 'initAudio');
   buildGrid(); renderWin(0); bind(); setupMode();
 
   if (MODE === 'real') {

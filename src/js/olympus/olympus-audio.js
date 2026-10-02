@@ -5,11 +5,15 @@ var ctx = null, master = null, comp = null, reverb = null, revGain = null, dryGa
 var enabled = true, VOL = 0.5;
 
 function init(){
-  if (ctx) return true;
+  if (ctx) {
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
+    return true;
+  }
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ctx = new AC();
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
 
     master = ctx.createGain(); master.gain.value = VOL;
     comp = ctx.createDynamicsCompressor();

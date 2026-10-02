@@ -11,12 +11,16 @@ var ctx = null, master = null, reverb = null;
 var enabled = true;
 var VOLUME = 0.55;
 
-function init() {
-  if (ctx) return true;
+function init(){
+  if (ctx) {
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
+    return true;
+  }
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ctx = new AC();
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
     master = ctx.createGain();
     master.gain.value = VOLUME;
     master.connect(ctx.destination);

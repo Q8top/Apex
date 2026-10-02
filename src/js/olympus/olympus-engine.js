@@ -182,9 +182,12 @@ function setMode(m){ _weights = (m === 'demo') ? C.WEIGHTS_DEMO : C.WEIGHTS_REAL
 
 /* demo 高命中：跑 2 次取最高 */
 function spinDemo(betAmount){
-  var a = playFullSpin(betAmount);
-  var b = playFullSpin(betAmount);
-  return (b.totalWin > a.totalWin) ? b : a;
+  var best = null;
+  for (var i = 0; i < 4; i++) {
+    var r = playFullSpin(betAmount);
+    if (!best || r.totalWin > best.totalWin) best = r;
+  }
+  return best;
 }
 
 window.OlympusEngine = {
