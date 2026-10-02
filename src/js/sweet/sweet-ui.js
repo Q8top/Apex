@@ -268,8 +268,8 @@ function runFreeSpins(b){
           highlightCells(cells, true);
           if (rd.bombs && rd.bombs.length) spawnBombs(rd.bombs, document.querySelector('.sw-stage'));
           shown += rd.roundWin;
-          renderWin(shown, rd.bombMult ? '×' + rd.bombMult + ' 炸弹' : '');
-          showFsBanner(s.remaining, rd.bombMult);
+          renderWin(shown, rd.cumMult ? '×' + rd.cumMult + ' 累计' : '');
+          showFsBanner(s.remaining, rd.cumMult);
           safeAudio(A.tumble, 'tumble');
           if (rd.bombs && rd.bombs.length) safeAudio(A.bomb, 'bomb');
           setTimeout(function(){

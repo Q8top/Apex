@@ -156,36 +156,38 @@ function playFullSpin(totalBet, inFreeSpin){
   var rounds = [];
   var totalWin = 0;
   var scatterCount = 0;
+  var cumulativeMult = 0; // 跨 Tumble 累积倍数（原版雪球机制）
 
   for (var t = 0; t < C.CONFIG.maxTumbles; t++) {
     var r = evaluate(grid, totalBet, inFreeSpin);
     if (r.scatter.length && t === 0) scatterCount = r.scatter.length;
     if (r.wins.length === 0) {
-      if (t === 0) rounds.push({ grid: grid, wins: [], roundWin: 0, bombs: [], bombMult: 0, scatter: r.scatter });
+      if (t === 0) rounds.push({ grid: grid, wins: [], roundWin: 0, bombs: [], bombMult: 0, cumMult: cumulativeMult, scatter: r.scatter });
       break;
     }
-    // 免费旋转中：随机掉 1~2 个炸弹
+    // FS：本 Tumble 掉 1~2 个炸弹（累加到总倍数池）
     var bombs = [];
     var bombMult = 0;
     if (inFreeSpin) {
       var bombCount = (randFloat() < 0.35) ? 2 : 1;
       for (var bc = 0; bc < bombCount; bc++) {
         var bv = pickBomb();
-        // 随机选 cluster 里一格
         var cl = r.wins[Math.floor(randFloat() * r.wins.length)];
         var cell = cl.cells[Math.floor(randFloat() * cl.cells.length)];
         bombs.push({ value: bv, cell: cell });
         bombMult += bv;
       }
+      cumulativeMult += bombMult;
     }
-    var roundWin = inFreeSpin ? (r.totalWin * bombMult) : r.totalWin;
+    // 结算：base × 当前累计倍数
+    var roundWin = inFreeSpin ? (r.totalWin * cumulativeMult) : r.totalWin;
     totalWin += roundWin;
     var winCells = [];
     r.wins.forEach(function(w){ w.cells.forEach(function(p){ winCells.push(p); }); });
-    rounds.push({ grid: grid, wins: r.wins, roundWin: roundWin, bombs: bombs, bombMult: bombMult, scatter: r.scatter });
+    rounds.push({ grid: grid, wins: r.wins, roundWin: roundWin, bombs: bombs, bombMult: bombMult, cumMult: cumulativeMult, scatter: r.scatter });
     grid = tumble(grid, winCells);
   }
-  return { rounds: rounds, totalWin: totalWin, finalGrid: grid, scatterCount: scatterCount };
+  return { rounds: rounds, totalWin: totalWin, finalGrid: grid, scatterCount: scatterCount, cumulativeMult: cumulativeMult };
 }
 
 /* ---------- 免费旋转 ---------- */
