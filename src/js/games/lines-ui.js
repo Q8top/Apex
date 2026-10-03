@@ -3,6 +3,34 @@
 'use strict';
 var A = window.LinesAudio;
 
+/* 诊断：把错误直接显示到页面 */
+(function(){
+  function show(txt){
+    var d = document.getElementById('__lines_err_box');
+    if(!d){
+      d = document.createElement('div');
+      d.id = '__lines_err_box';
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:8px 10px;font:12px/1.4 monospace;z-index:999999;max-height:50vh;overflow:auto;white-space:pre-wrap;word-break:break-all;';
+      document.body.appendChild(d);
+    }
+    d.textContent += txt + '\n';
+  }
+  window.addEventListener('error', function(e){
+    show('✗ ' + (e.message||'') + '  @' + ((e.filename||'').split('/').pop()) + ':' + (e.lineno||''));
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    show('✗ Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+  });
+  // 5 秒后如果还没 ready，显示状态
+  setTimeout(function(){
+    var box = document.getElementById('lm-grid');
+    var ready = document.querySelector('#__lines_err_box');
+    if(!ready && box && box.children.length === 0){
+      show('⚠ 网格空：lm-grid 有 ' + box.children.length + ' 个 cell');
+    }
+  }, 4000);
+})();
+
 var MODE = (function(){
   var m = String(location.search).match(/[?&]mode=([a-z]+)/i);
   return (m && m[1].toLowerCase()==='real') ? 'real' : 'demo';
@@ -169,23 +197,41 @@ function bind(){
 }
 
 function init(){
-  CFG = window.LinesGameConfig;
-  E = window.LinesEngine;
-  S = window.LinesGameSymbols;
-  if(!CFG||!E||!S){console.error('[Lines] 配置或符号库缺失');return;}
-  E.init(CFG);
-  E.setMode(MODE);
-  safeAudio(A.init,'initAudio');
-  buildGrid();renderWin(0);bind();setupMode();
-  if(MODE==='real'){
-    fetch('/api/me',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
-      if(!d||!d.success||!d.user){toast('请先登录');setTimeout(function(){location.replace('/');},800);return;}
-      state.balance=Number(d.user.walletBalance)||0;state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
-      loadHist();
+  try{
+    CFG = window.LinesGameConfig;
+    E = window.LinesEngine;
+    S = window.LinesGameSymbols;
+    if(!CFG||!E||!S){
+      var missing = [];
+      if(!CFG) missing.push('LinesGameConfig');
+      if(!E) missing.push('LinesEngine');
+      if(!S) missing.push('LinesGameSymbols');
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:10px;font:14px monospace;z-index:999999;';
+      d.textContent = '初始化失败：缺 ' + missing.join(', ');
+      document.body.appendChild(d);
+      return;
+    }
+    E.init(CFG);
+    E.setMode(MODE);
+    safeAudio(A.init,'initAudio');
+    buildGrid();renderWin(0);bind();setupMode();
+    if(MODE==='real'){
+      fetch('/api/me',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+        if(!d||!d.success||!d.user){toast('请先登录');setTimeout(function(){location.replace('/');},800);return;}
+        state.balance=Number(d.user.walletBalance)||0;state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
+        loadHist();
+        if(typeof ApexLoader!=='undefined')ApexLoader.hide();
+      }).catch(function(){toast('网络错误');if(typeof ApexLoader!=='undefined')ApexLoader.hide();});
+    } else {
+      loadState();loadHist();state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
       if(typeof ApexLoader!=='undefined')ApexLoader.hide();
-    }).catch(function(){toast('网络错误');});
-  } else {
-    loadState();loadHist();state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
+    }
+  } catch(err){
+    var d2 = document.createElement('div');
+    d2.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:10px;font:12px monospace;z-index:999999;white-space:pre-wrap;max-height:50vh;overflow:auto;';
+    d2.textContent = 'init 崩了：' + err.message + '\n' + (err.stack||'').split('\n').slice(0,5).join('\n');
+    document.body.appendChild(d2);
     if(typeof ApexLoader!=='undefined')ApexLoader.hide();
   }
 }
