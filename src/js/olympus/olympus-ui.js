@@ -509,12 +509,12 @@ function init(){
       .then(function(d){
         if (!d || !d.success || !d.user) { toast('请先登录'); setTimeout(function(){ location.replace('/'); }, 800); return; }
         state.balance = Number(d.user.walletBalance) || 0;
-        state.ready = true;
+        state.ready = true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();
         renderBalance(); renderBet();
         paintGrid(E.spin(), false);
       }).catch(function(){ toast('网络错误'); });
   } else {
-    loadState(); loadHist(); state.ready = true;
+    loadState(); loadHist(); state.ready = true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();
     renderBalance(); renderBet();
     paintGrid(E.spin(), false);
   }

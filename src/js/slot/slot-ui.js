@@ -452,14 +452,14 @@ function init(){
   if (MODE==='real'){
     fetchRemoteBalance().then(function(bal){
       if (bal===null){ toast('请先登录'); setTimeout(function(){ location.replace('/'); },800); return; }
-      state.balance=bal; state.ready=true;
+      state.balance=bal; state.ready=true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();
       renderBalance(); renderBet();
       var g=E.spin();
       for (var c=0;c<3;c++){ var col=[]; for (var r=0;r<3;r++) col.push(g[r][c]); paintColStatic(c,col); }
       console.log('[幸运水果] real 就绪');
     });
   } else {
-    loadDemoState(); state.ready=true;
+    loadDemoState(); state.ready=true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();
     renderBalance(); renderBet();
     var g2=E.spin();
     for (var c2=0;c2<3;c2++){ var col2=[]; for (var r2=0;r2<3;r2++) col2.push(g2[r2][c2]); paintColStatic(c2,col2); }

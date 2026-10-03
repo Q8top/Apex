@@ -281,4 +281,6 @@ function initTabbar(app){
 }
 function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('show');try{localStorage.removeItem('apex_auth_hint');}catch(e){}try{document.documentElement.classList.remove('apex-auth-hint');}catch(e){}}
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
+
+if(typeof ApexLoader!=="undefined"){try{ApexLoader.hide();}catch(e){}}
 })();

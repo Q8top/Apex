@@ -31,4 +31,6 @@ list.innerHTML=M.map(function(g){
     + '<ol class="ann-rows">'+items+'</ol>'
     + '</li>';
 }).join('');
+
+if(typeof ApexLoader!=="undefined"){try{ApexLoader.hide();}catch(e){}}
 })();

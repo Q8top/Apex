@@ -284,10 +284,10 @@ function init(){
   if(MODE==='real'){
     fetch('/api/me',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(!d||!d.success||!d.user){toast('请先登录');setTimeout(function(){location.replace('/');},800);return;}
-      state.balance=Number(d.user.walletBalance)||0;state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
+      state.balance=Number(d.user.walletBalance)||0;state.ready=true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();renderBalance();renderBet();paintGrid(E.spin());
     }).catch(function(){toast('网络错误');});
   }else{
-    loadState();loadHist();state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
+    loadState();loadHist();state.ready=true; if(typeof ApexLoader!=='undefined')ApexLoader.hide();renderBalance();renderBet();paintGrid(E.spin());
   }
 }
 

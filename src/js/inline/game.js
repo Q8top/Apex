@@ -594,4 +594,6 @@ function bindEvents() {
 
 if (!g) { notFound(); } else { render(); bindEvents(); updateFavUI(); }
 
+
+if (typeof ApexLoader !== 'undefined') { try { ApexLoader.hide(); } catch(e){} }
 })();
