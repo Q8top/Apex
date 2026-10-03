@@ -26,7 +26,7 @@ window.LinesGameConfig = {
   wild:'wild', scatter:'scatter',
   scatterTrigger:{3:12,4:18,5:25}, scatterRetrigger:5,
   weightsReal:WEIGHTS_REAL, weightsDemo:WEIGHTS_DEMO,
-  payScaleReal:12.16, payScaleDemo:15.77,
+  payScaleReal:12.60, payScaleDemo:15.77,
   betSteps:[1,2,5,10,20,50,100], defaultBetIndex:3
 };
 })();

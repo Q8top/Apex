@@ -1,40 +1,77 @@
-/* 10001-nights · 符号 */
+/* asgardian · 局内符号（北欧蓝） */
 (function(){
 'use strict';
-var DEFS_ID='as-defs';
-function ensureDefs(){
-  if(typeof document==='undefined')return;
-  if(document.getElementById(DEFS_ID))return;
-  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.id=DEFS_ID;svg.setAttribute('width','0');svg.setAttribute('height','0');
-  svg.setAttribute('style','position:absolute;overflow:hidden');svg.setAttribute('aria-hidden','true');
-  svg.innerHTML='<defs>'+
-    '<linearGradient id="as-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a3a8a"/><stop offset="100%" stop-color="#1a1a2a"/></linearGradient>'+
-    '<linearGradient id="as-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a4a9a"/><stop offset="100%" stop-color="#2a1a3a"/></linearGradient>'+
-    '<linearGradient id="as-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4a5aaa"/><stop offset="100%" stop-color="#3a1a4a"/></linearGradient>'+
-    '<linearGradient id="as-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5a6aba"/><stop offset="100%" stop-color="#4a1a5a"/></linearGradient>'+
-    '<linearGradient id="as-e" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6a7aca"/><stop offset="100%" stop-color="#5a1a6a"/></linearGradient>'+
-    '<radialGradient id="as-gold" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#8a6020"/></radialGradient>'+
-    '<radialGradient id="as-hi" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#80a0ff"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#7a1a58"/></radialGradient>'+
-    '</defs>';
-  document.body.appendChild(svg);
-}
-function wrap(i){ensureDefs();return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
+function wrap(i){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
 function hl(cx,cy,rx,ry,op){return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fff" opacity="'+(op||.55)+'"/>';}
-function card(ch,g){return wrap('<rect x="14" y="14" width="72" height="72" rx="12" fill="url(#'+g+')" stroke="#e8c25c" stroke-width="2.4"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="42" font-weight="900" fill="#ffe9a0">'+ch+'</text>'+hl(30,30,5,3,.5));}
-function star(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M50 16 L58 42 L86 42 L64 60 L72 88 L50 70 L28 88 L36 60 L14 42 L42 42 Z" fill="url(#as-gold)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>'+hl(44,32,6,4,.7));}
-function moon(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M62 20 A34 34 0 1 0 62 82 A28 28 0 1 1 62 20 Z" fill="url(#as-hi)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="36" cy="44" r="3" fill="#fff8d0" opacity=".9"/><circle cx="28" cy="62" r="2" fill="#fff8d0" opacity=".75"/>'+hl(50,34,4,3,.5));}
-function palace(){return wrap('<ellipse cx="50" cy="86" rx="26" ry="4" fill="#000" opacity=".2"/><path d="M20 78 L20 40 L28 40 L28 30 L34 30 L34 40 L42 40 L42 24 L50 16 L58 24 L58 40 L66 40 L66 30 L72 30 L72 40 L80 40 L80 78 Z" fill="url(#as-c)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><rect x="34" y="58" width="32" height="20" rx="3" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.8"/><circle cx="50" cy="22" r="4" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.5"/>'+hl(38,42,5,8,.35));}
-function hero(){return wrap('<ellipse cx="50" cy="88" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M50 14 Q60 14 62 24 Q66 30 64 40 Q62 50 50 52 Q38 50 36 40 Q34 30 38 24 Q40 14 50 14 Z" fill="url(#as-d)" stroke="#0a0a0a" stroke-width="2.2"/><path d="M30 88 Q34 62 50 60 Q66 62 70 88 Z" fill="url(#as-d)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><circle cx="44" cy="34" r="2.5" fill="#0a0a0a"/><circle cx="56" cy="34" r="2.5" fill="#0a0a0a"/><path d="M46 42 Q50 45 54 42" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>'+hl(42,26,4,3,.5));}
-function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="url(#as-gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
-function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="url(#as-hi)" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>'+hl(42,36,7,4,.6));}
+function shadow(cy){return '<ellipse cx="50" cy="'+(cy||88)+'" rx="26" ry="4" fill="#000" opacity=".22"/>';}
+function letterCard(txt){
+  return wrap(
+    '<rect x="12" y="12" width="76" height="76" rx="10" fill="#0a0a2a" stroke="#80a0ff" stroke-width="2.4"/>'+
+    '<rect x="17" y="17" width="66" height="66" rx="7" fill="none" stroke="#80a0ff" stroke-width="1" opacity=".55"/>'+
+    '<circle cx="21" cy="21" r="2.2" fill="#80a0ff"/><circle cx="79" cy="21" r="2.2" fill="#80a0ff"/>'+
+    '<circle cx="21" cy="79" r="2.2" fill="#80a0ff"/><circle cx="79" cy="79" r="2.2" fill="#80a0ff"/>'+
+    '<text x="50" y="55" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="52" font-weight="900" fill="#80a0ff" stroke="#0a0a0a" stroke-width=".8" paint-order="stroke">'+txt+'</text>'+
+    hl(38,24,10,3,.4)
+  );
+}
+function hammer(){
+  return wrap(shadow(92)+
+    "<rect x=\"30\" y=\"26\" width=\"40\" height=\"22\" rx=\"3\" fill=\"#5a6a9a\" stroke=\"#1a2a5a\" stroke-width=\"2.6\"/>"+
+    "<rect x=\"34\" y=\"30\" width=\"32\" height=\"6\" fill=\"#e8c25c\" stroke=\"#1a2a5a\" stroke-width=\"1.5\"/>"+
+    "<rect x=\"44\" y=\"48\" width=\"12\" height=\"34\" rx=\"2\" fill=\"#5a6a9a\" stroke=\"#1a2a5a\" stroke-width=\"2.2\"/>"+
+    "<path d=\"M38 82 L62 82 L58 92 L42 92 Z\" fill=\"#e8c25c\" stroke=\"#1a2a5a\" stroke-width=\"2\" stroke-linejoin=\"round\"/>"+
+    "<path d=\"M50 30 L46 42 L54 42 Z\" fill=\"#ffe9a0\" opacity=\".85\"/>"+
+    hl(38,32,6,2,.55)+
+    "<path d=\"M24 30 L26 36 L32 38 L26 40 L24 46 L22 40 L16 38 L22 36 Z\" fill=\"#ffe9a0\" opacity=\".75\"/>"+
+    "<path d=\"M78 34 L79 38 L83 39 L79 40 L78 44 L77 40 L73 39 L77 38 Z\" fill=\"#ffe9a0\" opacity=\".65\"/>"
+  );
+}
+function cup(){
+  return wrap(shadow(88)+
+    "<path d=\"M28 30 L72 30 L68 52 Q62 66 50 66 Q38 66 32 52 Z\" fill=\"#80a0ff\" stroke=\"#1a2a5a\" stroke-width=\"2.4\" stroke-linejoin=\"round\"/>"+
+    "<ellipse cx=\"50\" cy=\"30\" rx=\"22\" ry=\"4\" fill=\"#a0c0ff\" stroke=\"#1a2a5a\" stroke-width=\"1.6\"/>"+
+    "<rect x=\"44\" y=\"66\" width=\"12\" height=\"12\" fill=\"#5a6a9a\" stroke=\"#1a2a5a\" stroke-width=\"1.8\"/>"+
+    "<ellipse cx=\"50\" cy=\"80\" rx=\"16\" ry=\"3\" fill=\"#5a6a9a\" stroke=\"#1a2a5a\" stroke-width=\"1.8\"/>"+
+    "<path d=\"M28 34 Q50 40 72 34\" stroke=\"#fff\" stroke-width=\"1.6\" fill=\"none\" opacity=\".55\"/>"+
+    hl(40,40,5,3,.5)
+  );
+}
+function ring(){
+  return wrap(shadow(90)+
+    "<circle cx=\"50\" cy=\"58\" r=\"22\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"7\"/>"+
+    "<circle cx=\"50\" cy=\"58\" r=\"22\" fill=\"none\" stroke=\"#1a2a5a\" stroke-width=\"1.5\"/>"+
+    "<path d=\"M50 20 L58 36 L50 48 L42 36 Z\" fill=\"#80a0ff\" stroke=\"#1a2a5a\" stroke-width=\"2\" stroke-linejoin=\"round\"/>"+
+    hl(46,30,3,3,.6)
+  );
+}
+function rune(){
+  return wrap(shadow(88)+
+    "<rect x=\"30\" y=\"20\" width=\"40\" height=\"58\" rx=\"6\" fill=\"#1a2a5a\" stroke=\"#e8c25c\" stroke-width=\"2.4\"/>"+
+    "<rect x=\"36\" y=\"26\" width=\"28\" height=\"46\" rx=\"3\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\".8\" opacity=\".55\"/>"+
+    "<path d=\"M40 36 L60 36 M50 36 L50 64 M40 46 L60 46 M40 56 L60 56\" stroke=\"#80a0ff\" stroke-width=\"2.4\" stroke-linecap=\"round\"/>"+
+    hl(38,26,8,2,.4)
+  );
+}
+function wild(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"42\" fill=\"none\" stroke=\"#80a0ff\" stroke-width=\"1\" opacity=\".5\"/>"+
+    "<path d=\"M18 32 L28 72 L40 50 L50 72 L60 50 L72 72 L82 32\" fill=\"none\" stroke=\"#80a0ff\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"
+  );
+}
+function scatter(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"34\" fill=\"#5a6a9a\" stroke=\"#1a2a5a\" stroke-width=\"2.6\"/>"+
+    "<path d=\"M50 26 L53 40 L68 42 L53 44 L50 58 L47 44 L32 42 L47 40 Z\" fill=\"#fff8d0\" stroke=\"#1a2a5a\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/>"+
+    hl(38,34,8,5,.55)
+  );
+}
 window.Sym_asgardian = {
-  ten:function(){return card('10','as-a');},
-  jack:function(){return card('J','as-a');},
-  queen:function(){return card('Q','as-b');},
-  king:function(){return card('K','as-c');},
-  ace:function(){return card('A','as-d');},
-  star:star, moon:moon, palace:palace, hero:hero,
+  ten:function(){return letterCard('10');},
+  jack:function(){return letterCard('J');},
+  queen:function(){return letterCard('Q');},
+  king:function(){return letterCard('K');},
+  ace:function(){return letterCard('A');},
+  star:rune, moon:ring, palace:cup, hero:hammer,
   wild:wild, scatter:scatter
 };
 })();

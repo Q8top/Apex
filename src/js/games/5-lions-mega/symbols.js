@@ -1,40 +1,81 @@
-/* 10001-nights · 符号 */
+/* 5-lions · 局内符号（亚洲狮王） */
 (function(){
 'use strict';
-var DEFS_ID='lm-defs';
-function ensureDefs(){
-  if(typeof document==='undefined')return;
-  if(document.getElementById(DEFS_ID))return;
-  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.id=DEFS_ID;svg.setAttribute('width','0');svg.setAttribute('height','0');
-  svg.setAttribute('style','position:absolute;overflow:hidden');svg.setAttribute('aria-hidden','true');
-  svg.innerHTML='<defs>'+
-    '<linearGradient id="lm-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7a2f1f"/><stop offset="100%" stop-color="#1a1a2a"/></linearGradient>'+
-    '<linearGradient id="lm-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8a3f2f"/><stop offset="100%" stop-color="#2a1a3a"/></linearGradient>'+
-    '<linearGradient id="lm-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9a4f3f"/><stop offset="100%" stop-color="#3a1a4a"/></linearGradient>'+
-    '<linearGradient id="lm-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aa5f4f"/><stop offset="100%" stop-color="#4a1a5a"/></linearGradient>'+
-    '<linearGradient id="lm-e" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ba6f5f"/><stop offset="100%" stop-color="#5a1a6a"/></linearGradient>'+
-    '<radialGradient id="lm-gold" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#8a6020"/></radialGradient>'+
-    '<radialGradient id="lm-hi" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#e08a50"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#7a1a58"/></radialGradient>'+
-    '</defs>';
-  document.body.appendChild(svg);
-}
-function wrap(i){ensureDefs();return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
+function wrap(i){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
 function hl(cx,cy,rx,ry,op){return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fff" opacity="'+(op||.55)+'"/>';}
-function card(ch,g){return wrap('<rect x="14" y="14" width="72" height="72" rx="12" fill="url(#'+g+')" stroke="#e8c25c" stroke-width="2.4"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="42" font-weight="900" fill="#ffe9a0">'+ch+'</text>'+hl(30,30,5,3,.5));}
-function star(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M50 16 L58 42 L86 42 L64 60 L72 88 L50 70 L28 88 L36 60 L14 42 L42 42 Z" fill="url(#lm-gold)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>'+hl(44,32,6,4,.7));}
-function moon(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M62 20 A34 34 0 1 0 62 82 A28 28 0 1 1 62 20 Z" fill="url(#lm-hi)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="36" cy="44" r="3" fill="#fff8d0" opacity=".9"/><circle cx="28" cy="62" r="2" fill="#fff8d0" opacity=".75"/>'+hl(50,34,4,3,.5));}
-function palace(){return wrap('<ellipse cx="50" cy="86" rx="26" ry="4" fill="#000" opacity=".2"/><path d="M20 78 L20 40 L28 40 L28 30 L34 30 L34 40 L42 40 L42 24 L50 16 L58 24 L58 40 L66 40 L66 30 L72 30 L72 40 L80 40 L80 78 Z" fill="url(#lm-c)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><rect x="34" y="58" width="32" height="20" rx="3" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.8"/><circle cx="50" cy="22" r="4" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.5"/>'+hl(38,42,5,8,.35));}
-function hero(){return wrap('<ellipse cx="50" cy="88" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M50 14 Q60 14 62 24 Q66 30 64 40 Q62 50 50 52 Q38 50 36 40 Q34 30 38 24 Q40 14 50 14 Z" fill="url(#lm-d)" stroke="#0a0a0a" stroke-width="2.2"/><path d="M30 88 Q34 62 50 60 Q66 62 70 88 Z" fill="url(#lm-d)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><circle cx="44" cy="34" r="2.5" fill="#0a0a0a"/><circle cx="56" cy="34" r="2.5" fill="#0a0a0a"/><path d="M46 42 Q50 45 54 42" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>'+hl(42,26,4,3,.5));}
-function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="url(#lm-gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
-function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="url(#lm-hi)" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>'+hl(42,36,7,4,.6));}
+function shadow(cy){return '<ellipse cx="50" cy="'+(cy||88)+'" rx="26" ry="4" fill="#000" opacity=".22"/>';}
+function letterCard(txt){
+  return wrap(
+    '<rect x="12" y="12" width="76" height="76" rx="10" fill="#2a1408" stroke="#e87040" stroke-width="2.4"/>'+
+    '<rect x="17" y="17" width="66" height="66" rx="7" fill="none" stroke="#e87040" stroke-width="1" opacity=".55"/>'+
+    '<circle cx="21" cy="21" r="2.2" fill="#e87040"/><circle cx="79" cy="21" r="2.2" fill="#e87040"/>'+
+    '<circle cx="21" cy="79" r="2.2" fill="#e87040"/><circle cx="79" cy="79" r="2.2" fill="#e87040"/>'+
+    '<text x="50" y="55" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="52" font-weight="900" fill="#e87040" stroke="#0a0a0a" stroke-width=".8" paint-order="stroke">'+txt+'</text>'+
+    hl(38,24,10,3,.4)
+  );
+}
+function lion(){
+  return wrap(shadow(92)+
+    "<circle cx=\"50\" cy=\"52\" r=\"32\" fill=\"#a03018\" stroke=\"#3a1408\" stroke-width=\"2.6\"/>"+
+    "<path d=\"M50 24 L54 34 L46 34 Z M50 80 L54 70 L46 70 Z M22 52 L32 56 L32 48 Z M78 52 L68 56 L68 48 Z\" fill=\"#4a0808\" opacity=\".8\"/>"+
+    "<circle cx=\"50\" cy=\"54\" r=\"22\" fill=\"#d86040\" stroke=\"#3a1408\" stroke-width=\"2.2\"/>"+
+    "<ellipse cx=\"42\" cy=\"50\" rx=\"3\" ry=\"3.5\" fill=\"#0a0a0a\"/>"+
+    "<ellipse cx=\"58\" cy=\"50\" rx=\"3\" ry=\"3.5\" fill=\"#0a0a0a\"/>"+
+    "<path d=\"M44 62 L50 66 L56 62\" stroke=\"#0a0a0a\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"/>"+
+    "<path d=\"M48 68 Q50 70 52 68\" stroke=\"#0a0a0a\" stroke-width=\"1.4\" fill=\"none\"/>"+
+    hl(40,44,4,2,.55)
+  );
+}
+function coin(){
+  return wrap(shadow(88)+
+    "<circle cx=\"50\" cy=\"52\" r=\"28\" fill=\"#e8c25c\" stroke=\"#5a3a08\" stroke-width=\"2.6\"/>"+
+    "<rect x=\"38\" y=\"44\" width=\"24\" height=\"16\" fill=\"none\" stroke=\"#5a3a08\" stroke-width=\"2.4\"/>"+
+    "<path d=\"M38 52 L62 52\" stroke=\"#5a3a08\" stroke-width=\"1.6\"/>"+
+    hl(38,40,8,4,.55)
+  );
+}
+function dragon(){
+  return wrap(shadow(88)+
+    "<path d=\"M20 70 Q28 44 48 38 Q68 34 76 48 Q82 60 70 66 Q58 72 48 64\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"8\" stroke-linecap=\"round\"/>"+
+    "<path d=\"M20 70 Q28 44 48 38 Q68 34 76 48 Q82 60 70 66 Q58 72 48 64\" fill=\"none\" stroke=\"#5a3a08\" stroke-width=\"1.4\" stroke-linecap=\"round\"/>"+
+    "<circle cx=\"76\" cy=\"48\" r=\"6\" fill=\"#e8c25c\" stroke=\"#5a3a08\" stroke-width=\"1.8\"/>"+
+    "<circle cx=\"74\" cy=\"46\" r=\"1.5\" fill=\"#0a0a0a\"/>"
+  );
+}
+function phoenix(){
+  return wrap(shadow(88)+
+    "<path d=\"M50 20 Q40 22 38 32 Q36 44 46 52 Q40 64 32 70 Q48 70 56 56 Q64 64 76 66 Q68 54 62 46 Q68 38 64 28 Q58 22 50 20 Z\" fill=\"#e8c25c\" stroke=\"#5a3a08\" stroke-width=\"2.4\" stroke-linejoin=\"round\"/>"+
+    "<circle cx=\"54\" cy=\"32\" r=\"2\" fill=\"#0a0a0a\"/>"+
+    hl(48,30,4,3,.6)
+  );
+}
+function jade(){
+  return wrap(shadow(88)+
+    "<ellipse cx=\"50\" cy=\"52\" rx=\"22\" ry=\"28\" fill=\"#3aaa6a\" stroke=\"#0a3a18\" stroke-width=\"2.6\"/>"+
+    "<circle cx=\"50\" cy=\"52\" r=\"8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" opacity=\".55\"/>"+
+    hl(42,38,6,5,.5)
+  );
+}
+function wild(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"42\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"1\" opacity=\".5\"/>"+
+    "<path d=\"M18 32 L28 72 L40 50 L50 72 L60 50 L72 72 L82 32\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"
+  );
+}
+function scatter(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"34\" fill=\"#e87040\" stroke=\"#5a3a08\" stroke-width=\"2.6\"/>"+
+    "<path d=\"M50 26 L53 40 L68 42 L53 44 L50 58 L47 44 L32 42 L47 40 Z\" fill=\"#fff8d0\" stroke=\"#5a3a08\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/>"+
+    hl(38,34,8,5,.55)
+  );
+}
 window.Sym_5_lions_mega = {
-  ten:function(){return card('10','lm-a');},
-  jack:function(){return card('J','lm-a');},
-  queen:function(){return card('Q','lm-b');},
-  king:function(){return card('K','lm-c');},
-  ace:function(){return card('A','lm-d');},
-  star:star, moon:moon, palace:palace, hero:hero,
+  ten:function(){return letterCard('10');},
+  jack:function(){return letterCard('J');},
+  queen:function(){return letterCard('Q');},
+  king:function(){return letterCard('K');},
+  ace:function(){return letterCard('A');},
+  star:coin, moon:jade, palace:dragon, hero:lion,
   wild:wild, scatter:scatter
 };
 })();

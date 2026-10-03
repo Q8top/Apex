@@ -1,40 +1,72 @@
-/* 1429-seas · 符号 */
+/* 1429-seas · 局内符号（大航海主题） */
 (function(){
 'use strict';
-var DEFS_ID='s1-defs';
-function ensureDefs(){
-  if(typeof document==='undefined')return;
-  if(document.getElementById(DEFS_ID))return;
-  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.id=DEFS_ID;svg.setAttribute('width','0');svg.setAttribute('height','0');
-  svg.setAttribute('style','position:absolute;overflow:hidden');svg.setAttribute('aria-hidden','true');
-  svg.innerHTML='<defs>'+
-    '<linearGradient id="s1-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a6a7a"/><stop offset="100%" stop-color="#1a1a2a"/></linearGradient>'+
-    '<linearGradient id="s1-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a7a8a"/><stop offset="100%" stop-color="#2a1a3a"/></linearGradient>'+
-    '<linearGradient id="s1-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a8a9a"/><stop offset="100%" stop-color="#3a1a4a"/></linearGradient>'+
-    '<linearGradient id="s1-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a9aaa"/><stop offset="100%" stop-color="#4a1a5a"/></linearGradient>'+
-    '<linearGradient id="s1-e" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3aaaba"/><stop offset="100%" stop-color="#5a1a6a"/></linearGradient>'+
-    '<radialGradient id="s1-gold" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#8a6020"/></radialGradient>'+
-    '<radialGradient id="s1-hi" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#5ad0e0"/><stop offset="55%" stop-color="#e0b83e"/><stop offset="100%" stop-color="#7a1a58"/></radialGradient>'+
-    '</defs>';
-  document.body.appendChild(svg);
-}
-function wrap(i){ensureDefs();return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
+function wrap(i){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+i+'</svg>';}
 function hl(cx,cy,rx,ry,op){return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fff" opacity="'+(op||.55)+'"/>';}
-function card(ch,g){return wrap('<rect x="14" y="14" width="72" height="72" rx="12" fill="url(#'+g+')" stroke="#e8c25c" stroke-width="2.4"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="42" font-weight="900" fill="#ffe9a0">'+ch+'</text>'+hl(30,30,5,3,.5));}
-function star(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M50 16 L58 42 L86 42 L64 60 L72 88 L50 70 L28 88 L36 60 L14 42 L42 42 Z" fill="url(#s1-gold)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>'+hl(44,32,6,4,.7));}
-function moon(){return wrap('<ellipse cx="50" cy="86" rx="20" ry="3" fill="#000" opacity=".2"/><path d="M62 20 A34 34 0 1 0 62 82 A28 28 0 1 1 62 20 Z" fill="url(#s1-hi)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="36" cy="44" r="3" fill="#fff8d0" opacity=".9"/><circle cx="28" cy="62" r="2" fill="#fff8d0" opacity=".75"/>'+hl(50,34,4,3,.5));}
-function palace(){return wrap('<ellipse cx="50" cy="86" rx="26" ry="4" fill="#000" opacity=".2"/><path d="M20 78 L20 40 L28 40 L28 30 L34 30 L34 40 L42 40 L42 24 L50 16 L58 24 L58 40 L66 40 L66 30 L72 30 L72 40 L80 40 L80 78 Z" fill="url(#s1-c)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><rect x="34" y="58" width="32" height="20" rx="3" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.8"/><circle cx="50" cy="22" r="4" fill="#e8c25c" stroke="#0a0a0a" stroke-width="1.5"/>'+hl(38,42,5,8,.35));}
-function hero(){return wrap('<ellipse cx="50" cy="88" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M50 14 Q60 14 62 24 Q66 30 64 40 Q62 50 50 52 Q38 50 36 40 Q34 30 38 24 Q40 14 50 14 Z" fill="url(#s1-d)" stroke="#0a0a0a" stroke-width="2.2"/><path d="M30 88 Q34 62 50 60 Q66 62 70 88 Z" fill="url(#s1-d)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><circle cx="44" cy="34" r="2.5" fill="#0a0a0a"/><circle cx="56" cy="34" r="2.5" fill="#0a0a0a"/><path d="M46 42 Q50 45 54 42" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>'+hl(42,26,4,3,.5));}
-function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="url(#s1-gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
-function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="url(#s1-hi)" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2" stroke-linejoin="round"/>'+hl(42,36,7,4,.6));}
+function shadow(cy){return '<ellipse cx="50" cy="'+(cy||88)+'" rx="26" ry="4" fill="#000" opacity=".22"/>';}
+function letterCard(txt){
+  return wrap(
+    '<rect x="12" y="12" width="76" height="76" rx="10" fill="#042830" stroke="#5ad0e0" stroke-width="2.4"/>'+
+    '<rect x="17" y="17" width="66" height="66" rx="7" fill="none" stroke="#5ad0e0" stroke-width="1" opacity=".55"/>'+
+    '<circle cx="21" cy="21" r="2.2" fill="#5ad0e0"/><circle cx="79" cy="21" r="2.2" fill="#5ad0e0"/>'+
+    '<circle cx="21" cy="79" r="2.2" fill="#5ad0e0"/><circle cx="79" cy="79" r="2.2" fill="#5ad0e0"/>'+
+    '<text x="50" y="55" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="52" font-weight="900" fill="#5ad0e0" stroke="#0a0a0a" stroke-width=".8" paint-order="stroke">'+txt+'</text>'+
+    hl(38,24,10,3,.4)+hl(50,42,14,4,.18)
+  );
+}
+function ship(){
+  return wrap(shadow(92)+
+    "<path d=\"M40 138 Q60 128 80 138 T120 138 T160 138\" stroke=\"#5ad0e0\" stroke-width=\"3\" fill=\"none\" opacity=\".6\"/>"+
+    "<path d=\"M28 68 L28 86 L74 86 Q80 78 78 68 Z\" fill=\"#8a5018\" stroke=\"#2a1408\" stroke-width=\"2.4\" stroke-linejoin=\"round\"/>"+
+    "<rect x=\"26\" y=\"22\" width=\"4\" height=\"50\" rx=\"2\" fill=\"#8a5018\" stroke=\"#2a1408\" stroke-width=\"1.6\"/>"+
+    "<path d=\"M28 26 L60 32 L60 62 L28 62 Z\" fill=\"#fff8e8\" stroke=\"#2a1408\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/>"+
+    "<path d=\"M28 32 L28 56\" stroke=\"#2a1408\" stroke-width=\"1\" opacity=\".35\"/>"+
+    "<path d=\"M33 38 L55 42 M33 50 L55 52\" stroke=\"#8a5018\" stroke-width=\"1.2\" opacity=\".6\"/>"+
+    "<path d=\"M14 100 Q32 94 50 100 T86 100\" stroke=\"#5ad0e0\" stroke-width=\"3\" fill=\"none\" opacity=\".7\" stroke-linecap=\"round\"/>"
+  );
+}
+function compass(){
+  return wrap(shadow(88)+
+    "<circle cx=\"50\" cy=\"52\" r=\"32\" fill=\"#0a3a4a\" stroke=\"#e8c25c\" stroke-width=\"3\"/>"+
+    "<circle cx=\"50\" cy=\"52\" r=\"26\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"1.2\" opacity=\".6\"/>"+
+    "<path d=\"M50 26 L54 46 L74 50 L54 54 L50 78 L46 54 L26 50 L46 46 Z\" fill=\"#e8c25c\" stroke=\"#2a1408\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/>"+
+    "<path d=\"M50 26 L46 46 L50 50 L54 46 Z\" fill=\"#fff\" opacity=\".6\"/>"+
+    "<circle cx=\"50\" cy=\"52\" r=\"3\" fill=\"#2a1408\"/>"+
+    hl(38,38,6,3,.5)
+  );
+}
+function pirate(){
+  return wrap(shadow(92)+
+    "<path d=\"M28 88 Q32 58 50 54 Q68 58 72 88 Z\" fill=\"#3a2010\" stroke=\"#1a0a04\" stroke-width=\"2.2\" stroke-linejoin=\"round\"/>"+
+    "<path d=\"M40 72 L60 72\" stroke=\"#e8c25c\" stroke-width=\"2\"/>"+
+    "<circle cx=\"50\" cy=\"40\" r=\"14\" fill=\"#e8c0a0\" stroke=\"#1a0a04\" stroke-width=\"2.2\"/>"+
+    "<path d=\"M34 34 L66 34 L66 38 L34 38 Z\" fill=\"#2a1408\" stroke=\"#1a0a04\" stroke-width=\"1.6\"/>"+
+    "<path d=\"M50 24 Q54 22 58 24 L58 34 L42 34 L42 24 Q46 22 50 24 Z\" fill=\"#2a1408\" stroke=\"#1a0a04\" stroke-width=\"1.6\"/>"+
+    "<circle cx=\"44\" cy=\"46\" r=\"2\" fill=\"#0a0a0a\"/>"+
+    "<circle cx=\"56\" cy=\"46\" r=\"2\" fill=\"#0a0a0a\"/>"+
+    "<path d=\"M42 48 L46 50 M54 50 L58 48\" stroke=\"#1a0a04\" stroke-width=\"1.4\"/>"
+  );
+}
+function wild(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"42\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"1\" opacity=\".5\"/>"+
+    "<path d=\"M18 32 L28 72 L40 50 L50 72 L60 50 L72 72 L82 32\" fill=\"none\" stroke=\"#e8c25c\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"
+  );
+}
+function scatter(){
+  return wrap(
+    "<circle cx=\"50\" cy=\"50\" r=\"34\" fill=\"#5ad0e0\" stroke=\"#0a3a4a\" stroke-width=\"2.6\"/>"+
+    "<path d=\"M50 26 L53 40 L68 42 L53 44 L50 58 L47 44 L32 42 L47 40 Z\" fill=\"#fff8d0\" stroke=\"#0a3a4a\" stroke-width=\"1.2\" stroke-linejoin=\"round\"/>"+
+    hl(38,34,8,5,.55)
+  );
+}
 window.Sym_1429_seas = {
-  ten:function(){return card('10','s1-a');},
-  jack:function(){return card('J','s1-a');},
-  queen:function(){return card('Q','s1-b');},
-  king:function(){return card('K','s1-c');},
-  ace:function(){return card('A','s1-d');},
-  star:star, moon:moon, palace:palace, hero:hero,
+  ten:function(){return letterCard('10');},
+  jack:function(){return letterCard('J');},
+  queen:function(){return letterCard('Q');},
+  king:function(){return letterCard('K');},
+  ace:function(){return letterCard('A');},
+  star:ship, moon:compass, palace:pirate, hero:ship,
   wild:wild, scatter:scatter
 };
 })();
