@@ -163,7 +163,7 @@ var APEX_GAMES={
     {id:'1001-mg',n:'1001\u7CBE\u7075',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'},
     {id:'1001-mg2',n:'1001\u7CBE\u70752',i:'ri-gamepad-line',c:'#9a2f6a',img:'/assets/games/1001-mg2.svg'},
     {id:'10001-nights',n:'\u4E00\u4E07\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#1a4a7a',img:'/assets/games/10001-nights.svg'},
-    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CMega',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
+    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CM',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
     {id:'1429-seas',n:'1429\u6D77\u57DF',i:'ri-gamepad-line',c:'#0a6a7a',img:'/assets/games/1429-seas.svg'},
     {id:'5-lions',n:'\u4E94\u72EE',i:'ri-gamepad-line',c:'#a85a1f',img:'/assets/games/5-lions.svg'},
     {id:'5-lions-gold',n:'\u4E94\u72EE\u9EC4\u91D1',i:'ri-gamepad-line',c:'#c9a227',img:'/assets/games/5-lions-gold.svg'},
