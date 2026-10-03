@@ -8,6 +8,35 @@ var MODE=(function(){
   var m=String(location.search).match(/[?&]mode=([a-z]+)/i);
   var v=m?m[1].toLowerCase():'demo';
   return v==='real'?'real':'demo';
+
+/* 乘法器飞入动画（从 Olympus 移植，适配 sl- 前缀） */
+function spawnStarMult(drops, stage){
+  if (!drops || !drops.length) return;
+  drops.forEach(function(d, i){
+    var el = document.createElement('div');
+    el.className = 'sl-mult';
+    el.textContent = '×' + d.mult;
+    var gx = (d.c + 0.5) / C.CONFIG.cols * 100;
+    var gy = (d.r + 0.5) / C.CONFIG.rows * 100;
+    el.style.left = gx + '%';
+    el.style.top = gy + '%';
+    stage.appendChild(el);
+    setTimeout(function(){ el.classList.add('show'); }, i * 100);
+    setTimeout(function(){ el.classList.add('fly'); }, i * 100 + 400);
+    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, i * 100 + 1500);
+  });
+  // 中心累加显示
+  var total = 0;
+  drops.forEach(function(d){ total += d.mult; });
+  var center = document.createElement('div');
+  center.className = 'sl-mult-center';
+  center.textContent = '×' + total;
+  stage.appendChild(center);
+  setTimeout(function(){ center.classList.add('show'); }, 400);
+  setTimeout(function(){ center.classList.add('fade'); }, 1200);
+  setTimeout(function(){ if (center.parentNode) center.parentNode.removeChild(center); }, 1800);
+}
+
 })();
 
 var LS_STATE='apex_starlight_v1_'+MODE+'_state';
@@ -124,6 +153,7 @@ function runFreeSpins(b){
     var s=spins[idx];idx++;
     var zMult=s.starMult||0;
     showFsBanner(s.remaining,zMult>0?zMult:null);
+    if(s.starDrops&&s.starDrops.length){safeAudio(A.tumble,'tumble');spawnStarMult(s.starDrops,stage);}
     var shown=0;
     s.rounds.forEach(function(rd,ri){
       setTimeout(function(){

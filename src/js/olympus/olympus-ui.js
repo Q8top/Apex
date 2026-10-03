@@ -279,7 +279,7 @@ function afterSettle(totalWin){
   if (totalWin > 0) { bump($('ol-balance')); bump($('ol-won')); }
   if (totalWin > 0) {
     var ratio = totalWin / bet();
-    if (ratio >= 10) { safeAudio(A.winBig, 'winBig'); showCelebrate(ratio, totalWin); }
+    if (ratio >= 10) { safeAudio(A.winBig, "winBig"); }
     else if (ratio >= 2) { safeAudio(A.winMedium, 'winMedium'); }
     else { safeAudio(A.winSmall, 'winSmall'); }
   } else { safeAudio(A.lose, 'lose'); }
@@ -320,21 +320,6 @@ function changeBet(dir){
 }
 
 /* 弹窗 */
-function showCelebrate(ratio, totalWin){
-  var el = $("ol-celebrate"), tier = $("ol-celebrate-tier"), amt = $("ol-celebrate-amount");
-  if (!el || !tier || !amt) return;
-  var label = "";
-  if (ratio >= 50) label = "MEGA WIN";
-  else if (ratio >= 20) label = "BIG WIN";
-  else if (ratio >= 10) label = "NICE WIN";
-  else return;
-  tier.textContent = label;
-  amt.textContent = "+" + fmt(totalWin);
-  el.classList.toggle("mega", ratio >= 50);
-  el.classList.add("show");
-  setTimeout(function(){ el.classList.remove("show", "mega"); }, 2400);
-}
-
 function showOlFsBanner(remaining, mult){
   var b = $("ol-freespin-banner");
   if (!b) return;
