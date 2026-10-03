@@ -888,18 +888,3 @@ input, textarea, select {
 
 /* 卡片名单行收紧 */
 .apex-game-name{font-size:11.5px !important;line-height:15px !important;height:15px !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;padding:0 2px !important;margin:6px 0 0 0 !important;text-align:center !important;font-weight:600 !important;}
-
-/* ===== 卡片紧凑（图标-名字间距更小） ===== */
-.apex-game-card { gap: 3px !important; }
-.apex-game-name {
-  margin: 2px 0 0 0 !important;
-  padding: 0 2px !important;
-  font-size: 11px !important;
-  line-height: 14px !important;
-  height: 14px !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  text-align: center !important;
-  font-weight: 600 !important;
-}

@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- DNS 预解析 + 预连接（加速第三方资源加载） -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link rel="dns-prefetch" href="https://fonts.gstatic.com">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
@@ -16,13 +11,12 @@
 <style>html,body,*{touch-action:manipulation;-webkit-text-size-adjust:100%;}</style>
 <link rel="stylesheet" href="/src/css/roulette.css?v=1">
 <style>.apex-loader{position:fixed;inset:0;z-index:9999;background:#fafafa;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease}.apex-loader.apex-hide{opacity:0;pointer-events:none}.apex-loader-spin{width:36px;height:36px;border:3px solid #ececee;border-top-color:#0a0a0a;border-radius:50%;animation:apexSpin .8s linear infinite}@keyframes apexSpin{to{transform:rotate(360deg)}}</style>
-<link rel="stylesheet" href="/src/css/apex-skeleton.css">
 </head>
 <body>
 <div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
 <div id="app">
   <header class="rl-bar">
-    <a class="rl-icon-btn apex-back" href="/game.html?id=roulette-euro" aria-label="返回">
+    <a class="rl-icon-btn" href="/game.html?id=roulette-euro" aria-label="返回">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </a>
     <div class="rl-brand">欧洲轮盘</div>

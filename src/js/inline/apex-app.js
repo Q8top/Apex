@@ -87,7 +87,7 @@ function initCarousel(app){
     {a:'NOTICE',b:'\u5B89\u5168\u63D0\u793A',c:'\u8BF7\u52FF\u5411\u4EFB\u4F55\u4EBA\u900F\u9732\u60A8\u7684\u8D26\u53F7\u5BC6\u7801'}
   ];
   t.innerHTML=S.map(function(s){return '<div class="apex-carousel-slide"><span class="apex-carousel-tag">'+s.a+'</span><h2 class="apex-carousel-title">'+s.b+'</h2><p class="apex-carousel-desc">'+s.c+'</p></div>';}).join('');
-  d.innerHTML=S.map(function(_,i){return '<button type="button" class="apex-dot'+(c.k===savedCat?' active':'')+'" data-idx="'+i+'" aria-label="'+(i+1)+'"></button>';}).join('');
+  d.innerHTML=S.map(function(_,i){return '<button type="button" class="apex-dot'+(i===0?' active':'')+'" data-idx="'+i+'" aria-label="'+(i+1)+'"></button>';}).join('');
   var dots=d.querySelectorAll('.apex-dot'),n=S.length,cur=0,AUTO=3500,PAUSE=6000;
   var timer=null,paused=false,pauseTimer=null;
   function setA(i){for(var k=0;k<dots.length;k++)dots[k].classList.toggle('active',k===i);}
@@ -163,7 +163,7 @@ var APEX_GAMES={
     {id:'1001-mg',n:'1001\u7CBE\u7075',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'},
     {id:'1001-mg2',n:'1001\u7CBE\u70752',i:'ri-gamepad-line',c:'#9a2f6a',img:'/assets/games/1001-mg2.svg'},
     {id:'10001-nights',n:'\u4E00\u4E07\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#1a4a7a',img:'/assets/games/10001-nights.svg'},
-    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CM',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
+    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CMega',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
     {id:'1429-seas',n:'1429\u6D77\u57DF',i:'ri-gamepad-line',c:'#0a6a7a',img:'/assets/games/1429-seas.svg'},
     {id:'5-lions',n:'\u4E94\u72EE',i:'ri-gamepad-line',c:'#a85a1f',img:'/assets/games/5-lions.svg'},
     {id:'5-lions-gold',n:'\u4E94\u72EE\u9EC4\u91D1',i:'ri-gamepad-line',c:'#c9a227',img:'/assets/games/5-lions-gold.svg'},
@@ -199,10 +199,6 @@ function renderGames(box,catKey){
   }
 }
 function makeCats(){
-  var CAT_KEY = "apex_cat_v1";
-  var validCats = ["hot","slot","roul","card","poker","lott","bingo","sport","virt","mult","spec"];
-  var savedCat = "hot";
-  try { var v = sessionStorage.getItem(CAT_KEY); if (v && validCats.indexOf(v) >= 0) savedCat = v; } catch(e){}
   var CATS=[
     {k:'hot',   l:'\u70ED\u95E8\u6E38\u620F', i:'ri-fire-line'},
     {k:'slot',  l:'\u7535\u5B50\u6E38\u620F', i:'ri-gamepad-line'},
@@ -228,8 +224,8 @@ function makeCats(){
   }).join('');
   var content=document.createElement('section');
   content.className='apex-cats-content';
-  content.setAttribute('data-cat-content',savedCat);
-  renderGames(content,savedCat);
+  content.setAttribute('data-cat-content',CATS[0].k);
+  renderGames(content,CATS[0].k);
   wrap.appendChild(side);
   wrap.appendChild(content);
   side.addEventListener('click',function(e){
@@ -239,7 +235,6 @@ function makeCats(){
     side.querySelectorAll('.apex-cat-item').forEach(function(x){x.classList.toggle('active',x===b);});
     content.setAttribute('data-cat-content',k);
     renderGames(content,k);
-    try { sessionStorage.setItem(CAT_KEY, k); } catch(e3){}
     try{window.dispatchEvent(new CustomEvent('apex:cat-changed',{detail:{cat:k}}));}catch(e2){}
   });
   return wrap;
