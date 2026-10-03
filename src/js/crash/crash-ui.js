@@ -474,7 +474,7 @@ function bind(){
   if((e=$('cr-bet-plus')))e.addEventListener('click',function(){changeBet(1);});
   if((e=$('cr-action')))e.addEventListener('click',onAction);
   if((e=$('cr-auto-stat')))e.addEventListener('click',autoXSetting);
-  if((e=$('cr-history')))e.addEventListener('click',showHistory);
+  if((e=$('cr-history-btn')))e.addEventListener('click',showHistory);
   if((e=$('cr-menu')))e.addEventListener('click',showRules);
   if((e=$('cr-mode-action')))e.addEventListener('click',actionMenu);
   var soundOn=true;
