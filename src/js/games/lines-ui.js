@@ -37,6 +37,21 @@ var MODE = (function(){
 })();
 
 var GAME_ID = document.body.getAttribute('data-game') || 'unknown';
+
+var NS_MAP = {
+  '1001-mg':       'Sym_1001_mg',
+  '1001-mg2':      'Sym_1001_mg2',
+  '10001-nights':  'Sym_10001_nights',
+  '10001-mega':    'Sym_10001_mega',
+  '1429-seas':     'Sym_1429_seas',
+  '5-lions':       'Sym_5_lions',
+  '5-lions-gold':  'Sym_5_lions_gold',
+  '5-lions-mega':  'Sym_5_lions_mega',
+  'arabian-nights':'Sym_arabian_nights',
+  'asgardian':     'Sym_asgardian',
+  'aces-eights':   'Sym_aces_eights',
+  'fengshui':      'Sym_fengshui'
+};
 var CFG = null, E = null, S = null;
 var LS_STATE='apex_lines_'+GAME_ID+'_'+MODE+'_state';
 var LS_HIST ='apex_lines_'+GAME_ID+'_'+MODE+'_history';
@@ -246,7 +261,7 @@ function init(){
   try{
     CFG = window.LinesGameConfig;
     E = window.LinesEngine;
-    S = window.LinesGameSymbols;
+    S = window[NS_MAP[GAME_ID]] || window.LinesGameSymbols || null;
     if(!CFG||!E||!S){
       var missing = [];
       if(!CFG) missing.push('LinesGameConfig');
