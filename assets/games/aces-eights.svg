@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="ae-bg" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/></radialGradient>
+    <radialGradient id="ae-lamp2" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#d9a83e"/><stop offset="100%" stop-color="#7a4a10"/></radialGradient>
+    <radialGradient id="ae-genie2" cx="40%" cy="30%" r="75%"><stop offset="0%" stop-color="#d8b0ff"/><stop offset="55%" stop-color="#c9a227"/><stop offset="100%" stop-color="#000"/></radialGradient>
+    <radialGradient id="ae-smoke" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#f0e0ff"/><stop offset="100%" stop-color="#a070c0"/></radialGradient>
+  </defs>
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#ae-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(106,47,154,.35)" stroke-width="1"/>
+  <g transform="translate(100,100) scale(0.86) translate(-100,-100)">
+    <ellipse cx="100" cy="140" rx="50" ry="6" fill="#000" opacity=".15"/>
+    <ellipse cx="100" cy="122" rx="50" ry="16" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="2.4"/>
+    <path d="M144 108 Q156 96 166 88 Q162 100 156 112" stroke="url(#ae-lamp2)" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="168" cy="86" r="6" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
+    <path d="M64 108 Q60 90 68 78 Q80 66 100 70 Q120 66 132 78 Q140 90 136 108" stroke="#e8c25c" stroke-width="3" fill="none" opacity=".85"/>
+    <ellipse cx="100" cy="70" rx="30" ry="22" fill="url(#ae-smoke)" stroke="#0a0a0a" stroke-width="2" opacity=".85"/>
+    <circle cx="86" cy="66" r="4" fill="#0a0a0a"/>
+    <circle cx="114" cy="66" r="4" fill="#0a0a0a"/>
+    <path d="M88 78 Q100 86 112 78" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="100" cy="52" r="3" fill="#ffe9a0" opacity=".9"/>
+    <circle cx="70" cy="56" r="2" fill="#ffe9a0" opacity=".8"/>
+    <circle cx="130" cy="60" r="2.5" fill="#ffe9a0" opacity=".85"/>
+    <rect x="84" y="100" width="32" height="6" rx="3" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
+  </g>
+</svg>
