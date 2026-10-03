@@ -184,8 +184,8 @@ function renderGames(box,catKey){
       '<div class="apex-game-name">'+g.n+'</div>'+
       '</div>';
   }).join('')+'</div>';
-  if(catKey==='hot'){
-    html+='<button type="button" class="apex-more-games-btn" id="apex-more-games-btn"><span>查看全部游戏</span><i class="ri-arrow-right-line" aria-hidden="true"></i></button>';
+  if(catKey==='hot'||catKey==='slot'){
+    html+='<button type="button" class="apex-more-games-btn" id="apex-more-games-btn" data-cat-src="'+catKey+'"><span>'+(catKey==='slot'?'更多电子游戏':'更多热门游戏')+'</span><i class="ri-arrow-right-line" aria-hidden="true"></i></button>';
   }
   box.innerHTML=html;
   if(!box.dataset.clickBound){
@@ -302,8 +302,8 @@ window.__apexApp={show:show,hide:hide,LANGS:LANGS};
 if(typeof ApexLoader!=="undefined"){try{ApexLoader.hide();}catch(e){}}
 
 /* ===== 全屏"全部游戏"弹窗 ===== */
-function buildAllGamesHTML(){
-  var all = APEX_GAMES.hot || [];
+function buildAllGamesHTML(cat){
+  var all = APEX_GAMES[cat||'hot'] || [];
   var grid = '<div class="apex-all-games-grid">';
   grid += all.map(function(g){
     var inner = (g.img) ? ('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">') : ('<i class="'+g.i+'" aria-hidden="true"></i>');
@@ -356,8 +356,15 @@ function initMoreGames(){
 document.addEventListener('click', function(e){
   var btn = e.target.closest ? e.target.closest('#apex-more-games-btn') : null;
   if (!btn) return;
+  var cat = btn.getAttribute('data-cat-src') || 'hot';
   var modal = document.getElementById('apex-all-games-modal');
-  if (!modal) { initMoreGames(); modal = document.getElementById('apex-all-games-modal'); }
+  if (!modal) { initMoreGames(cat); modal = document.getElementById('apex-all-games-modal'); }
+  // 更新标题
+  var title = modal.querySelector('.apex-all-games-title');
+  if (title) title.textContent = cat === 'slot' ? '电子游戏' : '热门游戏';
+  // 更新内容
+  var body = modal.querySelector('.apex-all-games-body');
+  if (body) body.innerHTML = buildAllGamesHTML(cat);
   modal.classList.add('show');
   modal.setAttribute('aria-hidden', 'false');
 });
