@@ -1,7 +1,7 @@
 /* 21点 · UI */
 (function(){
 'use strict';
-var C=window.BlackjackConfig, E=window.BlackjackEngine, S=window.BlackjackSymbols, A=window.BlackjackAudio;
+var C=window.BlackjackConfig, E=window.BlackjackEngine, S=window.BlackjackSymbols, A=window.BlackjackAudio || { init:function(){}, enabled:function(){}, click:function(){}, deal:function(){}, hit:function(){}, stand:function(){}, double:function(){}, reveal:function(){}, win:function(){}, blackjack:function(){}, lose:function(){}, push:function(){}, bust:function(){} };
 
 var MODE=(function(){
   var m=String(location.search).match(/[?&]mode=([a-z]+)/i);

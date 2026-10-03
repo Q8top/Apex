@@ -1,7 +1,7 @@
 /* 欧洲/美式轮盘 · UI */
 (function(){
 'use strict';
-var C=window.RouletteConfig, E=window.RouletteEngine, S=window.RouletteSymbols, A=window.RouletteAudio;
+var C=window.RouletteConfig, E=window.RouletteEngine, S=window.RouletteSymbols, A=window.RouletteAudio || { init:function(){}, enabled:function(){}, click:function(){}, chip:function(){}, spinStart:function(){}, spinStop:function(){}, ballSettle:function(){}, win:function(){}, bigWin:function(){}, lose:function(){} };
 
 /* 欧洲 / 美式由 URL ?type= 决定（默认 euro） */
 var TYPE=(function(){
