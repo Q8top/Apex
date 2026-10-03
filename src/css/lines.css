@@ -103,3 +103,30 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 @media (max-height:720px){#app{gap:7px}.lm-bar{height:48px}.lm-win-value{font-size:22px}.lm-spin-btn{height:48px}.lm-stat{padding:7px 5px}.lm-stat-value{font-size:13px}.lm-bet-row{height:40px}.lm-foot-btn{padding:9px 6px;font-size:12px}}
 @media (max-width:360px){#app{padding:0 10px;gap:6px}.lm-bar{height:44px}.lm-brand{font-size:13px;letter-spacing:1px}.lm-win-value{font-size:20px}.lm-stat{padding:6px 4px}.lm-stat-value{font-size:12px}.lm-stat-label{font-size:9px;letter-spacing:1px}.lm-bet-row{height:36px;grid-template-columns:44px 1fr 44px}.lm-spin-btn{height:44px;font-size:14px}.lm-foot-btn{padding:8px 4px;font-size:11px}.lm-grid{gap:2px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}}
+
+/* ===== FS 舞台脉冲（对比 sweet）===== */
+.lm-stage.fs-stage-pulse {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,240,140,.35) 0%, transparent 55%),
+    radial-gradient(circle at 50% 100%, rgba(255,80,160,.3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--theme) 0%, var(--theme2) 100%) !important;
+  animation: lmFsPulse 1.2s ease-in-out infinite;
+}
+@keyframes lmFsPulse {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 24px 48px -16px rgba(0,0,0,.4); }
+  50%      { box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), 0 0 40px rgba(255,200,80,.5), 0 24px 48px -16px rgba(0,0,0,.4); }
+}
+
+/* ===== 中奖 combo 数字高亮 ===== */
+.lm-combo.show { animation: lmComboIn .3s cubic-bezier(.2,1.4,.4,1); }
+@keyframes lmComboIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 数字 pulsing ===== */
+@keyframes lmWinValPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}

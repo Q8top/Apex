@@ -104,9 +104,11 @@ function doSpin(){
 
 function runFs(b){
   safeAudio(A.fsBgStart,'fsBgStart');
+  // FS 舞台脉冲（对比 sweet）
+  if (stage) { stage.classList.add('fs-stage-pulse'); }
   var stage=document.querySelector('.lm-stage');if(stage)stage.classList.add('fs-mode');
   var fsRes;
-  try{fsRes=E.playFreeSpins(b);}catch(e){console.error(e);safeAudio(A.fsBgStop,'fsBgStop');if(stage)stage.classList.remove('fs-mode');releaseSpin();return;}
+  try{fsRes=E.playFreeSpins(b);}catch(e){console.error(e);safeAudio(A.fsBgStop,'fsBgStop');if(stage)stage.classList.remove('fs-mode');if(stage)stage.classList.remove('fs-stage-pulse');releaseSpin();return;}
   var spins=fsRes.spins,idx=0,total=fsRes.totalWin;
   function next(){
     if(idx>=spins.length){
@@ -131,6 +133,10 @@ function runFs(b){
 function submitReal(b,w){return fetch('/api/slot/spin',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-CSRF-Token':getCsrf()},body:JSON.stringify({bet:b,totalWin:w})}).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&typeof d.balanceAfter==='number')state.balance=d.balanceAfter;return true;}).catch(function(){toast('网络错误');return false;});}
 
 function finish(amount,betAmt){
+  // BigWin 分级横幅
+  if (typeof ApexBigWin !== 'undefined' && amount > 0 && betAmt) {
+    try { ApexBigWin.celebrate(amount, betAmt); } catch(e){}
+  }
   releaseSpin();
   if(amount>0){state.balance+=amount;if(betAmt&&amount>=betAmt*30)safeAudio(A.winBig,'winBig');else if(betAmt&&amount>=betAmt*8)safeAudio(A.winMedium,'winMedium');else safeAudio(A.winSmall,'winSmall');}
   else safeAudio(A.lose,'lose');
