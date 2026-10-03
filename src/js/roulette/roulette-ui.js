@@ -58,6 +58,14 @@ function buildWheel(){
   if(wrap)wrap.innerHTML=S.wheelSVG(IS_AMER);
   var ballWrap=$('rl-ball-wrap');
   if(ballWrap)ballWrap.innerHTML='<div class="rl-ball">'+S.ball()+'</div>';
+  // 独立指针（不随转轮旋转）
+  var ww=$('rl-wheel-wrap');
+  if(ww&&!ww.querySelector('.rl-pointer')){
+    var ptr=document.createElement('div');
+    ptr.className='rl-pointer';
+    ptr.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 20 L4 4 L20 4 Z" fill="#c9a227" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 16 L7 6 L17 6 Z" fill="#f0d85a"/></svg>';
+    ww.appendChild(ptr);
+  }
 }
 
 /* ───── 生成注区 ───── */
