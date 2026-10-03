@@ -1245,3 +1245,76 @@ html, body {
   letter-spacing: 4px;
   opacity: .85;
 }
+
+/* ===== APEX-SWEET-B4: Free Spin Entrance ===== */
+.sw-freespin-banner.fs-entrance {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  gap: 8px !important;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,150,220,.55) 0%, transparent 55%),
+    rgba(40,8,32,.82) !important;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px !important;
+  letter-spacing: 4px !important;
+  z-index: 200 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  animation: fsEntranceIn 800ms cubic-bezier(.2,.9,.3,1) both !important;
+}
+.sw-freespin-banner.fs-entrance::before {
+  content: 'FREE SPINS' !important;
+  position: static !important;
+  display: block !important;
+  color: #fff !important;
+  font-size: 34px !important;
+  font-weight: 900 !important;
+  letter-spacing: 7px !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 26px rgba(255,150,210,.8), 0 4px 14px rgba(0,0,0,.45) !important;
+  animation: none !important;
+  transform: none !important;
+}
+.sw-freespin-banner.fs-entrance::after {
+  content: '甜蜜蜜' !important;
+  position: static !important;
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: rgba(255,215,235,.88) !important;
+  letter-spacing: 6px !important"
+;
+}
+.sw-freespin-banner.fs-entecho " rance runFreeSp > span:first-child { display: none !important; }
+.sw-freespin-banner.fs-entrance .sw-fs-count {
+  font-size: 42px !important;
+  font-weight: 900 !important;
+  color: #ffd54f !important;
+  letter-spacing: 2px !important;
+  margin-top: 8px !important;
+  text-shadow: 0 0 26px rgba(255,213,79,.7), 0 3px 12px rgba(0,0,0,.35) !important;
+}
+.sw-freespin-banner.fs-entrance .sw-fs-mult { display: none !important; }
+@keyframes fsEntranceIn {
+  0%   { opacity: 0; }
+  18%  { opacity: 1; }
+  72%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.sw-stage.fs-entrance-active::after {
+  border-color: rgba(255,190,225,.7) !important;
+  box-shadow:
+    inset 0 0 80px rgba(255,120,190,.4),
+    inset 0 0 1px rgba(255,220,240,.8) !important;
+}

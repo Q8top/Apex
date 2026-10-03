@@ -18,7 +18,8 @@ var state = {
   betIndex: C.CONFIG.defaultBetIndex,
   spinning: false, grid: null, history: [],
   autoOn: false, ready: false, safetyTimer: null,
-  freeSpinMode: false
+  freeSpinMode: false,
+  fsEntranceActive: false
 };
 
 var SYMBOL_POOL = Object.keys(C.SYMBOLS);
@@ -325,8 +326,7 @@ function doSpin(){
           // 检查免费旋转触发
           if (result.scatterCount >= 4) {
             safeAudio(A.freeSpin, 'freeSpin');
-            toast('🎉 免费旋转触发！+10 次', 2200);
-            setTimeout(function(){ runFreeSpins(b); }, 800);
+            playFsEntrance(10, function(){ runFreeSpins(b); });
           } else {
             playRounds(result, b, null);
           }
@@ -337,6 +337,34 @@ function doSpin(){
 }
 
 /* 免费旋转 */
+function playFsEntrance(count, cb){
+  if (state.fsEntranceActive) return;
+  var banner = $('sw-freespin-banner');
+  var stage = document.querySelector('.sw-stage');
+  if (!banner) { if (cb) cb(); return; }
+
+  state.fsEntranceActive = true;
+  var finished = false;
+  function finish(){
+    if (finished) return;
+    finished = true;
+    banner.classList.remove('fs-entrance');
+    banner.hidden = true;
+    if (stage) stage.classList.remove('fs-entrance-active');
+    state.fsEntranceActive = false;
+    if (cb) cb();
+  }
+
+  banner.hidden = false;
+  banner.classList.add('fs-entrance');
+  if (stage) stage.classList.add('fs-entrance-active');
+  var c = $('sw-fs-count'); if (c) c.textContent = '×' + count;
+  var m = $('sw-fs-mult'); if (m) m.textContent = '';
+
+  banner.addEventListener('animationend', finish, { once: true });
+  setTimeout(finish, 1200);
+}
+
 function runFreeSpins(b){
   state.freeSpinMode = true;
   var stage = document.querySelector('.sw-stage');
