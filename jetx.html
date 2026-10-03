@@ -22,7 +22,7 @@
       <button class="cr-icon-btn" id="cr-sound" aria-label="音效">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a10 10 0 010 14"/></svg>
       </button>
-      <button class="cr-icon-btn" id="cr-menu" aria-label="菜单">
+      <button class="cr-icon-btn" id="cr-menu" aria-label="规则">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
     </div>
@@ -41,10 +41,15 @@
     <div class="cr-combo" id="cr-combo"></div>
   </section>
 
+  <button class="cr-action-btn cr-mode-btn" type="button" id="cr-mode-action">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+    <span>重置余额</span>
+  </button>
+
   <section class="cr-stats">
     <div class="cr-stat"><span class="cr-stat-label">余额</span><span class="cr-stat-value" id="cr-balance">¥1,000.00</span></div>
     <div class="cr-stat"><span class="cr-stat-label">下注</span><span class="cr-stat-value" id="cr-bet">¥10.00</span></div>
-    <div class="cr-stat"><span class="cr-stat-label">自动提现</span><span class="cr-stat-value" id="cr-auto-x">关闭</span></div>
+    <div class="cr-stat cr-stat-clickable" id="cr-auto-stat"><span class="cr-stat-label">自动提现</span><span class="cr-stat-value" id="cr-auto-x">关闭</span></div>
   </section>
 
   <section class="cr-bet-row">
@@ -55,8 +60,8 @@
 
   <section class="cr-action-row">
     <button class="cr-action-btn cr-action-primary" id="cr-action">下注</button>
-    <button class="cr-icon-btn cr-auto-btn" id="cr-auto" aria-label="自动提现设置">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <button class="cr-icon-btn cr-auto-btn" id="cr-history" aria-label="游戏记录">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1.2" fill="currentColor"/><circle cx="3.5" cy="12" r="1.2" fill="currentColor"/><circle cx="3.5" cy="18" r="1.2" fill="currentColor"/></svg>
     </button>
   </section>
 

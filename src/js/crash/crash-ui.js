@@ -364,30 +364,102 @@ function showHistory(){
 }
 
 function autoXSetting(){
-  var cur=state.autoX>0?state.autoX.toFixed(2):'';
-  var v=prompt('自动提现倍率（1.01 ~ 100，留空=关闭）',cur);
-  if(v===null)return;
-  v=String(v).trim();
-  if(v===''){state.autoX=0;}
-  else{var n=parseFloat(v);if(isNaN(n)||n<1.01||n>100){toast('请输入 1.01 ~ 100');return;}state.autoX=n;}
-  saveState();renderAutoX();
-  toast(state.autoX>0?('自动提现 '+state.autoX.toFixed(2)+'×'):'已关闭自动提现');
+  var cur = state.autoX > 0 ? state.autoX.toFixed(2) : '';
+  var html = '<div style="padding:4px 0 6px;">' +
+    '<div class="cr-auto-title">倍率区间 1.01 ~ 100</div>' +
+    '<input type="text" inputmode="decimal" class="cr-auto-ipt" id="cr-auto-ipt" placeholder="留空=关闭" value="' + cur + '" autocomplete="off">' +
+    '<div class="cr-auto-title" style="margin-top:16px;">快捷选择</div>' +
+    '<div class="cr-auto-grid">' +
+      '<button class="cr-auto-opt" data-x="1.5">1.50×</button>' +
+      '<button class="cr-auto-opt" data-x="2">2.00×</button>' +
+      '<button class="cr-auto-opt" data-x="3">3.00×</button>' +
+      '<button class="cr-auto-opt" data-x="5">5.00×</button>' +
+    '</div>' +
+    '<button class="cr-auto-submit" id="cr-auto-ok">确定</button>' +
+    '<button class="cr-auto-cancel" id="cr-auto-cancel">关闭自动提现</button>' +
+    '<div class="cr-auto-hint">达到设定倍率时，系统自动为你提现</div>' +
+    '</div>';
+  openModal('自动提现', html);
+  setTimeout(function(){
+    var inp = $('cr-auto-ipt');
+    var ok = $('cr-auto-ok');
+    var ca = $('cr-auto-cancel');
+    var opts = document.querySelectorAll('.cr-auto-opt');
+    if (inp) setTimeout(function(){ try { inp.focus(); } catch(e){} }, 100);
+    opts.forEach(function(b){
+      b.addEventListener('click', function(){
+        var x = b.getAttribute('data-x');
+        if (inp) inp.value = x;
+      });
+    });
+    if (ok) ok.addEventListener('click', function(){
+      var v = (inp ? inp.value : '').trim();
+      if (v === '') { state.autoX = 0; }
+      else {
+        var n = parseFloat(v);
+        if (isNaN(n) || n < 1.01 || n > 100) { toast('请输入 1.01 ~ 100'); return; }
+        state.autoX = n;
+      }
+      saveState(); renderAutoX(); closeModal();
+      toast(state.autoX > 0 ? ('自动提现 ' + state.autoX.toFixed(2) + '×') : '已关闭自动提现');
+    });
+    if (ca) ca.addEventListener('click', function(){
+      state.autoX = 0; saveState(); renderAutoX(); closeModal();
+      toast('已关闭自动提现');
+    });
+    if (inp) inp.addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter') { ev.preventDefault(); if (ok) ok.click(); }
+    });
+  }, 30);
 }
 
 function actionMenu(){
-  var isDemo=MODE==='demo';
-  if(isDemo){
-    openModal('重置余额','<p style="text-align:center;padding:14px 0 22px;color:#666;">确认重置为 ¥1,000.00？</p>'+
-      '<div style="display:flex;gap:8px;"><button id="cr-reset-ok" style="flex:1;padding:12px;border:0;background:#0a0a0a;color:#fff;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;">确认重置</button>'+
-      '<button id="cr-reset-cancel" style="flex:1;padding:12px;border:0;background:#eee;color:#333;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;">取消</button></div>');
-    setTimeout(function(){
-      var ok=$('cr-reset-ok'),ca=$('cr-reset-cancel');
-      if(ok)ok.onclick=function(){state.balance=1000;state.betIndex=3;state.history=[];saveState();saveHist();renderBalance();renderBet();renderHistory();setActionBtn('bet');closeModal();toast('已重置');};
-      if(ca)ca.onclick=closeModal;
-    },50);
-  }else{
-    openModal('充值','<p style="text-align:center;padding:14px 0 22px;color:#666;">充值功能开发中，敬请期待。</p>');
-  }
+  var isDemo = MODE === 'demo';
+  var html = '<div class="cr-mode-bal">' +
+    '<div class="lbl">当前余额</div>' +
+    '<div class="val">¥' + state.balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '</div>' +
+    '</div>' +
+    '<div class="cr-mode-btn-row">' +
+    '<button class="cr-mode-ok" id="cr-mode-ok">' + (isDemo ? '重置为 ¥1,000.00' : '充值余额') + '</button>' +
+    '<button class="cr-mode-cancel" id="cr-mode-cancel">取消</button>' +
+    '</div>';
+  openModal(isDemo ? '重置余额' : '充值余额', html);
+  setTimeout(function(){
+    var ok = $('cr-mode-ok');
+    var ca = $('cr-mode-cancel');
+    if (ok) ok.addEventListener('click', function(){
+      if (isDemo) {
+        state.balance = 1000;
+        state.betIndex = 3;
+        state.history = [];
+        saveState(); saveHist();
+        renderBalance(); renderBet(); renderHistory();
+        setActionBtn('bet');
+        closeModal();
+        toast('已重置为 ¥1,000.00');
+      } else {
+        closeModal();
+        openModal('充值', '<p style="text-align:center;padding:14px 0 22px;color:#666;">充值功能开发中，敬请期待。</p>');
+      }
+    });
+    if (ca) ca.addEventListener('click', closeModal);
+  }, 30);
+}
+
+function showRules(){
+  var html = '<div style="font-size:13.5px;line-height:1.9;color:#333;">' +
+    '<p style="margin:0 0 12px;"><b>玩法</b></p>' +
+    '<p style="margin:0 0 6px;">1. 点击 − / + 调整下注金额</p>' +
+    '<p style="margin:0 0 6px;">2. 点击「下注」开始一局，倍率从 1.00× 开始实时上升</p>' +
+    '<p style="margin:0 0 6px;">3. 任何时刻点「提现」锁定当前倍率，奖励 = 下注 × 倍率</p>' +
+    '<p style="margin:0 0 6px;">4. 若倍率在你提现前到达崩点，本局输掉下注</p>' +
+    '<p style="margin:0 0 6px;">5. 可设置自动提现倍率，达到后系统自动锁定</p>' +
+    '<p style="margin:16px 0 12px;"><b>自动提现</b></p>' +
+    '<p style="margin:0 0 6px;">点击「自动提现」格或设置 1.01 ~ 100 倍，留空则关闭</p>' +
+    '<p style="margin:16px 0 12px;"><b>说明</b></p>' +
+    '<p style="margin:0;color:#888;">本游戏为虚拟积分娱乐，不涉及真实货币</p>' +
+    '</div>';
+  openModal('游戏规则', html);
 }
 
 function setupMode(){
@@ -401,8 +473,10 @@ function bind(){
   if((e=$('cr-bet-minus')))e.addEventListener('click',function(){changeBet(-1);});
   if((e=$('cr-bet-plus')))e.addEventListener('click',function(){changeBet(1);});
   if((e=$('cr-action')))e.addEventListener('click',onAction);
-  if((e=$('cr-auto')))e.addEventListener('click',autoXSetting);
-  if((e=$('cr-menu')))e.addEventListener('click',actionMenu);
+  if((e=$('cr-auto-stat')))e.addEventListener('click',autoXSetting);
+  if((e=$('cr-history')))e.addEventListener('click',showHistory);
+  if((e=$('cr-menu')))e.addEventListener('click',showRules);
+  if((e=$('cr-mode-action')))e.addEventListener('click',actionMenu);
   var soundOn=true;
   if((e=$('cr-sound')))e.addEventListener('click',function(){soundOn=!soundOn;safeAudio(function(){A.enabled(soundOn);},'toggle');e.style.opacity=soundOn?'1':'0.35';toast(soundOn?'音效已开':'音效已关',900);});
   if((e=$('cr-modal-x')))e.addEventListener('click',closeModal);

@@ -103,3 +103,33 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
   .cr-action-btn{height:46px;font-size:15px}
   .cr-auto-btn{height:46px}
 }
+
+/* ===== 重置/充值独立按钮 ===== */
+.cr-mode-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:38px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;box-shadow:var(--sh-1);flex-shrink:0;font-family:inherit}
+.cr-mode-btn:active{background:#f4f4f5}
+.cr-mode-btn > svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ===== 自动提现格可点 ===== */
+.cr-stat-clickable{cursor:pointer;transition:background .15s ease}
+.cr-stat-clickable:active{background:#f4f4f5}
+
+/* ===== 自动提现弹窗（定制） ===== */
+.cr-auto-ipt{width:100%;height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font-size:20px;font-weight:900;text-align:center;font-family:inherit;background:#fafafa;color:var(--ink);outline:none;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none}
+.cr-auto-ipt:focus{border-color:var(--accent);background:#fff}
+.cr-auto-ipt::placeholder{color:#bbb;font-weight:600;font-size:14px}
+.cr-auto-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 4px}
+.cr-auto-opt{padding:10px 4px;border:1px solid var(--line);background:#fff;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;text-align:center;font-family:inherit;color:var(--ink);font-variant-numeric:tabular-nums}
+.cr-auto-opt:active{background:#f4f4f5}
+.cr-auto-submit{width:100%;height:48px;border:0;border-radius:12px;background:#0a0a0a;color:#fff;font-weight:800;font-size:15px;letter-spacing:1px;cursor:pointer;margin-top:14px;font-family:inherit}
+.cr-auto-cancel{width:100%;height:42px;border:0;border-radius:12px;background:#f0f0f2;color:#555;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;font-family:inherit}
+.cr-auto-hint{font-size:12px;color:#999;text-align:center;margin-top:10px;line-height:1.5}
+.cr-auto-title{font-size:13px;font-weight:800;color:#888;letter-spacing:1px;margin-bottom:8px}
+
+/* ===== 充/重置弹窗内容 ===== */
+.cr-mode-bal{text-align:center;padding:8px 0 16px}
+.cr-mode-bal .lbl{font-size:12px;color:#888;font-weight:700;letter-spacing:2px;margin-bottom:6px}
+.cr-mode-bal .val{font-size:32px;font-weight:900;color:#0a0a0a;font-variant-numeric:tabular-nums}
+.cr-mode-btn-row{display:flex;gap:8px;margin-top:6px}
+.cr-mode-btn-row > button{flex:1;height:46px;border:0;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}
+.cr-mode-ok{background:#0a0a0a;color:#fff}
+.cr-mode-cancel{background:#f0f0f2;color:#555}
