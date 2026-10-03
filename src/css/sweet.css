@@ -1318,3 +1318,43 @@ html, body {
     inset 0 0 80px rgba(255,120,190,.4),
     inset 0 0 1px rgba(255,220,240,.8) !important;
 }
+
+/* ===== APEX-SWEET-B5: Win Impact Enhancement ===== */
+
+/* 1. 中奖格光点爆发（伪元素独立 transform，不与 swWinPulse 冲突） */
+.sw-cell.winning {
+  position: relative;
+}
+.sw-cell.winning::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,240,250,.92) 0%, rgba(255,160,215,.5) 40%, transparent 72%);
+  opacity: 0;
+  animation: swWinBurst 700ms cubic-bezier(.2,.9,.3,1) 1;
+  z-index: 1;
+}
+@keyframes swWinBurst {
+  0%   { opacity: 0; transform: scale(.55); }
+  22%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.22); }
+}
+
+/* 2. Win 金额增强：只增强 text-shadow，不新增第二套 animation */
+.sw-win-value.winning {
+  text-shadow:
+    0 0 22px rgba(215,53,142,.58),
+    0 0 38px rgba(255,120,190,.32) !important;
+}
+
+/* 3. Stage 边缘光增强：只增强现有 ::after 数值 */
+.sw-stage.winning-focus::after {
+  border-color: rgba(255,200,230,.72) !important;
+  box-shadow:
+    inset 0 0 72px rgba(255,120,190,.38),
+    inset 0 0 1px rgba(255,225,245,.85),
+    0 0 24px rgba(255,120,190,.28) !important;
+}
