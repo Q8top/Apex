@@ -162,3 +162,15 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 .bj-cards{overflow:hidden}
 .bj-card{overflow:hidden}
 .bj-card > svg{overflow:hidden;max-width:100%;max-height:100%;display:block}
+
+
+/* ===== 重置/充值按钮（与 olympus 一致）===== */
+.bj-mode-action-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:38px;flex-shrink:0;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;box-shadow:var(--sh-1);font-family:inherit;box-sizing:border-box}
+.bj-mode-action-btn:active{background:#f4f4f5}
+.bj-mode-action-btn>svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+
+/* 防止黑块溢出 */
+html,body{overflow:hidden}
+#app{overflow:hidden}
+.bj-table{overflow:hidden}
