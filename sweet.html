@@ -39,12 +39,18 @@
   </header>
 
   <section class="sw-stage">
+    <div class="stage-layer stage-bg"></div>
+    <div class="stage-layer stage-board">
+      <div class="sw-grid" id="sw-grid" aria-label="游戏网格"></div>
+    </div>
+    <div class="stage-layer stage-symbols"></div>
+    <canvas class="stage-layer stage-fx" id="sw-fx"></canvas>
+    <div class="stage-layer stage-win"></div>
     <div class="sw-freespin-banner" id="sw-freespin-banner" hidden>
       <span>★ 免费旋转</span>
       <span class="sw-fs-count" id="sw-fs-count">0</span>
       <span class="sw-fs-mult" id="sw-fs-mult"></span>
     </div>
-    <div class="sw-grid" id="sw-grid" aria-label="游戏网格"></div>
   </section>
 
   <section class="sw-win-row">

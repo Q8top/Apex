@@ -1052,3 +1052,33 @@ html, body {
 .sw-spin-row {
   margin-top: 10px !important;
 }
+
+
+/* ===== APEX-SWEET-DS-611: Phase 3 Stage 分层 ===== */
+
+/* 取消原 padding，改用 .stage-board inset 精确定位 */
+.sw-stage { padding: 0 !important; }
+
+/* 通用层基类 */
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 棋盘层：精确对应原 content 区（stage 可视区 − 10px） */
+.stage-board { inset: 10px; pointer-events: auto; }
+
+/* grid 在 board 内 100%×100% = stage 可视区 − 20px（与原一致） */
+.stage-board > .sw-grid { pointer-events: auto; }
+
+/* 预留层（本 Phase 空） */
+.stage-symbols { z-index: 3; }
+.stage-fx { display: block; width: 100%; height: 100%; z-index: 4; }
+.stage-win { z-index: 5; }
+
+/* 免费旋转横幅最上层 */
+.sw-freespin-banner { z-index: 50 !important; }
+
+/* 炸弹 badge 保证最上 */
+.sw-bomb-badge { z-index: 100 !important; }
