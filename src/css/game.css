@@ -701,3 +701,16 @@ input, textarea, select {
   letter-spacing: 0 !important;
   line-height: 1.65 !important;
 }
+
+
+/* ===== APEX-PAYTABLE-TIERS: 赔付表多档位分行 ===== */
+.gm-paytable > tbody > tr > td.gm-mult { text-align: right; vertical-align: middle; }
+.gm-tier {
+  display: block;
+  font-weight: 700;
+  color: #0a0a0a;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .1px;
+}
+.gm-tier + .gm-tier { font-weight: 600; color: #666; font-size: 12.5px; }

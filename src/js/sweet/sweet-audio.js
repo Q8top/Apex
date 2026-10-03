@@ -125,8 +125,14 @@ function fsBgStop(){
   if (_fsBgTimer) { clearInterval(_fsBgTimer); _fsBgTimer = null; }
 }
 
+function resume(){
+  if (!ctx) return;
+  if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
+}
+
 var API = {
   init: init,
+  resume: resume,
   enabled: function(v){
     if (v === undefined) return enabled;
     enabled = !!v;

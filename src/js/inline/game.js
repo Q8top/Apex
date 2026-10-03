@@ -1095,7 +1095,9 @@ function render() {
     } else {
       symHtml = esc(pt.combo || '');
     }
-    return '<tr><td class="gm-combo">' + symHtml + '</td><td>' + esc(pt.mult) + '</td></tr>';
+    var tiers = String(pt.mult == null ? '' : pt.mult).split('·').map(function(x){ return x.trim(); }).filter(Boolean);
+                          var multHtml = tiers.length > 1 ? tiers.map(function(t){ return '<span class="gm-tier">' + esc(t) + '</span>'; }).join('') : esc(pt.mult);
+                          return '<tr><td class="gm-combo">' + symHtml + '</td><td class="gm-mult">' + multHtml + '</td></tr>';
   }).join('');
   }
 

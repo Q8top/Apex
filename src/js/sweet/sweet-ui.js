@@ -478,7 +478,10 @@ function bind(){
     else if (e.key === 'ArrowDown') { e.preventDefault(); changeBet(-1); }
     else if (e.key === 'Escape') { closeModal(); stopAuto(); }
   });
-  document.addEventListener('visibilitychange', function(){ if (document.hidden && state.autoOn) stopAuto(); });
+  document.addEventListener('visibilitychange', function(){
+  if (document.hidden) { if (state.autoOn) stopAuto(); }
+  else { safeAudio(A.resume, 'resume'); }
+});
   window.addEventListener('pagehide', function(){ if (state.autoOn) stopAuto(); });
 }
 

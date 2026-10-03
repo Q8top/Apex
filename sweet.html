@@ -53,6 +53,13 @@
     <div class="sw-combo" id="sw-combo"></div>
   </section>
 
+  <section class="sw-mode-action-row">
+    <button class="sw-mode-action-btn" id="sw-mode-action" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+      <span>重置余额</span>
+    </button>
+  </section>
+
   <section class="sw-balance-panel">
     <div class="sw-balance-main">
       <div class="sw-balance-label">余额</div>
@@ -79,7 +86,6 @@
     <button class="sw-bet-btn" id="sw-bet-plus" aria-label="增大下注">+</button>
   </section>
 
-  <section class="sw-bet-steps" id="sw-bet-steps" role="tablist" aria-label="下注档位"></section>
 
   <section class="sw-spin-row">
     <button class="sw-spin-btn" id="sw-spin" data-phase="idle">
@@ -102,12 +108,6 @@
       <span>赔付</span>
     </button>
   </section>
-
-  <!-- 旧的模式按钮：隐藏，功能合并到菜单底部抽屉 -->
-  <button class="sw-action-btn sw-mode-action-hidden" type="button" id="sw-mode-action" style="display:none;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
-    <span>重置余额</span>
-  </button>
 
   <!-- 旧的 stats：隐藏，已被 balance-panel 替代 -->
   <section class="sw-stats sw-stats-hidden" style="display:none;">
