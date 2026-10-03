@@ -324,8 +324,8 @@ function playRounds(result, betAmt, fs){
 
 function finish(totalWin){
   // Big Win 分级横幅（原版 Pragmatic 风格）
-  if (typeof ApexBigWin !== 'undefined' && amount > 0) {
-    try { ApexBigWin.celebrate(amount, bet()); } catch(e){}
+  if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
+    try { ApexBigWin.celebrate(totalWin, bet()); } catch(e){}
   }
   if (MODE === 'demo') {
     state.balance = state.balance - bet() + totalWin;
