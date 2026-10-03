@@ -714,3 +714,20 @@ input, textarea, select {
   letter-spacing: .1px;
 }
 .gm-tier + .gm-tier { font-weight: 600; color: #666; font-size: 12.5px; }
+
+/* ===== APEX-PAYTABLE-UNIFY: 赔付表三档完全统一 ===== */
+.gm-paytable > tbody > tr > td.gm-mult {
+  text-align: right !important;
+  vertical-align: middle !important;
+}
+.gm-tier,
+.gm-tier + .gm-tier {
+  display: block !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: #0a0a0a !important;
+  line-height: 1.9 !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: .2px !important;
+  text-align: right !important;
+}

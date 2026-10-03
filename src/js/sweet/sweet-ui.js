@@ -631,7 +631,7 @@ function openPaytableSheet(){
   }
   var html = '<div style="font-size:12.5px;color:#666;margin-bottom:12px;line-height:1.7;">6×5 Cluster Pays（8 个及以上相邻同类消除）</div>';
   rows.forEach(function(r){
-    html += '<div class="sym-row"><div class="sym-icon">' + r.icon + '</div><div><div class="sym-name">' + r.sym + '</div><div class="sym-pay">8-9个×' + (r.t[8] || 0) + ' · 10-11个×' + (r.t[10] || 0) + ' · 12+个×' + (r.t[12] || 0) + '</div></div></div>';
+    html += '<div class="sym-row"><div class="sym-icon">' + r.icon + '</div><div><div class="sym-name">' + ((C.SYMBOLS[r.sym] && C.SYMBOLS[r.sym].name) || r.sym) + '</div><div class="sym-pay">8-9个×' + (r.t[8] || 0) + ' · 10-11个×' + (r.t[10] || 0) + ' · 12+个×' + (r.t[12] || 0) + '</div></div></div>';
   });
   openSheet('赔付表', html);
 }
