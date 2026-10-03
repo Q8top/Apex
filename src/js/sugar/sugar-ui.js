@@ -334,6 +334,10 @@ function submitReal(b, win){
 }
 
 function finish(amount, betAmt){
+  // Big Win 分级横幅（原版 Pragmatic 风格）
+  if (typeof ApexBigWin !== 'undefined' && amount > 0) {
+    try { ApexBigWin.celebrate(amount, bet()); } catch(e){}
+  }
   releaseSpin();
   if (amount > 0) {
     state.balance += amount;

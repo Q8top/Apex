@@ -86,20 +86,119 @@ function drawScene(){
   // 网格
   cx.strokeStyle='rgba(255,255,255,.06)';cx.lineWidth=1;
   for(var i=1;i<6;i++){cx.beginPath();cx.moveTo(w*i/6,0);cx.lineTo(w*i/6,h);cx.stroke();cx.beginPath();cx.moveTo(0,h*i/6);cx.lineTo(w,h*i/6);cx.stroke();}
-  if(state.roundState!=='flying'){return;}
-  var t=Date.now()-state.startTime;
-  var multi=C.multiAt(t);
+
+  if(state.roundState==='idle'){return;}
+
+  var t=(state.roundState==='flying')?(Date.now()-state.startTime):(state.lastBustedT||0);
+  var isBusted=state.roundState==='busted';
+  var isCashed=state.roundState==='cashed';
+  var multi=isBusted?state.crashAt:(isCashed?state.cashedMulti:C.multiAt(t));
   var progress=Math.min(multi/state.crashAt,1);
-  // 曲线终点：从左下到右上按 progress
+
+  // 曲线终点
   var ex=w*0.05 + (w*0.85)*Math.pow(progress,0.7);
-  var ey=h*0.95 - (h*0.8)*Math.pow(progress,0.9);
-  // 尾迹
-  cx.strokeStyle='rgba(255,80,90,.85)';cx.lineWidth=3;
-  cx.beginPath();cx.moveTo(w*0.05,h*0.95);
-  cx.quadraticCurveTo(w*0.5,h*0.7,ex,ey);cx.stroke();
+  var ey=h*0.92 - (h*0.78)*Math.pow(progress,0.9);
+  if(isBusted){ex=w*0.05+(w*0.85);ey=h*0.14;}
+
+  // 尾迹 + 曲线（用主题色）
+  var accent=getComputedStyle(document.body).getPropertyValue('--accent').trim()||'#e5484d';
+  cx.lineWidth=3.5;cx.lineCap='round';
+  // 外发光
+  cx.strokeStyle=accent;cx.globalAlpha=0.25;
+  cx.beginPath();cx.moveTo(w*0.05,h*0.92);
+  cx.quadraticCurveTo(w*0.45,h*0.65,ex,ey);cx.stroke();
+  cx.globalAlpha=1;
+  // 主线
+  cx.beginPath();cx.moveTo(w*0.05,h*0.92);
+  cx.quadraticCurveTo(w*0.45,h*0.65,ex,ey);cx.stroke();
+
+  // 虚线尾迹（流动感）
+  cx.setLineDash([6,8]);cx.globalAlpha=.4;
+  cx.beginPath();cx.moveTo(w*0.05,h*0.92);
+  cx.quadraticCurveTo(w*0.45,h*0.65,ex*0.8,ey*0.8);
+  cx.stroke();cx.setLineDash([]);cx.globalAlpha=1;
+
   // 图标
-  cx.fillStyle='#fff';
-  cx.beginPath();cx.arc(ex,ey,6,0,Math.PI*2);cx.fill();
+  if(isBusted){
+    // 爆炸冲击波
+    var bustAge=(Date.now()-state.lastBustedT)/1000;
+    if(bustAge<0.8){
+      var r=20+bustAge*120;
+      cx.globalAlpha=Math.max(0,1-bustAge/0.8);
+      cx.strokeStyle='#fff8c0';cx.lineWidth=4;
+      cx.beginPath();cx.arc(ex,ey,r,0,Math.PI*2);cx.stroke();
+      cx.strokeStyle=accent;cx.lineWidth=2.5;
+      cx.beginPath();cx.arc(ex,ey,r*0.7,0,Math.PI*2);cx.stroke();
+      cx.globalAlpha=1;
+    }
+    // 爆炸星
+    cx.fillStyle='#ffe060';
+    cx.beginPath();
+    for(var k=0;k<12;k++){
+      var ang=k*Math.PI/6;
+      var rr=(k%2===0)?16:7;
+      cx.lineTo(ex+Math.cos(ang)*rr, ey+Math.sin(ang)*rr);
+    }
+    cx.closePath();cx.fill();
+    cx.strokeStyle='#0a0a0a';cx.lineWidth=1.5;cx.stroke();
+  } else {
+    // 飞机/火箭图标（按游戏类型）
+    drawVehicle(ex,ey,accent);
+  }
+
+  // 起点小圆
+  cx.fillStyle=accent;cx.beginPath();cx.arc(w*0.05,h*0.92,4,0,Math.PI*2);cx.fill();
+  cx.strokeStyle='#0a0a0a';cx.lineWidth=1.5;cx.stroke();
+}
+
+function drawVehicle(x,y,accent){
+  cx.save();
+  cx.translate(x,y);
+  var game=document.body.getAttribute('data-game')||'aviator';
+  if(game==='aviator'){
+    // 飞机（侧视 45°）
+    cx.rotate(-0.3);
+    cx.fillStyle=accent;cx.strokeStyle='#0a0a0a';cx.lineWidth=2;
+    cx.beginPath();
+    cx.moveTo(16,0);cx.lineTo(-2,-8);cx.lineTo(-4,0);cx.lineTo(-14,-6);
+    cx.lineTo(-10,0);cx.lineTo(-14,6);cx.lineTo(-4,0);cx.lineTo(-2,8);
+    cx.closePath();cx.fill();cx.stroke();
+    cx.fillStyle='#fff';
+    cx.beginPath();cx.arc(6,-1,2,0,Math.PI*2);cx.fill();
+  } else if(game==='crash'){
+    // 火箭（斜向上）
+    cx.rotate(-0.6);
+    cx.fillStyle=accent;cx.strokeStyle='#0a0a0a';cx.lineWidth=2;
+    cx.beginPath();
+    cx.moveTo(14,0);cx.lineTo(4,-6);cx.lineTo(-8,-6);cx.lineTo(-12,-2);
+    cx.lineTo(-12,2);cx.lineTo(-8,6);cx.lineTo(4,6);
+    cx.closePath();cx.fill();cx.stroke();
+    // 尾焰
+    cx.fillStyle='#ffb040';
+    cx.beginPath();cx.moveTo(-12,-3);cx.lineTo(-20,0);cx.lineTo(-12,3);cx.closePath();cx.fill();
+    cx.fillStyle='#fff8c0';
+    cx.beginPath();cx.moveTo(-12,-1.5);cx.lineTo(-16,0);cx.lineTo(-12,1.5);cx.closePath();cx.fill();
+    cx.fillStyle='#fff';cx.beginPath();cx.arc(4,-1.5,1.8,0,Math.PI*2);cx.fill();
+  } else {
+    // 喷气机（侧视 30°）
+    cx.rotate(-0.5);
+    cx.fillStyle=accent;cx.strokeStyle='#0a0a0a';cx.lineWidth=2;
+    cx.beginPath();
+    cx.moveTo(14,0);cx.lineTo(0,-6);cx.lineTo(-10,-5);cx.lineTo(-10,5);
+    cx.lineTo(0,6);cx.closePath();cx.fill();cx.stroke();
+    // 机翼
+    cx.beginPath();
+    cx.moveTo(0,-2);cx.lineTo(-6,-12);cx.lineTo(2,-4);cx.closePath();
+    cx.fill();cx.stroke();
+    cx.beginPath();
+    cx.moveTo(0,2);cx.lineTo(-6,12);cx.lineTo(2,4);cx.closePath();
+    cx.fill();cx.stroke();
+    // 尾焰
+    cx.fillStyle='#ffb040';
+    cx.beginPath();cx.moveTo(-10,-2);cx.lineTo(-18,0);cx.lineTo(-10,2);cx.closePath();cx.fill();
+    cx.fillStyle='#fff';cx.beginPath();cx.arc(6,-1,1.6,0,Math.PI*2);cx.fill();
+  }
+  cx.restore();
 }
 
 /* 游戏循环 */
@@ -116,6 +215,7 @@ function tick(){
     doBust(state.crashAt);return;
   }
   renderMulti(multi);
+  updateCashoutBtn(multi);
   drawScene();
   state.rafId=requestAnimationFrame(tick);
 }
@@ -156,8 +256,15 @@ function doCashout(x){
 function doBust(crash){
   cancelAnimationFrame(state.rafId);
   state.roundState='busted';
+  state.lastBustedT=Date.now();
   renderMulti(crash);
   renderStatus('已爆炸');
+  // 爆炸后继续绘制 1.2 秒冲击波
+  var bustDraw=function(){
+    drawScene();
+    if(Date.now()-state.lastBustedT<1200){state.rafId=requestAnimationFrame(bustDraw);}
+  };
+  state.rafId=requestAnimationFrame(bustDraw);
   safeAudio(A.stopRise,'stopRise');
   safeAudio(A.bust,'bust');
   renderWin(0);
@@ -196,6 +303,14 @@ function submitReal(b,win){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){if(d&&typeof d.balanceAfter==='number')state.balance=d.balanceAfter;return true;})
     .catch(function(){toast('网络错误');return false;});
+}
+
+function updateCashoutBtn(multi){
+  var b=$('cr-action');
+  if(!b)return;
+  if(state.roundState!=='flying')return;
+  var amt=bet()*multi;
+  b.textContent='提现 '+fmt(amt);
 }
 
 function setActionBtn(mode){

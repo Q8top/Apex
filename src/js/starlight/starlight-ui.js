@@ -154,6 +154,10 @@ function submitReal(b,win){
 }
 
 function finish(amount,betAmt){
+  // Big Win 分级横幅（原版 Pragmatic 风格）
+  if (typeof ApexBigWin !== 'undefined' && amount > 0) {
+    try { ApexBigWin.celebrate(amount, bet()); } catch(e){}
+  }
   releaseSpin();
   if(amount>0){state.balance+=amount;if(betAmt&&amount>=betAmt*30)safeAudio(A.winBig,'winBig');else if(betAmt&&amount>=betAmt*8)safeAudio(A.winMedium,'winMedium');else safeAudio(A.winSmall,'winSmall');}
   else{safeAudio(A.lose,'lose');}

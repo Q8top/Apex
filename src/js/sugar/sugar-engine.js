@@ -187,6 +187,8 @@ function dropMultipliers(multGrid, count){
 }
 
 /* ---------- 完整 spin（原版机制）---------- */
+/* 参数 inFreeSpin：当前 base 和 FS 机制一致（仅 RTP 缩放不同）
+     保留参数以便未来扩展（如 FS 中倍率更高概率） */
 function playFullSpin(totalBet, inFreeSpin){
   var R = C.CONFIG.rows, Col = C.CONFIG.cols;
   var grid = spin();
