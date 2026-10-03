@@ -44,15 +44,14 @@ var GAMES = {
     name: '幸运水果机',
     sub: '经典三轴老虎机 · 3×3 · 5 条中奖线',
     images: [],
-    intro: '幸运水果机是一款 3×3 经典老虎机游戏。每局同时结算 5 条固定中奖线（3 横 + 2 斜），每条线上连续 3 个相同符号即中奖。多条线可同时中奖，百搭（Wild）可替代除自己外任意符号。',
+    intro: '风水炼金术是中国风风水主题的 5×3 老虎机。以太极、金币、玉、龙、凤凰为主符号，翠绿金主题，20 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '三个转轴依次停止，形成 3×3 结果矩阵',
-      '同时结算 5 条固定中奖线（上行 / 中行 / 下行 / 主对角 / 副对角）',
-      '每条线上 3 个符号相同即中奖，独立计算',
-      '百搭（Wild）可替代除自己外的任意符号',
-      '中奖金额 = 对应符号赔率 × 单线下注额'
+      '5 列 × 3 行 = 15 格',
+      '共 20 条中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
     prizes: [
       { symbol: 'cherry',      mult: '×14' },
@@ -482,17 +481,33 @@ var GAMES = {
     name: '1001神秘精灵财富2',
     sub: '5×3 · 10 线 · 阿拉伯神话',
     images: [],
-    intro: '1001神秘精灵财富2 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '1001神秘精灵财富2 是阿拉伯神话题材的 5×3 老虎机续作。汇集魔瓶、戒指、飞毯、公主等神话符号，紫粉主题色，10 条固定中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线，左起连续 3/4/5 个相同符号即中奖',
       'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '出现 3/4/5 个 Scatter 触发免费旋转 12/18/25 次'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'bottle', mult: '3×5 · 4×25 · 5×120' },
+      { symbol: 'carpet', mult: '3×20 · 4×100 · 5×600' },
+      { symbol: 'princess', mult: '3×50 · 4×250 · 5×1200' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'bottle', mult: '3×5 · 4×25 · 5×120' },
+      { symbol: 'ring', mult: '3×10 · 4×50 · 5×220' },
+      { symbol: 'carpet', mult: '3×20 · 4×100 · 5×600' },
+      { symbol: 'princess', mult: '3×50 · 4×250 · 5×1200' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3/4/5 → 免费旋转 12/18/25 次' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -508,17 +523,33 @@ var GAMES = {
     name: '一万零一夜',
     sub: '5×3 · 10 线 · 阿拉伯之夜',
     images: [],
-    intro: '一万零一夜 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '一万零一夜是经典阿拉伯之夜主题的 5×3 老虎机。以星币、月牙、宫殿、英雄为主符号，深蓝夜空主题。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -534,17 +565,33 @@ var GAMES = {
     name: '一万零一夜 Megaways',
     sub: '5×3 · 20 线 · Megaways',
     images: [],
-    intro: '一万零一夜 Megaways 是一款经典固定线老虎机，5 × 3 网格，20 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '一万零一夜 Megaways 是阿拉伯之夜主题的增强版老虎机。橙红主题色，配合 20 条中奖线覆盖更多中奖组合。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 20 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 20 条中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -560,17 +607,33 @@ var GAMES = {
     name: '1429未知海域',
     sub: '5×3 · 10 线 · 大航海主题',
     images: [],
-    intro: '1429未知海域 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '1429未知海域是大航海时代主题的 5×3 老虎机。以帆船、海浪、罗盘为主符号，青蓝海洋主题色。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -586,17 +649,33 @@ var GAMES = {
     name: '五狮',
     sub: '5×3 · 10 线 · 亚洲主题',
     images: [],
-    intro: '五狮 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '五狮是亚洲狮王主题的 5×3 老虎机。以狮子、金元、翡翠为主符号，琥珀色亚洲主题，10 条固定中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -612,17 +691,33 @@ var GAMES = {
     name: '五狮黄金版',
     sub: '5×3 · 10 线 · 黄金版',
     images: [],
-    intro: '五狮黄金版 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '五狮黄金版是五狮的黄金升级版。纯金色调呈现狮王主题，10 条固定中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -638,17 +733,33 @@ var GAMES = {
     name: '五狮 Megaways',
     sub: '5×3 · 20 线 · Megaways',
     images: [],
-    intro: '五狮 Megaways 是一款经典固定线老虎机，5 × 3 网格，20 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '五狮 Megaways 是五狮的 Megaways 增强版。暗红主题色，配合 20 条中奖线覆盖更多组合。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 20 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 20 条中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -664,17 +775,33 @@ var GAMES = {
     name: '一千零一夜',
     sub: '5×3 · 10 线 · 阿拉伯之夜',
     images: [],
-    intro: '一千零一夜 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '一千零一夜是经典阿拉伯之夜主题的 5×3 老虎机。以神灯、魔毯、宫殿为主符号，紫色调主题，10 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -690,17 +817,33 @@ var GAMES = {
     name: '阿斯加德崛起',
     sub: '5×3 · 10 线 · 北欧神话',
     images: [],
-    intro: '阿斯加德崛起 是一款经典固定线老虎机，5 × 3 网格，10 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '阿斯加德崛起是北欧神话主题的 5×3 老虎机。以雷神之锤、符文、诸神为主符号，深蓝色主题。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 10 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'star', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'moon', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'hero', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -716,17 +859,30 @@ var GAMES = {
     name: 'A与8',
     sub: '3×3 · 8 线 · 经典机台',
     images: [],
-    intro: 'A与8 是一款经典固定线老虎机，3 × 3 网格，8 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: 'A与8是经典 3×3 机台风格的老虎机。以 A、8、幸运7、BAR 为主符号，黑金主题，8 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '3 × 3 网格生成符号',
-      '共 8 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '3 列 × 3 行 = 9 格',
+      '共 8 条中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转 8 次'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'cherry', mult: '3×5' },
+      { symbol: 'bar', mult: '3×10' },
+      { symbol: 'seven', mult: '3×15' }
+    ],
+    paytable: [
+      { symbol: 'eight', mult: '3×3' },
+      { symbol: 'ace', mult: '3×3' },
+      { symbol: 'cherry', mult: '3×5' },
+      { symbol: 'bell', mult: '3×8' },
+      { symbol: 'bar', mult: '3×10' },
+      { symbol: 'seven', mult: '3×15' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转 8 次' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '3 × 3',
@@ -742,17 +898,33 @@ var GAMES = {
     name: '风水炼金术',
     sub: '5×3 · 20 线 · 风水主题',
     images: [],
-    intro: '风水炼金术 是一款经典固定线老虎机，5 × 3 网格，20 条固定中奖线。出现 3 个及以上 Scatter 触发免费旋转。',
+    intro: '风水炼金术是中国风风水主题的 5×3 老虎机。以太极、金币、玉、龙、凤凰为主符号，翠绿金主题，20 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
       '点击「旋转」启动一局',
-      '5 × 3 网格生成符号',
-      '共 20 条中奖线，左起连续 3/4/5 个相同符号即中奖',
-      'Wild（金色 W）可替代任意普通符号',
-      '出现 3+ 个 Scatter 触发免费旋转'
+      '5 列 × 3 行 = 15 格',
+      '共 20 条中奖线',
+      'Wild 可替代任意普通符号',
+      '出现 3+ Scatter 触发免费旋转'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'coin', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'dragon', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'phoenix', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'coin', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'jade', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'dragon', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'phoenix', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3+ → 免费旋转' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
