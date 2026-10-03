@@ -7,7 +7,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 button,a{outline:none;font-family:inherit;touch-action:manipulation}
-html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope',-apple-system,BlinkMacSystemFont,'PingFang SC',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum';overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope',-apple-system,BlinkMacSystemFont,'PingFang SC',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum';overflow-x:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
 #app{height:100dvh;max-width:460px;margin:0 auto;padding:0 12px env(safe-area-inset-bottom,12px);display:flex;flex-direction:column;gap:7px}
 
 .rl-bar{flex-shrink:0;display:flex;align-items:center;height:50px;gap:8px}

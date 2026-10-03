@@ -611,4 +611,28 @@ if (!g) { notFound(); } else { render(); bindEvents(); updateFavUI(); }
 
 
 if (typeof ApexLoader !== 'undefined') { try { ApexLoader.hide(); } catch(e){} }
+
+/* ===== bfcache 恢复时重新检查（防止侧滑返回显示旧状态） ===== */
+window.addEventListener('pageshow', function(e){
+  if (e.persisted) {
+    // 从 bfcache 恢复
+    try {
+      var idNow = getParam('id') || 'lucky-fruit';
+      var gNow = GAMES[idNow];
+      if (gNow) {
+        // 有效游戏 → 重渲染确保显示正确
+        render();
+        bindEvents();
+        updateFavUI();
+      } else {
+        notFound();
+      }
+      if (typeof ApexLoader !== 'undefined') { try { ApexLoader.hide(); } catch(err){} }
+    } catch(err) {
+      // 兜底：直接跳首页
+      location.replace('/');
+    }
+  }
+});
+
 })();

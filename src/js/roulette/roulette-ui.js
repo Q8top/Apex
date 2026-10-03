@@ -419,6 +419,7 @@ function bind(){
       // 后台时允许旋转完成，但界面不更新（返回后 render 会补上）
     }
   });
+  window.addEventListener("pagehide",function(){state.phase="idle";});
 
 }
 

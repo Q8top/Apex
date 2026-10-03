@@ -12,7 +12,7 @@ html, body {
   height: 100%; background: var(--bg); color: var(--ink);
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased; font-feature-settings: 'tnum';
-  overflow: hidden; overscroll-behavior: none;
+  overflow-x: hidden; overscroll-behavior: none;
   user-select: none; -webkit-user-select: none;
 }
 #app {
