@@ -60,6 +60,43 @@ function cellAt(c,r){return document.querySelectorAll('#lm-grid .lm-cell')[r*CFG
 function paintGrid(grid){for(var c=0;c<CFG.cols;c++)for(var r=0;r<CFG.rows;r++){var el=cellAt(c,r);if(!el)continue;var sym=grid&&grid[c]?grid[c][r]:null;var fn=S[sym];el.innerHTML=fn?fn():'';el.classList.remove('winning','popping');}}
 function highlightCells(cells,on){cells.forEach(function(p){var el=cellAt(p[0],p[1]);if(el)el.classList.toggle('winning',!!on);});}
 
+function drawWinLines(wins){
+  var stage = document.querySelector('.lm-stage');
+  if (!stage) return;
+  var old = stage.querySelector('.lm-lines');
+  if (old) old.remove();
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'lm-lines');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  var cols = CFG.cols, rows = CFG.rows;
+  wins.forEach(function(w, i){
+    var points = w.cells.map(function(p){
+      return ((p[0] + 0.5) / cols * 100) + ',' + ((p[1] + 0.5) / rows * 100);
+    }).join(' ');
+    var line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line.setAttribute('points', points);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', '#ffd93d');
+    line.setAttribute('stroke-width', '1.2');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+    line.setAttribute('opacity', '0');
+    line.style.filter = 'drop-shadow(0 0 3px rgba(255,217,61,.9))';
+    line.style.transition = 'opacity .2s ease';
+    svg.appendChild(line);
+    setTimeout(function(){ line.setAttribute('opacity', '1'); }, i * 60);
+  });
+  stage.appendChild(svg);
+  setTimeout(function(){ if (svg.parentNode) svg.parentNode.removeChild(svg); }, 1400);
+}
+function clearWinLines(){
+  var stage = document.querySelector('.lm-stage');
+  if (!stage) return;
+  var old = stage.querySelector('.lm-lines');
+  if (old) old.remove();
+}
+
 function renderBalance(animate){var el=$('lm-balance');if(!el)return;el.textContent=fmt(state.balance);if(animate)bump(el);}
 function renderBet(){var e1=$('lm-bet');if(e1)e1.textContent=fmt(bet());var e2=$('lm-bet-txt');if(e2)e2.textContent='下注 '+fmt(bet());}
 function renderWin(amount,combo){var el=$('lm-win-value');if(el){el.textContent=amount>0?fmt(amount,true):fmt(0);el.classList.toggle('winning',amount>0);if(amount>0){el.classList.remove('pulsing');void el.offsetWidth;el.classList.add('pulsing');}}var l=$('lm-win-label');if(l)l.textContent=amount>0?'恭喜中奖':'本局中奖';var cb=$('lm-combo');if(cb){if(combo){cb.textContent=combo;cb.classList.add('show');}else{cb.textContent='';cb.classList.remove('show');}}}
@@ -92,8 +129,10 @@ function doSpin(){
         done++;
         if(done===CFG.cols){
           paintGrid(firstGrid);
+try{if(result.wins&&result.wins.length)drawWinLines(result.wins);}catch(e){}
           setTimeout(function(){
-            if(result.scatterCount>=3){safeAudio(A.freeSpin,'freeSpin');toast('🎉 免费旋转触发！',2000);setTimeout(function(){runFs(b);},800);}
+            if(result.scatterCount>=3){try{var fl=document.createElement('div');fl.className='lm-fs-flash';document.body.appendChild(fl);setTimeout(function(){if(fl.parentNode)fl.parentNode.removeChild(fl);},600);}catch(e){}
+            safeAudio(A.freeSpin,'freeSpin');toast('🎉 免费旋转触发！',2000);setTimeout(function(){runFs(b);},800);}
             else{finish(result.totalWin,b,result.wins);}
           },250);
         }
@@ -122,7 +161,8 @@ function runFs(b){
     var shown=0;
     if(s.result.wins&&s.result.wins.length){
       var cells=[];s.result.wins.forEach(function(w){w.cells.forEach(function(p){cells.push(p);});});
-      highlightCells(cells,true);shown=s.result.totalWin;renderWin(shown,'');
+      highlightCells(cells,true);
+try{if(typeof drawWinLines==="function")drawWinLines(s.result.wins||[]);}catch(e){}shown=s.result.totalWin;renderWin(shown,'');
       setTimeout(function(){cells.forEach(function(p){var el=cellAt(p[0],p[1]);if(el)el.classList.add('popping');});},400);
     }
     setTimeout(next,900);
