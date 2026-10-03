@@ -56,7 +56,7 @@ var CONFIG = {
   defaultBetIndex: 3,
   baseCellBet: 20,
   payoutScaleReal: 11.3,
-  payoutScaleDemo: 19,
+  payoutScaleDemo: 34,
   reelStopDelayMs: 140,
   minSpinMs: 550
 };

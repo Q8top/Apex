@@ -14,7 +14,11 @@ const ROOT = path.resolve(__dirname, '..');
 const SPEC = {
   'lucky-fruit': {
     dir: 'slot', prefix: 'slot', engine: 'SlotEngine',
-    spinFn: (E, bet) => { const g = E.spin(); const r = E.evaluate(g, bet); return { totalWin: r.totalWin, scatterCount: 0 }; },
+    spinFn: (E, bet, mode) => {
+      const g = (mode === 'demo') ? E.spinDemo(bet) : E.spin();
+      const r = E.evaluate(g, bet);
+      return { totalWin: r.totalWin, scatterCount: 0 };
+    },
     trigger: 999, fsFn: null
   },
   'olympus': {
@@ -66,7 +70,7 @@ function runOne(gameKey, mode, N, bet) {
   const t0 = Date.now();
   for (let i = 0; i < N; i++) {
     tb += bet;
-    const r = spec.spinFn(E, bet);
+    const r = spec.spinFn(E, bet, mode);
     let win = r.totalWin || 0;
     baseWin += win;
     const sc = r.scatterCount || 0;

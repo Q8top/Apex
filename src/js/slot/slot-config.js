@@ -57,16 +57,16 @@ var PAYOUTS_REAL = {
 };
 /* demo：低赔率（配合高命中率，RTP 约 130%） */
 var PAYOUTS_DEMO = {
-  cherry:      5,
-  lemon:       8,
-  orange:      10,
-  grape:       15,
-  watermelon:  20,
-  bell:        30,
-  bar:         50,
-  seven:       100,
-  goldenSeven: 250,
-  wild:        300
+  cherry:      7,
+  lemon:       11,
+  orange:      14,
+  grape:       21,
+  watermelon:  28,
+  bell:        42,
+  bar:         70,
+  seven:       140,
+  goldenSeven: 350,
+  wild:        420
 };
 var PAYOUTS = PAYOUTS_REAL;
 
