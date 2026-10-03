@@ -167,7 +167,7 @@ function doSpin(){
         paintGrid(firstGrid, false);
         setTimeout(function(){
           if (triggeredFS) {
-            safeAudio(A.winBig, "fsTrigger");
+            safeAudio(A.freeSpin, "fsTrigger");
             toast("🎉 免费旋转触发！15 次", 2200);
             setTimeout(function(){ runOlympusFreeSpins(b); }, 900);
           } else {
@@ -255,8 +255,8 @@ function playRounds(result, betAmt){
 
 function finish(totalWin){
   // Big Win 分级横幅（原版 Pragmatic 风格）
-  if (typeof ApexBigWin !== 'undefined' && amount > 0) {
-    try { ApexBigWin.celebrate(amount, bet()); } catch(e){}
+  if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
+    try { ApexBigWin.celebrate(totalWin, bet()); } catch(e){}
   }
   if (MODE === 'demo') {
     state.balance = state.balance - bet() + totalWin;
@@ -359,6 +359,7 @@ function showOlFsSummary(amount){
 function runOlympusFreeSpins(b){
   var stage = document.querySelector(".ol-stage");
   if (stage) stage.classList.add("fs-mode");
+  safeAudio(A.fsBgStart, 'fsBgStart');
   var fsResult;
   try { fsResult = E.playFreeSpins(b); }
   catch(e){ console.error("[Olympus] fs error:", e); if (stage) stage.classList.remove("fs-mode"); releaseSpin(); return; }
@@ -368,8 +369,9 @@ function runOlympusFreeSpins(b){
   function nextFs(){
     if (idx >= spins.length) {
       if (stage) stage.classList.remove("fs-mode");
+      safeAudio(A.fsBgStop, 'fsBgStop');
       showOlFsBanner(0);
-      if (fsResult.totalWin > 0) { safeAudio(A.winBig, "fsWin"); showOlFsSummary(fsResult.totalWin); }
+      if (fsResult.totalWin > 0) { safeAudio(A.fsSummary, "fsSummary"); showOlFsSummary(fsResult.totalWin); }
       setTimeout(function(){ finish(fsResult.totalWin); }, fsResult.totalWin > 0 ? 1800 : 200);
       return;
     }

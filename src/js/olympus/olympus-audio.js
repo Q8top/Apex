@@ -137,6 +137,7 @@ function coins(count, when){
   }
 }
 
+var _fsBgTimer = null;
 var API = {
   init: init,
   enabled: function(v){
@@ -200,6 +201,42 @@ var API = {
   },
   lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(220, .18, .05, t+.1, 'sine', true); },
   _ctxState: function(){ return ctx ? (ctx.state || '?') : 'null'; }
+  ,
+  freeSpin: function(){
+    if (!ctx) init(); if (!enabled) return;
+    var t = now();
+    noise(.5, .15, t, 1000, 1);
+    [523, 659, 784, 1047, 1319, 1568].forEach(function(f, i){
+      ping(f, .5, .09, t + i*.09);
+      ping(f*2, .2, .10, t + i*.09, 'sine', true);
+    });
+    ping(2400, .3, .12, t + .5);
+  },
+  fsBgStart: function(){
+    if (_fsBgTimer) return;
+    if (!ctx) init(); if (!ctx) return;
+    function chord(){
+      if (!enabled) return;
+      var t = now();
+      [392, 523, 659, 784].forEach(function(f, i){ ping(f, .55, .05, t + i*.02); });
+      ping(1568, .15, .04, t, 'sine', true);
+    }
+    chord();
+    _fsBgTimer = setInterval(chord, 700);
+  },
+  fsBgStop: function(){
+    if (_fsBgTimer) { clearInterval(_fsBgTimer); _fsBgTimer = null; }
+  },
+  fsSummary: function(){
+    if (!ctx) init(); if (!enabled) return;
+    var t = now();
+    noise(.8, .18, t, 800, 1);
+    [523, 659, 784, 1047, 1319, 1568, 2093].forEach(function(f, i){
+      ping(f, .55, .09, t + i*.07);
+      ping(f*2, .18, .10, t + i*.07, 'sine', true);
+    });
+    [523, 659, 784, 1047].forEach(function(f){ ping(f, 2, .09, t + .55); });
+  }
 };
 
 window.OlympusAudio = API;
