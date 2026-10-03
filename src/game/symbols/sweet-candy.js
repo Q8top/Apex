@@ -1,5 +1,7 @@
-/* 甜蜜蜜 · 6 色糖果 v2
-   完全重新设计：胖椭圆主体 + 上部亮区 + 下部暗区 + 大弧形高光 + 前后两层包装纸
+/* 甜蜜蜜 · 6 色糖果 v3 Final
+   4 层体积：topLight / midLight / base / deep
+   大弧形高光占主体约 1/4
+   包装纸：后层宽裙 + 前层折楔
 */
 (function(){
 'use strict';
@@ -10,31 +12,48 @@ function candy(m){
   var E = m.outline;
   return R.wrap(
     /* 1. 地面阴影 */
-    '<ellipse cx="50" cy="88" rx="28" ry="3.2" fill="#000" opacity="0.28"/>' +
-    /* 2. 左包装纸（后层，宽锥） */
-    '<path d="M18 50 Q10 42 3 44 L11 50 L3 56 Q10 58 18 50 Z" fill="'+m.wrapper+'" stroke="'+E+'" stroke-width="1.4" stroke-linejoin="round"/>' +
-    /* 3. 右包装纸（后层） */
-    '<path d="M82 50 Q90 42 97 44 L89 50 L97 56 Q90 58 82 50 Z" fill="'+m.wrapper+'" stroke="'+E+'" stroke-width="1.4" stroke-linejoin="round"/>' +
-    /* 4. 主体（胖椭圆） */
-    '<ellipse cx="50" cy="50" rx="31" ry="25" fill="url(#'+m.gradId+')" stroke="'+E+'" stroke-width="2.2"/>' +
-    /* 5. 上部亮区 */
-    '<ellipse cx="50" cy="40" rx="27" ry="14" fill="#fff" opacity="0.20"/>' +
-    /* 6. 下部暗区 */
-    '<ellipse cx="50" cy="63" rx="27" ry="11" fill="'+m.deep+'" opacity="0.36"/>' +
-    /* 7. 大弧形高光（左上） */
-    '<path d="M24 42 Q26 28 44 25 Q34 34 30 48 Q26 48 24 42 Z" fill="#fff" opacity="0.68"/>' +
-    /* 8. 次级柔光 */
-    '<ellipse cx="40" cy="40" rx="14" ry="7" fill="#fff" opacity="0.24" transform="rotate(-22 40 40)"/>' +
-    /* 9. 顶部镜面高光 */
-    '<ellipse cx="34" cy="35" rx="4.5" ry="2.6" fill="#fff" opacity="0.92"/>' +
-    /* 10. 边缘光（左上内侧） */
-    '<path d="M26 42 Q30 32 44 28" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>' +
-    /* 11. 左包装纸（前层，折叠楔形） */
-    '<path d="M20 50 L10 43 L14 47 L10 50 L14 53 L10 57 Z" fill="'+m.wrapperLight+'" stroke="'+E+'" stroke-width="1.2" stroke-linejoin="round"/>' +
-    /* 12. 右包装纸（前层） */
-    '<path d="M80 50 L90 43 L86 47 L90 50 L86 53 L90 57 Z" fill="'+m.wrapperLight+'" stroke="'+E+'" stroke-width="1.2" stroke-linejoin="round"/>' +
-    /* 13. 底部接触阴影 */
-    '<path d="M32 68 Q50 71 68 68" stroke="'+m.deep+'" stroke-width="1.2" fill="none" opacity="0.32"/>'
+    '<ellipse cx="50" cy="89" rx="30" ry="3.6" fill="#000" opacity="0.32"/>' +
+
+    /* 2. 左后包装纸（宽裙，带渐变） */
+    '<path d="M20 46 Q8 34 0 38 Q4 43 2 47 Q4 51 0 56 Q6 62 20 54 Z" fill="'+m.wrapper+'" stroke="'+E+'" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="M18 42 Q10 40 4 40" stroke="'+m.wrapperLight+'" stroke-width="1.2" fill="none" opacity="0.7"/>' +
+
+    /* 3. 右后包装纸 */
+    '<path d="M80 46 Q92 34 100 38 Q96 43 98 47 Q96 51 100 56 Q94 62 80 54 Z" fill="'+m.wrapper+'" stroke="'+E+'" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="M82 42 Q90 40 96 40" stroke="'+m.wrapperLight+'" stroke-width="1.2" fill="none" opacity="0.7"/>' +
+
+    /* 4. 主体底部深色（体积感） */
+    '<ellipse cx="50" cy="57" rx="35" ry="26" fill="'+m.deep+'" opacity="0.55"/>' +
+
+    /* 5. 主体胖椭圆 */
+    '<ellipse cx="50" cy="50" rx="35" ry="28" fill="url(#'+m.gradId+')" stroke="'+E+'" stroke-width="2.6"/>' +
+
+    /* 6. Core 底部饱和深色区 */
+    '<ellipse cx="50" cy="65" rx="33" ry="12" fill="'+m.bottomDeep+'" opacity="0.38"/>' +
+
+    /* 7. 上部亮区（topLight 覆盖） */
+    '<ellipse cx="50" cy="38" rx="30" ry="13" fill="'+m.topLight+'" opacity="0.24"/>' +
+
+    /* 8. 大弧形高光（左上，约 1/4 面积） */
+    '<path d="M22 46 Q22 27 42 21 Q52 19 58 22 Q40 26 30 36 Q25 42 24 48 Z" fill="#fff" opacity="0.78"/>' +
+
+    /* 9. 次级柔光 */
+    '<ellipse cx="36" cy="38" rx="17" ry="9" fill="#fff" opacity="0.32" transform="rotate(-25 36 38)"/>' +
+
+    /* 10. 镜面高光点 */
+    '<ellipse cx="32" cy="33" rx="5.5" ry="3.5" fill="#fff" opacity="0.96"/>' +
+
+    /* 11. 左边缘光 */
+    '<path d="M22 46 Q25 32 42 24" stroke="#fff" stroke-width="1.8" fill="none" opacity="0.65" stroke-linecap="round"/>' +
+
+    /* 12. 左前包装纸（折叠楔形） */
+    '<path d="M20 46 L7 41 L11 46 L7 50 L11 55 L7 59 Z" fill="'+m.wrapperLight+'" stroke="'+E+'" stroke-width="1.3" stroke-linejoin="round"/>' +
+
+    /* 13. 右前包装纸 */
+    '<path d="M80 46 L93 41 L89 46 L93 50 L89 55 L93 59 Z" fill="'+m.wrapperLight+'" stroke="'+E+'" stroke-width="1.3" stroke-linejoin="round"/>' +
+
+    /* 14. 底部接触阴影（落在糖果下缘） */
+    '<path d="M28 74 Q50 79 72 74" stroke="'+m.bottomDeep+'" stroke-width="1.6" fill="none" opacity="0.45"/>'
   );
 }
 
