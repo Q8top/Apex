@@ -114,9 +114,11 @@ function fsBgStart(){
   if (!ctx) init(); if (!ctx) return;
   function chord(){
     if (!enabled) return;
-    var t = now();
-    [330, 440, 554, 659].forEach(function(f, i){ pad(f, .55, .05, t + i*.02); });
-    ping(1320, .15, .04, t, "sine", true);
+    withCtx(function(){
+      var t = now();
+      [330, 440, 554, 659].forEach(function(f, i){ pad(f, .55, .05, t + i*.02); });
+      ping(1320, .15, .04, t, "sine", true);
+    });
   }
   chord();
   _fsBgTimer = setInterval(chord, 700);
@@ -125,16 +127,41 @@ function fsBgStop(){
   if (_fsBgTimer) { clearInterval(_fsBgTimer); _fsBgTimer = null; }
 }
 
-function resume(){
-  if (!ctx) return false;
-  if (ctx.state === 'suspended' || ctx.state === 'interrupted') {
-    try {
-      var p = ctx.resume();
-      if (p && typeof p.catch === 'function') { p.catch(function(){}); }
-    } catch(e){}
-    return true;
+var _recoveryPromise = null;
+
+function ensureRunning(){
+  if (!ctx) init();
+  if (!ctx) return Promise.resolve(false);
+  if (ctx.state === 'running') return Promise.resolve(true);
+  if (ctx.state !== 'suspended' && ctx.state !== 'interrupted') {
+    return Promise.resolve(false);
   }
-  return false;
+  if (_recoveryPromise) return _recoveryPromise;
+  try {
+    var p = ctx.resume();
+    if (p && typeof p.then === 'function') {
+      _recoveryPromise = p.then(
+        function(){ _recoveryPromise = null; return !!(ctx && ctx.state === 'running'); },
+        function(){ _recoveryPromise = null; return false; }
+      );
+      return _recoveryPromise;
+    }
+  } catch(e){}
+  _recoveryPromise = null;
+  return Promise.resolve(!!(ctx && ctx.state === 'running'));
+}
+
+function withCtx(fn){
+  if (!ctx) init();
+  if (!ctx) return;
+  if (ctx.state === 'running') { fn(); return; }
+  ensureRunning().then(function(ok){
+    if (ok && ctx && ctx.state === 'running') fn();
+  });
+}
+
+function resume(){
+  return ensureRunning();
 }
 
 var API = {
@@ -146,78 +173,100 @@ var API = {
     if (master && ctx) master.gain.setTargetAtTime(enabled ? VOL : 0, ctx.currentTime, .03);
     return enabled;
   },
-  click: function(){ if (!ctx) init(); var t = now(); fm(3200, 900, 3, .04, .12, t); ping(1800, .03, .08, t+.005); },
+  click: function(){ withCtx(function(){ var t = now(); fm(3200, 900, 3, .04, .12, t); ping(1800, .03, .08, t+.005); }); },
   spinStart: function(){
-    if (!ctx) init(); var t = now();
-    pad(330, .6, .06, t); pad(494, .5, .05, t+.05);
-    sweep(800, 2800, .35, .14, t);
-    fm(2400, 800, 2.5, .12, .16, t, true);
-    fm(3200, 1200, 2, .08, .10, t+.05, true);
-    ping(4000, .06, .08, t+.15);
+    withCtx(function(){
+      var t = now();
+      pad(330, .6, .06, t); pad(494, .5, .05, t+.05);
+      sweep(800, 2800, .35, .14, t);
+      fm(2400, 800, 2.5, .12, .16, t, true);
+      fm(3200, 1200, 2, .08, .10, t+.05, true);
+      ping(4000, .06, .08, t+.15);
+    });
   },
   reelStop: function(i){
-    if (!ctx) init(); var t = now();
-    fm(2200 + i*260, 700 + i*60, 3, .12, .24, t, true);
-    ping(2800 + i*200, .05, .14, t);
-    ping(150 - i*8, .08, .10, t, 'triangle');
+    withCtx(function(){
+      var t = now();
+      fm(2200 + i*260, 700 + i*60, 3, .12, .24, t, true);
+      ping(2800 + i*200, .05, .14, t);
+      ping(150 - i*8, .08, .10, t, 'triangle');
+    });
   },
   tumble: function(){
-    if (!ctx) init(); var t = now();
-    noise(.22, .14, t, 2400, 2);
-    ping(2600, .05, .10, t+.08);
-    ping(3300, .04, .09, t+.13);
-    ping(2000, .08, .08, t+.18);
-  },
-  /* 炸弹掉落 */
-  bomb: function(){
-    if (!ctx) init(); var t = now();
-    fm(600, 200, 4, .25, .22, t, true);
-    ping(1200, .15, .12, t+.08, 'triangle');
-    sweep(400, 120, .35, .16, t+.1);
-  },
-  /* 免费旋转触发 */
-  freeSpin: function(){
-    if (!ctx) init(); var t = now();
-    noise(.5, .15, t, 800, 1);
-    [523, 659, 784, 1047, 1319].forEach(function(f, i){
-      pad(f, .5, .09, t + i*.1);
-      ping(f*2, .2, .10, t + i*.1, 'sine', true);
+    withCtx(function(){
+      var t = now();
+      noise(.22, .14, t, 2400, 2);
+      ping(2600, .05, .10, t+.08);
+      ping(3300, .04, .09, t+.13);
+      ping(2000, .08, .08, t+.18);
     });
-    ping(2000, .3, .12, t+.5);
+  },
+  bomb: function(){
+    withCtx(function(){
+      var t = now();
+      fm(600, 200, 4, .25, .22, t, true);
+      ping(1200, .15, .12, t+.08, 'triangle');
+      sweep(400, 120, .35, .16, t+.1);
+    });
+  },
+  freeSpin: function(){
+    withCtx(function(){
+      var t = now();
+      noise(.5, .15, t, 800, 1);
+      [523, 659, 784, 1047, 1319].forEach(function(f, i){
+        pad(f, .5, .09, t + i*.1);
+        ping(f*2, .2, .10, t + i*.1, 'sine', true);
+      });
+      ping(2000, .3, .12, t+.5);
+    });
   },
   winSmall: function(){
-    if (!ctx) init(); var t = now();
-    pad(880, .35, .08, t); pad(1100, .45, .07, t+.1);
-    ping(2400, .15, .10, t+.05, 'sine', true);
-    ping(3000, .18, .09, t+.15, 'sine', true);
+    withCtx(function(){
+      var t = now();
+      pad(880, .35, .08, t); pad(1100, .45, .07, t+.1);
+      ping(2400, .15, .10, t+.05, 'sine', true);
+      ping(3000, .18, .09, t+.15, 'sine', true);
+    });
   },
   winMedium: function(){
-    if (!ctx) init(); var t = now();
-    [880, 1100, 1320, 1760].forEach(function(f, i){
-      pad(f, .4, .075, t + i*.09);
-      ping(f*2, .2, .10, t + i*.09, 'sine', true);
+    withCtx(function(){
+      var t = now();
+      [880, 1100, 1320, 1760].forEach(function(f, i){
+        pad(f, .4, .075, t + i*.09);
+        ping(f*2, .2, .10, t + i*.09, 'sine', true);
+      });
     });
   },
   winBig: function(){
-    if (!ctx) init(); var t = now();
-    noise(.8, .18, t, 600, 1);
-    [523, 659, 784, 1047, 1319, 1568, 2093, 2637].forEach(function(f, i){
-      pad(f, .5, .08, t + i*.06);
-      ping(f*2, .15, .09, t + i*.06, 'sine', true);
+    withCtx(function(){
+      var t = now();
+      noise(.8, .18, t, 600, 1);
+      [523, 659, 784, 1047, 1319, 1568, 2093, 2637].forEach(function(f, i){
+        pad(f, .5, .08, t + i*.06);
+        ping(f*2, .15, .09, t + i*.06, 'sine', true);
+      });
+      [523, 659, 784, 1047].forEach(function(f){ pad(f, 1.8, .09, t + .55); });
     });
-    [523, 659, 784, 1047].forEach(function(f){ pad(f, 1.8, .09, t + .55); });
   },
-  lose: function(){ if (!ctx) init(); var t = now(); ping(440, .1, .06, null, 'sine', true); ping(330, .15, .05, t+.1, 'sine', true); },
+  lose: function(){
+    withCtx(function(){
+      var t = now();
+      ping(440, .1, .06, null, 'sine', true);
+      ping(330, .15, .05, t+.1, 'sine', true);
+    });
+  },
   fsBgStart: fsBgStart,
   fsBgStop: fsBgStop,
   fsSummary: function(){
-    if (!ctx) init(); var t = now();
-    noise(.8, .18, t, 600, 1);
-    [523, 659, 784, 1047, 1319, 1568, 2093, 2637].forEach(function(f, i){
-      pad(f, .55, .09, t + i*.07);
-      ping(f*2, .18, .10, t + i*.07, "sine", true);
+    withCtx(function(){
+      var t = now();
+      noise(.8, .18, t, 600, 1);
+      [523, 659, 784, 1047, 1319, 1568, 2093, 2637].forEach(function(f, i){
+        pad(f, .55, .09, t + i*.07);
+        ping(f*2, .18, .10, t + i*.07, "sine", true);
+      });
+      [523, 659, 784, 1047].forEach(function(f){ pad(f, 2, .09, t + .55); });
     });
-    [523, 659, 784, 1047].forEach(function(f){ pad(f, 2, .09, t + .55); });
   }
 };
 
