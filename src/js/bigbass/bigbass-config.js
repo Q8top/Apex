@@ -22,12 +22,12 @@ var SYMBOLS = {
 var WEIGHTS_REAL = {
   ten: 26, jack: 24, queen: 20, king: 16, ace: 12,
   fishingRod: 6, tackleBox: 4, dragonfly: 2, bass: 1,
-  fisherman: 1.5, moneyFish: 0
+  fisherman: 2.5, moneyFish: 0
 };
 var WEIGHTS_DEMO = {
   ten: 22, jack: 20, queen: 17, king: 14, ace: 12,
   fishingRod: 7, tackleBox: 5, dragonfly: 3, bass: 2,
-  fisherman: 3, moneyFish: 0
+  fisherman: 6, moneyFish: 0
 };
 
 /* 5×3 = 15 格，10 条 payline */
@@ -61,13 +61,13 @@ var PAYOUTS = {
 var SCATTER_TRIGGER = {3:10, 4:15, 5:20};
 
 /* 金钱鱼金额池（× 线注） */
-var FISH_VALUES = [0.2,0.5,1,2,5,10,20,50,100,200,500,1000,2000];
+var FISH_VALUES = [0.2,0.5,1,2,5,10,20,50,100,200,500,1000,2000,4000];
 var FISH_WEIGHTS = {
   0.2:100, 0.5:80, 1:60, 2:40, 5:25, 10:15, 20:8,
-  50:4, 100:2, 200:1, 500:0.4, 1000:0.15, 2000:0.05
+  50:4, 100:2, 200:1, 500:0.4, 1000:0.15, 2000: 0.05, 4000: 0.02
 };
 
-var FS_LEVELS = [{mult:1},{mult:2},{mult:3}];
+var FS_LEVELS = [{mult:1},{mult:2},{mult:10}];
 var FS_LEVEL_UP_WILDS = 4;
 var FS_LEVEL_UP_ADD = 10;
 
@@ -81,7 +81,7 @@ var CONFIG = {
   betSteps: [1,2,5,10,20,50,100],
   defaultBetIndex: 3,
   lines: 10,
-  payoutScaleReal: 56.5,
+  payoutScaleReal: 53.0,
   payoutScaleDemo: 3.5,
   reelStopDelayMs: 130,
   minSpinMs: 550

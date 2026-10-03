@@ -43,10 +43,10 @@ var PAYOUTS = {
 var STAR_TRIGGER = { 4:15, 5:15, 6:15 };
 var STAR_RETRIGGER = 5;
 
-var MULTIPLIER_VALUES = [2,3,4,5,6,8,10,12,15,20,25,50,100,250,500,1000];
+var MULTIPLIER_VALUES = [2,3,4,5,6,8,10,12,15,20,25,50,100,250,500];
 var MULTIPLIER_WEIGHTS = {
   2:30,3:25,4:18,5:12,6:9,8:6,10:4,
-  12:2,15:1.5,20:1,25:0.8,50:0.4,100:0.2,250:0.1,500:0.05,1000:0.02
+  12:2,15:1.5,20:1,25:0.8,50:0.4,100:0.2,250:0.1,500:0.05
 };
 
 var CONFIG = {
@@ -55,7 +55,7 @@ var CONFIG = {
   betSteps: [1,2,5,10,20,50,100],
   defaultBetIndex: 3,
   baseCellBet: 20,
-  payoutScaleReal: 10.65,
+  payoutScaleReal: 11.3,
   payoutScaleDemo: 19,
   reelStopDelayMs: 140,
   minSpinMs: 550

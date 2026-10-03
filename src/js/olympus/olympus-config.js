@@ -46,10 +46,10 @@ var PAYOUTS = {
 var ZEUS_PAYOUTS = { 4:3, 5:5, 6:100 };
 
 /* Tumble 乘法器池（每个连击轮次随机掉落一个） */
-var MULTIPLIER_VALUES = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 250, 500, 1000];
+var MULTIPLIER_VALUES = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100, 250, 500];
 var MULTIPLIER_WEIGHTS = {
   2:30, 3:25, 4:18, 5:12, 6:9, 8:6, 10:4,
-  12:2, 15:1.5, 20:1, 25:0.8, 50:0.4, 100:0.2, 250:0.1, 500:0.05, 1000:0.02
+  12:2, 15:1.5, 20:1, 25:0.8, 50:0.4, 100:0.2, 250:0.1, 500:0.05
 };
 
 var CONFIG = {
@@ -61,7 +61,7 @@ var CONFIG = {
   betSteps: [1, 2, 5, 10, 20, 50, 100],
   defaultBetIndex: 3,
   baseCellBet: 20,
-  payoutScaleReal: 10.47,
+  payoutScaleReal: 11.5,
   payoutScaleDemo: 19,
   reelStopDelayMs: 140,
   minSpinMs: 550

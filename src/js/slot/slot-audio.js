@@ -193,7 +193,7 @@ var API = {
     });
     // 金币洒落
     for (var i = 0; i < 5; i++) {
-      click(4200 + Math.floor(Math.random ? 0 : 0), 0.015, 0.06, t + 0.15 + i * 0.04);
+      click(4200 + 0, 0.015, 0.06, t + 0.15 + i * 0.04);
     }
   },
   winBig: function() {

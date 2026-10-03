@@ -49,7 +49,9 @@ var POS_MULT_WEIGHTS = {
   2:30, 3:25, 4:18, 5:12, 6:9, 8:7, 10:5,
   12:3, 15:2, 20:1.2, 25:0.7, 50:0.3, 100:0.1, 128:0.05
 };
-var POS_DROP_CHANCE = 0.30; // 每次 tumble 后添加倍率的概率
+var POS_DROP_CHANCE = 0.10; // 每格带倍率的概率（初始+新补）
+var POS_INITIAL = 2;        // 倍率起始值
+var POS_MAX = 128;          // 倍率上限（翻倍至此封顶）
 var POS_MAX_PER_TUMBLE = 4; // 每次最多添加几个
 
 var CONFIG = {
@@ -61,7 +63,7 @@ var CONFIG = {
   betSteps: [1, 2, 5, 10, 20, 50, 100],
   defaultBetIndex: 3,
   baseCellBet: 20,
-  payoutScaleReal: 20.5,
+  payoutScaleReal: 18.2,
   payoutScaleDemo: 150,
   reelStopDelayMs: 130,
   minSpinMs: 550
@@ -77,6 +79,8 @@ window.SugarConfig = {
   POS_MULT_VALUES: POS_MULT_VALUES,
   POS_MULT_WEIGHTS: POS_MULT_WEIGHTS,
   POS_DROP_CHANCE: POS_DROP_CHANCE,
+  POS_INITIAL: POS_INITIAL,
+  POS_MAX: POS_MAX,
   POS_MAX_PER_TUMBLE: POS_MAX_PER_TUMBLE,
   CONFIG: CONFIG
 };

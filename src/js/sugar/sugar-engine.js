@@ -1,7 +1,10 @@
 /* 糖果狂欢 · 引擎
    7×7 Cluster Pays（5+） + Tumble + 位置倍率 + 免费旋转
-   位置倍率：不同于 Sweet 的掉落炸弹，本作倍率固定在某些格子上，
-   每次 Tumble 后在随机空位添加，中奖 cluster 覆盖格子倍率求和后 × 该 cluster base 赢分
+   位置倍率（原版机制）：
+   - 倍率方块固定在网格位置上（不随符号下落）
+   - 起始倍率 2x；中奖 cluster 覆盖到该位置 → 倍率翻倍（2→4→8→...→128）
+   - 初始 spin 和每次 Tumble 补新符号时，每个新格有概率带 2x
+   - 结算：cluster 赢分 × (覆盖格子倍率之和)，无倍率格 = baseAmt
 */
 (function(){
 'use strict';
@@ -117,7 +120,6 @@ function evaluate(grid, multGrid, totalBet){
     for (var i = 0; i < keys.length; i++) if (cl.size >= keys[i]) mult = tbl[keys[i]];
     if (mult > 0) {
       var baseAmt = mult * cellBet * _payScale;
-      // 累加 cluster 覆盖格子上的位置倍率（原版：求和）
       var posMult = 0;
       cl.cells.forEach(function(p){
         if (multGrid[p[0]][p[1]]) posMult += multGrid[p[0]][p[1]];
@@ -130,12 +132,13 @@ function evaluate(grid, multGrid, totalBet){
   return { wins: wins, totalWin: total, scatter: findScatter(grid) };
 }
 
-/* ---------- Tumble：移除中奖格 → 上方下落 → 顶部补新 ---------- */
+/* ---------- Tumble：返回 {grid, newCells} ---------- */
 function tumble(grid, winCells){
   var R = C.CONFIG.rows, Col = C.CONFIG.cols;
   var set = {};
   winCells.forEach(function(p){ set[p[0]+','+p[1]] = 1; });
   var out = [];
+  var newCells = [];
   for (var r = 0; r < R; r++) out.push(new Array(Col).fill(null));
   for (var c = 0; c < Col; c++) {
     var stack = [];
@@ -144,12 +147,15 @@ function tumble(grid, winCells){
       stack.push(grid[r2][c]);
     }
     for (var i = 0; i < stack.length; i++) out[R-1-i][c] = stack[i];
-    for (var k = 0; k < R - stack.length; k++) out[k][c] = pickTumble();
+    for (var k = 0; k < R - stack.length; k++) {
+      out[k][c] = pickTumble();
+      newCells.push([k, c]);
+    }
   }
-  return out;
+  return { grid: out, newCells: newCells };
 }
 
-/* ---------- 位置倍率掉落 ---------- */
+/* ---------- 位置倍率工具（保留兼容，UI 层可能引用） ---------- */
 var _pmPool = null;
 function pickPosMult(){
   if (!_pmPool) {
@@ -164,8 +170,6 @@ function pickPosMult(){
   for (var j = 0; j < a.length; j++) if (t < a[j].cum) return a[j].v;
   return a[a.length - 1].v;
 }
-
-/* 在 multGrid 上随机添加倍率（不覆盖已有倍率） */
 function dropMultipliers(multGrid, count){
   var placed = [];
   var R = C.CONFIG.rows, Col = C.CONFIG.cols;
@@ -182,8 +186,9 @@ function dropMultipliers(multGrid, count){
   return placed;
 }
 
-/* ---------- 完整 spin（含 tumble + 位置倍率） ---------- */
+/* ---------- 完整 spin（原版机制）---------- */
 function playFullSpin(totalBet, inFreeSpin){
+  var R = C.CONFIG.rows, Col = C.CONFIG.cols;
   var grid = spin();
   var multGrid = emptyMultGrid();
   var rounds = [];
@@ -191,30 +196,48 @@ function playFullSpin(totalBet, inFreeSpin){
   var scatterCount = 0;
   var allMultipliers = [];
 
+  var cellChance = inFreeSpin ? (C.POS_DROP_CHANCE_FS || C.POS_DROP_CHANCE || 0.10) : (C.POS_DROP_CHANCE || 0.10);
+  var initVal = C.POS_INITIAL || 2;
+  var maxVal = C.POS_MAX || 128;
+
+  // 初始：无倍率（只有中奖覆盖时才首次出现）
+
   for (var t = 0; t < C.CONFIG.maxTumbles; t++) {
     var r = evaluate(grid, multGrid, totalBet);
     if (r.scatter.length && t === 0) scatterCount = r.scatter.length;
     if (r.wins.length === 0) {
-      if (t === 0) rounds.push({ grid: grid, multGrid: multGrid, wins: [], roundWin: 0, newMults: [], scatter: r.scatter });
+      if (t === 0) rounds.push({ grid: grid, multGrid: JSON.parse(JSON.stringify(multGrid)), wins: [], roundWin: 0, newMults: [], scatter: r.scatter });
       break;
     }
     var winCells = [];
     r.wins.forEach(function(w){ w.cells.forEach(function(p){ winCells.push(p); }); });
 
+    // 记录快照（翻倍前 = 本轮的倍数状态）
     rounds.push({ grid: grid, multGrid: JSON.parse(JSON.stringify(multGrid)), wins: r.wins, roundWin: r.totalWin, newMults: [], scatter: r.scatter });
     totalWin += r.totalWin;
 
-    // Tumble
-    grid = tumble(grid, winCells);
-    // 中奖格位置倍率清除（Tumble 后它们消失了）
-    winCells.forEach(function(p){ multGrid[p[0]][p[1]] = 0; });
+    // === 1) 中奖格子的倍率翻倍（×2，上限 128） ===
+    winCells.forEach(function(p){
+      if (multGrid[p[0]][p[1]] > 0) {
+        multGrid[p[0]][p[1]] = Math.min(multGrid[p[0]][p[1]] * 2, maxVal);
+      }
+    });
 
-    // 每次 Tumble 后：以一定概率添加新的位置倍率
-    if (randFloat() < C.POS_DROP_CHANCE) {
-      var cnt = Math.floor(randFloat() * (C.POS_MAX_PER_TUMBLE || 4)) + 1;
-      var placed = dropMultipliers(multGrid, cnt);
-      placed.forEach(function(p){ allMultipliers.push(p); });
-      if (rounds.length > 0) rounds[rounds.length - 1].newMults = placed;
+    // === 2) Tumble ===
+    var tr = tumble(grid, winCells);
+    grid = tr.grid;
+
+    // === 3) 新补符号所在格：每格按概率带 2x（该格原本无倍率） ===
+    var newMults = [];
+    tr.newCells.forEach(function(p){
+      if (multGrid[p[0]][p[1]] === 0 && randFloat() < cellChance) {
+        multGrid[p[0]][p[1]] = initVal;
+        newMults.push({ r: p[0], c: p[1], value: initVal });
+        allMultipliers.push({ r: p[0], c: p[1], value: initVal });
+      }
+    });
+    if (newMults.length && rounds.length > 0) {
+      rounds[rounds.length - 1].newMults = newMults;
     }
   }
 
