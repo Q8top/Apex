@@ -346,6 +346,16 @@ function bind(){
     }
     if(ev.key==='Escape'){closeModal();}
   });
+  document.addEventListener('visibilitychange', function(){
+    // 后台时如果正在发牌/玩家操作，不回滚，等待恢复
+    if (document.hidden && state.phase === 'player') {
+      // 保留当前状态，等用户回来继续
+    }
+  });
+  window.addEventListener('pagehide', function(){
+    // 页面卸载时清理未结算的状态（不扣钱，因为 demo 已扣）
+  });
+
 }
 
 function init(){

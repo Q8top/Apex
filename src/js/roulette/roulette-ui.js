@@ -397,6 +397,12 @@ function bind(){
     else if(ev.key==='ArrowDown'){ev.preventDefault();changeBet(-1);}
     else if(ev.key==='Escape'){closeModal();}
   });
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden && state.phase === 'spinning') {
+      // 后台时允许旋转完成，但界面不更新（返回后 render 会补上）
+    }
+  });
+
 }
 
 function init(){

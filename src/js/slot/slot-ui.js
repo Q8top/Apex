@@ -4,6 +4,7 @@
 
 var C = window.SlotConfig, E = window.SlotEngine,
     S = window.SlotSymbols, A = window.SlotAudio;
+  function safeAudio(fn, n){ try { if (typeof fn === 'function') fn(); } catch(e){ console.warn('[Slot] audio@'+n, e && e.message); } }
 
 var MODE = (function(){
   var m = String(location.search).match(/[?&]mode=([a-z]+)/i);
@@ -173,7 +174,7 @@ function spinReel(col, target, dur, onDone){
         cells[r2].classList.remove('spinning'); cells[r2].classList.add('settling');
         (function(e){ setTimeout(function(){ e.classList.remove('settling'); },480); })(cells[r2]);
       }
-      A.reelStop(col); if (onDone) onDone();
+      safeAudio(function(){A.reelStop(col);}, 'reelStop'); if (onDone) onDone();
     }
   }
   requestAnimationFrame(loop);
@@ -184,7 +185,7 @@ function doSpin(){
   if (state.spinning || !state.ready) return;
   var b = bet();
   if (state.balance < b){
-    A.lose();
+    safeAudio(A.lose, 'lose');
     toast('余额不足' + (MODE==='demo'?'，请重置':'，请充值'));
     var sb=$('spin'); sb.classList.add('shake'); setTimeout(function(){ sb.classList.remove('shake'); },420);
     stopAuto(); return;
@@ -194,7 +195,7 @@ function doSpin(){
   renderWin(0);
   state.spinning=true;
   var sb2=$('spin'); sb2.disabled=true; sb2.classList.add('spinning');
-  $('reels').classList.add('active'); A.spinStart();
+  $('reels').classList.add('active'); safeAudio(A.spinStart, 'spinStart');
 
   var grid = (MODE==='demo') ? E.spinDemo(b) : E.spin();
   var result=E.evaluate(grid,b); state.grid=grid;
@@ -232,11 +233,11 @@ function showResult(result, bAmt, grid){
     }); });
     setTimeout(function(){ drawWinLines(result.wins); }, 80);
     var ratio=result.totalWin/bAmt;
-    if (ratio>=30){ A.winBig(); flash(true); showCelebrate(ratio, result.totalWin); }
-    else if (ratio>=10){ A.winBig(); flash(true); showCelebrate(ratio, result.totalWin); }
-    else if (ratio>=2){ A.winMedium(); flash(false); showCelebrate(ratio, result.totalWin); }
-    else { A.winSmall(); }
-  } else A.lose();
+    if (ratio>=30){ safeAudio(A.winBig, 'winBig'); flash(true); showCelebrate(ratio, result.totalWin); }
+    else if (ratio>=10){ safeAudio(A.winBig, 'winBig'); flash(true); showCelebrate(ratio, result.totalWin); }
+    else if (ratio>=2){ safeAudio(A.winMedium, 'winMedium'); flash(false); showCelebrate(ratio, result.totalWin); }
+    else { safeAudio(A.winSmall, 'winSmall'); }
+  } else safeAudio(A.lose, 'lose');
 
   var delta=result.totalWin - bAmt;
   state.history.unshift({bet:bAmt, win:result.totalWin, delta:delta, ts:Date.now(), grid:grid, mode:MODE});
@@ -273,7 +274,7 @@ function changeBet(dir){
   var n=state.betIndex+dir;
   if (n<0) n=0; if (n>=C.CONFIG.betSteps.length) n=C.CONFIG.betSteps.length-1;
   if (n===state.betIndex) return;
-  state.betIndex=n; renderBet(); A.click();
+  state.betIndex=n; renderBet(); safeAudio(A.click, 'click');
   if (MODE==='demo') saveDemoState();
 }
 
@@ -303,7 +304,7 @@ function show777(grid){
     amt.textContent = '';
     el.classList.add('show', 'mega');
     el.setAttribute('aria-hidden','false');
-    A.winBig();
+    safeAudio(A.winBig, 'winBig');
     flash(true);
     setTimeout(function(){
       el.classList.remove('show', 'mega');
@@ -390,16 +391,16 @@ function actionMode(){
 }
 
 function toggleSound(){
-  state.soundOn=!state.soundOn; A.enabled(state.soundOn);
+  state.soundOn=!state.soundOn; safeAudio(function(){A.enabled(state.soundOn);}, 'enabled');
   $('btn-sound').style.opacity = state.soundOn?'1':'0.35';
-  saveSettings(); if (state.soundOn) A.click();
+  saveSettings(); if (state.soundOn) safeAudio(A.click, 'click');
 }
 
 /* ---- 绑定 ---- */
 function bind(){
   $('bet-minus').addEventListener('click', function(){ changeBet(-1); });
   $('bet-plus').addEventListener('click', function(){ changeBet(1); });
-  $('spin').addEventListener('click', function(){ A.init(); doSpin(); });
+  $('spin').addEventListener('click', function(){ safeAudio(A.init, 'init'); doSpin(); });
   $('btn-auto').addEventListener('click', function(){ if (state.autoOn) stopAuto(); else startAuto(); });
   $('btn-history').addEventListener('click', showHistory);
   $('btn-paytable').addEventListener('click', showPaytable);
@@ -413,7 +414,7 @@ function bind(){
     var k = String(e.key || '').toLowerCase();
     if (e.key===' '||e.key==='Enter'){
       if (document.activeElement && document.activeElement.tagName==='BUTTON') return;
-      e.preventDefault(); A.init(); doSpin(); return;
+      e.preventDefault(); safeAudio(A.init, 'init'); doSpin(); return;
     }
     if (e.key==='ArrowUp'){ e.preventDefault(); changeBet(1); return; }
     if (e.key==='ArrowDown'){ e.preventDefault(); changeBet(-1); return; }
@@ -444,7 +445,7 @@ function setupModeUI(){
 function init(){
   loadSettings(); loadHistory();
   E.setMode(MODE);
-  A.enabled(state.soundOn);
+  safeAudio(function(){A.enabled(state.soundOn);}, 'enabled');
   $('btn-sound').style.opacity = state.soundOn?'1':'0.35';
   buildGrid(); renderWin(0); bind(); setupModeUI();
 

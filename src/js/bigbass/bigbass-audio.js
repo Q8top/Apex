@@ -40,7 +40,6 @@ var API={
   spinStart:function(){if(!ctx)init();var t=now();noise(.3,.08,t,800,1.5);sweep(600,2400,.4,.14,t);fm(2400,800,2.5,.1,.15,t,true);},
   reelStop:function(i){if(!ctx)init();var t=now();fm(1800+i*220,700+i*50,3,.1,.22,t,true);ping(2600+i*180,.05,.12,t);},
   lineWin:function(){if(!ctx)init();var t=now();ping(1047,.15,.12,t,'sine',true);ping(1568,.2,.1,t+.08,'sine',true);ping(2093,.25,.08,t+.16,'sine',true);},
-  tumble:function(){if(!ctx)init();var t=now();noise(.22,.14,t,2400,2);ping(2800,.05,.1,t+.08);},
   fishDrop:function(){if(!ctx)init();var t=now();ping(1319,.15,.12,t,'triangle',true);ping(1760,.2,.1,t+.06,'triangle',true);},
   fishCollect:function(){if(!ctx)init();var t=now();noise(.35,.15,t,1200,1.5);[784,988,1175,1568].forEach(function(f,i){ping(f,.3,.11,t+i*.06,'sine',true);});},
   levelUp:function(){if(!ctx)init();var t=now();noise(.5,.15,t,800,1);[523,659,784,1047,1319].forEach(function(f,i){ping(f,.35,.12,t+i*.08,'sine',true);});},

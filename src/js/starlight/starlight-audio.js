@@ -145,12 +145,7 @@ var API = {
     ping(3200, .05, .10, t+.08);
     ping(4000, .04, .09, t+.13);
   },
-  posMult: function(){
-    if (!ctx) init(); var t = now();
-    fm(3000, 900, 3, .12, .14, t, true);
-    ping(4000, .06, .10, t+.02, 'sine', true);
-  },
-  freeSpin: function(){
+    freeSpin: function(){
     if (!ctx) init(); var t = now();
     noise(.5, .15, t, 1000, 1);
     [523, 659, 784, 1047, 1319, 1568].forEach(function(f, i){
