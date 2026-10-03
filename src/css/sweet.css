@@ -1225,3 +1225,23 @@ html, body {
 .sw-mode-action-btn:active {
   background: rgba(215,53,142,.06) !important;
 }
+
+/* ===== APEX-SWEET-B3: Loading Identity ===== */
+#apex-loader {
+  flex-direction: column;
+  gap: 18px;
+  background: linear-gradient(180deg, #fbf7fd 0%, #f4ecf6 100%);
+}
+#apex-loader .apex-loader-spin {
+  border-color: rgba(214,59,138,.18);
+  border-top-color: #d63b8a;
+}
+#apex-loader::after {
+  content: '甜蜜蜜';
+  font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d63b8a;
+  letter-spacing: 4px;
+  opacity: .85;
+}
