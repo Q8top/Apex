@@ -1082,3 +1082,22 @@ html, body {
 
 /* 炸弹 badge 保证最上 */
 .sw-bomb-badge { z-index: 100 !important; }
+
+
+/* ===== APEX-SWEET-DS-612: Reel Engine Animation ===== */
+@keyframes swReelTick {
+  0%   { transform: translateY(55%); opacity: 0.25; }
+  100% { transform: translateY(0);   opacity: 1;    }
+}
+@keyframes swReelStop {
+  0%   { transform: translateY(-5px); }
+  55%  { transform: translateY(2px);  }
+  80%  { transform: translateY(-1px); }
+  100% { transform: translateY(0);    }
+}
+.sw-cell.reel-tick > svg { animation: swReelTick 55ms cubic-bezier(.15,.85,.35,1); }
+.sw-cell.reel-stop > svg { animation: swReelStop 200ms cubic-bezier(.2,1,.35,1); }
+@media (prefers-reduced-motion: reduce) {
+  .sw-cell.reel-tick > svg,
+  .sw-cell.reel-stop > svg { animation: none !important; }
+}

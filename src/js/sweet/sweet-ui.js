@@ -21,6 +21,9 @@ var state = {
   freeSpinMode: false
 };
 
+var SYMBOL_POOL = Object.keys(C.SYMBOLS);
+var reelHandles = [];
+
 function $(id){ return document.getElementById(id); }
 function fmt(n, sign){
   var v = Math.round(n * 100) / 100;
@@ -166,24 +169,58 @@ function spawnBombs(bombs, stage){
 }
 
 /* 落停动画 */
+function reelTickInterval(el, dur){
+  var p = el / dur;
+  if (p < 0.35) return 40 - 18 * (p / 0.35);
+  if (p < 0.70) return 22;
+  if (p < 0.95) { var t = (p - 0.70) / 0.25; return 22 + 68 * t * t; }
+  return 120;
+}
+
 function spinReel(c, dur, onDone){
   var cells = [];
   for (var r = 0; r < C.CONFIG.rows; r++) cells.push(cellAt(r, c));
-  var pool = Object.keys(C.SYMBOLS);
-  var start = performance.now(), lastTick = 0, every = 55;
+  for (var r0 = 0; r0 < C.CONFIG.rows; r0++) { if (cells[r0]) cells[r0].classList.add('reel-tick'); }
+
+  var start = performance.now();
+  var lastTick = -999;
+  var stopped = false;
+
+  function tick(){
+    for (var r = 0; r < C.CONFIG.rows; r++) {
+      var el = cells[r]; if (!el) continue;
+      var rnd = SYMBOL_POOL[Math.floor(E.randFloat() * SYMBOL_POOL.length)];
+      el.innerHTML = S[rnd] ? S[rnd]() : '';
+    }
+  }
+
+  function settle(){
+    if (stopped) return;
+    stopped = true;
+    for (var r = 0; r < C.CONFIG.rows; r++) {
+      var el = cells[r]; if (!el) continue;
+      el.classList.remove('reel-tick');
+      el.classList.add('reel-stop');
+    }
+    safeAudio(function(){ A.reelStop(c); }, 'reelStop');
+    setTimeout(function(){
+      for (var r = 0; r < C.CONFIG.rows; r++) {
+        var el = cells[r]; if (!el) continue;
+        el.classList.remove('reel-stop', 'reel-tick');
+      }
+      reelHandles[c] = null;
+      if (onDone) onDone();
+    }, 200);
+  }
+
   function loop(now){
     var el = now - start;
-    if (el - lastTick >= every) {
-      lastTick = el;
-      for (var r = 0; r < C.CONFIG.rows; r++) {
-        var rnd = pool[Math.floor(E.randFloat() * pool.length)];
-        cells[r].innerHTML = S[rnd] ? S[rnd]() : '';
-      }
-    }
-    if (el < dur) requestAnimationFrame(loop);
-    else { safeAudio(function(){ A.reelStop(c); }, 'reelStop'); if (onDone) onDone(); }
+    if (el >= dur) { settle(); return; }
+    var interval = reelTickInterval(el, dur);
+    if (el - lastTick >= interval) { lastTick = el; tick(); }
+    reelHandles[c] = requestAnimationFrame(loop);
   }
-  requestAnimationFrame(loop);
+  reelHandles[c] = requestAnimationFrame(loop);
 }
 
 function doSpin(){
@@ -381,6 +418,9 @@ function afterSettle(totalWin){
 function releaseSpin(){
   state.spinning = false;
   if (state.safetyTimer) { clearTimeout(state.safetyTimer); state.safetyTimer = null; }
+  for (var i = 0; i < 6; i++) {
+    if (reelHandles[i]) { cancelAnimationFrame(reelHandles[i]); reelHandles[i] = null; }
+  }
   var sb = $('sw-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
 }
 
