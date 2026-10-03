@@ -1083,21 +1083,37 @@ html, body {
 /* 炸弹 badge 保证最上 */
 .sw-bomb-badge { z-index: 100 !important; }
 
+/* ===== APEX-SWEET-DS-701: Reel Visual Layer ===== */
+.stage-symbols {
+  inset: 10px !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 100ms ease;
+  pointer-events: none;
+}
+.stage-symbols.active { opacity: 1; }
 
-/* ===== APEX-SWEET-DS-612: Reel Engine Animation ===== */
-@keyframes swReelTick {
-  0%   { transform: translateY(55%); opacity: 0.25; }
-  100% { transform: translateY(0);   opacity: 1;    }
+.reel-col {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
 }
-@keyframes swReelStop {
-  0%   { transform: translateY(-5px); }
-  55%  { transform: translateY(2px);  }
-  80%  { transform: translateY(-1px); }
-  100% { transform: translateY(0);    }
+.reel-track {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  will-change: transform;
 }
-.sw-cell.reel-tick > svg { animation: swReelTick 55ms cubic-bezier(.15,.85,.35,1); }
-.sw-cell.reel-stop > svg { animation: swReelStop 200ms cubic-bezier(.2,1,.35,1); }
-@media (prefers-reduced-motion: reduce) {
-  .sw-cell.reel-tick > svg,
-  .sw-cell.reel-stop > svg { animation: none !important; }
+.reel-sym {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reel-sym + .reel-sym { margin-top: 4px; }
+.reel-sym > svg {
+  width: 86%;
+  height: 86%;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.4));
 }

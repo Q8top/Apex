@@ -23,6 +23,8 @@ var state = {
 
 var SYMBOL_POOL = Object.keys(C.SYMBOLS);
 var reelHandles = [];
+var spinTargetGrid = null;
+var reelGeom = null;
 
 function $(id){ return document.getElementById(id); }
 function fmt(n, sign){
@@ -169,55 +171,103 @@ function spawnBombs(bombs, stage){
 }
 
 /* 落停动画 */
-function reelTickInterval(el, dur){
-  var p = el / dur;
-  if (p < 0.35) return 40 - 18 * (p / 0.35);
-  if (p < 0.70) return 22;
-  if (p < 0.95) { var t = (p - 0.70) / 0.25; return 22 + 68 * t * t; }
-  return 120;
+function reelEase(p){
+  if (p < 0.15) return 2.5 * p * p;
+  if (p < 0.70) { var q = (p - 0.15) / 0.55; return 0.056 + 0.80 * q; }
+  var q = (p - 0.70) / 0.30;
+  return 0.856 + 0.144 * (1 - Math.pow(1 - q, 3));
+}
+
+function buildReelLayer(targetGrid){
+  var layer = document.querySelector('.stage-symbols');
+  if (!layer) { reelGeom = null; return; }
+  layer.innerHTML = '';
+  var N = 20;
+  var frag = document.createDocumentFragment();
+  for (var c = 0; c < 6; c++) {
+    var col = document.createElement('div'); col.className = 'reel-col';
+    var track = document.createElement('div'); track.className = 'reel-track';
+    var inner = document.createDocumentFragment();
+    for (var k = 0; k < N; k++) {
+      var sym;
+      if (k < N - 5) sym = SYMBOL_POOL[Math.floor(E.randFloat() * SYMBOL_POOL.length)];
+      else sym = targetGrid[k - (N - 5)][c];
+      var el = document.createElement('div'); el.className = 'reel-sym';
+      el.innerHTML = S[sym] ? S[sym]() : '';
+      inner.appendChild(el);
+    }
+    track.appendChild(inner);
+    col.appendChild(track);
+    frag.appendChild(col);
+  }
+  layer.appendChild(frag);
+  var firstCol = layer.children[0];
+  if (!firstCol) { reelGeom = null; return; }
+  var colH = firstCol.clientHeight;
+  var gap = 4;
+  var cellH = (colH - gap * 4) / 5;
+  var step = cellH + gap;
+  for (var i = 0; i < 6; i++) {
+    var c2 = layer.children[i];
+    var t2 = c2 && c2.firstChild;
+    if (!t2) continue;
+    for (var j = 0; j < N; j++) {
+      var sy = t2.children[j];
+      if (sy) sy.style.height = cellH + 'px';
+    }
+  }
+  layer.classList.add('active');
+  reelGeom = { colH: colH, cellH: cellH, step: step, gap: gap, N: N };
+}
+
+function destroyReelLayer(){
+  var layer = document.querySelector('.stage-symbols');
+  if (layer) { layer.classList.remove('active'); layer.innerHTML = ''; }
+  reelGeom = null;
 }
 
 function spinReel(c, dur, onDone){
-  var cells = [];
-  for (var r = 0; r < C.CONFIG.rows; r++) cells.push(cellAt(r, c));
-  for (var r0 = 0; r0 < C.CONFIG.rows; r0++) { if (cells[r0]) cells[r0].classList.add('reel-tick'); }
+  if (!reelGeom) { if (onDone) onDone(); return; }
+  var layer = document.querySelector('.stage-symbols');
+  if (!layer || !layer.children[c]) { if (onDone) onDone(); return; }
+  var track = layer.children[c].firstChild;
+  if (!track) { if (onDone) onDone(); return; }
 
+  var N = reelGeom.N;
+  var yStart = reelGeom.colH;
+  var yFinal = -(N - 5) * reelGeom.step;
   var start = performance.now();
-  var lastTick = -999;
   var stopped = false;
 
-  function tick(){
-    for (var r = 0; r < C.CONFIG.rows; r++) {
-      var el = cells[r]; if (!el) continue;
-      var rnd = SYMBOL_POOL[Math.floor(E.randFloat() * SYMBOL_POOL.length)];
-      el.innerHTML = S[rnd] ? S[rnd]() : '';
-    }
-  }
+  track.style.transform = 'translate3d(0,' + yStart + 'px,0)';
 
   function settle(){
     if (stopped) return;
     stopped = true;
-    for (var r = 0; r < C.CONFIG.rows; r++) {
-      var el = cells[r]; if (!el) continue;
-      el.classList.remove('reel-tick');
-      el.classList.add('reel-stop');
-    }
     safeAudio(function(){ A.reelStop(c); }, 'reelStop');
+    track.style.transition = 'transform 120ms cubic-bezier(.2,1,.35,1)';
+    track.style.transform = 'translate3d(0,' + (yFinal - 4) + 'px,0)';
     setTimeout(function(){
-      for (var r = 0; r < C.CONFIG.rows; r++) {
-        var el = cells[r]; if (!el) continue;
-        el.classList.remove('reel-stop', 'reel-tick');
-      }
-      reelHandles[c] = null;
-      if (onDone) onDone();
-    }, 200);
+      track.style.transition = 'transform 80ms ease-out';
+      track.style.transform = 'translate3d(0,' + (yFinal + 1.5) + 'px,0)';
+      setTimeout(function(){
+        track.style.transition = 'transform 60ms ease-out';
+        track.style.transform = 'translate3d(0,' + yFinal + 'px,0)';
+        setTimeout(function(){
+          track.style.transition = '';
+          reelHandles[c] = null;
+          if (onDone) onDone();
+        }, 60);
+      }, 80);
+    }, 120);
   }
 
   function loop(now){
     var el = now - start;
     if (el >= dur) { settle(); return; }
-    var interval = reelTickInterval(el, dur);
-    if (el - lastTick >= interval) { lastTick = el; tick(); }
+    var p = el / dur;
+    var y = yStart + (yFinal - yStart) * reelEase(p);
+    track.style.transform = 'translate3d(0,' + y + 'px,0)';
     reelHandles[c] = requestAnimationFrame(loop);
   }
   reelHandles[c] = requestAnimationFrame(loop);
@@ -259,12 +309,17 @@ function doSpin(){
   }
 
   var firstGrid = result.rounds.length ? result.rounds[0].grid : result.finalGrid;
+  spinTargetGrid = firstGrid;
+  buildReelLayer(firstGrid);
+  var _g0 = document.getElementById('sw-grid'); if (_g0) _g0.style.opacity = '0';
+
   var baseDelay = 500, stagger = 120, done = 0;
   [0,1,2,3,4,5].forEach(function(c){
     var dur = baseDelay + c * stagger;
     spinReel(c, dur, function(){
       done++;
       if (done === 6) {
+        var _g1 = document.getElementById('sw-grid'); if (_g1) _g1.style.opacity = '1';
         paintGrid(firstGrid);
         setTimeout(function(){
           // 检查免费旋转触发
@@ -421,6 +476,8 @@ function releaseSpin(){
   for (var i = 0; i < 6; i++) {
     if (reelHandles[i]) { cancelAnimationFrame(reelHandles[i]); reelHandles[i] = null; }
   }
+  destroyReelLayer();
+  var _g2 = document.getElementById('sw-grid'); if (_g2) _g2.style.opacity = '1';
   var sb = $('sw-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
 }
 
