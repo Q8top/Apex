@@ -134,3 +134,27 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
   .bb-bet-row{height:40px}
   .bb-foot-btn{padding:9px 6px;font-size:12px}
 }
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .bb-bar{height:44px}
+  .bb-win-value{font-size:20px}
+  .bb-stat{padding:6px 4px}
+  .bb-stat-value{font-size:12px}
+  .bb-stat-label{font-size:9px;letter-spacing:1px}
+  .bb-bet-row{height:36px}
+  .bb-spin-btn,.bb-action-btn,.bb-btn{font-size:14px;height:44px}
+  .bb-foot-btn{padding:8px 4px;font-size:11px}
+  .bb-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .bb-grid{gap:2px}
+  .bb-cell{font-size:9.5px;min-height:24px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

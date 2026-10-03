@@ -150,3 +150,27 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
   .sl-bet-row{height:40px}
   .sl-foot-btn{padding:9px 6px;font-size:12px}
 }
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .sl-bar{height:44px}
+  .sl-win-value{font-size:20px}
+  .sl-stat{padding:6px 4px}
+  .sl-stat-value{font-size:12px}
+  .sl-stat-label{font-size:9px;letter-spacing:1px}
+  .sl-bet-row{height:36px}
+  .sl-spin-btn,.sl-action-btn,.sl-btn{font-size:14px;height:44px}
+  .sl-foot-btn{padding:8px 4px;font-size:11px}
+  .sl-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .sl-grid{gap:2px}
+  .sl-cell{font-size:9.5px;min-height:24px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

@@ -418,3 +418,27 @@ html, body {
     0 2px 8px rgba(214,59,138,.4);
   font-variant-numeric: tabular-nums;
 }
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .sw-bar{height:44px}
+  .sw-win-value{font-size:20px}
+  .sw-stat{padding:6px 4px}
+  .sw-stat-value{font-size:12px}
+  .sw-stat-label{font-size:9px;letter-spacing:1px}
+  .sw-bet-row{height:36px}
+  .sw-spin-btn,.sw-action-btn,.sw-btn{font-size:14px;height:44px}
+  .sw-foot-btn{padding:8px 4px;font-size:11px}
+  .sw-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .sw-grid{gap:2px}
+  .sw-cell{font-size:9.5px;min-height:24px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

@@ -338,3 +338,27 @@ html, body {
   .sr-bet-row { height: 40px; }
   .sr-foot-btn { padding: 9px 6px; font-size: 12px; }
 }
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .sr-bar{height:44px}
+  .sr-win-value{font-size:20px}
+  .sr-stat{padding:6px 4px}
+  .sr-stat-value{font-size:12px}
+  .sr-stat-label{font-size:9px;letter-spacing:1px}
+  .sr-bet-row{height:36px}
+  .sr-spin-btn,.sr-action-btn,.sr-btn{font-size:14px;height:44px}
+  .sr-foot-btn{padding:8px 4px;font-size:11px}
+  .sr-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .sr-grid{gap:2px}
+  .sr-cell{font-size:9.5px;min-height:24px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

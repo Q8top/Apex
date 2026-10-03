@@ -120,3 +120,29 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
   .bj-stat-value{font-size:12px}
   .bj-bet-row{height:36px}
 }
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .bj-bar{height:44px}
+  .bj-win-value{font-size:20px}
+  .bj-stat{padding:6px 4px}
+  .bj-stat-value{font-size:12px}
+  .bj-stat-label{font-size:9px;letter-spacing:1px}
+  .bj-bet-row{height:36px}
+  .bj-spin-btn,.bj-action-btn,.bj-btn{font-size:14px;height:44px}
+  .bj-foot-btn{padding:8px 4px;font-size:11px}
+  .bj-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .bj-cards > .bj-card{width:44px;height:66px}
+  .bj-cards{min-height:70px}
+  .bj-btn{height:44px;font-size:13px}
+  .bj-bet-row{grid-template-columns:44px 1fr 44px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

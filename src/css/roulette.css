@@ -127,3 +127,34 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 .rl-cell.red[data-spot="red"]::after{color:#fff}
 .rl-cell.black[data-spot="black"]::after{color:#fff}
 .rl-cell[data-spot^="dozen"]::after{content:"×2";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:900;color:#a07818;opacity:.7;pointer-events:none}
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .rl-bar{height:44px}
+  .rl-win-value{font-size:20px}
+  .rl-stat{padding:6px 4px}
+  .rl-stat-value{font-size:12px}
+  .rl-stat-label{font-size:9px;letter-spacing:1px}
+  .rl-bet-row{height:36px}
+  .rl-spin-btn,.rl-action-btn,.rl-btn{font-size:14px;height:44px}
+  .rl-foot-btn{padding:8px 4px;font-size:11px}
+  .rl-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .rl-grid{gap:2px}
+  .rl-cell{font-size:9.5px;min-height:24px}
+}
+
+@media (max-width:360px){
+  .rl-wheel-wrap{width:min(180px,52vw)}
+  .rl-cell{font-size:9px;min-height:22px;border-radius:3px}
+  .rl-cell.wide{font-size:9px}
+  .rl-cell.wide-2{font-size:9px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}

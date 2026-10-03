@@ -133,3 +133,29 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 .cr-mode-btn-row > button{flex:1;height:46px;border:0;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}
 .cr-mode-ok{background:#0a0a0a;color:#fff}
 .cr-mode-cancel{background:#f0f0f2;color:#555}
+
+/* ===== 窄屏适配（320~360px）===== */
+@media (max-width:360px){
+  #app{padding-left:10px;padding-right:10px;gap:6px}
+  .cr-bar{height:44px}
+  .cr-win-value{font-size:20px}
+  .cr-stat{padding:6px 4px}
+  .cr-stat-value{font-size:12px}
+  .cr-stat-label{font-size:9px;letter-spacing:1px}
+  .cr-bet-row{height:36px}
+  .cr-spin-btn,.cr-action-btn,.cr-btn{font-size:14px;height:44px}
+  .cr-foot-btn{padding:8px 4px;font-size:11px}
+  .cr-icon-btn{width:36px;height:36px}
+}
+
+@media (max-width:360px){
+  .cr-multi{font-size:40px}
+  .cr-multi-x{font-size:20px}
+  .cr-action-row{grid-template-columns:1fr 42px;gap:6px}
+  .cr-auto-btn{width:42px;height:44px}
+}
+
+/* ===== 无障碍：减少动画 ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
