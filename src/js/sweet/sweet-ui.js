@@ -76,6 +76,8 @@ function paintGrid(grid){
   }
 }
 function highlightCells(cells, on){
+  var stage = document.querySelector('.sw-stage');
+  if (stage) stage.classList.toggle('winning-focus', !!on);
   cells.forEach(function(p){
     var el = cellAt(p[0], p[1]);
     if (el) el.classList.toggle('winning', !!on);
@@ -90,9 +92,27 @@ function renderBet(){
   $('sw-bet').textContent = fmt(bet());
   syncBet();
 }
+var _countRaf = 0;
+function countUp(el, to, dur){
+  if (!el) return;
+  if (_countRaf) cancelAnimationFrame(_countRaf);
+  var from = 0;
+  try { from = parseFloat(String(el.dataset.v || '0')) || 0; } catch(e){}
+  if (Math.abs(to - from) < 0.005) { el.dataset.v = String(to); return; }
+  var t0 = performance.now();
+  function step(now){
+    var p = Math.min(1, (now - t0) / (dur || 380));
+    var e = 1 - Math.pow(1 - p, 3);
+    var v = from + (to - from) * e;
+    el.textContent = v > 0 ? fmt(v, true) : fmt(0);
+    if (p < 1) { _countRaf = requestAnimationFrame(step); }
+    else { el.dataset.v = String(to); _countRaf = 0; }
+  }
+  _countRaf = requestAnimationFrame(step);
+}
 function renderWin(amount, combo){
   var el = $('sw-win-value');
-  el.textContent = amount > 0 ? fmt(amount, true) : fmt(0);
+  countUp(el, amount > 0 ? amount : 0, 420);
   el.classList.toggle('winning', amount > 0);
   if (amount > 0) { el.classList.remove('pulsing'); void el.offsetWidth; el.classList.add('pulsing'); }
   $('sw-win-label').textContent = amount > 0 ? '恭喜中奖' : '本局中奖';

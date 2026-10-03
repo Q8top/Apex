@@ -817,3 +817,223 @@ html, body {
 }
 .sw-mode-action-btn:active { transform: scale(.98); background: #f5f5f7; }
 .sw-mode-action-btn svg { width: 16px; height: 16px; }
+
+/* ===== APEX-SWEET-DS-601 ===== */
+:root {
+  --g-primary: #d7358e;
+  --g-secondary: #f6a8ca;
+  --g-gold: #ffd54f;
+  --g-stage-top: #6e225d;
+  --g-stage-bot: #38132f;
+  --g-ease-out: cubic-bezier(.2,.9,.3,1);
+}
+
+/* --- Stage 纵深 --- */
+.sw-stage {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255,150,220,.38) 0%, transparent 52%),
+    radial-gradient(circle at 50% 115%, rgba(230,90,180,.30) 0%, transparent 58%),
+    linear-gradient(180deg, #6e225d 0%, #38132f 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,200,235,.30),
+    inset 0 -22px 44px rgba(0,0,0,.28),
+    0 14px 44px rgba(60,10,50,.38) !important;
+  border-radius: 18px;
+}
+.sw-stage::after {
+  border: 1px solid rgba(255,180,220,.32) !important;
+  box-shadow:
+    inset 0 0 30px rgba(255,150,220,.14),
+    inset 0 0 1px rgba(255,220,240,.50) !important;
+}
+
+/* --- Cell 立体化 --- */
+.sw-cell {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.015) 100%) !important;
+  border: 1px solid rgba(255,255,255,.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -2px 4px rgba(0,0,0,.22);
+}
+
+/* --- 中奖格加强 --- */
+.sw-cell.winning {
+  background:
+    linear-gradient(180deg, rgba(255,210,240,.55) 0%, rgba(214,59,138,.38) 100%) !important;
+  box-shadow:
+    0 0 0 2px rgba(255,160,210,.95),
+    0 0 22px rgba(255,150,210,.75),
+    inset 0 1px 0 rgba(255,255,255,.55) !important;
+}
+
+/* ===== APEX-SWEET-DS-602 ===== */
+.sw-spin-btn {
+  height: 58px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, #e3509c 0%, #c42777 55%, #97185a 100%) !important;
+  color: #fff !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+  border: 0 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 -2px 0 rgba(0,0,0,.18),
+    0 10px 26px rgba(196,39,119,.42) !important;
+  transition: transform 160ms var(--g-ease-out), box-shadow 260ms ease !important;
+}
+.sw-spin-btn:active {
+  transform: scale(.97) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 4px 14px rgba(196,39,119,.35) !important;
+}
+.sw-foot { gap: 10px !important; }
+.sw-foot-btn {
+  height: 54px !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,.06) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+  transition: transform 140ms var(--g-ease-out), box-shadow 200ms ease !important;
+}
+.sw-foot-btn:active { transform: scale(.97) !important; }
+.sw-bet-btn {
+  height: 52px !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,.08) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04) !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: #222 !important;
+  transition: transform 140ms var(--g-ease-out) !important;
+}
+.sw-bet-btn:active { transform: scale(.96) !important; }
+.sw-bet-txt {
+  height: 52px !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,.08) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04) !important;
+}
+.sw-bet-txt-value { font-size: 20px !important; font-weight: 800 !important; }
+
+/* ===== APEX-SWEET-DS-603 ===== */
+.sw-balance-panel {
+  border-radius: 20px !important;
+  border: 1px solid rgba(0,0,0,.05) !important;
+  box-shadow:
+    0 4px 18px rgba(0,0,0,.05),
+    inset 0 1px 0 rgba(255,255,255,.8) !important;
+  background: #fff !important;
+}
+.sw-balance-value {
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: -.5px !important;
+}
+.sw-balance-sub-value { font-variant-numeric: tabular-nums !important; }
+.sw-win-value {
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: -.5px !important;
+  font-weight: 900 !important;
+}
+.sw-win-value.winning {
+  color: var(--g-primary) !important;
+  text-shadow: 0 0 18px rgba(215,53,142,.35) !important;
+}
+.sw-bar {
+  background: rgba(255,255,255,.85) !important;
+  backdrop-filter: saturate(180%) blur(18px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(18px) !important;
+  border-bottom: 1px solid rgba(0,0,0,.04) !important;
+}
+.sw-icon-btn {
+  border-radius: 14px !important;
+  transition: transform 140ms var(--g-ease-out), background 180ms ease !important;
+}
+.sw-icon-btn:active { transform: scale(.94) !important; background: rgba(0,0,0,.05) !important; }
+.sw-mode-badge {
+  border-radius: 999px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px !important;
+}
+
+
+/* ===== APEX-SWEET-DS-604: 中奖聚焦 ===== */
+.sw-stage.winning-focus .sw-cell { opacity: .32; transition: opacity .28s ease; }
+.sw-stage.winning-focus .sw-cell.winning { opacity: 1; }
+.sw-stage.winning-focus::after {
+  border-color: rgba(255,190,225,.55) !important;
+  box-shadow:
+    inset 0 0 60px rgba(255,120,190,.28),
+    inset 0 0 1px rgba(255,220,240,.65) !important;
+}
+
+/* ===== APEX-SWEET-DS-607: Big Win 分级弹幕 ===== */
+.celebrate {
+  position: fixed; inset: 0; z-index: 1500;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0;
+  transition: opacity 260ms ease;
+}
+.celebrate.show { opacity: 1; }
+.celebrate-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,180,60,.5) 0%, transparent 60%);
+  animation: swClbPulse 1.6s ease-in-out infinite;
+}
+@keyframes swClbPulse {
+  0%,100% { transform: scale(1); opacity: .85; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+.celebrate-content {
+  position: relative; text-align: center;
+  animation: swClbIn 500ms cubic-bezier(.2,1.4,.4,1);
+}
+@keyframes swClbIn {
+  from { transform: scale(.65); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  to { transform: scale(1); opacity: 1; }
+}
+.celebrate-tier {
+  font-size: 44px; font-weight: 900; letter-spacing: 3px; line-height: 1;
+  font-family: system-ui,-apple-system,sans-serif;
+  background: linear-gradient(180deg, #ffe37a 0%, #ffb03a 55%, #d88400 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 0 24px rgba(255,200,80,.75))
+    drop-shadow(0 4px 10px rgba(0,0,0,.35));
+}
+.celebrate-amount {
+  margin-top: 14px;
+  font-size: 30px; font-weight: 900; color: #fff;
+  letter-spacing: 1px; font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 0 22px rgba(255,200,80,.9),
+    0 3px 12px rgba(0,0,0,.35);
+}
+.celebrate.mega .celebrate-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(255,120,60,.55) 0%, transparent 60%);
+}
+.celebrate.super .celebrate-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(160,90,224,.6) 0%, transparent 62%);
+}
+.celebrate.super .celebrate-tier {
+  background: linear-gradient(180deg, #fff2a0 0%, #b070f0 55%, #5a1e8a 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+.celebrate.mega2 .celebrate-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(255,80,180,.68) 0%, transparent 65%);
+}
+.celebrate.mega2 .celebrate-tier {
+  background: linear-gradient(180deg, #ffe37a 0%, #ff4dc8 60%, #97185a 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
