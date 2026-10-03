@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<!-- DNS 预解析 + 预连接（加速第三方资源加载） -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
   <link rel="preload" href="/login-hero.webp" as="image" type="image/webp" fetchpriority="high">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -115,12 +120,12 @@
     立即刷新
   </button>
 </div>
-<script src="/src/js/inline/block-01.js"></script>
+<script src="/src/js/inline/block-01.js" defer></script>
 
-  <script src="/src/js/apiClient.js?v=20260927e"></script>
-  <script src="/src/js/passwordPolicy.js?v=20260927b"></script>
-  <script src="/src/js/passkey.js?v=20260927b"></script>
-  <script src="/src/js/captcha.v2.js"></script>
+  <script src="/src/js/apiClient.js?v=20260927e" defer></script>
+  <script src="/src/js/passwordPolicy.js?v=20260927b" defer></script>
+  <script src="/src/js/passkey.js?v=20260927b" defer></script>
+  <script src="/src/js/captcha.v2.js" defer></script>
 
   
   
@@ -498,28 +503,28 @@
     <div style="margin-top:10px;">© 2026 Apex Global Entertainment</div>
   </div></div>
 
-  <script src="/src/js/inline/block-02.js"></script>
+  <script src="/src/js/inline/block-02.js" defer></script>
 
-  <script src="/src/js/inline/block-03.js"></script>
+  <script src="/src/js/inline/block-03.js" defer></script>
 
-  <script src="/src/js/inline/block-04.js?v=20260927e"></script>
+  <script src="/src/js/inline/block-04.js?v=20260927e" defer></script>
 
-  <script src="/src/js/inline/block-05.js"></script>
+  <script src="/src/js/inline/block-05.js" defer></script>
 
-  <script src="/src/js/inline/block-06-apex-monitoring.js" id="apex-monitoring"></script>
-  <script src="/src/js/inline/apex-app.js"></script>
-  <script src="/src/js/inline/block-07-apex-auth.js"></script>
-
-
-  
-  <script src="/src/js/inline/block-08-apex-a11y.js" id="apex-a11y"></script>
+  <script src="/src/js/inline/block-06-apex-monitoring.js" defer id="apex-monitoring"></script>
+  <script src="/src/js/inline/apex-app.js" defer></script>
+  <script src="/src/js/inline/block-07-apex-auth.js" defer></script>
 
 
   
+  <script src="/src/js/inline/block-08-apex-a11y.js" defer id="apex-a11y"></script>
 
 
-  <script src="/src/js/inline/block-09.js"></script>
-<script src="/src/js/inline/event-bindings.js"></script>
+  
+
+
+  <script src="/src/js/inline/block-09.js" defer></script>
+<script src="/src/js/inline/event-bindings.js" defer></script>
 
   <div id="apex-logged-in" style="display:none; max-width:480px; margin:80px auto; padding:32px 24px; text-align:center; color:#fff; font-family:Manrope,system-ui,sans-serif;">
     <div style="font-size:56px; margin-bottom:16px;">&#10003;</div>
@@ -528,8 +533,8 @@
     <button id="apex-logged-in-logout" style="padding:12px 32px; background:#111; color:#fff; border:1px solid #333; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">登出</button>
   </div>
 
-<script src="/src/js/inline/apex-loader.js"></script>
-<script src="/src/js/inline/apex-page-transition.js"></script>
-<script src="/src/js/inline/apex-prefetch.js"></script>
+<script src="/src/js/inline/apex-loader.js" defer></script>
+<script src="/src/js/inline/apex-page-transition.js" defer></script>
+<script src="/src/js/inline/apex-prefetch.js" defer></script>
 </body>
 </html>
