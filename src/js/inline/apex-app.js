@@ -157,7 +157,8 @@ var APEX_GAMES={
     {id:'jetx',n:'\u55B7\u6C14\u673A',i:'ri-rocket-2-fill',c:'#a05ee0',img:'/assets/games/jetx.svg'},
     {id:'blackjack',n:'\u0032\u0031\u70B9',i:'ri-layout-grid-line',c:'#0a5a2a',img:'/assets/games/blackjack.svg'},
     {id:'roulette-euro',n:'\u6B27\u6D32\u8F6E\u76D8',i:'ri-loader-4-line',c:'#c82828',img:'/assets/games/roulette-euro.svg'},
-    {id:'roulette-amer',n:'\u7F8E\u5F0F\u8F6E\u76D8',i:'ri-loader-4-line',c:'#8a6a18',img:'/assets/games/roulette-amer.svg'}
+    {id:'roulette-amer',n:'\u7F8E\u5F0F\u8F6E\u76D8',i:'ri-loader-4-line',c:'#8a6a18',img:'/assets/games/roulette-amer.svg'},
+    {id:'1001-mg',n:'\u0031\u0030\u0030\u0031\u795E\u79D8\u7CBE\u7075\u8D22\u5BCC',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'}
   ]
 };
 function renderGames(box,catKey){

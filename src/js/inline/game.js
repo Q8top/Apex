@@ -15,7 +15,8 @@ var GAME_ROUTES = {
   'jetx':        { html: '/jetx.html',    symLib: null },
   'blackjack':      { html: '/blackjack.html', symLib: null },
   'roulette-euro':  { html: '/roulette-euro.html', symLib: null },
-  'roulette-amer':  { html: '/roulette-amer.html', symLib: null }
+  'roulette-amer':  { html: '/roulette-amer.html', symLib: null },
+  '1001-mg':        { html: '/1001-mg.html', symLib: 'LinesGameSymbols' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -438,6 +439,32 @@ var GAMES = {
       '最低下注': '¥1',
       '最高下注': '¥100',
       '上线日期': '2026-10-03'
+    }
+  },
+  '1001-mg': {
+    name: '1001神秘精灵财富',
+    sub: '5×3 · 10 线 · 阿拉伯神话',
+    images: [],
+    intro: '1001神秘精灵财富是一款 5×3 的 10 线老虎机。汇集神灯、飞毯、宫殿、精灵等阿拉伯神话符号。出现 3 个及以上 Scatter 触发免费旋转。',
+    rules: [
+      '点击 − / + 调整下注金额',
+      '点击「旋转」启动一局',
+      '5 列 × 3 行 = 15 格',
+      '共 10 条固定中奖线，左起连续 3/4/5 个相同符号即中奖',
+      'Wild（金色 W）可替代任意普通符号',
+      '出现 3/4/5 个 Scatter（金色星月）触发免费旋转 10/15/20 次'
+    ],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': '固定线老虎机',
+      '游戏网格': '5 × 3',
+      '中奖线': '10 条',
+      '符号数量': '11 种',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '免费旋转': '支持（3+ Scatter）',
+      '上线日期': '2026-10-04'
     }
   }
 };
