@@ -517,4 +517,204 @@ function init(){
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 
+
+/* ═══════════════════════════════════════════════════
+   __sweet_patch385__ · UI 增强（Bottom Sheet / 档位 / 徽章 / 状态机）
+   ═══════════════════════════════════════════════════ */
+
+function buildBetChips(){
+  var box = $('sw-bet-steps');
+  if (!box) return;
+  box.innerHTML = C.CONFIG.betSteps.map(function(v, i){
+    return '<button type="button" class="sw-bet-chip' + (i === state.betIndex ? ' active' : '') + '" data-idx="' + i + '" role="tab">¥' + v + '</button>';
+  }).join('');
+}
+
+function renderModeBadge(){
+  var badge = $('sw-mode-badge');
+  var text = $('sw-mode-text');
+  if (!badge || !text) return;
+  badge.setAttribute('data-mode', MODE);
+  text.textContent = MODE === 'demo' ? '试玩模式' : '游戏模式';
+}
+
+function syncBet(){
+  var disp = $('sw-bet-display');
+  if (disp) disp.textContent = fmt(bet());
+  var chips = document.querySelectorAll('#sw-bet-steps .sw-bet-chip');
+  for (var i = 0; i < chips.length; i++){
+    var idx = parseInt(chips[i].getAttribute('data-idx'), 10);
+    chips[i].classList.toggle('active', idx === state.betIndex);
+  }
+}
+
+function syncWin(amount){
+  var disp = $('sw-won-display');
+  if (disp) {
+    disp.textContent = amount > 0 ? fmt(amount, true) : fmt(0);
+    disp.classList.toggle('win', amount > 0);
+  }
+}
+
+/* Hook 原 render 函数 */
+var _rBet = renderBet;
+renderBet = function(){ _rBet(); syncBet(); };
+var _rWin = renderWin;
+renderWin = function(a, c){ _rWin(a, c); syncWin(a); };
+
+/* ═══ Bottom Sheet ═══ */
+function openSheet(title, html){
+  var sheet = $('sw-sheet');
+  var t = $('sw-sheet-title');
+  var b = $('sw-sheet-body');
+  if (!sheet || !b) return;
+  if (t) t.textContent = title;
+  b.innerHTML = html;
+  sheet.classList.add('show');
+  sheet.setAttribute('aria-hidden', 'false');
+}
+function closeSheet(){
+  var sheet = $('sw-sheet');
+  if (!sheet) return;
+  sheet.classList.remove('show');
+  sheet.setAttribute('aria-hidden', 'true');
+}
+
+/* ═══ 菜单抽屉 ═══ */
+function openMenuSheet(){
+  var isDemo = MODE === 'demo';
+  var soundOn = document.querySelector('#sw-sound') && document.querySelector('#sw-sound').style.opacity !== '0.35';
+  var html =
+    '<div class="sw-menu-list">' +
+      '<button type="button" class="sw-menu-item" data-act="sound"><i class="ri-volume-up-line"></i><span>音效</span><small>' + (soundOn ? '开' : '关') + '</small></button>' +
+      '<button type="button" class="sw-menu-item" data-act="history"><i class="ri-history-line"></i><span>游戏记录</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="paytable"><i class="ri-bar-chart-box-line"></i><span>赔付表</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="balance"><i class="ri-wallet-3-line"></i><span>当前余额</span><small>' + fmt(state.balance) + '</small></button>' +
+      '<button type="button" class="sw-menu-item' + (isDemo ? '' : ' danger') + '" data-act="mode"><i class="ri-refresh-line"></i><span>' + (isDemo ? '重置余额' : '充值余额') + '</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="info"><i class="ri-information-line"></i><span>游戏说明</span></button>' +
+    '</div>';
+  openSheet('菜单 · ' + (isDemo ? '试玩模式' : '游戏模式'), html);
+  setTimeout(bindMenuItems, 30);
+}
+function bindMenuItems(){
+  var body = $('sw-sheet-body');
+  if (!body || body.__bound) return;
+  body.__bound = true;
+  body.addEventListener('click', function(e){
+    var item = e.target.closest ? e.target.closest('.sw-menu-item') : null;
+    if (!item) return;
+    var act = item.getAttribute('data-act');
+    if (act === 'sound'){
+      var sbtn = $('sw-sound');
+      if (sbtn) sbtn.click();
+      var st = item.querySelector('small');
+      if (st) st.textContent = st.textContent === '开' ? '关' : '开';
+    } else if (act === 'history'){ closeSheet(); setTimeout(openHistorySheet, 180); }
+    else if (act === 'paytable'){ closeSheet(); setTimeout(openPaytableSheet, 180); }
+    else if (act === 'mode'){ closeSheet(); setTimeout(actionMode, 180); }
+    else if (act === 'info'){ closeSheet(); setTimeout(function(){ toast('本游戏为虚拟积分娱乐，不涉及真实货币'); }, 240); }
+    else if (act === 'balance'){ toast('当前余额 ' + fmt(state.balance), 1500); }
+  });
+}
+
+/* ═══ 赔付表抽屉 ═══ */
+function openPaytableSheet(){
+  var rows = [];
+  for (var sym in C.PAYOUTS){
+    if (!C.PAYOUTS.hasOwnProperty(sym)) continue;
+    var t = C.PAYOUTS[sym];
+    var fn = S[sym];
+    rows.push({ sym: sym, icon: fn ? fn() : '', t: t });
+  }
+  var html = '<div style="font-size:12.5px;color:#666;margin-bottom:12px;line-height:1.7;">6×5 Cluster Pays（8 个及以上相邻同类消除）</div>';
+  rows.forEach(function(r){
+    html += '<div class="sym-row"><div class="sym-icon">' + r.icon + '</div><div><div class="sym-name">' + r.sym + '</div><div class="sym-pay">8-9个×' + (r.t[8] || 0) + ' · 10-11个×' + (r.t[10] || 0) + ' · 12+个×' + (r.t[12] || 0) + '</div></div></div>';
+  });
+  openSheet('赔付表', html);
+}
+
+/* ═══ 记录抽屉 ═══ */
+function openHistorySheet(){
+  if (!state.history.length){
+    openSheet('游戏记录', '<p style="text-align:center;padding:28px 0;color:#999;line-height:1.8;">还没有游戏记录<br>开始第一局游戏吧</p>');
+    return;
+  }
+  var tb = 0, tw = 0, w = 0;
+  state.history.forEach(function(h){ tb += h.bet; tw += h.win; if (h.win > 0) w++; });
+  var rate = (w / state.history.length * 100).toFixed(1);
+  var head = '<div class="hist-summary">' +
+    '<div><span>总局数</span><b>' + state.history.length + '</b></div>' +
+    '<div><span>中奖次数</span><b>' + w + '</b></div>' +
+    '<div><span>中奖率</span><b>' + rate + '%</b></div>' +
+    '<div><span>总下注</span><b>' + fmt(tb) + '</b></div>' +
+    '<div><span>总中奖</span><b>' + fmt(tw) + '</b></div>' +
+    '<div><span>净赢</span><b>' + fmt(tw - tb) + '</b></div>' +
+    '</div><h4 style="margin:14px 0 6px;font-weight:800;font-size:13px;">最近记录</h4>';
+  var rows = '';
+  state.history.slice(0, 20).forEach(function(h){
+    var cls = h.delta > 0 ? 'win' : 'lose';
+    var txt = (h.delta > 0 ? '+' : '') + '¥' + h.delta.toFixed(2);
+    var t = new Date(h.ts);
+    var hh = String(t.getHours()).padStart(2, '0');
+    var mm = String(t.getMinutes()).padStart(2, '0');
+    rows += '<div class="hist-row"><div><div style="font-weight:700;">下注 ' + fmt(h.bet) + '</div>' +
+      '<div style="font-size:12px;color:#999;">' + hh + ':' + mm + ' · 中奖 ' + fmt(h.win) + '</div></div>' +
+      '<div class="hist-amt ' + cls + '">' + txt + '</div></div>';
+  });
+  openSheet('游戏记录', head + rows);
+}
+
+/* ═══ 拦截原按钮绑定（capture 阶段） ═══ */
+function patchBindings(){
+  function intercept(id, handler){
+    var el = $(id);
+    if (!el || el.__patched) return;
+    el.__patched = true;
+    el.addEventListener('click', function(e){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      handler();
+    }, true);
+  }
+  intercept('sw-menu', openMenuSheet);
+  intercept('sw-paytable', openPaytableSheet);
+  intercept('sw-history', openHistorySheet);
+
+  var mask = $('sw-sheet-mask');
+  var x = $('sw-sheet-x');
+  if (mask) mask.addEventListener('click', closeSheet);
+  if (x) x.addEventListener('click', closeSheet);
+
+  var steps = $('sw-bet-steps');
+  if (steps){
+    steps.addEventListener('click', function(e){
+      var chip = e.target.closest ? e.target.closest('.sw-bet-chip') : null;
+      if (!chip) return;
+      var i = parseInt(chip.getAttribute('data-idx'), 10);
+      if (isNaN(i)) return;
+      if (i === state.betIndex) return;
+      state.betIndex = i;
+      saveState();
+      renderBet();
+      safeAudio(A.click, 'click');
+    });
+  }
+}
+
+/* ═══ 启动补丁 ═══ */
+function _patch385(){
+  try {
+    buildBetChips();
+    renderModeBadge();
+    patchBindings();
+    syncBet();
+    syncWin(0);
+  } catch(e){ console.error('[Sweet patch385]', e); }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _patch385);
+} else {
+  _patch385();
+}
+
 })();

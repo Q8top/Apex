@@ -16,11 +16,18 @@
 <div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
 <svg id="sweet-defs" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"></svg>
 <div id="app">
+
   <header class="sw-bar">
-    <a class="sw-icon-btn" href="/game.html?id=sweet" aria-label="返回">
+    <a class="sw-icon-btn apex-back" href="/game.html?id=sweet" aria-label="返回">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </a>
-    <div class="sw-brand">甜蜜蜜</div>
+    <div class="sw-brand-wrap">
+      <div class="sw-brand">甜蜜蜜</div>
+      <div class="sw-mode-badge" id="sw-mode-badge" data-mode="demo">
+        <span class="sw-mode-dot"></span>
+        <span class="sw-mode-text" id="sw-mode-text">试玩模式</span>
+      </div>
+    </div>
     <div class="sw-bar-right">
       <button class="sw-icon-btn" id="sw-sound" aria-label="音效">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a10 10 0 010 14"/></svg>
@@ -33,7 +40,7 @@
 
   <section class="sw-stage">
     <div class="sw-freespin-banner" id="sw-freespin-banner" hidden>
-      <span>免费旋转</span>
+      <span>★ 免费旋转</span>
       <span class="sw-fs-count" id="sw-fs-count">0</span>
       <span class="sw-fs-mult" id="sw-fs-mult"></span>
     </div>
@@ -46,27 +53,38 @@
     <div class="sw-combo" id="sw-combo"></div>
   </section>
 
-  <button class="sw-action-btn" type="button" id="sw-mode-action">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
-    <span>重置余额</span>
-  </button>
-
-  <section class="sw-stats">
-    <div class="sw-stat"><span class="sw-stat-label">余额</span><span class="sw-stat-value" id="sw-balance">¥1,000.00</span></div>
-    <div class="sw-stat"><span class="sw-stat-label">下注</span><span class="sw-stat-value" id="sw-bet">¥10.00</span></div>
-    <div class="sw-stat"><span class="sw-stat-label">赢得</span><span class="sw-stat-value" id="sw-won">¥0</span></div>
+  <section class="sw-balance-panel">
+    <div class="sw-balance-main">
+      <div class="sw-balance-label">余额</div>
+      <div class="sw-balance-value" id="sw-balance">¥1,000.00</div>
+    </div>
+    <div class="sw-balance-sub">
+      <div class="sw-balance-item">
+        <span class="sw-balance-sub-label">本局下注</span>
+        <span class="sw-balance-sub-value" id="sw-bet-display">¥10.00</span>
+      </div>
+      <div class="sw-balance-item">
+        <span class="sw-balance-sub-label">本局赢得</span>
+        <span class="sw-balance-sub-value" id="sw-won-display">¥0.00</span>
+      </div>
+    </div>
   </section>
 
   <section class="sw-bet-row">
-    <button class="sw-bet-btn" id="sw-bet-minus" aria-label="减">−</button>
-    <div class="sw-bet-txt" id="sw-bet-txt">下注 ¥10.00</div>
-    <button class="sw-bet-btn" id="sw-bet-plus" aria-label="加">+</button>
+    <button class="sw-bet-btn" id="sw-bet-minus" aria-label="减小下注">−</button>
+    <div class="sw-bet-txt" id="sw-bet-txt">
+      <span class="sw-bet-txt-label">当前下注</span>
+      <span class="sw-bet-txt-value" id="sw-bet">¥10.00</span>
+    </div>
+    <button class="sw-bet-btn" id="sw-bet-plus" aria-label="增大下注">+</button>
   </section>
 
+  <section class="sw-bet-steps" id="sw-bet-steps" role="tablist" aria-label="下注档位"></section>
+
   <section class="sw-spin-row">
-    <button class="sw-spin-btn" id="sw-spin">
+    <button class="sw-spin-btn" id="sw-spin" data-phase="idle">
       <svg class="sw-spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3.51-7.13"/><path d="M21 3v6h-6"/></svg>
-      <span>旋转</span>
+      <span class="sw-spin-label" id="sw-spin-label">旋转</span>
     </button>
   </section>
 
@@ -85,6 +103,19 @@
     </button>
   </section>
 
+  <!-- 旧的模式按钮：隐藏，功能合并到菜单底部抽屉 -->
+  <button class="sw-action-btn sw-mode-action-hidden" type="button" id="sw-mode-action" style="display:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+    <span>重置余额</span>
+  </button>
+
+  <!-- 旧的 stats：隐藏，已被 balance-panel 替代 -->
+  <section class="sw-stats sw-stats-hidden" style="display:none;">
+    <div class="sw-stat"><span class="sw-stat-label">余额</span><span class="sw-stat-value" id="sw-balance-legacy">¥1,000.00</span></div>
+    <div class="sw-stat"><span class="sw-stat-label">下注</span><span class="sw-stat-value" id="sw-bet-legacy">¥10.00</span></div>
+    <div class="sw-stat"><span class="sw-stat-label">赢得</span><span class="sw-stat-value" id="sw-won">¥0</span></div>
+  </section>
+
   <div class="sw-modal" id="sw-modal" aria-hidden="true">
     <div class="sw-modal-mask"></div>
     <div class="sw-modal-box">
@@ -98,9 +129,25 @@
     </div>
   </div>
 
+  <!-- Bottom Sheet（菜单/记录/赔付 通用） -->
+  <div class="sw-sheet" id="sw-sheet" aria-hidden="true">
+    <div class="sw-sheet-mask" id="sw-sheet-mask"></div>
+    <div class="sw-sheet-box" role="dialog" aria-modal="true">
+      <div class="sw-sheet-handle"></div>
+      <div class="sw-sheet-head">
+        <div class="sw-sheet-title" id="sw-sheet-title">菜单</div>
+        <button class="sw-sheet-x" id="sw-sheet-x" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="sw-sheet-body" id="sw-sheet-body"></div>
+    </div>
+  </div>
+
   <div class="sw-fs-summary" id="sw-fs-summary"><div class="sw-fs-summary-glow"></div><div class="sw-fs-summary-content"><div class="sw-fs-summary-title">免费旋转总赢分</div><div class="sw-fs-summary-amount" id="sw-fs-total">¥0</div></div></div>
   <div class="sw-toast" id="sw-toast"></div>
 </div>
+
 <script src="/src/js/sweet/sweet-config.js"></script>
 <script src="/src/js/sweet/sweet-symbols.js"></script>
 <script src="/src/js/sweet/sweet-engine.js"></script>
