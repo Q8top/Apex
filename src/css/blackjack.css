@@ -171,6 +171,5 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 
 
 /* 防止黑块溢出 */
-html,body{overflow-x:hidden;overscroll-behavior:none}
 #app{overflow:hidden}
 .bj-table{overflow:hidden}
