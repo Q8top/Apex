@@ -1,26 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
     <radialGradient id="as-bg" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/></radialGradient>
-    <radialGradient id="as-lamp2" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#d9a83e"/><stop offset="100%" stop-color="#7a4a10"/></radialGradient>
-    <radialGradient id="as-genie2" cx="40%" cy="30%" r="75%"><stop offset="0%" stop-color="#d8b0ff"/><stop offset="55%" stop-color="#5a6aba"/><stop offset="100%" stop-color="#4a5aaa"/></radialGradient>
-    <radialGradient id="as-smoke" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#f0e0ff"/><stop offset="100%" stop-color="#a070c0"/></radialGradient>
+    <linearGradient id="as-hammer" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a8b8e0"/><stop offset="50%" stop-color="#5a6a9a"/><stop offset="100%" stop-color="#2a3a6a"/></linearGradient>
+    <linearGradient id="as-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#e8c25c"/><stop offset="100%" stop-color="#8a6020"/></linearGradient>
   </defs>
   <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#as-bg)"/>
   <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(106,47,154,.35)" stroke-width="1"/>
-  <g transform="translate(100,100) scale(0.86) translate(-100,-100)">
-    <ellipse cx="100" cy="140" rx="50" ry="6" fill="#000" opacity=".15"/>
-    <ellipse cx="100" cy="122" rx="50" ry="16" fill="url(#as-lamp2)" stroke="#0a0a0a" stroke-width="2.4"/>
-    <path d="M144 108 Q156 96 166 88 Q162 100 156 112" stroke="url(#as-lamp2)" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <circle cx="168" cy="86" r="6" fill="url(#as-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <path d="M64 108 Q60 90 68 78 Q80 66 100 70 Q120 66 132 78 Q140 90 136 108" stroke="#e8c25c" stroke-width="3" fill="none" opacity=".85"/>
-    <ellipse cx="100" cy="70" rx="30" ry="22" fill="url(#as-smoke)" stroke="#0a0a0a" stroke-width="2" opacity=".85"/>
-    <circle cx="86" cy="66" r="4" fill="#0a0a0a"/>
-    <circle cx="114" cy="66" r="4" fill="#0a0a0a"/>
-    <path d="M88 78 Q100 86 112 78" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="100" cy="52" r="3" fill="#ffe9a0" opacity=".9"/>
-    <circle cx="70" cy="56" r="2" fill="#ffe9a0" opacity=".8"/>
-    <circle cx="130" cy="60" r="2.5" fill="#ffe9a0" opacity=".85"/>
-    <rect x="84" y="100" width="32" height="6" rx="3" fill="url(#as-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(42,58,138,.4)" stroke-width="1"/>
+  <g transform="translate(100,100) scale(0.9) translate(-100,-100)">
+    <ellipse cx="100" cy="150" rx="40" ry="5" fill="#000" opacity=".15"/>
+    <rect x="42" y="52" width="116" height="52" rx="6" fill="url(#as-hammer)" stroke="#0a0a0a" stroke-width="2.8"/>
+    <rect x="48" y="58" width="104" height="14" rx="3" fill="url(#as-gold)" stroke="#0a0a0a" stroke-width="1.8"/>
+    <path d="M48 84 L152 84" stroke="#0a0a0a" stroke-width="1.5" opacity=".5"/>
+    <rect x="86" y="104" width="28" height="42" rx="4" fill="url(#as-hammer)" stroke="#0a0a0a" stroke-width="2.6"/>
+    <path d="M80 146 L120 146 L116 154 L84 154 Z" fill="url(#as-gold)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M100 62 L96 76 L104 76 Z" fill="#ffe9a0" opacity=".7"/>
+    <path d="M60 32 L62 40 L70 42 L62 44 L60 52 L58 44 L50 42 L58 40 Z" fill="#ffe9a0" opacity=".85"/>
+    <path d="M140 32 L141.5 38 L148 40 L141.5 42 L140 48 L138.5 42 L132 40 L138.5 38 Z" fill="#ffe9a0" opacity=".7"/>
+    <ellipse cx="72" cy="70" rx="8" ry="3" fill="#fff" opacity=".5"/>
   </g>
 </svg>

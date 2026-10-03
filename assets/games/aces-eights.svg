@@ -1,26 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
     <radialGradient id="ae-bg" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/></radialGradient>
-    <radialGradient id="ae-lamp2" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a0"/><stop offset="55%" stop-color="#d9a83e"/><stop offset="100%" stop-color="#7a4a10"/></radialGradient>
-    <radialGradient id="ae-genie2" cx="40%" cy="30%" r="75%"><stop offset="0%" stop-color="#d8b0ff"/><stop offset="55%" stop-color="#c9a227"/><stop offset="100%" stop-color="#000"/></radialGradient>
-    <radialGradient id="ae-smoke" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#f0e0ff"/><stop offset="100%" stop-color="#a070c0"/></radialGradient>
+    <linearGradient id="ae-back" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a3a4a"/><stop offset="100%" stop-color="#1a1a2a"/></linearGradient>
   </defs>
   <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#ae-bg)"/>
   <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
-  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(106,47,154,.35)" stroke-width="1"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(26,26,26,.35)" stroke-width="1"/>
   <g transform="translate(100,100) scale(0.86) translate(-100,-100)">
-    <ellipse cx="100" cy="140" rx="50" ry="6" fill="#000" opacity=".15"/>
-    <ellipse cx="100" cy="122" rx="50" ry="16" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="2.4"/>
-    <path d="M144 108 Q156 96 166 88 Q162 100 156 112" stroke="url(#ae-lamp2)" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <circle cx="168" cy="86" r="6" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
-    <path d="M64 108 Q60 90 68 78 Q80 66 100 70 Q120 66 132 78 Q140 90 136 108" stroke="#e8c25c" stroke-width="3" fill="none" opacity=".85"/>
-    <ellipse cx="100" cy="70" rx="30" ry="22" fill="url(#ae-smoke)" stroke="#0a0a0a" stroke-width="2" opacity=".85"/>
-    <circle cx="86" cy="66" r="4" fill="#0a0a0a"/>
-    <circle cx="114" cy="66" r="4" fill="#0a0a0a"/>
-    <path d="M88 78 Q100 86 112 78" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="100" cy="52" r="3" fill="#ffe9a0" opacity=".9"/>
-    <circle cx="70" cy="56" r="2" fill="#ffe9a0" opacity=".8"/>
-    <circle cx="130" cy="60" r="2.5" fill="#ffe9a0" opacity=".85"/>
-    <rect x="84" y="100" width="32" height="6" rx="3" fill="url(#ae-lamp2)" stroke="#0a0a0a" stroke-width="1.6"/>
+    <rect x="46" y="72" width="52" height="72" rx="6" fill="url(#ae-back)" stroke="#0a0a0a" stroke-width="2.4" transform="rotate(-12 72 108)"/>
+    <rect x="52" y="78" width="40" height="60" rx="3" fill="none" stroke="#e8c25c" stroke-width="1.2" transform="rotate(-12 72 108)" opacity=".7"/>
+    <rect x="102" y="56" width="56" height="76" rx="6" fill="#fff" stroke="#0a0a0a" stroke-width="2.4" transform="rotate(8 130 94)"/>
+    <text x="114" y="82" font-family="Georgia,serif" font-size="22" font-weight="900" fill="#0a0a0a" transform="rotate(8 130 94)">A</text>
+    <path d="M130 96 C122 104 116 110 116 116 C116 122 122 124 126 122 C128 121 130 119 130 116 C130 119 132 121 134 122 C138 124 144 122 144 116 C144 110 138 104 130 96 Z" fill="#0a0a0a" transform="rotate(8 130 94)"/>
+    <circle cx="76" cy="128" r="4" fill="none" stroke="#e8c25c" stroke-width="1.6" opacity=".7"/>
+    <ellipse cx="106" cy="138" rx="20" ry="3" fill="#000" opacity=".15"/>
   </g>
 </svg>
