@@ -9,7 +9,10 @@ var GAME_ROUTES = {
   'sweet':       { html: '/sweet.html',   symLib: 'SweetSymbols' },
   'sugar':       { html: '/sugar.html',   symLib: 'SugarSymbols' },
   'starlight':   { html: '/starlight.html', symLib: 'StarlightSymbols' },
-  'bigbass':     { html: '/bigbass.html',   symLib: 'BigBassSymbols' }
+  'bigbass':     { html: '/bigbass.html',   symLib: 'BigBassSymbols' },
+  'aviator':     { html: '/aviator.html', symLib: null },
+  'crash':       { html: '/crash.html',   symLib: null },
+  'jetx':        { html: '/jetx.html',    symLib: null }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -332,6 +335,60 @@ var GAMES = {
       '上线日期': '2026-10-02'
     }
   }
+,
+  'aviator': {
+    name: '飞行员',
+    sub: 'Crash 类 · 实时倍率 · 提现锁定',
+    images: [],
+    intro: '飞行员是一款 Crash 类即时游戏。每局从 1.00× 开始，倍率随时间指数上升。玩家在飞机爆炸前点「提现」锁定当前倍率，获得 下注 × 倍率 的奖励；没点则爆炸输掉下注。',
+    rules: ['点击 − / + 调整下注金额', '点击「下注」开始一局', '倍率从 1.00× 开始指数上升', '任何时刻点「提现」锁定当前倍率', '奖励 = 下注 × 提现倍率', '若倍率在你提现前到达崩点→本局输掉下注', '可设置自动提现倍率，达到后自动锁定'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': 'Crash 类',
+      '玩法': '实时倍率 + 提现锁定',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '自动提现': '支持（1.01 ~ 100×）',
+      '上线日期': '2026-10-03'
+    }
+  }
+,
+  'crash': {
+    name: '崩盘',
+    sub: 'Crash 类 · 实时倍率 · 提现锁定',
+    images: [],
+    intro: '崩盘是一款 Crash 类即时游戏。每局从 1.00× 开始，倍率随时间指数上升。玩家在崩盘前点「提现」锁定当前倍率，获得 下注 × 倍率 的奖励。',
+    rules: ['点击 − / + 调整下注金额', '点击「下注」开始一局', '倍率从 1.00× 开始指数上升', '任何时刻点「提现」锁定当前倍率', '奖励 = 下注 × 提现倍率', '若倍率在你提现前到达崩点→本局输掉下注', '可设置自动提现倍率，达到后自动锁定'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': 'Crash 类',
+      '玩法': '实时倍率 + 提现锁定',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '自动提现': '支持（1.01 ~ 100×）',
+      '上线日期': '2026-10-03'
+    }
+  }
+,
+  'jetx': {
+    name: '喷气机',
+    sub: 'Crash 类 · 实时倍率 · 提现锁定',
+    images: [],
+    intro: '喷气机是一款 Crash 类即时游戏。每局从 1.00× 开始，倍率随时间指数上升。玩家在爆炸前点「提现」锁定当前倍率，获得 下注 × 倍率 的奖励。',
+    rules: ['点击 − / + 调整下注金额', '点击「下注」开始一局', '倍率从 1.00× 开始指数上升', '任何时刻点「提现」锁定当前倍率', '奖励 = 下注 × 提现倍率', '若倍率在你提现前到达崩点→本局输掉下注', '可设置自动提现倍率，达到后自动锁定'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': 'Crash 类',
+      '玩法': '实时倍率 + 提现锁定',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '自动提现': '支持（1.01 ~ 100×）',
+      '上线日期': '2026-10-03'
+    }
+  }
 };
 
 /* ---------- 工具 ---------- */
@@ -407,7 +464,11 @@ function render() {
     return '<li>' + esc(r) + '</li>';
   }).join('');
 
-  document.getElementById('gm-prizes').innerHTML = g.prizes.map(function(pr){
+  var prizesEl = document.getElementById('gm-prizes');
+  if (!g.prizes || !g.prizes.length) {
+    prizesEl.innerHTML = '<p style="color:#999;font-size:13px;padding:8px 0;">本游戏不含固定赔付表，规则见上方说明。</p>';
+  } else {
+  prizesEl.innerHTML = g.prizes.map(function(pr){
     var lib = getSymLib();
     var svg = (lib && pr.symbol && lib[pr.symbol])
       ? '<span class="gm-sym-inline">' + lib[pr.symbol]() + '</span>'
@@ -415,8 +476,13 @@ function render() {
     return '<div class="gm-prize"><div class="gm-prize-icon">' + svg + '</div>' +
       '<div class="gm-prize-mult">' + esc(pr.mult) + '</div></div>';
   }).join('');
+  }
 
-  document.getElementById('gm-paytable').innerHTML = g.paytable.map(function(pt){
+  var paytableEl = document.getElementById('gm-paytable');
+  if (!g.paytable || !g.paytable.length) {
+    paytableEl.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#999;font-size:13px;padding:12px 0;">本游戏不含固定赔付表，实时倍率由系统随机生成。</td></tr>';
+  } else {
+  paytableEl.innerHTML = g.paytable.map(function(pt){
     var lib = getSymLib();
     var symHtml;
     if (lib && pt.symbol && lib[pt.symbol]) {
@@ -429,6 +495,7 @@ function render() {
     }
     return '<tr><td class="gm-combo">' + symHtml + '</td><td>' + esc(pt.mult) + '</td></tr>';
   }).join('');
+  }
 
   var infoHtml = '';
   for (var k in g.info) {

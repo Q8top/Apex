@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="av-bg" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f4f4f6"/></radialGradient>
+    <linearGradient id="av-red" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff8a8d"/><stop offset="55%" stop-color="#e5484d"/><stop offset="100%" stop-color="#7a1818"/></linearGradient>
+  </defs>
+  <rect x="30" y="30" width="140" height="140" rx="30" fill="url(#av-bg)"/>
+  <rect x="30.5" y="30.5" width="139" height="139" rx="29.5" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+  <rect x="36" y="36" width="128" height="128" rx="24" fill="none" stroke="rgba(229,72,77,.35)" stroke-width="1"/>
+  <g transform="translate(100,100) scale(0.86) translate(-100,-100)">
+    <path d="M24 130 Q100 20 176 76" stroke="#e5484d" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55" stroke-dasharray="4 5"/>
+    <path d="M40 96 L96 78 L72 92 L86 118 Z" fill="url(#av-red)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M96 78 L124 68 L108 88 Z" fill="url(#av-red)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M72 92 L56 104 L74 104 Z" fill="url(#av-red)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="84" cy="86" r="3" fill="#fff" stroke="#0a0a0a" stroke-width="1.6"/>
+    <path d="M40 96 L24 96 L30 104 L46 104 Z" fill="url(#av-red)" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+</svg>

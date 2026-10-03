@@ -1,0 +1,326 @@
+/* Crash 系列 · UI（Aviator / Crash / JetX 共用） */
+(function(){
+'use strict';
+var C=window.CrashCore, A=window.CrashAudio;
+
+var GAME=(function(){
+  var d=document.body.getAttribute('data-game')||'aviator';
+  return d;
+})();
+var MODE=(function(){
+  var m=String(location.search).match(/[?&]mode=([a-z]+)/i);
+  var v=m?m[1].toLowerCase():'demo';
+  return v==='real'?'real':'demo';
+})();
+
+var LS_STATE='apex_crash_v1_'+GAME+'_'+MODE+'_state';
+var LS_HIST='apex_crash_v1_'+GAME+'_'+MODE+'_history';
+
+var state={
+  balance:1000, betIndex:3, history:[],
+  roundState:'idle',       // idle | flying | busted | cashed
+  currentMulti:1.00,
+  crashAt:0,
+  startTime:0,
+  cashedMulti:0,
+  rafId:0,
+  autoX:0,                 // 自动提现倍率（0=关闭）
+  ready:false,
+  safetyTimer:null
+};
+
+function $(id){return document.getElementById(id);}
+function fmt(n,sign){var v=Math.round(n*100)/100;var s=v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');return (sign&&v>0?'+':'')+'¥'+s;}
+function bet(){return [1,2,5,10,20,50,100][state.betIndex];}
+function toast(m,ms){var t=$('cr-toast');if(!t)return;t.textContent=m;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},ms||1500);}
+function bump(el){if(!el)return;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}
+function safeAudio(fn,n){try{if(typeof fn==='function')fn();}catch(e){console.warn('[Crash] audio@'+n,e&&e.message);}}
+function getCsrf(){var m=document.cookie.match(/(?:^|;\s*)(?:__Host-)?apex_csrf=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+
+function loadState(){if(MODE==='real')return;try{var d=JSON.parse(localStorage.getItem(LS_STATE)||'{}');if(typeof d.balance==='number'&&d.balance>=0)state.balance=d.balance;if(typeof d.betIndex==='number')state.betIndex=d.betIndex;if(typeof d.autoX==='number')state.autoX=d.autoX;}catch(e){}}
+function saveState(){if(MODE==='real')return;try{localStorage.setItem(LS_STATE,JSON.stringify({balance:state.balance,betIndex:state.betIndex,autoX:state.autoX}));}catch(e){}}
+function loadHist(){try{var d=JSON.parse(localStorage.getItem(LS_HIST)||'[]');if(Array.isArray(d))state.history=d.slice(0,30);}catch(e){}}
+function saveHist(){try{localStorage.setItem(LS_HIST,JSON.stringify(state.history.slice(0,30)));}catch(e){}}
+
+function renderBalance(animate){var el=$('cr-balance');if(!el)return;el.textContent=fmt(state.balance);if(animate)bump(el);}
+function renderBet(){var e1=$('cr-bet');if(e1)e1.textContent=fmt(bet());var e2=$('cr-bet-txt');if(e2)e2.textContent='下注 '+fmt(bet());}
+function renderAutoX(){var el=$('cr-auto-x');if(!el)return;el.textContent=state.autoX>0?(state.autoX.toFixed(2)+'×'):'关闭';}
+function renderMulti(v){var el=$('cr-multi');if(el)el.innerHTML=v.toFixed(2)+'<span class="cr-multi-x">×</span>';}
+function renderStatus(s){var el=$('cr-status');if(el)el.textContent=s;}
+function renderWin(amount,combo){
+  var el=$('cr-win-value');if(el){el.textContent=amount>0?fmt(amount,true):fmt(0);el.classList.toggle('winning',amount>0);if(amount>0){el.classList.remove('pulsing');void el.offsetWidth;el.classList.add('pulsing');}}
+  var lbl=$('cr-win-label');if(lbl)lbl.textContent=amount>0?'恭喜中奖':'本局收获';
+  var cb=$('cr-combo');if(cb){if(combo){cb.textContent=combo;cb.classList.add('show');}else{cb.textContent='';cb.classList.remove('show');}}
+}
+function renderHistory(){
+  var el=$('cr-history');if(!el)return;
+  var html='';
+  state.history.slice(0,20).forEach(function(h){
+    var cls=h.win>0?'win':'lose';
+    html+='<span class="cr-hist-chip '+cls+'">'+h.mult.toFixed(2)+'×</span>';
+  });
+  el.innerHTML=html;
+}
+
+/* canvas 曲线 */
+var cv=null, cx=null;
+function initCanvas(){
+  cv=$('cr-canvas');if(!cv)return;
+  cx=cv.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+}
+function resizeCanvas(){
+  if(!cv)return;
+  var r=cv.parentElement.getBoundingClientRect();
+  var dpr=window.devicePixelRatio||1;
+  cv.width=r.width*dpr;cv.height=r.height*dpr;
+  cv.style.width=r.width+'px';cv.style.height=r.height+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+  drawScene();
+}
+function drawScene(){
+  if(!cx)return;
+  var w=cv.width/(window.devicePixelRatio||1), h=cv.height/(window.devicePixelRatio||1);
+  cx.clearRect(0,0,w,h);
+  // 网格
+  cx.strokeStyle='rgba(255,255,255,.06)';cx.lineWidth=1;
+  for(var i=1;i<6;i++){cx.beginPath();cx.moveTo(w*i/6,0);cx.lineTo(w*i/6,h);cx.stroke();cx.beginPath();cx.moveTo(0,h*i/6);cx.lineTo(w,h*i/6);cx.stroke();}
+  if(state.roundState!=='flying'){return;}
+  var t=Date.now()-state.startTime;
+  var multi=C.multiAt(t);
+  var progress=Math.min(multi/state.crashAt,1);
+  // 曲线终点：从左下到右上按 progress
+  var ex=w*0.05 + (w*0.85)*Math.pow(progress,0.7);
+  var ey=h*0.95 - (h*0.8)*Math.pow(progress,0.9);
+  // 尾迹
+  cx.strokeStyle='rgba(255,80,90,.85)';cx.lineWidth=3;
+  cx.beginPath();cx.moveTo(w*0.05,h*0.95);
+  cx.quadraticCurveTo(w*0.5,h*0.7,ex,ey);cx.stroke();
+  // 图标
+  cx.fillStyle='#fff';
+  cx.beginPath();cx.arc(ex,ey,6,0,Math.PI*2);cx.fill();
+}
+
+/* 游戏循环 */
+function tick(){
+  if(state.roundState!=='flying')return;
+  var t=Date.now()-state.startTime;
+  var multi=C.multiAt(t);
+  state.currentMulti=multi;
+  // 自动提现
+  if(state.autoX>0 && multi>=state.autoX && state.autoX<state.crashAt){
+    doCashout(state.autoX);return;
+  }
+  if(multi>=state.crashAt){
+    doBust(state.crashAt);return;
+  }
+  renderMulti(multi);
+  drawScene();
+  state.rafId=requestAnimationFrame(tick);
+}
+
+function startRound(){
+  if(state.roundState!=='idle')return;
+  if(state.balance<bet()){toast('余额不足'+(MODE==='demo'?'，请重置':'，请充值'));return;}
+  state.roundState='flying';
+  state.crashAt=C.generateCrash();
+  state.startTime=Date.now();
+  state.currentMulti=1.00;
+  state.cashedMulti=0;
+  renderWin(0);
+  renderMulti(1.00);
+  renderStatus('飞行中');
+  if(MODE==='demo'){state.balance-=bet();saveState();renderBalance(true);}
+  safeAudio(A.bet,'bet');
+  setTimeout(function(){safeAudio(A.startRise,'startRise');},100);
+  setActionBtn('cashout');
+  drawScene();
+  state.rafId=requestAnimationFrame(tick);
+}
+
+function doCashout(x){
+  if(state.roundState!=='flying')return;
+  cancelAnimationFrame(state.rafId);
+  state.roundState='cashed';
+  state.cashedMulti=x;
+  var win=bet()*x;
+  renderMulti(x);
+  renderStatus('已提现');
+  safeAudio(A.stopRise,'stopRise');
+  safeAudio(A.cashout,'cashout');
+  renderWin(win,'提现 '+x.toFixed(2)+'×');
+  finish(win);
+}
+
+function doBust(crash){
+  cancelAnimationFrame(state.rafId);
+  state.roundState='busted';
+  renderMulti(crash);
+  renderStatus('已爆炸');
+  safeAudio(A.stopRise,'stopRise');
+  safeAudio(A.bust,'bust');
+  renderWin(0);
+  state.history.unshift({mult: crash, win: 0, ts: Date.now()});
+  saveHist();
+  renderHistory();
+  finish(0);
+}
+
+function finish(win){
+  if(win>0){
+    state.balance+=win;
+    if(MODE==='demo'){saveState();renderBalance(true);}
+    else{submitReal(bet(),win).then(function(){renderBalance(true);});}
+    if(win>=bet()*10)safeAudio(A.highWin,'highWin');
+  }
+  state.history.unshift({mult: state.roundState==='cashed'?state.cashedMulti:state.crashAt, win: win, ts: Date.now()});
+  if(state.history.length>30)state.history=state.history.slice(0,30);
+  saveHist();
+  renderHistory();
+  setActionBtn('next');
+  setTimeout(function(){
+    if(state.roundState==='cashed'||state.roundState==='busted'){
+      state.roundState='idle';
+      renderStatus('准备中');
+      renderMulti(1.00);
+      renderWin(0);
+      setActionBtn('bet');
+      drawScene();
+    }
+  },1800);
+}
+
+function submitReal(b,win){
+  return fetch('/api/slot/spin',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-CSRF-Token':getCsrf()},body:JSON.stringify({bet:b,totalWin:win})})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){if(d&&typeof d.balanceAfter==='number')state.balance=d.balanceAfter;return true;})
+    .catch(function(){toast('网络错误');return false;});
+}
+
+function setActionBtn(mode){
+  var b=$('cr-action');if(!b)return;
+  b.classList.remove('cr-action-primary','cr-action-danger','cr-action-next');
+  if(mode==='bet'){b.textContent='下注 '+fmt(bet());b.classList.add('cr-action-primary');}
+  else if(mode==='cashout'){b.textContent='提现 '+fmt(bet()*state.currentMulti);b.classList.add('cr-action-danger');}
+  else if(mode==='next'){b.textContent='下一局';b.classList.add('cr-action-next');}
+}
+
+function onAction(){
+  if(state.roundState==='idle'){startRound();}
+  else if(state.roundState==='flying'){doCashout(state.currentMulti);}
+  else if(state.roundState==='busted'||state.roundState==='cashed'){/* 自动进入 idle，忽略 */}
+}
+
+function changeBet(d){
+  if(state.roundState!=='idle')return;
+  var idx=state.betIndex+d;
+  if(idx<0)idx=0;if(idx>6)idx=6;
+  if(idx===state.betIndex)return;
+  state.betIndex=idx;saveState();renderBet();
+  setActionBtn('bet');
+  safeAudio(A.click,'click');
+}
+
+function openModal(title,html){var m=$('cr-modal');if(!m)return;var t=$('cr-modal-title');if(t)t.textContent=title;var b=$('cr-modal-body');if(b)b.innerHTML=html;m.classList.add('show');m.setAttribute('aria-hidden','false');}
+function closeModal(){var m=$('cr-modal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');}
+
+function showHistory(){
+  if(!state.history.length){openModal('游戏记录','<p style="text-align:center;padding:24px 0;color:#999;">暂无记录</p>');return;}
+  var tb=0,tw=0,w=0;
+  state.history.forEach(function(h){tb+=bet();tw+=h.win||0;if(h.win>0)w++;});
+  var head='<div class="hist-summary">'+
+    '<div><span>总局数</span><b>'+state.history.length+'</b></div>'+
+    '<div><span>提现次数</span><b>'+w+'</b></div>'+
+    '<div><span>总下注</span><b>'+fmt(tb)+'</b></div>'+
+    '<div><span>总收获</span><b>'+fmt(tw)+'</b></div>'+
+    '</div><h4 style="margin-top:14px;font-weight:800;">最近记录</h4>';
+  var rows='';
+  state.history.forEach(function(h){
+    var d=(h.win||0)-bet();
+    var cls=d>0?'win':'lose';
+    var txt=(d>0?'+':'')+'¥'+d.toFixed(2);
+    var t=new Date(h.ts),hh=String(t.getHours()).padStart(2,'0'),mm=String(t.getMinutes()).padStart(2,'0');
+    rows+='<div class="hist-row"><div><div style="font-weight:700;">下注 '+fmt(bet())+'</div>'+
+      '<div style="font-size:12px;color:#999;">'+hh+':'+mm+' · '+h.mult.toFixed(2)+'× · 收获 '+fmt(h.win||0)+'</div></div>'+
+      '<div class="hist-amt '+cls+'">'+txt+'</div></div>';
+  });
+  openModal('游戏记录',head+rows);
+}
+
+function autoXSetting(){
+  var cur=state.autoX>0?state.autoX.toFixed(2):'';
+  var v=prompt('自动提现倍率（1.01 ~ 100，留空=关闭）',cur);
+  if(v===null)return;
+  v=String(v).trim();
+  if(v===''){state.autoX=0;}
+  else{var n=parseFloat(v);if(isNaN(n)||n<1.01||n>100){toast('请输入 1.01 ~ 100');return;}state.autoX=n;}
+  saveState();renderAutoX();
+  toast(state.autoX>0?('自动提现 '+state.autoX.toFixed(2)+'×'):'已关闭自动提现');
+}
+
+function actionMenu(){
+  var isDemo=MODE==='demo';
+  if(isDemo){
+    openModal('重置余额','<p style="text-align:center;padding:14px 0 22px;color:#666;">确认重置为 ¥1,000.00？</p>'+
+      '<div style="display:flex;gap:8px;"><button id="cr-reset-ok" style="flex:1;padding:12px;border:0;background:#0a0a0a;color:#fff;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;">确认重置</button>'+
+      '<button id="cr-reset-cancel" style="flex:1;padding:12px;border:0;background:#eee;color:#333;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;">取消</button></div>');
+    setTimeout(function(){
+      var ok=$('cr-reset-ok'),ca=$('cr-reset-cancel');
+      if(ok)ok.onclick=function(){state.balance=1000;state.betIndex=3;state.history=[];saveState();saveHist();renderBalance();renderBet();renderHistory();setActionBtn('bet');closeModal();toast('已重置');};
+      if(ca)ca.onclick=closeModal;
+    },50);
+  }else{
+    openModal('充值','<p style="text-align:center;padding:14px 0 22px;color:#666;">充值功能开发中，敬请期待。</p>');
+  }
+}
+
+function setupMode(){
+  var b=document.querySelector('.cr-brand');
+  if(b&&MODE==='demo')b.textContent=b.textContent+' · 试玩';
+  renderAutoX();
+}
+
+function bind(){
+  var e;
+  if((e=$('cr-bet-minus')))e.addEventListener('click',function(){changeBet(-1);});
+  if((e=$('cr-bet-plus')))e.addEventListener('click',function(){changeBet(1);});
+  if((e=$('cr-action')))e.addEventListener('click',onAction);
+  if((e=$('cr-auto')))e.addEventListener('click',autoXSetting);
+  if((e=$('cr-menu')))e.addEventListener('click',actionMenu);
+  var soundOn=true;
+  if((e=$('cr-sound')))e.addEventListener('click',function(){soundOn=!soundOn;safeAudio(function(){A.enabled(soundOn);},'toggle');e.style.opacity=soundOn?'1':'0.35';toast(soundOn?'音效已开':'音效已关',900);});
+  if((e=$('cr-modal-x')))e.addEventListener('click',closeModal);
+  var mask=document.querySelector('.cr-modal-mask');if(mask)mask.addEventListener('click',closeModal);
+  document.addEventListener('keydown',function(ev){
+    if(ev.target&&ev.target.tagName==='INPUT')return;
+    if(ev.key===' '||ev.key==='Enter'){ev.preventDefault();onAction();}
+    else if(ev.key==='ArrowUp'){ev.preventDefault();changeBet(1);}
+    else if(ev.key==='ArrowDown'){ev.preventDefault();changeBet(-1);}
+    else if(ev.key==='Escape'){closeModal();}
+  });
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&state.roundState==='flying'){doCashout(state.currentMulti);}});
+  window.addEventListener('pagehide',function(){if(state.roundState==='flying'){doCashout(state.currentMulti);}});
+}
+
+function init(){
+  C.setMode(MODE);
+  safeAudio(A.init,'initAudio');
+  initCanvas();
+  bind();
+  setupMode();
+  renderBalance();renderBet();renderWin(0);renderMulti(1.00);renderStatus('准备中');setActionBtn('bet');
+  if(MODE==='real'){
+    fetch('/api/me',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+      if(!d||!d.success||!d.user){toast('请先登录');setTimeout(function(){location.replace('/');},800);return;}
+      state.balance=Number(d.user.walletBalance)||0;state.ready=true;renderBalance();
+      loadHist();renderHistory();
+    }).catch(function(){toast('网络错误');});
+  }else{
+    loadState();loadHist();state.ready=true;renderBalance();renderBet();renderHistory();
+  }
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+else init();
+})();

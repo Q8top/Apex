@@ -151,7 +151,10 @@ var APEX_GAMES={
     {id:'sweet',n:'\u751C\u871C\u871C',i:'ri-heart-3-fill',c:'#d63b8a',img:'/assets/games/sweet.svg'},
     {id:'sugar',n:'\u7CD6\u679C\u72C2\u6B22',i:'ri-leaf-fill',c:'#ff4d94',img:'/assets/games/sugar.svg'},
     {id:'starlight',n:'\u661F\u5149\u516C\u4E3B',i:'ri-star-fill',c:'#c54f9a',img:'/assets/games/starlight.svg'},
-    {id:'bigbass',n:'\u5927\u9C7C\u5927\u4EA8',i:'ri-anchor-fill',c:'#2a6da8',img:'/assets/games/bigbass.svg'}
+    {id:'bigbass',n:'\u5927\u9C7C\u5927\u4EA8',i:'ri-anchor-fill',c:'#2a6da8',img:'/assets/games/bigbass.svg'},
+    {id:'aviator',n:'\u98DE\u884C\u5458',i:'ri-flight-takeoff-fill',c:'#e5484d',img:'/assets/games/aviator.svg'},
+    {id:'crash',n:'\u5D29\u76D8',i:'ri-line-chart-fill',c:'#3a9a58',img:'/assets/games/crash.svg'},
+    {id:'jetx',n:'\u55B7\u6C14\u673A',i:'ri-rocket-2-fill',c:'#a05ee0',img:'/assets/games/jetx.svg'}
   ]
 };
 function renderGames(box,catKey){

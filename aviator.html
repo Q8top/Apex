@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex">
+<title>飞行员 · Apex</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>html,body,*{touch-action:manipulation;-webkit-text-size-adjust:100%;}</style>
+<link rel="stylesheet" href="/src/css/crash.css">
+</head>
+<body data-game="aviator">
+<div id="app">
+  <header class="cr-bar">
+    <a class="cr-icon-btn" href="/game.html?id=aviator" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div class="cr-brand">飞行员</div>
+    <div class="cr-bar-right">
+      <button class="cr-icon-btn" id="cr-sound" aria-label="音效">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a10 10 0 010 14"/></svg>
+      </button>
+      <button class="cr-icon-btn" id="cr-menu" aria-label="菜单">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="cr-stage">
+    <canvas id="cr-canvas"></canvas>
+    <div class="cr-multi" id="cr-multi">1.00<span class="cr-multi-x">×</span></div>
+    <div class="cr-status" id="cr-status">准备中</div>
+    <div class="cr-history" id="cr-history"></div>
+  </section>
+
+  <section class="cr-win-row">
+    <div class="cr-win-label" id="cr-win-label">本局收获</div>
+    <div class="cr-win-value" id="cr-win-value">¥0.00</div>
+    <div class="cr-combo" id="cr-combo"></div>
+  </section>
+
+  <section class="cr-stats">
+    <div class="cr-stat"><span class="cr-stat-label">余额</span><span class="cr-stat-value" id="cr-balance">¥1,000.00</span></div>
+    <div class="cr-stat"><span class="cr-stat-label">下注</span><span class="cr-stat-value" id="cr-bet">¥10.00</span></div>
+    <div class="cr-stat"><span class="cr-stat-label">自动提现</span><span class="cr-stat-value" id="cr-auto-x">关闭</span></div>
+  </section>
+
+  <section class="cr-bet-row">
+    <button class="cr-bet-btn" id="cr-bet-minus" aria-label="减">−</button>
+    <div class="cr-bet-txt" id="cr-bet-txt">下注 ¥10.00</div>
+    <button class="cr-bet-btn" id="cr-bet-plus" aria-label="加">+</button>
+  </section>
+
+  <section class="cr-action-row">
+    <button class="cr-action-btn cr-action-primary" id="cr-action">下注</button>
+    <button class="cr-icon-btn cr-auto-btn" id="cr-auto" aria-label="自动提现设置">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    </button>
+  </section>
+
+  <div class="cr-modal" id="cr-modal" aria-hidden="true">
+    <div class="cr-modal-mask"></div>
+    <div class="cr-modal-box">
+      <div class="cr-modal-head">
+        <div class="cr-modal-title" id="cr-modal-title">标题</div>
+        <button class="cr-modal-x" id="cr-modal-x" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="cr-modal-body" id="cr-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="cr-toast" id="cr-toast"></div>
+</div>
+
+<script src="/src/js/crash/crash-core.js"></script>
+<script src="/src/js/crash/crash-audio.js"></script>
+<script src="/src/js/crash/crash-ui.js"></script>
+</body>
+</html>
