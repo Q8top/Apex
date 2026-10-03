@@ -16,26 +16,26 @@
 
 # HTML 页面（无缓存，保证用户看到最新版本）
 /
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
   X-Content-Type-Options: nosniff
 
 /index.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /home
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /home.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /privacy.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /terms.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /status.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 
 # PWA manifest：短期缓存
@@ -105,21 +105,21 @@
 # === APEX-CACHE-END ===
 
 /announcements.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /game.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /slot.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 
 
 /olympus.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /sweet.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
 
 /sugar.html
-  Cache-Control: no-store
+  Cache-Control: no-cache, must-revalidate
