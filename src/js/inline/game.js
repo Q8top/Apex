@@ -64,7 +64,7 @@ var GAMES = {
   'lucky-fruit': {
     name: '幸运水果机',
     sub: '经典三轴老虎机 · 3×3 · 5 条中奖线',
-    images: ['/assets/games/sweet-poster-1.svg', '/assets/games/sweet-poster-2.svg', '/assets/games/sweet-poster-3.svg', '/assets/games/sweet-poster-4.svg', '/assets/games/sweet-poster-5.svg', '/assets/games/sweet-poster-6.svg'],
+    images: [],
     intro: '风水炼金术是中国风风水主题的 5×3 老虎机。以太极、金币、玉、龙、凤凰为主符号，翠绿金主题，20 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
@@ -164,7 +164,7 @@ var GAMES = {
   'sweet': {
     name: '甜蜜蜜',
     sub: 'Cluster Pays · 炸弹倍数 · 免费旋转',
-    images: [],
+    images: ['/assets/games/sweet-poster-1.svg', '/assets/games/sweet-poster-2.svg', '/assets/games/sweet-poster-3.svg', '/assets/games/sweet-poster-4.svg', '/assets/games/sweet-poster-5.svg', '/assets/games/sweet-poster-6.svg'],
     intro: '甜蜜蜜是一款 6×5 的 Cluster Pays 老虎机。相邻（水平/垂直）出现 8 个及以上相同符号即形成中奖。中奖符号消失后上方符号下落补位，可连续触发 Tumble 连击。免费旋转中每次 Tumble 会掉落炸弹倍数，跨轮累积作用于赢分。',
     rules: [
       '点击 − / + 调整下注金额',
