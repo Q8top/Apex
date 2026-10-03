@@ -55,7 +55,7 @@ function saveState(){if(MODE==='real')return;try{localStorage.setItem(LS_STATE,J
 function loadHist(){try{var d=JSON.parse(localStorage.getItem(LS_HIST)||'[]');if(Array.isArray(d))state.history=d.slice(0,30);}catch(e){}}
 function saveHist(){try{localStorage.setItem(LS_HIST,JSON.stringify(state.history.slice(0,30)));}catch(e){}}
 
-function buildGrid(){var box=$('lm-grid');if(!box)return;box.innerHTML='';for(var i=0;i<CFG.rows*CFG.cols;i++){var c=document.createElement('div');c.className='lm-cell';c.setAttribute('data-idx',String(i));box.appendChild(c);}}
+function buildGrid(){var box=$('lm-grid');if(!box)return;box.innerHTML='';box.style.gridTemplateColumns='repeat('+CFG.cols+',minmax(0,1fr))';box.style.gridTemplateRows='repeat('+CFG.rows+',minmax(0,1fr))';for(var i=0;i<CFG.rows*CFG.cols;i++){var c=document.createElement('div');c.className='lm-cell';c.setAttribute('data-idx',String(i));box.appendChild(c);}}
 function cellAt(c,r){return document.querySelectorAll('#lm-grid .lm-cell')[r*CFG.cols+c];}
 function paintGrid(grid){for(var c=0;c<CFG.cols;c++)for(var r=0;r<CFG.rows;r++){var el=cellAt(c,r);if(!el)continue;var sym=grid&&grid[c]?grid[c][r]:null;var fn=S[sym];el.innerHTML=fn?fn():'';el.classList.remove('winning','popping');}}
 function highlightCells(cells,on){cells.forEach(function(p){var el=cellAt(p[0],p[1]);if(el)el.classList.toggle('winning',!!on);});}

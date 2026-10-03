@@ -77,7 +77,7 @@ function scatter(){
   );
 }
 
-window.LinesGameSymbols = {
+window.Sym_1001_mg2 = {
   ten:function(){return card('10','g2-a');},
   jack:function(){return card('J','g2-a');},
   queen:function(){return card('Q','g2-b');},

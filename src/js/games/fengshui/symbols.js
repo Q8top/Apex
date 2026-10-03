@@ -29,7 +29,7 @@ function dragon(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#00
 function phoenix(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M50 22 Q40 24 38 34 Q36 46 46 54 Q40 66 32 72 Q48 72 56 58 Q64 66 76 68 Q68 56 62 48 Q68 40 64 30 Q58 24 50 22 Z" fill="url(#fs-gold)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="54" cy="34" r="2" fill="#0a0a0a"/>'+hl(48,32,4,3,.6));}
 function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="url(#fs-gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
 function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="url(#fs-jade)" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2"/>'+hl(42,36,7,4,.6));}
-window.LinesGameSymbols = {
+window.Sym_fengshui = {
   ten:function(){return card('10','fs-a');},
   jack:function(){return card('J','fs-a');},
   queen:function(){return card('Q','fs-b');},

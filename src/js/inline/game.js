@@ -16,18 +16,18 @@ var GAME_ROUTES = {
   'blackjack':      { html: '/blackjack.html', symLib: null },
   'roulette-euro':  { html: '/roulette-euro.html', symLib: null },
   'roulette-amer':  { html: '/roulette-amer.html', symLib: null },
-  '1001-mg':        { html: '/1001-mg.html', symLib: 'LinesGameSymbols' },
-  '1001-mg2':              { html: '/1001-mg2.html', symLib: 'LinesGameSymbols' },
-  '10001-nights':          { html: '/10001-nights.html', symLib: 'LinesGameSymbols' },
-  '10001-mega':            { html: '/10001-mega.html', symLib: 'LinesGameSymbols' },
-  '1429-seas':             { html: '/1429-seas.html', symLib: 'LinesGameSymbols' },
-  '5-lions':               { html: '/5-lions.html', symLib: 'LinesGameSymbols' },
-  '5-lions-gold':          { html: '/5-lions-gold.html', symLib: 'LinesGameSymbols' },
-  '5-lions-mega':          { html: '/5-lions-mega.html', symLib: 'LinesGameSymbols' },
-  'arabian-nights':        { html: '/arabian-nights.html', symLib: 'LinesGameSymbols' },
-  'asgardian':             { html: '/asgardian.html', symLib: 'LinesGameSymbols' },
-  'aces-eights':           { html: '/aces-eights.html', symLib: 'LinesGameSymbols' },
-  'fengshui':              { html: '/fengshui.html', symLib: 'LinesGameSymbols' }
+  '1001-mg':        { html: '/1001-mg.html', symLib: 'Sym_1001_mg' },
+  '1001-mg2':              { html: '/1001-mg2.html', symLib: 'Sym_1001_mg2' },
+  '10001-nights':          { html: '/10001-nights.html', symLib: 'Sym_10001_nights' },
+  '10001-mega':            { html: '/10001-mega.html', symLib: 'Sym_10001_mega' },
+  '1429-seas':             { html: '/1429-seas.html', symLib: 'Sym_1429_seas' },
+  '5-lions':               { html: '/5-lions.html', symLib: 'Sym_5_lions' },
+  '5-lions-gold':          { html: '/5-lions-gold.html', symLib: 'Sym_5_lions_gold' },
+  '5-lions-mega':          { html: '/5-lions-mega.html', symLib: 'Sym_5_lions_mega' },
+  'arabian-nights':        { html: '/arabian-nights.html', symLib: 'Sym_arabian_nights' },
+  'asgardian':             { html: '/asgardian.html', symLib: 'Sym_asgardian' },
+  'aces-eights':           { html: '/aces-eights.html', symLib: 'Sym_aces_eights' },
+  'fengshui':              { html: '/fengshui.html', symLib: 'Sym_fengshui' }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';

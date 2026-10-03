@@ -10,7 +10,7 @@ function palace(){return wrap('<ellipse cx="50" cy="86" rx="28" ry="4" fill="#00
 function genie(){return wrap('<ellipse cx="50" cy="88" rx="24" ry="3" fill="#000" opacity=".2"/><path d="M50 14 Q60 14 62 24 Q66 30 64 40 Q62 50 50 52 Q38 50 36 40 Q34 30 38 24 Q40 14 50 14 Z" fill="#8a4ae0" stroke="#0a0a0a" stroke-width="2.2"/><path d="M30 88 Q34 62 50 60 Q66 62 70 88 Z" fill="#8a4ae0" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/><circle cx="44" cy="34" r="2.5" fill="#0a0a0a"/><circle cx="56" cy="34" r="2.5" fill="#0a0a0a"/>'+hl(42,26,4,3,.5));}
 function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="#e8c25c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
 function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="#f0a020" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2"/>'+hl(42,36,7,4,.6));}
-window.LinesGameSymbols = {
+window.Sym_1001_mg = {
   ten:function(){return card('10','#4a4a5a');},
   jack:function(){return card('J','#5a4a6a');},
   queen:function(){return card('Q','#6a4a7a');},

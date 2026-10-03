@@ -26,7 +26,7 @@ function cherry(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#00
 function bell(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M30 68 L30 40 Q30 26 50 24 Q70 26 70 40 L70 68 Z" fill="url(#ae-bell)" stroke="#0a0a0a" stroke-width="2.4" stroke-linejoin="round"/><path d="M22 68 L78 68 L78 74 L22 74 Z" fill="url(#ae-bell)" stroke="#0a0a0a" stroke-width="2"/><circle cx="50" cy="76" r="3" fill="url(#ae-gold)" stroke="#0a0a0a" stroke-width="1.4"/>'+hl(42,38,5,10,.4));}
 function wild(){return wrap('<ellipse cx="50" cy="86" rx="22" ry="3" fill="#000" opacity=".2"/><path d="M20 30 L30 70 L40 46 L50 70 L60 30 L70 70 L80 30" fill="none" stroke="url(#ae-gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+hl(34,40,6,3,.6));}
 function scatter(){return wrap('<circle cx="50" cy="50" r="32" fill="url(#ae-gold)" stroke="#0a0a0a" stroke-width="2.4"/><path d="M50 30 L52 40 L62 42 L52 44 L50 54 L48 44 L38 42 L48 40 Z" fill="#fff8d0" stroke="#0a0a0a" stroke-width="1.2"/>'+hl(42,36,7,4,.6));}
-window.LinesGameSymbols = {
+window.Sym_aces_eights = {
   seven:function(){return card('7','ae-7');},
   bar:function(){return wrap('<rect x="20" y="40" width="60" height="20" rx="4" fill="url(#ae-bar)" stroke="#e8c25c" stroke-width="2.4"/><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-size="14" font-weight="900" fill="#ffe9a0">BAR</text>');},
   ace:function(){return card('A','ae-ace');},
