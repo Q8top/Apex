@@ -224,46 +224,8 @@ function init(){
         if(typeof ApexLoader!=='undefined')ApexLoader.hide();
       }).catch(function(){toast('网络错误');if(typeof ApexLoader!=='undefined')ApexLoader.hide();});
     } else {
-      loadState();loadHist();
-      // ───── 诊断面板 ─────
-      (function(){
-        function dbg(m){
-          var d = document.getElementById('__lines_dbg');
-          if(!d){ d=document.createElement('div'); d.id='__lines_dbg';
-            d.style.cssText='position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);color:#0f0;padding:6px 8px;font:11px/1.4 monospace;z-index:999999;max-height:35vh;overflow:auto;white-space:pre-wrap;';
-            document.body.appendChild(d); }
-          d.textContent += m + '\n';
-        }
-        dbg('▸ CFG=' + (!!CFG) + '  E=' + (!!E) + '  S=' + (!!S));
-        if (!CFG || !E || !S) { dbg('❌ 关键对象缺失'); return; }
-        dbg('▸ cols=' + CFG.cols + ' rows=' + CFG.rows + ' 线数=' + (CFG.paylines ? CFG.paylines.length : 'null'));
-        dbg('▸ weightsReal keys=' + (CFG.weightsReal ? Object.keys(CFG.weightsReal).length : 'null'));
-        dbg('▸ S 符号 keys=' + Object.keys(S).length);
-        dbg('▸ E.spin=' + typeof E.spin + '  E.randFloat=' + typeof E.randFloat);
-        try {
-          var g = E.spin();
-          dbg('▸ E.spin() → ' + g.length + ' 列，首列 ' + g[0].length + ' 行，首符=' + g[0][0]);
-          var svg = S[g[0][0]] ? S[g[0][0]]() : null;
-          dbg('▸ S["' + g[0][0] + '"]() → ' + (svg ? svg.length + ' 字符' : '❌ 返回 null'));
-          if (svg) dbg('   开头: ' + svg.slice(0, 80));
-        } catch(e) { dbg('❌ E.spin() 崩: ' + e.message); }
-        try { paintGrid(E.spin()); dbg('▸ paintGrid 成功'); }
-        catch(e) { dbg('❌ paintGrid 崩: ' + e.message); }
-        try {
-          dbg('▸ 试跑 spinDemo...');
-          var r = E.spinDemo(10);
-          dbg('▸ spinDemo OK totalWin=' + r.totalWin);
-        } catch(e) { dbg('❌ spinDemo 崩: ' + e.message + '\n' + (e.stack||'').split('\n').slice(0,4).join('\n')); }
-        // cellAt 检查
-        try {
-          var cells = document.querySelectorAll('#lm-grid .lm-cell');
-          dbg('▸ .lm-cell 数量=' + cells.length);
-          if (cells.length > 0) dbg('   首 cell className=' + cells[0].className + ' innerHTML长=' + cells[0].innerHTML.length);
-        } catch(e) { dbg('❌ cell 检查崩: ' + e.message); }
-      })();
-      state.ready=true;
-      renderBalance();renderBet();
-      try { paintGrid(E.spin()); } catch(e){}
+      loadState();loadHist();state.ready=true;renderBalance();renderBet();paintGrid(E.spin());
+      if(typeof ApexLoader!=='undefined')ApexLoader.hide();
       if(typeof ApexLoader!=='undefined')ApexLoader.hide();
     }
   } catch(err){
