@@ -33,6 +33,27 @@ function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
   return { id: id, route: GAME_ROUTES[id] || GAME_ROUTES['lucky-fruit'] };
 }
+/* 符号无 SVG 时的降级显示：彩色圆点 + 名字 */
+var SYM_COLORS = {
+  ten:'#5a5a6a', jack:'#6a5a7a', queen:'#7a6a8a', king:'#8a7a9a', ace:'#9a8aaa',
+  seven:'#e53838', bar:'#3a3a3a', cherry:'#dc3a3a', bell:'#e8c25c',
+  lamp:'#d9a83e', carpet:'#c84a4a', palace:'#7a4aa8', genie:'#8a4ae0',
+  star:'#e8c25c', moon:'#e0b83e', coin:'#e8c25c', jade:'#3aaa6a',
+  dragon:'#e8c25c', phoenix:'#e8c25c', hero:'#8a4ae0', bottle:'#e050a0',
+  ring:'#e8c25c', princess:'#8a4ae0', fisherman:'#5ab878', moneyFish:'#e8c25c',
+  bass:'#4a90c8', fishingRod:'#b88450', tackleBox:'#5ab878', dragonfly:'#4a90c8',
+  lollipop:'#ff4d94', rainbow:'#ff4d94', heart:'#e5484d', candyBlue:'#6eb6f0',
+  candyGreen:'#6ed880', candyYellow:'#f0d040', candyRed:'#f06070', candyPurple:'#b470f0',
+  candyOrange:'#ff8a3d', banana:'#f0c33e', grape:'#9060c0', watermelon:'#3f8f3f',
+  apple:'#e5484d', plum:'#8a2a5a', gemBlue:'#6eb6f0', gemGreen:'#6ed880',
+  gemYellow:'#f0d040', gemPurple:'#b470f0', gemRed:'#f06070', cup:'#e8c25c',
+  hourglass:'#c8a04a', crown:'#e8c25c', zeus:'#f0c33e', wild:'#e8c25c', scatter:'#e8a020'
+};
+function fallbackSymbol(sym){
+  var c = SYM_COLORS[sym] || '#888';
+  return '<span class="gm-fallback-dot" style="background:'+c+'"></span>';
+}
+
 function getSymLib() {
   var r = currentGame().route;
   return window[r.symLib] || null;
@@ -464,8 +485,24 @@ var GAMES = {
       'Wild（金色 W）可替代任意普通符号',
       '出现 3/4/5 个 Scatter（金色星月）触发免费旋转 10/15/20 次'
     ],
-    prizes: [],
-    paytable: [],
+    prizes: [
+      { symbol: 'lamp', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'carpet', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'genie', mult: '3×50 · 4×250 · 5×1000' }
+    ],
+    paytable: [
+      { symbol: 'ten', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'jack', mult: '3×0.5 · 4×2 · 5×10' },
+      { symbol: 'queen', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'king', mult: '3×1 · 4×5 · 5×20' },
+      { symbol: 'ace', mult: '3×2 · 4×10 · 5×50' },
+      { symbol: 'lamp', mult: '3×5 · 4×25 · 5×100' },
+      { symbol: 'carpet', mult: '3×10 · 4×50 · 5×200' },
+      { symbol: 'palace', mult: '3×20 · 4×100 · 5×500' },
+      { symbol: 'genie', mult: '3×50 · 4×250 · 5×1000' },
+      { symbol: 'wild', mult: '替代任意符号' },
+      { symbol: 'scatter', mult: '3/4/5 → 免费旋转 10/15/20 次' }
+    ],
     info: {
       '游戏类型': '固定线老虎机',
       '游戏网格': '5 × 3',
@@ -1052,6 +1089,9 @@ function render() {
       symHtml = '<span class="gm-sym-inline">' + svg + '</span>' +
                 '<span class="gm-sym-inline">' + svg + '</span>' +
                 '<span class="gm-sym-inline">' + svg + '</span>';
+    } else if (pt.symbol) {
+      symHtml = fallbackSymbol(pt.symbol) +
+                '<span class="gm-sym-name">' + esc(pt.symbol) + '</span>';
     } else {
       symHtml = esc(pt.combo || '');
     }
