@@ -1134,3 +1134,94 @@ html, body {
 @media (max-width: 360px) {
   .sw-bar { height: calc(44px + env(safe-area-inset-top, 0px)); }
 }
+
+/* ===== APEX-SWEET-B2: HUD Visual Foundation ===== */
+
+/* 1. Page shell 主题化（暖紫白渐变） */
+html, body {
+  background: linear-gradient(180deg, #fbf7fd 0%, #f4ecf6 100%) !important;
+}
+
+/* 2. Stage 增强层次（不改几何） */
+.sw-stage {
+  box-shadow:
+    inset 0 1px 0 rgba(255,200,235,.32),
+    inset 0 -24px 48px rgba(0,0,0,.30),
+    inset 0 0 0 1px rgba(255,180,220,.10),
+    0 16px 44px -12px rgba(80,15,60,.42),
+    0 4px 14px -4px rgba(80,15,60,.25) !important;
+}
+.sw-stage::after {
+  border-color: rgba(255,190,225,.38) !important;
+  box-shadow:
+    inset 0 0 32px rgba(255,150,220,.16),
+    inset 0 0 1px rgba(255,220,240,.6) !important;
+}
+
+/* 3. HUD 统一暖白 surface */
+.sw-balance-panel,
+.sw-bet-txt,
+.sw-bet-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #fdf9fd 100%) !important;
+  border: 1px solid rgba(215,53,142,.08) !important;
+  box-shadow:
+    0 2px 12px rgba(160,50,120,.05),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+.sw-bet-btn:active {
+  background: linear-gradient(180deg, #fdf1f7 0%, #f8e6f1 100%) !important;
+}
+
+/* 4. Win row 层级 */
+.sw-win-label {
+  color: #8a7a86 !important;
+  letter-spacing: 2px;
+}
+.sw-win-value.winning {
+  color: #d7358a !important;
+  text-shadow: 0 0 24px rgba(215,53,142,.42) !important;
+}
+
+/* 5. Header 主题化 */
+.sw-bar {
+  background: rgba(255,251,253,.88) !important;
+  border-bottom: 1px solid rgba(215,53,142,.06) !important;
+}
+.sw-icon-btn:active {
+  background: rgba(215,53,142,.08) !important;
+}
+
+/* 6. Spin CTA 强化 */
+.sw-spin-btn {
+  background: linear-gradient(180deg, #e3509c 0%, #c42777 55%, #8f1558 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -2px 0 rgba(0,0,0,.22),
+    0 12px 30px rgba(196,39,119,.48),
+    0 4px 10px rgba(196,39,119,.32) !important;
+}
+.sw-spin-btn:active {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.30),
+    0 6px 16px rgba(196,39,119,.36) !important;
+}
+
+/* 7. Foot / Mode Action 次级控件降权 */
+.sw-foot-btn {
+  background: rgba(255,253,255,.92) !important;
+  border: 1px solid rgba(215,53,142,.06) !important;
+  color: #6b5c68 !important;
+  box-shadow: 0 1px 6px rgba(160,50,120,.04) !important;
+}
+.sw-foot-btn .sw-foot-icon { color: #8a7a86 !important; }
+.sw-foot-btn:active { background: rgba(215,53,142,.06) !important; }
+
+.sw-mode-action-btn {
+  background: rgba(255,253,255,.92) !important;
+  border: 1px solid rgba(215,53,142,.06) !important;
+  color: #6b5c68 !important;
+  box-shadow: 0 1px 6px rgba(160,50,120,.04) !important;
+}
+.sw-mode-action-btn:active {
+  background: rgba(215,53,142,.06) !important;
+}
