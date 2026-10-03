@@ -170,6 +170,9 @@ function renderGames(box,catKey){
       '<div class="apex-game-name">'+g.n+'</div>'+
       '</div>';
   }).join('')+'</div>';
+  if(catKey==='hot'){
+    html+='<button type="button" class="apex-more-games-btn" id="apex-more-games-btn"><span>查看全部游戏</span><i class="ri-arrow-right-line" aria-hidden="true"></i></button>';
+  }
   box.innerHTML=html;
   if(!box.dataset.clickBound){
     box.dataset.clickBound='1';
@@ -283,4 +286,66 @@ function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('s
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
 
 if(typeof ApexLoader!=="undefined"){try{ApexLoader.hide();}catch(e){}}
+
+/* ===== 全屏"全部游戏"弹窗 ===== */
+function buildAllGamesHTML(){
+  var all = APEX_GAMES.hot || [];
+  var grid = '<div class="apex-all-games-grid">';
+  grid += all.map(function(g){
+    var inner = (g.img) ? ('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">') : ('<i class="'+g.i+'" aria-hidden="true"></i>');
+    return '<div class="apex-all-games-card" data-game="'+g.id+'">' +
+      '<div class="apex-game-cover" style="--c1:'+g.c+'">'+inner+'</div>' +
+      '<div class="apex-game-name">'+g.n+'</div>' +
+    '</div>';
+  }).join('');
+  grid += '</div>';
+  return grid;
+}
+
+function initMoreGames(){
+  if (document.getElementById('apex-all-games-modal')) return;
+
+  var modal = document.createElement('div');
+  modal.id = 'apex-all-games-modal';
+  modal.className = 'apex-all-games-modal';
+  modal.setAttribute('aria-hidden', 'true');
+  modal.innerHTML =
+    '<div class="apex-all-games-mask"></div>' +
+    '<div class="apex-all-games-box">' +
+      '<div class="apex-all-games-head">' +
+        '<div class="apex-all-games-title">全部游戏</div>' +
+        '<button type="button" class="apex-all-games-x" aria-label="关闭">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="apex-all-games-body">' + buildAllGamesHTML() + '</div>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  var mask = modal.querySelector('.apex-all-games-mask');
+  var xBtn = modal.querySelector('.apex-all-games-x');
+  function close(){
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  mask.addEventListener('click', close);
+  xBtn.addEventListener('click', close);
+
+  modal.querySelector('.apex-all-games-body').addEventListener('click', function(e){
+    var c = e.target.closest ? e.target.closest('.apex-all-games-card') : null;
+    if (!c) return;
+    var gid = c.getAttribute('data-game');
+    if (gid) location.href = '/game.html?id=' + encodeURIComponent(gid);
+  });
+}
+
+document.addEventListener('click', function(e){
+  var btn = e.target.closest ? e.target.closest('#apex-more-games-btn') : null;
+  if (!btn) return;
+  var modal = document.getElementById('apex-all-games-modal');
+  if (!modal) { initMoreGames(); modal = document.getElementById('apex-all-games-modal'); }
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+});
+
 })();
