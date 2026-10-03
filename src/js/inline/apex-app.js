@@ -160,18 +160,18 @@ var APEX_GAMES={
     {id:'roulette-amer',n:'\u7F8E\u5F0F\u8F6E\u76D8',i:'ri-loader-4-line',c:'#8a6a18',img:'/assets/games/roulette-amer.svg'}
   ],
   slot:[
-    {id:'1001-mg',n:'\u0031\u0030\u0030\u0031\u795E\u79D8\u7CBE\u7075\u8D22\u5BCC',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'},
-    {id:'1001-mg2',n:'1001\u795E\u79D8\u7CBE\u7075\u8D22\u5BCC2',i:'ri-gamepad-line',c:'#9a2f6a',img:'/assets/games/1001-mg2.svg'},
+    {id:'1001-mg',n:'1001\u7CBE\u7075',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'},
+    {id:'1001-mg2',n:'1001\u7CBE\u70752',i:'ri-gamepad-line',c:'#9a2f6a',img:'/assets/games/1001-mg2.svg'},
     {id:'10001-nights',n:'\u4E00\u4E07\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#1a4a7a',img:'/assets/games/10001-nights.svg'},
-    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591C Megaways',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
-    {id:'1429-seas',n:'1429\u672A\u77E5\u6D77\u57DF',i:'ri-gamepad-line',c:'#0a6a7a',img:'/assets/games/1429-seas.svg'},
+    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CMega',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
+    {id:'1429-seas',n:'1429\u6D77\u57DF',i:'ri-gamepad-line',c:'#0a6a7a',img:'/assets/games/1429-seas.svg'},
     {id:'5-lions',n:'\u4E94\u72EE',i:'ri-gamepad-line',c:'#a85a1f',img:'/assets/games/5-lions.svg'},
-    {id:'5-lions-gold',n:'\u4E94\u72EE\u9EC4\u91D1\u7248',i:'ri-gamepad-line',c:'#c9a227',img:'/assets/games/5-lions-gold.svg'},
-    {id:'5-lions-mega',n:'\u4E94\u72EE Megaways',i:'ri-gamepad-line',c:'#7a2f1f',img:'/assets/games/5-lions-mega.svg'},
+    {id:'5-lions-gold',n:'\u4E94\u72EE\u9EC4\u91D1',i:'ri-gamepad-line',c:'#c9a227',img:'/assets/games/5-lions-gold.svg'},
+    {id:'5-lions-mega',n:'\u4E94\u72EEMega',i:'ri-gamepad-line',c:'#7a2f1f',img:'/assets/games/5-lions-mega.svg'},
     {id:'arabian-nights',n:'\u4E00\u5343\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#6a2a8a',img:'/assets/games/arabian-nights.svg'},
-    {id:'asgardian',n:'\u963F\u65AF\u52A0\u5FB7\u5D1B\u8D77',i:'ri-gamepad-line',c:'#2a3a8a',img:'/assets/games/asgardian.svg'},
+    {id:'asgardian',n:'\u963F\u65AF\u52A0\u5FB7',i:'ri-gamepad-line',c:'#2a3a8a',img:'/assets/games/asgardian.svg'},
     {id:'aces-eights',n:'A\u4E0E8',i:'ri-gamepad-line',c:'#1a1a1a',img:'/assets/games/aces-eights.svg'},
-    {id:'fengshui',n:'\u98CE\u6C34\u70BC\u91D1\u672F',i:'ri-gamepad-line',c:'#1a6a3a',img:'/assets/games/fengshui.svg'}
+    {id:'fengshui',n:'\u98CE\u6C34\u70BC\u91D1',i:'ri-gamepad-line',c:'#1a6a3a',img:'/assets/games/fengshui.svg'}
   ]
 };
 function renderGames(box,catKey){
