@@ -51,6 +51,9 @@ function wheelSVG(isAmerican){
     '<circle cx="0" cy="0" r="30" fill="#5a3a18" stroke="#0a0a0a" stroke-width="2"/>' +
     '<circle cx="0" cy="0" r="20" fill="radial-gradient(#e8c870,#a08838)" stroke="#0a0a0a" stroke-width="1.5"/>' +
     '<circle cx="0" cy="0" r="6" fill="#0a0a0a"/>' +
+    // 顶部金三角指针
+    '<path d="M 0 -108 L -9 -94 L 9 -94 Z" fill="#c9a227" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M 0 -104 L -5 -96 L 5 -96 Z" fill="#f0d85a"/>' +
     '</svg>';
 }
 
