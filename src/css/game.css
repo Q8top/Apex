@@ -585,3 +585,12 @@ a:focus, a:active, a:focus-visible, a:focus-within {
   .gm-sym-inline { width: 26px; height: 26px; margin: 0 2px; }
   .gm-prize-icon .gm-sym-inline { width: 36px; height: 36px; }
 }
+
+/* ===== 移动端防双击缩放 + 去除点击高亮 ===== */
+html, body, * {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, select {
+  touch-action: auto;
+}

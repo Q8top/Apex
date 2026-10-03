@@ -4,3 +4,12 @@ body.apex-booting .card-section,
 body.apex-booting .link-row,
 body.apex-booting .footer,
 body.apex-booting #auth-tabs { display: none !important; }
+
+/* ===== 移动端防双击缩放 + 去除点击高亮 ===== */
+html, body, * {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, select {
+  touch-action: auto;
+}

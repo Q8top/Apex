@@ -805,3 +805,12 @@
 .apex-game-name {
   margin-top: -4px !important;
 }
+
+/* ===== 移动端防双击缩放 + 去除点击高亮 ===== */
+html, body, * {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, select {
+  touch-action: auto;
+}
