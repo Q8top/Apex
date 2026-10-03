@@ -64,7 +64,7 @@ var GAMES = {
   'lucky-fruit': {
     name: '幸运水果机',
     sub: '经典三轴老虎机 · 3×3 · 5 条中奖线',
-    images: [],
+    images: ['/assets/games/sweet-poster-1.svg', '/assets/games/sweet-poster-2.svg', '/assets/games/sweet-poster-3.svg', '/assets/games/sweet-poster-4.svg', '/assets/games/sweet-poster-5.svg', '/assets/games/sweet-poster-6.svg'],
     intro: '风水炼金术是中国风风水主题的 5×3 老虎机。以太极、金币、玉、龙、凤凰为主符号，翠绿金主题，20 条中奖线。',
     rules: [
       '点击 − / + 调整下注金额',
