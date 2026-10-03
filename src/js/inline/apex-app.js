@@ -357,6 +357,7 @@ document.addEventListener('click', function(e){
   var btn = e.target.closest ? e.target.closest('#apex-more-games-btn') : null;
   if (!btn) return;
   var cat = btn.getAttribute('data-cat-src') || 'hot';
+  if (cat === 'slot') { location.href = '/all-games.html'; return; }
   var modal = document.getElementById('apex-all-games-modal');
   if (!modal) { initMoreGames(cat); modal = document.getElementById('apex-all-games-modal'); }
   // 更新标题
