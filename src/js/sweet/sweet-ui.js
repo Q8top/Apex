@@ -88,7 +88,7 @@ function renderBalance(animate){
 }
 function renderBet(){
   $('sw-bet').textContent = fmt(bet());
-  $('sw-bet-txt').textContent = '下注 ' + fmt(bet());
+  syncBet();
 }
 function renderWin(amount, combo){
   var el = $('sw-win-value');
