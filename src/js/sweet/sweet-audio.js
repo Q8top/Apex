@@ -126,8 +126,15 @@ function fsBgStop(){
 }
 
 function resume(){
-  if (!ctx) return;
-  if (ctx.state === 'suspended') { try { ctx.resume(); } catch(e){} }
+  if (!ctx) return false;
+  if (ctx.state === 'suspended' || ctx.state === 'interrupted') {
+    try {
+      var p = ctx.resume();
+      if (p && typeof p.catch === 'function') { p.catch(function(){}); }
+    } catch(e){}
+    return true;
+  }
+  return false;
 }
 
 var API = {

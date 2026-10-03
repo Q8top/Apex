@@ -1037,3 +1037,13 @@ html, body {
   background: linear-gradient(180deg, #ffe37a 0%, #ff4dc8 60%, #97185a 100%);
   -webkit-background-clip: text; background-clip: text;
 }
+
+/* ===== APEX-SWEET-DS-608: 旋转按钮缩小 ===== */
+.sw-spin-btn {
+  height: 48px !important;
+  border-radius: 16px !important;
+  font-size: 15px !important;
+  letter-spacing: 3px !important;
+}
+.sw-spin-icon { width: 18px !important; height: 18px !important; }
+.sw-spin-btn { gap: 8px !important; }

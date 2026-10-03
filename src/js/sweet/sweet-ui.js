@@ -500,9 +500,12 @@ function bind(){
   });
   document.addEventListener('visibilitychange', function(){
   if (document.hidden) { if (state.autoOn) stopAuto(); }
-  else { safeAudio(A.resume, 'resume'); }
+  else { setTimeout(function(){ safeAudio(A.resume, 'vis-resume'); }, 60); }
 });
   window.addEventListener('pagehide', function(){ if (state.autoOn) stopAuto(); });
+  window.addEventListener('focus', function(){ safeAudio(A.resume, 'focus-resume'); });
+  document.addEventListener('touchstart', function(){ safeAudio(A.resume, 'touch-resume'); }, { passive: true });
+  document.addEventListener('click', function(){ safeAudio(A.resume, 'click-resume'); });
 }
 
 function setupMode(){
