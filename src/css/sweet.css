@@ -1047,3 +1047,8 @@ html, body {
 }
 .sw-spin-icon { width: 18px !important; height: 18px !important; }
 .sw-spin-btn { gap: 8px !important; }
+
+/* ===== APEX-SWEET-DS-610: 旋转按钮下移，与下注行分离 ===== */
+.sw-spin-row {
+  margin-top: 10px !important;
+}
