@@ -460,6 +460,21 @@ function notFound() {
   document.getElementById('gm-name').textContent = '游戏不存在';
   document.getElementById('gm-sub').textContent = '';
   document.getElementById('gm-intro').textContent = '未找到该游戏，请返回首页重新选择。';
+  // 关键：即使游戏不存在，返回键也要能点
+  var back = document.getElementById('gm-back');
+  if (back) {
+    back.addEventListener('click', function(e){
+      e.preventDefault();
+      // 优先 history.back()，失败则跳首页
+      try { if (window.history.length > 1) history.back(); else location.replace('/'); }
+      catch(err) { location.replace('/'); }
+    });
+  }
+  // 隐藏无效按钮（免费试玩、开始游戏、收藏）
+  ['gm-fav','gm-demo','gm-start','gm-support','gm-more'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) { el.disabled = true; el.style.opacity = '0.4'; el.style.pointerEvents = 'none'; }
+  });
 }
 
 /* ---------- 轮播 ---------- */
