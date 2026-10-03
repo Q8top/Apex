@@ -160,7 +160,7 @@ function finish(amount,betAmt){
   if(MODE==='demo'){saveState();renderBalance(true);}
   else{submitReal(bet(),amount).then(function(){renderBalance(true);});}
   renderWin(amount);
-  state.history.unshift({t:Date.now(),bet:betAmt,win:amount});
+  state.history.unshift({bet: betAmt, win: amount, delta: amount - betAmt, ts: Date.now()});
   if(state.history.length>30)state.history=state.history.slice(0,30);
   saveHist();
   if(state.autoOn)setTimeout(function(){if(state.autoOn)doSpin();},700);
@@ -179,11 +179,27 @@ function showPaytable(){
   openModal('赔付表',html);
 }
 function showHistory(){
-  if(!state.history.length){openModal('记录','<p style="text-align:center;color:#999;padding:20px 0;">暂无记录</p>');return;}
-  var html='',totalBet=0,totalWin=0;
-  state.history.slice(0,20).forEach(function(h){totalBet+=h.bet||0;totalWin+=h.win||0;var cls=h.win>0?'win':'lose';var sign=h.win>0?'+':'';html+='<div class="hist-row"><span>下注 '+fmt(h.bet||0)+'</span><span class="hist-amt '+cls+'">'+sign+fmt(h.win||0)+'</span></div>';});
-  html+='<div class="hist-summary"><div>总局数 <b>'+state.history.length+'</b></div><div>净赢 <b>'+fmt(totalWin-totalBet)+'</b></div></div>';
-  openModal('记录',html);
+  if (!state.history.length) { openModal('游戏记录', '<p style="text-align:center;padding:24px 0;color:#999;">暂无记录</p>'); return; }
+  var tb = 0, tw = 0, w = 0;
+  state.history.forEach(function(h){ tb += h.bet || 0; tw += h.win || 0; if (h.win > 0) w++; });
+  var head = '<div class="hist-summary">' +
+    '<div><span>总局数</span><b>' + state.history.length + '</b></div>' +
+    '<div><span>中奖次数</span><b>' + w + '</b></div>' +
+    '<div><span>总下注</span><b>' + fmt(tb) + '</b></div>' +
+    '<div><span>总中奖</span><b>' + fmt(tw) + '</b></div>' +
+    '</div><h4 style="margin-top:14px;font-weight:800;">最近记录</h4>';
+  var rows = '';
+  state.history.forEach(function(h){
+    var d = (h.delta != null) ? h.delta : ((h.win || 0) - (h.bet || 0));
+    var cls = d > 0 ? 'win' : 'lose';
+    var txt = (d > 0 ? '+' : '') + '¥' + d.toFixed(2);
+    var ts = h.ts || h.t || Date.now();
+    var t = new Date(ts), hh = String(t.getHours()).padStart(2, '0'), mm = String(t.getMinutes()).padStart(2, '0');
+    rows += '<div class="hist-row"><div><div style="font-weight:700;">下注 ' + fmt(h.bet || 0) + '</div>' +
+      '<div style="font-size:12px;color:#999;">' + hh + ':' + mm + ' · 中奖 ' + fmt(h.win || 0) + '</div></div>' +
+      '<div class="hist-amt ' + cls + '">' + txt + '</div></div>';
+  });
+  openModal('游戏记录', head + rows);
 }
 function actionMode(){
   if(state.spinning){toast('请等待本局结束');return;}
