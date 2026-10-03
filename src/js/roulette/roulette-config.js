@@ -31,8 +31,9 @@ var PAYOUTS = {
   column3:     2
 };
 
-/* RTP 缩放：欧洲原始 RTP 97.3% → 92% (乘 0.945)
-   美式原始 RTP 94.74% → 92% (乘 0.971) */
+/* RTP 缩放（乘在总返还上，保证所有下注类型 RTP 一致）
+   欧洲标准 RTP 97.30% → 92% (×0.945) → EURO_SCALE = 0.945
+   美式标准 RTP 94.74% → 92% (×0.971) → AMER_SCALE = 0.971 */
 var EURO_SCALE = 0.945;
 var AMER_SCALE = 0.971;
 

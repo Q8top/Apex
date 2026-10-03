@@ -5,9 +5,13 @@ var C=window.RouletteConfig, E=window.RouletteEngine, S=window.RouletteSymbols, 
 
 /* 欧洲 / 美式由 URL ?type= 决定（默认 euro） */
 var TYPE=(function(){
+  // 1) 优先从 URL ?type= 读取（向后兼容）
   var m=String(location.search).match(/[?&]type=([a-z]+)/i);
-  var v=m?m[1].toLowerCase():'euro';
-  return v==='american'?'american':'euro';
+  if (m) { var v=m[1].toLowerCase(); return v==='american'?'american':'euro'; }
+  // 2) 从页面文件名判断（roulette-amer.html → american）
+  if (/roulette-amer/i.test(location.pathname)) return 'american';
+  // 3) 兜底
+  return 'euro';
 })();
 var IS_AMER = (TYPE === 'american');
 var WHEEL = IS_AMER ? C.AMER_WHEEL : C.EURO_WHEEL;

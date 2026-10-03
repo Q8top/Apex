@@ -59,9 +59,8 @@ function settle(bets, num, scale){
     totalBet += b.amount;
     var m = spotPayout(b.spot, num);
     if (m > 0) {
-      // 净赢 × scale，返还 = amount × (1 + m×scale)
-      var net = b.amount * m * s;
-      var back = b.amount + net;
+      // 标准返还 = amount × (1 + m)；×scale 缩放总返还，保证所有下注类型 RTP 一致
+      var back = b.amount * (1 + m) * s;
       totalWin += back;
       hits.push({ spot: b.spot, amount: b.amount, mult: m, back: back });
     }
