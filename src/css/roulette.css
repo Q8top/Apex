@@ -21,8 +21,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
 .rl-wheel-wrap{position:relative;width:min(230px,58vw);aspect-ratio:1;filter:drop-shadow(0 12px 24px rgba(0,0,0,.22))}
 .rl-wheel-wrap > svg{width:100%;height:100%;display:block;transition:transform 4.2s cubic-bezier(.15,.7,.25,1)}
 .rl-wheel-wrap.spinning > svg{transition:transform 4.2s cubic-bezier(.15,.7,.25,1)}
-.rl-ball{position:absolute;width:6%;height:6%;left:47%;top:47%;pointer-events:none;transition:transform 4.2s cubic-bezier(.15,.7,.25,1);transform-origin:center;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
-.rl-ball > svg{width:100%;height:100%;display:block}
+
+
 
 /* 当前数字提示 */
 .rl-result-num{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:#fff;background:rgba(10,30,20,.92);padding:6px 18px;border-radius:999px;border:2px solid var(--gold);box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .3s ease,transform .3s cubic-bezier(.2,1.3,.4,1);pointer-events:none;z-index:10;font-variant-numeric:tabular-nums}
@@ -185,3 +185,8 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Manrope
   filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
 }
 .rl-pointer > svg{width:100%;height:100%;display:block}
+/* ===== 球（绕轮盘外圈旋转）===== */
+.rl-ball-wrap{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:15}
+.rl-ball-orbit{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 50%;will-change:transform}
+.rl-ball{position:absolute;left:50%;top:5%;width:7%;height:7%;transform:translate(-50%,-50%);filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.rl-ball > svg{width:100%;height:100%;display:block}

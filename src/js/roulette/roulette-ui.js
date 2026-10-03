@@ -183,33 +183,34 @@ function clearBets(){
 /* ───── 旋转动画 ───── */
 function animateSpin(targetNum, durMs){
   var wheelEl = $('rl-wheel-svg');
-  var ballWrap = $('rl-ball-wrap');
+  var orbitEl = $('rl-ball-orbit');
   if (!wheelEl) return;
 
+  var segAngle = 360 / WHEEL.length;
   var idx = WHEEL.indexOf(targetNum);
   if (idx < 0) idx = 0;
-  // 数字 idx 在轮盘上的角度（0=顶部，顺时针）
-  var targetAngle = (idx / WHEEL.length) * 360;
-  // 转轮需要逆时针转 targetAngle 让目标数字到顶部
-  // 加 5 整圈做视觉滚动效果
-  var wheelFinal = -360 * 5 - targetAngle;
-  // 球反方向转（形成对比），最后也在顶部附近
-  var ballFinal = 360 * 6 + targetAngle;
+  // 数字 idx 的扇形中心角度（从顶部顺时针，0 = 顶部 12 点方向）
+  var targetAngle = idx * segAngle + segAngle / 2;
 
-  // 重置 + 应用转轮旋转
+  // 转轮逆时针转 5 整圈 + targetAngle → 目标数字停在顶部指针下
+  var wheelFinal = -360 * 5 - targetAngle;
+  // 球反向绕圈 7 整圈 + 同角度 → 视觉上球先跑到顶部再和数字对齐
+  var ballFinal = 360 * 7 + targetAngle;
+
+  // 转轮
   wheelEl.style.transition = 'none';
   wheelEl.style.transform = 'rotate(0deg)';
   void wheelEl.offsetWidth;
   wheelEl.style.transition = 'transform ' + durMs + 'ms cubic-bezier(.15,.7,.25,1)';
   wheelEl.style.transform = 'rotate(' + wheelFinal + 'deg)';
 
-  // 球旋转（反向 + 慢一点）
-  if (ballWrap) {
-    ballWrap.style.transition = 'none';
-    ballWrap.style.transform = 'rotate(0deg)';
-    void ballWrap.offsetWidth;
-    ballWrap.style.transition = 'transform ' + durMs + 'ms cubic-bezier(.2,.75,.3,1)';
-    ballWrap.style.transform = 'rotate(' + ballFinal + 'deg)';
+  // 球绕圈（绕轮盘中心转，不是自转）
+  if (orbitEl) {
+    orbitEl.style.transition = 'none';
+    orbitEl.style.transform = 'rotate(0deg)';
+    void orbitEl.offsetWidth;
+    orbitEl.style.transition = 'transform ' + durMs + 'ms cubic-bezier(.2,.75,.3,1)';
+    orbitEl.style.transform = 'rotate(' + ballFinal + 'deg)';
   }
 
   safeAudio(function(){ A.spinStart(durMs); }, 'spinStart');
