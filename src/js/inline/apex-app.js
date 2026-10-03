@@ -154,7 +154,10 @@ var APEX_GAMES={
     {id:'bigbass',n:'\u5927\u9C7C\u5927\u4EA8',i:'ri-anchor-fill',c:'#2a6da8',img:'/assets/games/bigbass.svg'},
     {id:'aviator',n:'\u98DE\u884C\u5458',i:'ri-flight-takeoff-fill',c:'#e5484d',img:'/assets/games/aviator.svg'},
     {id:'crash',n:'\u5D29\u76D8',i:'ri-line-chart-fill',c:'#3a9a58',img:'/assets/games/crash.svg'},
-    {id:'jetx',n:'\u55B7\u6C14\u673A',i:'ri-rocket-2-fill',c:'#a05ee0',img:'/assets/games/jetx.svg'}
+    {id:'jetx',n:'\u55B7\u6C14\u673A',i:'ri-rocket-2-fill',c:'#a05ee0',img:'/assets/games/jetx.svg'},
+    {id:'blackjack',n:'\u0032\u0031\u70B9',i:'ri-layout-grid-line',c:'#0a5a2a',img:'/assets/games/blackjack.svg'},
+    {id:'roulette-euro',n:'\u6B27\u6D32\u8F6E\u76D8',i:'ri-loader-4-line',c:'#c82828',img:'/assets/games/roulette-euro.svg'},
+    {id:'roulette-amer',n:'\u7F8E\u5F0F\u8F6E\u76D8',i:'ri-loader-4-line',c:'#8a6a18',img:'/assets/games/roulette-amer.svg'}
   ]
 };
 function renderGames(box,catKey){

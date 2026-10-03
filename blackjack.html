@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fafafa">
+<meta name="robots" content="noindex">
+<title>21点 · Apex</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>html,body,*{touch-action:manipulation;-webkit-text-size-adjust:100%;}</style>
+<link rel="stylesheet" href="/src/css/blackjack.css">
+</head>
+<body>
+<div id="app">
+  <header class="bj-bar">
+    <a class="bj-icon-btn" href="/game.html?id=blackjack" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div class="bj-brand">21点</div>
+    <div class="bj-bar-right">
+      <button class="bj-icon-btn" id="bj-sound" aria-label="音效">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a10 10 0 010 14"/></svg>
+      </button>
+      <button class="bj-icon-btn" id="bj-history" aria-label="记录">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </button>
+      <button class="bj-icon-btn" id="bj-menu" aria-label="规则">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="bj-table">
+    <div class="bj-dealer-area">
+      <div class="bj-area-lbl">庄 家</div>
+      <div class="bj-cards" id="bj-dealer-cards"></div>
+      <div class="bj-score hidden" id="bj-dealer-score">?</div>
+    </div>
+    <div class="bj-divider"></div>
+    <div class="bj-player-area">
+      <div class="bj-cards" id="bj-player-cards"></div>
+      <div class="bj-score" id="bj-player-score">0</div>
+      <div class="bj-area-lbl" style="margin-top:2px;">玩 家</div>
+    </div>
+    <div class="bj-result" id="bj-result"></div>
+  </section>
+
+  <section class="bj-win-row">
+    <div class="bj-win-label">本局收获</div>
+    <div class="bj-win-value" id="bj-win-value">¥0.00</div>
+  </section>
+
+  <button class="bj-action-btn" type="button" id="bj-mode-action" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:38px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.3px;cursor:pointer;box-shadow:var(--sh-1);">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;stroke:currentColor;fill:none;"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+    <span>重置余额</span>
+  </button>
+
+  <section class="bj-stats">
+    <div class="bj-stat"><span class="bj-stat-label">余额</span><span class="bj-stat-value" id="bj-balance">¥1,000.00</span></div>
+    <div class="bj-stat"><span class="bj-stat-label">下注</span><span class="bj-stat-value" id="bj-bet">¥10.00</span></div>
+    <div class="bj-stat"><span class="bj-stat-label">模式</span><span class="bj-stat-value" id="bj-mode-label">试玩</span></div>
+  </section>
+
+  <section class="bj-bet-row">
+    <button class="bj-bet-btn" id="bj-bet-minus" aria-label="减">−</button>
+    <div class="bj-bet-txt" id="bj-bet-txt">下注 ¥10.00</div>
+    <button class="bj-bet-btn" id="bj-bet-plus" aria-label="加">+</button>
+  </section>
+
+  <section class="bj-action-row single" id="bj-actions"></section>
+
+  <div class="bj-modal" id="bj-modal" aria-hidden="true">
+    <div class="bj-modal-mask"></div>
+    <div class="bj-modal-box">
+      <div class="bj-modal-head">
+        <div class="bj-modal-title" id="bj-modal-title">标题</div>
+        <button class="bj-modal-x" id="bj-modal-x" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="bj-modal-body" id="bj-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="bj-toast" id="bj-toast"></div>
+</div>
+
+<script src="/src/js/blackjack/blackjack-config.js"></script>
+<script src="/src/js/blackjack/blackjack-symbols.js"></script>
+<script src="/src/js/blackjack/blackjack-engine.js"></script>
+<script src="/src/js/blackjack/blackjack-audio.js"></script>
+<script src="/src/js/inline/bigwin.js"></script>
+<script src="/src/js/blackjack/blackjack-ui.js"></script>
+</body>
+</html>

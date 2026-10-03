@@ -12,7 +12,10 @@ var GAME_ROUTES = {
   'bigbass':     { html: '/bigbass.html',   symLib: 'BigBassSymbols' },
   'aviator':     { html: '/aviator.html', symLib: null },
   'crash':       { html: '/crash.html',   symLib: null },
-  'jetx':        { html: '/jetx.html',    symLib: null }
+  'jetx':        { html: '/jetx.html',    symLib: null },
+  'blackjack':      { html: '/blackjack.html', symLib: null },
+  'roulette-euro':  { html: '/roulette-euro.html', symLib: null },
+  'roulette-amer':  { html: '/roulette-amer.html', symLib: null }
 };
 function currentGame() {
   var id = getParam('id') || 'lucky-fruit';
@@ -386,6 +389,54 @@ var GAMES = {
       '最低下注': '¥1',
       '最高下注': '¥100',
       '自动提现': '支持（1.01 ~ 100×）',
+      '上线日期': '2026-10-03'
+    }
+  }
+,
+  'blackjack': {
+    name: '21点',
+    sub: '玩家 vs 庄家 · 要牌停牌加倍',
+    images: [],
+    intro: '21点是一款经典扑克博弈游戏。玩家与庄家比手牌点数大小，尽量接近 21 点但不超标。玩家可选择要牌、停牌、加倍。庄家 <17 要牌，≥17 停牌。',
+    rules: ['点击 − / + 调整下注金额', '点击「下注」开始发牌', '目标：手牌点数尽量接近 21 点（不超 21）', '要牌：再要一张 · 停牌：停止 · 加倍：翻倍下注', '庄家 <17 要牌，≥17 停牌', '普通赢 ×0.92 · 21点 ×1.38 · 和局退回本金'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': '21点',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '上线日期': '2026-10-03'
+    }
+  }
+,
+  'roulette-euro': {
+    name: '欧洲轮盘',
+    sub: '37 格 · 单 0 · 经典轮盘',
+    images: [],
+    intro: '欧洲轮盘是一款经典轮盘游戏。轮盘共 37 格（数字 1-36 + 单 0）。玩家在注区下注，球落数字决定输赢。',
+    rules: ['点击数字格下注', '点击「清除」退还全部下注', '点击「旋转」开始，球落在某数字即开', '单数字 ×35 · 红/黑 · 单/双 · 小/大 各 ×1', '打（1st/2nd/3rd 12） ×2'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': '欧洲轮盘',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
+      '上线日期': '2026-10-03'
+    }
+  }
+,
+  'roulette-amer': {
+    name: '美式轮盘',
+    sub: '38 格 · 双 0 · 经典轮盘',
+    images: [],
+    intro: '美式轮盘是一款经典轮盘游戏。轮盘共 38 格（数字 1-36 + 0 + 00）。玩家在注区下注，球落数字决定输赢。',
+    rules: ['点击数字格下注', '点击「清除」退还全部下注', '点击「旋转」开始，球落在某数字即开', '单数字 ×35 · 红/黑 · 单/双 · 小/大 各 ×1', '打（1st/2nd/3rd 12） ×2'],
+    prizes: [],
+    paytable: [],
+    info: {
+      '游戏类型': '美式轮盘',
+      '最低下注': '¥1',
+      '最高下注': '¥100',
       '上线日期': '2026-10-03'
     }
   }
