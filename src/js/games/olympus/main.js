@@ -318,6 +318,79 @@
     });
   }
 
+  // ── Reel 滚动动画（6 列依次停下）──
+  function randomSymbolForScroll() {
+    var keys = Object.keys(SYMBOL_SVG);
+    // 用自增计数器 + 时间戳：无需 Math.random，也足够"随机感"
+    randomSymbolForScroll._i = (randomSymbolForScroll._i || 0) + 1;
+    var seed = (Date.now() + randomSymbolForScroll._i * 7919) % 100000;
+    return keys[seed % keys.length];
+  }
+  function makeReelCell(sym) {
+    var url = SYMBOL_SVG[sym];
+    var d = document.createElement('div');
+    d.className = 'ol-reel-cell';
+    if (url) d.innerHTML = '<img src="' + url + '" alt="">';
+    return d;
+  }
+  function spinReels(targetGrid) {
+    return new Promise(function (resolve) {
+      var elReels = $('ol-reels');
+      if (!elReels) { resolve(); return; }
+      elReels.innerHTML = '';
+      elReels.classList.add('show');
+
+      var gridH = elGrid.clientHeight;
+      if (!gridH) gridH = 300;
+      var cellH = (gridH - 16 - 4 * 4) / 5;
+      var gap = 4;
+      var SCROLL_COUNT = 8;
+      var tracks = [];
+
+      for (var c = 0; c < COLS; c++) {
+        var col = document.createElement('div');
+        col.className = 'ol-reel-col';
+        var track = document.createElement('div');
+        track.className = 'ol-reel-track';
+        for (var i = 0; i < SCROLL_COUNT; i++) {
+          var cell = makeReelCell(randomSymbolForScroll());
+          cell.style.height = cellH + 'px';
+          track.appendChild(cell);
+        }
+        for (var r = 0; r < ROWS; r++) {
+          var cell2 = makeReelCell(targetGrid[c][r]);
+          cell2.style.height = cellH + 'px';
+          track.appendChild(cell2);
+        }
+        track.style.transform = 'translateY(0)';
+        track.style.transition = 'none';
+        col.appendChild(track);
+        elReels.appendChild(col);
+        tracks.push(track);
+      }
+
+      requestAnimationFrame(function () {
+        var stepDur = 200;
+        var baseDur = 600;
+        tracks.forEach(function (t, i) {
+          var offset = -(SCROLL_COUNT * (cellH + gap));
+          var dur = baseDur + i * 70;
+          var delay = i * stepDur;
+          setTimeout(function () {
+            t.style.transition = 'transform ' + dur + 'ms cubic-bezier(.15,.6,.2,1)';
+            t.style.transform = 'translateY(' + offset + 'px)';
+          }, delay);
+          setTimeout(function () { sfx('reelStop', i); }, delay + dur);
+        });
+        var lastStop = (COLS - 1) * stepDur + (baseDur + (COLS - 1) * 70);
+        setTimeout(function () {
+          elReels.classList.remove('show');
+          setTimeout(function () { elReels.innerHTML = ''; resolve(); }, 140);
+        }, lastStop + 60);
+      });
+    });
+  }
+
   // ── Spin 主流程 ──
   async function doSpin() {
     if (spinning) return;
@@ -479,6 +552,17 @@
       }
     }
     buildGrid();
+    // 初始盘：铺满符号（无中奖，纯展示）
+    var initSyms = ['GEM_BLUE', 'GEM_GREEN', 'GEM_PURPLE', 'GEM_RED', 'CHALICE', 'RING', 'HOURGLASS', 'CROWN'];
+    var initGrid = [];
+    for (var ic = 0; ic < COLS; ic++) {
+      var icol = [];
+      for (var ir = 0; ir < ROWS; ir++) {
+        icol.push(initSyms[(ic * 5 + ir * 3) % initSyms.length]);
+      }
+      initGrid.push(icol);
+    }
+    renderGridFull(initGrid);
     window.addEventListener('resize', layoutGrid);
     window.addEventListener('orientationchange', function () { setTimeout(layoutGrid, 200); });
     updateBetUI();

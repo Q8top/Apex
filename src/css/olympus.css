@@ -498,3 +498,9 @@ html, body {
   cursor: pointer;
 }
 .detail-sheet-btn:active { opacity: .85; }
+
+/* ── 兜底（防旧版 CSS 混用） ── */
+.sym-list .sym-icon { width: 32px; height: 32px; display: block; flex-shrink: 0; }
+.pay-table .pay-icon { width: 32px; height: 32px; display: block; }
+.preview .preview-ph-icon { width: 52px; height: 52px; }
+.preview .preview-ph-text { font-size: 13px; }
