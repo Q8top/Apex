@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fafafa">
+<meta name="robots" content="noindex">
+<title>甜蜜蜜 · Apex</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>html,body,*{touch-action:manipulation;-webkit-text-size-adjust:100%;}</style>
+<link rel="stylesheet" href="/src/game/sweet/sweet-v2.css">
+<style>.apex-loader{position:fixed;inset:0;z-index:9999;background:#fafafa;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease}.apex-loader.apex-hide{opacity:0;pointer-events:none}.apex-loader-spin{width:36px;height:36px;border:3px solid #ececee;border-top-color:#0a0a0a;border-radius:50%;animation:apexSpin .8s linear infinite}@keyframes apexSpin{to{transform:rotate(360deg)}}</style>
+</head>
+<body>
+<div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
+<svg id="sweet-defs" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"></svg>
+<div id="app">
+
+  <header class="sw-bar">
+    <a class="sw-icon-btn apex-back" href="/game.html?id=sweet" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div class="sw-brand-wrap">
+      <div class="sw-brand" id="sw-brand">甜蜜蜜</div>
+      <div class="sw-mode-badge" id="sw-mode-badge" data-mode="demo">
+        <span class="sw-mode-dot"></span>
+        <span class="sw-mode-text" id="sw-mode-text">试玩模式</span>
+      </div>
+    </div>
+    <div class="sw-bar-right">
+      <button class="sw-icon-btn" id="sw-sound" aria-label="音效">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a10 10 0 010 14"/></svg>
+      </button>
+      <button class="sw-icon-btn" id="sw-menu" aria-label="菜单">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="sw-stage">
+    <div class="stage-layer stage-bg"></div>
+    <div class="stage-layer stage-board">
+      <div class="sw-grid" id="sw-grid" aria-label="游戏网格"></div>
+    </div>
+    <div class="stage-layer stage-symbols"></div>
+    <canvas class="stage-layer stage-fx" id="sw-fx"></canvas>
+    <div class="stage-layer stage-win"></div>
+    <div class="sw-freespin-banner" id="sw-freespin-banner" hidden>
+      <span>★ 免费旋转</span>
+      <span class="sw-fs-count" id="sw-fs-count">0</span>
+      <span class="sw-fs-mult" id="sw-fs-mult"></span>
+    </div>
+  </section>
+
+  <section class="sw-win-row">
+    <div class="sw-win-label" id="sw-win-label">本局中奖</div>
+    <div class="sw-win-value" id="sw-win-value">¥0.00</div>
+    <div class="sw-combo" id="sw-combo"></div>
+  </section>
+
+  <section class="sw-balance-panel">
+    <div class="sw-balance-main">
+      <div class="sw-balance-label">余额</div>
+      <div class="sw-balance-value" id="sw-balance">¥1,000.00</div>
+    </div>
+    <div class="sw-balance-sub">
+      <div class="sw-balance-item">
+        <span class="sw-balance-sub-label">本局下注</span>
+        <span class="sw-balance-sub-value" id="sw-bet-display">¥10.00</span>
+      </div>
+      <div class="sw-balance-item">
+        <span class="sw-balance-sub-label">本局赢得</span>
+        <span class="sw-balance-sub-value" id="sw-won-display">¥0.00</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sw-bet-row">
+    <button class="sw-bet-btn" id="sw-bet-minus" aria-label="减小下注">−</button>
+    <div class="sw-bet-txt" id="sw-bet-txt">
+      <span class="sw-bet-txt-label">当前下注</span>
+      <span class="sw-bet-txt-value" id="sw-bet">¥10.00</span>
+    </div>
+    <button class="sw-bet-btn" id="sw-bet-plus" aria-label="增大下注">+</button>
+  </section>
+
+  <section class="sw-spin-row">
+    <button class="sw-spin-btn" id="sw-spin" data-phase="idle">
+      <svg class="sw-spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3.51-7.13"/><path d="M21 3v6h-6"/></svg>
+      <span class="sw-spin-label" id="sw-spin-label">旋转</span>
+    </button>
+  </section>
+
+  <section class="sw-foot">
+    <button class="sw-foot-btn" id="sw-auto">
+      <svg class="sw-foot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      <span>自动</span>
+    </button>
+    <button class="sw-foot-btn" id="sw-history">
+      <svg class="sw-foot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>记录</span>
+    </button>
+    <button class="sw-foot-btn" id="sw-paytable">
+      <svg class="sw-foot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
+      <span>赔付</span>
+    </button>
+  </section>
+
+  <div class="sw-fs-summary" id="sw-fs-summary"><div class="sw-fs-summary-glow"></div><div class="sw-fs-summary-content"><div class="sw-fs-summary-title">免费旋转总赢分</div><div class="sw-fs-summary-amount" id="sw-fs-total">¥0</div></div></div>
+  <div class="sw-toast" id="sw-toast"></div>
+</div>
+
+<!-- 1. 旧 config（core 依赖） -->
+<script src="/src/js/sweet/sweet-config.js"></script>
+
+<!-- 2. core 基础 -->
+<script src="/src/game/sweet/core/events.js"></script>
+<script src="/src/game/sweet/core/state.js"></script>
+<script src="/src/game/sweet/core/rng.js"></script>
+<script src="/src/game/sweet/core/config.js"></script>
+<script src="/src/game/sweet/core/engine.js"></script>
+<script src="/src/game/sweet/present/timeline.js"></script>
+
+<!-- 3. Symbol 系统（顺序严格） -->
+<script src="/src/game/symbols/lighting.js"></script>
+<script src="/src/game/symbols/materials.js"></script>
+<script src="/src/game/symbols/SymbolRenderer.js"></script>
+<script src="/src/game/symbols/sweet-candy.js"></script>
+<script src="/src/game/symbols/sweet-fruit.js"></script>
+<script src="/src/game/symbols/sweet-scatter.js"></script>
+<script src="/src/js/sweet/sweet-symbols.js"></script>
+<script src="/src/game/sweet/symbol/renderer.js"></script>
+
+<!-- 4. Reel -->
+<script src="/src/game/sweet/reel/reel-dom.js"></script>
+<script src="/src/game/sweet/reel/reel.js"></script>
+<script src="/src/game/sweet/reel/reel-controller.js"></script>
+
+<!-- 5. HUD / Win / FS / BigWin -->
+<script src="/src/game/sweet/present/hud.js"></script>
+<script src="/src/game/sweet/present/win.js"></script>
+<script src="/src/game/sweet/present/fs.js"></script>
+<script src="/src/game/sweet/present/bigwin.js"></script>
+
+<!-- 6. Audio（旧 Audio J + 新 bridge） -->
+<script src="/src/js/sweet/sweet-audio.js"></script>
+<script src="/src/game/sweet/audio/bridge.js"></script>
+
+<!-- 7. FX -->
+<script src="/src/game/sweet/fx/particles.js"></script>
+
+<!-- 8. 共享 -->
+<script src="/src/js/inline/bigwin.js"></script>
+<script src="/src/js/inline/apex-loader.js"></script>
+
+<!-- 9. App 主控（最后） -->
+<script src="/src/game/sweet/app.js"></script>
+</body>
+</html>
