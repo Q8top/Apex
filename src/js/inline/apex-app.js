@@ -271,6 +271,7 @@ function mountTabbar(app){
 function initTabbar(app){
   var nav=app.querySelector('.apex-tabbar');
   if(!nav)return;
+  nav.classList.add('glass','glass-refract');
   var main=app.querySelector('.apex-main');
   function setSpot(b,x,y){
     var r=b.getBoundingClientRect();
