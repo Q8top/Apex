@@ -1390,3 +1390,27 @@ html, body {
 .sw-cell.popping > svg {
   animation: swPopSvg .6s cubic-bezier(.3,0,.5,1) forwards !important;
 }
+
+/* ===== APEX-SWEET-C11-POP: 中奖消失动画 v3 =====
+   C10 失败根因：Safari 对 inline <svg> 元素的 CSS transform animation 支持不稳定
+   C11 方案：
+   1. 动画作用回 cell（脱离 svg 兼容性问题）
+   2. 用 .sw-cell.winning.popping 更高特异性强制覆盖 swWinPulse
+   3. keyframe 明确 from/to，中途加 60% 关键帧让曲线更"有消失感"
+   4. 时长 550ms，paint 在 600ms → 完整播完
+   5. will-change 强制 GPU 层
+*/
+@keyframes swPopOutV3 {
+  0%   { transform: scale(1);   opacity: 1; }
+  60%  { transform: scale(.5);  opacity: .4; }
+  100% { transform: scale(.3);  opacity: 0; }
+}
+.sw-cell.winning.popping,
+.sw-cell.popping {
+  animation: swPopOutV3 .55s cubic-bezier(.5,0,.7,1) forwards !important;
+  transform-origin: 50% 50% !important;
+  will-change: transform, opacity;
+}
+.sw-cell.popping > svg {
+  animation: none !important;
+}
