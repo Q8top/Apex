@@ -150,15 +150,30 @@ function initAnnounce(app){
 
 function renderCatContent(content, catKey){
   if(catKey==='hot'){
-    var GAMES=[];
+    var GAMES=[
+      {id:'olympus',  n:'奥林匹斯之门', k:'olympus'},
+      {id:'sweet',    n:'糖果连连爆',       k:'sweet'},
+      {id:'sugar',    n:'甜蜜爆奖',              k:'sugar'},
+      {id:'bass',     n:'巨型鲈鱼',              k:'bass'},
+      {id:'dog',      n:'狗狗之家',              k:'dog'},
+      {id:'book',     n:'死亡之书',              k:'book'},
+      {id:'starburst',n:'星爆',                          k:'starburst'},
+      {id:'gonzo',    n:'刚果探险',              k:'gonzo'},
+      {id:'buffalo',  n:'水牛之王',              k:'buffalo'},
+      {id:'wolf',     n:'狼黄金',                    k:'wolf'},
+      {id:'fruit',    n:'水果派对',              k:'fruit'},
+      {id:'megaways', n:'大富翁',                    k:'megaways'}
+    ];
     var html='<div class="apex-game-grid">';
     GAMES.forEach(function(g){
-      html+='<a class="apex-game-card" href="/'+g.id+'.html">'
-        +'<span class="apex-game-card-icon"><img src="'+g.icon+'" alt="" loading="lazy"></span>'
-        +'<span class="apex-game-card-name">'+g.name+'</span>'
+      var svg=(window.ApexGameIcons&&window.ApexGameIcons.render)?window.ApexGameIcons.render(g.k):'';
+      html+='<a class="apex-game-card" href="/'+g.id+'.html" aria-label="'+g.n+'">'
+        +'<span class="apex-game-card-icon">'+svg+'</span>'
+        +'<span class="apex-game-card-name">'+g.n+'</span>'
         +'</a>';
     });
     html+='</div>';
+    html+='<button type="button" class="apex-more-btn" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
     content.innerHTML=html;
   }else{
     content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
