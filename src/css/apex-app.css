@@ -560,8 +560,10 @@
 .apex-cats-content {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
   background: #ffffff;
-  /* 留白：后续在此填充分类内容 */
 }
 
 @media (max-width: 480px) {
@@ -573,9 +575,9 @@
 
 .apex-cats-empty {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
-  height: 100%;
   color: #a1a1aa;
   font-size: 13px;
   font-weight: 600;
@@ -634,7 +636,7 @@
 .apex-more-games-btn {
   display: block;
   width: 100%;
-  margin: 8px 0 4px;
+  margin: auto 0 0;
   padding: 11px 12px;
   border: 1px solid #e5e5e7;
   border-radius: 10px;
