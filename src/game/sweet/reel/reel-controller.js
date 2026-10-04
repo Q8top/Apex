@@ -14,7 +14,7 @@ var RNG = window.SweetRNG;
 
 var COLS = 6;
 var ROWS = 5;
-var N = 20;
+var N = 15;
 var GAP = 4;
 var BASE_DELAY = 500;
 var STAGGER = 120;

@@ -192,15 +192,13 @@ html, body {
 /* ============ Reel 层（Spin 时显示） ============ */
 .stage-symbols {
   inset: 10px;
-  display: grid;
+  display: none;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 4px;
-  opacity: 0;
-  transition: opacity 100ms ease;
   pointer-events: none;
   z-index: 3;
 }
-.stage-symbols.active { opacity: 1; }
+.stage-symbols.active { display: grid; }
 
 .reel-col {
   position: relative;
@@ -218,12 +216,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, .015) 100%);
+  background: rgba(255, 255, 255, .06);
   border: 1px solid rgba(255, 255, 255, .05);
   border-radius: 8px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .10),
-    inset 0 -2px 4px rgba(0, 0, 0, .22);
 }
 .reel-sym + .reel-sym { margin-top: 4px; }
 .reel-sym > svg {
@@ -696,15 +691,16 @@ html, body {
   justify-content: center;
   gap: 6px;
   width: 100%;
-  height: 42px;
+  height: 38px;
   border-radius: 12px;
   border: 1px solid rgba(215, 53, 142, .06);
   background: rgba(255, 253, 255, .92);
   color: #6b5c68;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 1px 6px rgba(160, 50, 120, .04);
   transition: transform .12s ease, background .12s ease;
   -webkit-tap-highlight-color: transparent;
 }

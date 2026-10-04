@@ -144,6 +144,9 @@ function doSpin(){
 
   var firstGrid = (result.rounds && result.rounds.length) ? result.rounds[0].grid : result.finalGrid;
 
+  var gridElHide = document.getElementById('sw-grid');
+  if (gridElHide) gridElHide.style.opacity = '0';
+
   var layer = document.querySelector('.stage-symbols');
   ReelCtrl.init(layer);
   var ok = ReelCtrl.build(firstGrid, Config.symbolKeys());
