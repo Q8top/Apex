@@ -436,7 +436,7 @@ function playRounds(result, betAmt, fs){
   var stage = document.querySelector('.sw-stage');
 
   function playOne(){
-    if (i >= rounds.length) { finish(totalShown); return; }
+    if (i >= rounds.length) { paintGrid(result.finalGrid); finish(totalShown); return; }
     var rd = rounds[i];
     if (!rd || !rd.wins || rd.wins.length === 0) { i++; playOne(); return; }
     var cells = [];
@@ -456,7 +456,7 @@ function playRounds(result, betAmt, fs){
         if (i < rounds.length && rounds[i] && rounds[i].grid) {
           paintGrid(rounds[i].grid);
           setTimeout(playOne, 250);
-        } else { finish(totalShown); }
+        } else { paintGrid(result.finalGrid); finish(totalShown); }
       }, 220);
     }, 500);
   }
