@@ -150,6 +150,20 @@ export class OlympusController {
     });
     this.spinButton.bind();
 
+    // 附加按钮：重置 / 自动 / 记录 / 赔付
+    var elReset = document.getElementById('ax-reset');
+    var elAuto = document.getElementById('ax-auto');
+    var elHistory = document.getElementById('ax-history');
+    var elPaytable = document.getElementById('ax-paytable');
+    if (elReset) elReset.addEventListener('click', () => { audioManager.play('click'); this._confirmReset(); });
+    if (elAuto) elAuto.addEventListener('click', () => {
+      audioManager.play('click');
+      if (this._autoRunning) this._stopAuto(); else this.startAuto();
+      elAuto.classList.toggle('is-active', this._autoRunning);
+    });
+    if (elHistory) elHistory.addEventListener('click', () => { audioManager.play('click'); toast.info('记录功能即将上线'); });
+    if (elPaytable) elPaytable.addEventListener('click', () => { audioManager.play('click'); window.location.href = DETAIL_URL; });
+
     // Win 播放
     this.winPresenter = new WinPresentation({
       stage: this.stage,
@@ -213,6 +227,16 @@ export class OlympusController {
       this._refreshRealBalance();
     }
 
+    // 错误提示
+    eventBus.on('spin:error', (e) => {
+      const r = e && e.reason ? e.reason : '';
+      if (r === 'api_error' || r === 'empty_result' || r === 'network_error' || r === 'timeout') {
+        toast.error('请求失败，请重试');
+      } else if (r === 'insufficient_balance') {
+        toast.error('余额不足');
+      }
+    });
+
     this._built = true;
     logger.info('OlympusController built · mode=' + this._mode);
   }
@@ -250,18 +274,20 @@ export class OlympusController {
 
     audioManager.play('spinStart');
 
-    await this.spin.doSpin();
-
-    // 完成后回到 IDLE
-    if (this._destroyed) return;
-    this.state.patch({ phase: PHASE.IDLE, spinning: false });
-    this.betControl.setLocked(false);
-
-    if (this._autoRunning) {
-      // 检查错误：若刚失败则停止 Auto
-      this._scheduleAuto();
-    } else {
-      this.spinButton.setState('idle');
+    try {
+      await this.spin.doSpin();
+    } catch (e) {
+      logger.error('spin threw', e && e.message);
+    } finally {
+      if (!this._destroyed) {
+        this.state.patch({ phase: PHASE.IDLE, spinning: false });
+        this.betControl.setLocked(false);
+        if (this._autoRunning) {
+          this._scheduleAuto();
+        } else {
+          this.spinButton.setState('idle');
+        }
+      }
     }
   }
 

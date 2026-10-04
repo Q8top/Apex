@@ -664,3 +664,47 @@
   background: var(--ax-bg);
   overflow: hidden;
 }
+
+/* ── 重置余额按钮 ── */
+.ax-reset {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin: 6px 12px 0;
+  padding: 12px;
+  width: calc(100% - 24px);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-r-md);
+  background: var(--ax-surface);
+  color: var(--ax-text);
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+  transition: background var(--ax-d-fast), transform var(--ax-d-fast);
+}
+.ax-reset:active { background: var(--ax-surface-3); transform: scale(.98); }
+.ax-reset svg { width: 18px; height: 18px; }
+
+/* ── 底部三按钮 ── */
+.ax-footer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 4px 12px 12px;
+  flex-shrink: 0;
+}
+.ax-footer-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-r-md);
+  background: var(--ax-surface);
+  color: var(--ax-text);
+  font-size: 13.5px; font-weight: 700;
+  transition: background var(--ax-d-fast), transform var(--ax-d-fast);
+}
+.ax-footer-btn:active { background: var(--ax-surface-3); transform: scale(.97); }
+.ax-footer-btn svg { width: 18px; height: 18px; }
+.ax-footer-btn.is-active {
+  background: var(--ax-text);
+  color: var(--ax-text-inverse);
+  border-color: var(--ax-text);
+}
+.ax-footer-btn.is-active svg { color: var(--ax-text-inverse); }
