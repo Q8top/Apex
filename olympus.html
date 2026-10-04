@@ -30,20 +30,11 @@
 <div class="page-body">
 
   <div class="preview">
-    <div class="preview-slide">
-      <svg class="preview-ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-        <rect x="3" y="4" width="18" height="16" rx="2"/>
-        <circle cx="8.5" cy="9.5" r="1.5"/>
-        <path d="M3 17l4.5-4.5L12 17l3.5-4.5L21 17"/>
-      </svg>
-      <span class="preview-ph-text">游戏画面</span>
-    </div>
-    <div class="preview-dots">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
+    <div class="preview-viewport" id="preview-viewport">
+      <div class="preview-track" id="preview-track"></div>
     </div>
   </div>
+  <div class="preview-dots" id="preview-dots"></div>
 
   <div class="title-block">
     <h1 class="game-title">奥林匹斯之门</h1>
@@ -52,40 +43,46 @@
 
   <section class="card">
     <h2 class="card-title">游戏介绍</h2>
-    <p>奥林匹斯之门是一款 <strong>6×5</strong> 的 Pay Anywhere 消除式老虎机。<strong>相同符号出现 8 个及以上</strong>（无需相邻）即形成中奖。中奖符号消失后上方符号下落补位，若再次形成中奖则触发 Tumble 连锁，每一次连锁都可能带来更高收益。</p>
+    <p>奥林匹斯之门是一款 <strong>6 列 × 5 行</strong>（共 30 格）的 Pay Anywhere 消除式老虎机。区别于传统连线老虎机，本游戏<strong>不依赖中奖线</strong>，只要同一种符号在网格中<strong>出现 8 个或以上</strong>，无论位置是否相邻，即形成中奖。</p>
+    <p>中奖结算后，中奖符号消失，上方的符号按列下落填补空位，新的符号从顶部进入。若下落后的新网格再次形成中奖，则触发 <strong>Tumble 连锁</strong>，可以在一局内连续进行多次结算，每次连锁都会把本局赢奖累加，直到网格不再形成任何中奖为止。</p>
   </section>
 
   <section class="card">
     <h2 class="card-title">游戏规则</h2>
     <ol class="rules">
-      <li><span class="rule-num">01</span><div class="rule-body">点击 <strong>− / +</strong> 调整下注金额</div></li>
-      <li><span class="rule-num">02</span><div class="rule-body">点击「<strong>旋转</strong>」启动一局</div></li>
-      <li><span class="rule-num">03</span><div class="rule-body"><strong>6 列 × 5 行</strong>的网格生成 30 个符号</div></li>
-      <li><span class="rule-num">04</span><div class="rule-body">相同符号 <strong>≥ 8 个</strong> 即形成 Pay Anywhere 中奖（不要求相邻）</div></li>
-      <li><span class="rule-num">05</span><div class="rule-body">中奖符号消失，上方符号下落，顶部补新</div></li>
-      <li><span class="rule-num">06</span><div class="rule-body">若再次形成中奖则触发 <strong>Tumble 连锁</strong>，可连续多次</div></li>
-      <li><span class="rule-num">07</span><div class="rule-body">倍数球出现时，本回合总赢额 <strong>× 倍数和</strong>；4+ Scatter 触发 <strong>Free Spins</strong></div></li>
+      <li><span class="rule-num">01</span><div class="rule-body">通过底部的 <strong>− / +</strong> 按钮调整本局下注金额，下注范围 ¥1 ~ ¥1000。</div></li>
+      <li><span class="rule-num">02</span><div class="rule-body">点击「<strong>旋转</strong>」按钮启动一局。游戏会立即生成 <strong>6 × 5 = 30 个</strong>符号，落入网格中。</div></li>
+      <li><span class="rule-num">03</span><div class="rule-body">结算规则为 <strong>Pay Anywhere</strong>：统计每种符号的总数量，若某符号总数 <strong>≥ 8 个</strong>，则该符号中奖，不要求符号彼此相邻或连线。</div></li>
+      <li><span class="rule-num">04</span><div class="rule-body">中奖符号会高亮显示后<strong>从网格中消失</strong>，其上方同列的符号整体下落填补空位，同时顶部会补充相应数量的新符号。</div></li>
+      <li><span class="rule-num">05</span><div class="rule-body">下落后的新网格会<strong>再次结算</strong>。若再次形成中奖，则触发 <strong>Tumble 连锁</strong>，重复上述过程。一局内可无限连锁，直到某次结算无任何中奖。</div></li>
+      <li><span class="rule-num">06</span><div class="rule-body">连锁过程中，若出现 <strong>倍数球（Multiplier）</strong>符号，它的倍数会被记录并<strong>累加</strong>到本局的总倍数中（例如 x5 + x10 + x25 = x40）。</div></li>
+      <li><span class="rule-num">07</span><div class="rule-body">当局所有连锁结束时，本局赢奖 = （所有中奖赔付之和）×（本局累计倍数）。倍数球只在<strong>本局内</strong>有效，下一局重新从 x0 开始累计。</div></li>
+      <li><span class="rule-num">08</span><div class="rule-body"><strong>Scatter 符号</strong>不属于普通中奖符号。一局内若出现 <strong>≥ 4 个 Scatter</strong>，则触发 <strong>Free Spins 免费旋转</strong>，进入奖励模式。</div></li>
+      <li><span class="rule-num">09</span><div class="rule-body">Free Spins 期间拥有独立的倍数累计机制，且不再扣除余额。全部免费旋转结束后，赢奖一次性结算回账户。</div></li>
     </ol>
   </section>
 
   <section class="card">
     <h2 class="card-title">中奖说明</h2>
-    <div class="reward-cards">
-      <div class="reward-card"><span class="reward-main">8 个</span><span class="reward-sub">基础档</span></div>
-      <div class="reward-card"><span class="reward-main">10 个</span><span class="reward-sub">约 ×2</span></div>
-      <div class="reward-card"><span class="reward-main">12 个</span><span class="reward-sub">约 ×5</span></div>
-    </div>
+    <p class="card-note">赔付倍数为 <strong>下注额的相对倍数</strong>，档位越高越稀有：</p>
+    <ul class="pay-list">
+      <li class="pay-row"><span class="pay-sym" style="--c:#4a90d9"></span><span class="pay-name">蓝宝石</span><span class="pay-val">×1 · ×2 · ×5</span></li>
+      <li class="pay-row"><span class="pay-sym" style="--c:#4ad991"></span><span class="pay-name">绿宝石</span><span class="pay-val">×1 · ×2 · ×6</span></li>
+      <li class="pay-row"><span class="pay-sym" style="--c:#a96fe0"></span><span class="pay-name">紫水晶</span><span class="pay-val">×1 · ×3 · ×8</span></li>
+      <li class="pay-row"><span class="pay-sym" style="--c:#e05a5a"></span><span class="pay-name">红宝石</span><span class="pay-val">×2 · ×4 · ×10</span></li>
+      <li class="pay-row"><span class="pay-sym" style="--c:#d4af37"></span><span class="pay-name">圣杯</span><span class="pay-val">×3 · ×6 · ×15</span></li>
+      <li class="pay-row"><span class="pay-sym pay-sym--ring" style="--c:#d4af37"></span><span class="pay-name">金戒指</span><span class="pay-val">×4 · ×8 · ×20</span></li>
+      <li class="pay-row"><span class="pay-sym pay-sym--hour" style="--c:#d4af37"></span><span class="pay-name">沙漏</span><span class="pay-val">×5 · ×10 · ×25</span></li>
+      <li class="pay-row"><span class="pay-sym pay-sym--crown" style="--c:#f5d76e"></span><span class="pay-name">金冠</span><span class="pay-val">×10 · ×20 · ×50</span></li>
+    </ul>
+    <p class="card-note">※ 上表为相对档位示意，实际结算以游戏内实时显示为准。</p>
   </section>
 
   <section class="card">
-    <h2 class="card-title">赔付表</h2>
-    <ul class="pay-rows">
-      <li class="pay-head"><span>中奖组合</span><span>奖励倍数</span></li>
-      <li><span class="pay-key">8 个相同</span><span class="pay-val">基础赔付</span></li>
-      <li><span class="pay-key">10 个相同</span><span class="pay-val">约 2 倍基础</span></li>
-      <li><span class="pay-key">12 个及以上</span><span class="pay-val">约 5 倍基础</span></li>
-      <li><span class="pay-key">倍数球叠加</span><span class="pay-val">本轮总赢额 × 倍数和</span></li>
-      <li><span class="pay-key">Scatter 触发</span><span class="pay-val">≥4 个进入 Free Spins</span></li>
+    <h2 class="card-title">特殊符号</h2>
+    <ul class="pay-list">
+      <li class="pay-row"><span class="pay-sym pay-sym--scatter" style="--c:#8e6fe0"></span><span class="pay-name">Scatter</span><span class="pay-val">≥4 个触发 Free Spins</span></li>
+      <li class="pay-row"><span class="pay-sym pay-sym--mult" style="--c:#f5d76e"></span><span class="pay-name">倍数球</span><span class="pay-val">x2 ~ x500，本局累加</span></li>
     </ul>
   </section>
 
@@ -94,7 +91,7 @@
     <dl class="info-list">
       <div class="info-row"><dt>游戏类型</dt><dd>Pay Anywhere 消除式</dd></div>
       <div class="info-row"><dt>游戏网格</dt><dd>6 × 5（30 格）</dd></div>
-      <div class="info-row"><dt>最小中奖数</dt><dd>8 个</dd></div>
+      <div class="info-row"><dt>最小中奖数</dt><dd>8 个相同符号</dd></div>
       <div class="info-row"><dt>符号数量</dt><dd>8 种 + Scatter + 倍数球</dd></div>
       <div class="info-row"><dt>最低下注</dt><dd>¥1</dd></div>
       <div class="info-row"><dt>最高下注</dt><dd>¥1000</dd></div>
@@ -123,5 +120,6 @@
 </div>
 
 <script src="/src/js/inline/apex-loader.js"></script>
+<script src="/src/js/games/olympus/detail.js"></script>
 </body>
 </html>
