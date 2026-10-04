@@ -587,8 +587,8 @@
 .apex-game-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px 10px;
-  padding: 4px 2px 12px;
+  gap: 10px 8px;
+  padding: 4px 0 14px;
 }
 .apex-game-card {
   display: flex;
@@ -604,8 +604,10 @@
   position: relative;
   display: block;
   width: 100%;
+  max-width: 64px;
+  margin: 0 auto;
   aspect-ratio: 1 / 1;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
@@ -624,7 +626,7 @@
 .apex-game-card-name {
   display: block;
   width: 100%;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   line-height: 1.25;
   text-align: center;
@@ -649,6 +651,6 @@
   opacity: .85;
 }
 @media (min-width: 460px) {
-  .apex-game-grid { gap: 14px 12px; }
-  .apex-game-card-name { font-size: 12.5px; }
+  .apex-game-grid { gap: 12px 10px; }
+  .apex-game-card-name { font-size: 12px; }
 }

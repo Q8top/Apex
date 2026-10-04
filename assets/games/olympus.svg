@@ -5,19 +5,42 @@
       <stop offset="50%" stop-color="#d4af37"/>
       <stop offset="100%" stop-color="#a8842a"/>
     </linearGradient>
-    <linearGradient id="og-bolt" x1="0" y1="0" x2="0" y2="1">
+    <radialGradient id="og-face" cx="50%" cy="35%" r="65%">
       <stop offset="0%" stop-color="#ffe98a"/>
-      <stop offset="100%" stop-color="#e0b52f"/>
-    </linearGradient>
+      <stop offset="65%" stop-color="#e6c350"/>
+      <stop offset="100%" stop-color="#b8922e"/>
+    </radialGradient>
   </defs>
 
   <rect x="30" y="30" width="140" height="140" rx="30" fill="#ffffff" stroke="#0a0a0a" stroke-width="2"/>
   <rect x="37" y="37" width="126" height="126" rx="24" fill="none" stroke="url(#og-gold)" stroke-width="1.5" opacity=".9"/>
 
-  <g transform="translate(100 87)">
-    <path d="M-24-22 L-16-10 L-8-22 L0-10 L8-22 L16-10 L24-22 L20 4 L-20 4 Z"
-          fill="url(#og-gold)" stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/>
-    <path d="M5 8 L-8 28 L0 28 L-6 46 L12 24 L4 24 Z"
-          fill="url(#og-bolt)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
-  </g>
+  <!-- 头顶闪电 -->
+  <path d="M 100 48 L 92 60 L 100 60 L 94 70 L 108 56 L 100 56 Z"
+        fill="#ffe98a" stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round"/>
+
+  <!-- Zeus 头部 -->
+  <ellipse cx="100" cy="108" rx="30" ry="28"
+           fill="url(#og-face)" stroke="#0a0a0a" stroke-width="2"/>
+
+  <!-- 头发弧 -->
+  <path d="M 74 90 Q 82 76 100 76 Q 118 76 126 90"
+        fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- 眼睛 -->
+  <circle cx="88" cy="100" r="3" fill="#0a0a0a"/>
+  <circle cx="112" cy="100" r="3" fill="#0a0a0a"/>
+
+  <!-- 鼻子 -->
+  <path d="M 100 106 L 96 116 L 104 116 Z"
+        fill="#0a0a0a" stroke="#0a0a0a" stroke-width=".8" stroke-linejoin="round"/>
+
+  <!-- 大胡子 -->
+  <path d="M 76 118 Q 82 134 100 138 Q 118 134 124 118
+           Q 126 124 124 130 Q 118 142 100 144 Q 82 142 76 130 Q 74 124 76 118 Z"
+        fill="url(#og-gold)" stroke="#0a0a0a" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- 胡子纹理 -->
+  <path d="M 84 124 Q 92 130 100 130 Q 108 130 116 124"
+        fill="none" stroke="#0a0a0a" stroke-width="1" opacity=".55" stroke-linecap="round"/>
 </svg>
