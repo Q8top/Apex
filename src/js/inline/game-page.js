@@ -279,6 +279,121 @@ function init(){
     }).join('');
   }
 
+  /* ============================================================
+     Overlay 游戏层
+     ============================================================ */
+  (function initOverlay(){
+    var overlay = document.getElementById('og-overlay');
+    if (!overlay) return;
+
+    var gridEl  = document.getElementById('og-grid');
+    var closeBtn= document.getElementById('og-close');
+    var modeEl  = document.getElementById('og-mode');
+    var betDisp = document.getElementById('og-bet-disp');
+    var betDec  = document.getElementById('og-bet-dec');
+    var betInc  = document.getElementById('og-bet-inc');
+    var balanceEl = document.getElementById('og-balance');
+    var winTotalEl= document.getElementById('og-win-total');
+    var winBanner = document.getElementById('og-win');
+    var winAmt    = document.getElementById('og-win-amt');
+    var spinBtn   = document.getElementById('og-spin');
+
+    // 12 个符号（先用游戏封面 webp 占位，后续换真正的符号图标）
+    var SYMBOLS = [
+      '/assets/games/olympus.webp', '/assets/games/sweet.webp',
+      '/assets/games/sugar.webp',   '/assets/games/book.webp',
+      '/assets/games/dog.webp',     '/assets/games/bass.webp',
+      '/assets/games/gonzo.webp',   '/assets/games/starburst.webp',
+      '/assets/games/megaways.webp','/assets/games/buffalo.webp',
+      '/assets/games/wolf.webp',    '/assets/games/fruit.webp'
+    ];
+
+    var state = {
+      mode: 'demo',
+      balance: 1000,
+      bet: 10,
+      spinning: false
+    };
+
+    // -------- 填充网格 --------
+    function fillGrid(){
+      var html = '';
+      for (var i = 0; i < 30; i++) {
+        var idx = Math.floor(Math.random() * SYMBOLS.length);
+        var bg  = SYMBOLS[idx];
+        html += '<div class="og-cell" style="background-image:url(\''+bg+'\')"></div>';
+      }
+      gridEl.innerHTML = html;
+    }
+
+    // -------- 格式化金额 --------
+    function money(n){
+      return '¥' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    // -------- 更新 HUD --------
+    function updateHud(){
+      if (balanceEl) balanceEl.textContent = money(state.balance);
+      if (betDisp)   betDisp.textContent   = money(state.bet);
+    }
+
+    // -------- 打开 / 关闭 --------
+    function open(mode){
+      state.mode = mode;
+      state.balance = (mode === 'demo') ? 1000 : 0;
+      state.bet = 10;
+      if (modeEl) modeEl.textContent = (mode === 'demo') ? '试玩模式' : '真实模式';
+      fillGrid();
+      updateHud();
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close(){
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // -------- 按钮绑定 --------
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    // 免费试用
+    var trialBtn = document.getElementById('game-trial');
+    if (trialBtn) {
+      trialBtn.addEventListener('click', function(){ open('demo'); });
+    }
+    // 开始游戏
+    var startBtn = document.getElementById('game-start');
+    if (startBtn) {
+      startBtn.addEventListener('click', function(){ open('real'); });
+    }
+
+    // 下注 -/+
+    var BET_STEPS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+    if (betDec) betDec.addEventListener('click', function(){
+      var i = BET_STEPS.indexOf(state.bet);
+      if (i > 0) { state.bet = BET_STEPS[i-1]; updateHud(); }
+    });
+    if (betInc) betInc.addEventListener('click', function(){
+      var i = BET_STEPS.indexOf(state.bet);
+      if (i >= 0 && i < BET_STEPS.length - 1) { state.bet = BET_STEPS[i+1]; updateHud(); }
+    });
+
+    // 旋转（占位，仅重排符号 + 显示随机中奖）
+    if (spinBtn) spinBtn.addEventListener('click', function(){
+      if (state.spinning) return;
+      state.spinning = true;
+      spinBtn.disabled = true;
+      fillGrid();
+      setTimeout(function(){
+        state.spinning = false;
+        spinBtn.disabled = false;
+      }, 600);
+    });
+
+  })();
+
   start();
 }
 

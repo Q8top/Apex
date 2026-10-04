@@ -150,6 +150,77 @@
 </nav>
 
 <script src="/src/js/inline/apex-loader.js"></script>
+<div class="og-overlay" id="og-overlay" aria-hidden="true">
+  <header class="og-topbar">
+    <button type="button" class="og-topbtn" id="og-close" aria-label="返回详情">
+      <i class="ri-arrow-left-s-line" aria-hidden="true"></i>
+    </button>
+    <div class="og-title">
+      <h1>奥林匹斯</h1>
+      <span class="og-mode" id="og-mode">试玩模式</span>
+    </div>
+    <button type="button" class="og-topbtn" id="og-menu" aria-label="菜单">
+      <i class="ri-menu-line" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <section class="og-stage">
+    <div class="og-grid-wrap">
+      <div class="og-grid" id="og-grid"></div>
+      <div class="og-win-banner" id="og-win">
+        <span class="og-win-label">恭喜中奖</span>
+        <span class="og-win-amount" id="og-win-amt">+¥0.00</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="og-hud">
+    <div class="og-hud-card">
+      <div class="og-hud-row">
+        <span class="og-hud-label">余额</span>
+        <span class="og-hud-value" id="og-balance">¥1,000.00</span>
+      </div>
+      <div class="og-hud-row og-hud-row--right">
+        <span class="og-hud-label">本局赢</span>
+        <span class="og-hud-value og-hud-value--win" id="og-win-total">¥0.00</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="og-controls">
+    <div class="og-bet-row">
+      <button type="button" class="og-bet-btn" id="og-bet-dec" aria-label="减少下注">
+        <i class="ri-subtract-line" aria-hidden="true"></i>
+      </button>
+      <div class="og-bet-display">
+        <span class="og-bet-label">当前下注</span>
+        <span class="og-bet-value" id="og-bet-disp">¥10.00</span>
+      </div>
+      <button type="button" class="og-bet-btn" id="og-bet-inc" aria-label="增加下注">
+        <i class="ri-add-line" aria-hidden="true"></i>
+      </button>
+    </div>
+    <button type="button" class="og-spin" id="og-spin">
+      <i class="ri-refresh-line" aria-hidden="true"></i>
+      <span>旋转</span>
+    </button>
+    <div class="og-quick-row">
+      <button type="button" class="og-quick" id="og-auto">
+        <i class="ri-refresh-line" aria-hidden="true"></i>
+        <span>自动</span>
+      </button>
+      <button type="button" class="og-quick" id="og-history">
+        <i class="ri-history-line" aria-hidden="true"></i>
+        <span>记录</span>
+      </button>
+      <button type="button" class="og-quick" id="og-paytable">
+        <i class="ri-table-line" aria-hidden="true"></i>
+        <span>赔付</span>
+      </button>
+    </div>
+  </section>
+</div>
+
 <script src="/src/js/inline/game-page.js"></script>
 </body>
 </html>
