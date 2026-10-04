@@ -1,29 +1,33 @@
-/* Apex 游戏图标库 — 纯 SVG 内联，无外部依赖
- * 规范：viewBox 200x200，白底黑框 2px，内容缩至 60~88% 居中
+/* Apex 游戏图标库 v2 — 多图层 SVG + 渐变 + 高光
+ * 规范：viewBox 200x200，白底黑框 2px，内容 60~88% 居中
  * 挂载：window.ApexGameIcons.render(key) -> svgString
  */
 (function(){
 'use strict';
 var F='<rect x="30" y="30" width="140" height="140" rx="30" fill="#fff" stroke="#0a0a0a" stroke-width="2"/>';
-var I=[
-{k:'olympus',c:'#d4af37',b:'<path d="M-5 -55 L20 -55 L0 -5 L25 -5 L-15 55 L5 5 L-20 5 Z" fill="{c}"/>'},
-{k:'sweet',c:'#ff5c9d',b:'<circle r="38" fill="#fff" stroke="{c}" stroke-width="7"/><path d="M0 0 A 20 20 0 0 1 20 20 A 14 14 0 0 1 6 34 A 8 8 0 0 1 -2 26" fill="none" stroke="{c}" stroke-width="5" stroke-linecap="round"/><rect x="-3.5" y="38" width="7" height="30" rx="3.5" fill="{c}"/>'},
-{k:'sugar',c:'#a855f7',b:'<rect x="-42" y="-42" width="84" height="84" rx="16" fill="{c}" opacity=".15" stroke="{c}" stroke-width="5"/><circle cx="-18" cy="-18" r="10" fill="{c}"/><circle cx="18" cy="-18" r="10" fill="{c}" opacity=".55"/><circle cx="-18" cy="18" r="10" fill="{c}" opacity=".55"/><circle cx="18" cy="18" r="10" fill="{c}"/>'},
-{k:'bass',c:'#0891b2',b:'<path d="M-50 0 Q-20 -35 20 -20 Q45 -10 55 0 Q45 10 20 20 Q-20 35 -50 0 Z" fill="{c}"/><circle cx="-15" cy="-6" r="4" fill="#fff"/><path d="M-50 0 L-62 -12 L-62 12 Z" fill="{c}"/>'},
-{k:'dog',c:'#f97316',b:'<path d="M-38 -10 L-38 -38 L-22 -30 L22 -30 L38 -38 L38 -10 Q38 25 0 40 Q-38 25 -38 -10 Z" fill="{c}"/><circle cx="-13" cy="-5" r="4" fill="#fff"/><circle cx="13" cy="-5" r="4" fill="#fff"/><ellipse cx="0" cy="15" rx="9" ry="7" fill="#fff"/>'},
-{k:'book',c:'#b8860b',b:'<path d="M-40 -45 L40 -45 L40 45 L-40 45 Z" fill="{c}"/><path d="M-40 -45 Q0 -55 0 -40 L0 45 Q0 35 -40 45 Z" fill="#fff" opacity=".92"/><path d="M0 -40 Q0 -55 40 -45 L40 45 Q0 35 0 45 Z" fill="#fff" opacity=".72"/><path d="M-28 0 L28 0 M-28 12 L28 12 M-28 -12 L28 -12" stroke="{c}" stroke-width="3" opacity=".5"/>'},
-{k:'starburst',c:'#3b82f6',b:'<path d="M0 -55 L12 -12 L55 0 L12 12 L0 55 L-12 12 L-55 0 L-12 -12 Z" fill="{c}"/>'},
-{k:'gonzo',c:'#16a34a',b:'<path d="M-45 40 L0 -40 L45 40 Z" fill="{c}"/><path d="M-25 40 L0 0 L25 40 Z" fill="#fff"/><rect x="-45" y="40" width="90" height="8" fill="{c}"/>'},
-{k:'buffalo',c:'#92400e',b:'<path d="M-45 -20 Q-45 -45 -25 -40 Q0 -50 25 -40 Q45 -45 45 -20 Q45 25 0 45 Q-45 25 -45 -20 Z" fill="{c}"/><circle cx="-15" cy="-10" r="4" fill="#fff"/><circle cx="15" cy="-10" r="4" fill="#fff"/>'},
-{k:'wolf',c:'#eab308',b:'<path d="M-40 -40 L-25 -10 L-10 -30 L0 -15 L10 -30 L25 -10 L40 -40 L30 25 L0 45 L-30 25 Z" fill="{c}"/><circle cx="-12" cy="0" r="3.5" fill="#fff"/><circle cx="12" cy="0" r="3.5" fill="#fff"/>'},
-{k:'fruit',c:'#dc2626',b:'<circle cx="-12" cy="10" r="28" fill="{c}"/><circle cx="18" cy="20" r="22" fill="{c}" opacity=".85"/><path d="M-12 -18 Q-4 -40 20 -42" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/><path d="M-15 -15 Q-30 -30 -45 -28 Q-40 -12 -25 -8 Z" fill="#16a34a"/>'},
-{k:'megaways',c:'#be185d',b:'<path d="M0 -45 L38 0 L0 45 L-38 0 Z" fill="{c}"/><path d="M0 -25 L20 0 L0 25 L-20 0 Z" fill="#fff"/>'}
-];
-function render(k){
-  var it=null,i;
-  for(i=0;i<I.length;i++){if(I[i].k===k){it=I[i];break;}}
-  if(!it)return '';
-  return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+F+'<g transform="translate(100 100)">'+it.b.replace(/\{c\}/g,it.c)+'</g></svg>';
+function g(id,a,b,vertical){
+  return '<linearGradient id="'+id+'" x1="0" y1="0" x2="'+(vertical?'0':'1')+'" y2="'+(vertical?'1':'1')+'"><stop offset="0" stop-color="'+a+'"/><stop offset="1" stop-color="'+b+'"/></linearGradient>';
 }
-window.ApexGameIcons={render:render,_defs:I};
+function rg(id,a,b,c){
+  return '<radialGradient id="'+id+'" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="'+a+'"/><stop offset="'+(c||'.6')+'" stop-color="'+b+'"/><stop offset="1" stop-color="'+b+'"/></radialGradient>';
+}
+var I={
+olympus:'<defs>'+g('ol','#fde047','#a16207',1)+'</defs><g transform="translate(100 100)"><path d="M6 -50 L-22 -6 L-4 -6 L-12 50 L22 6 L4 6 Z" fill="url(#ol)" stroke="#78350f" stroke-width="2" stroke-linejoin="round"/><path d="M6 -50 L-14 -14 L-2 -14 Z" fill="#fefce8" opacity=".7"/><circle r="56" fill="none" stroke="#a16207" stroke-width="1.2" opacity=".35"/></g>',
+sweet:'<defs>'+rg('sw','#fecdd3','#be123c','.55')+'</defs><g transform="translate(100 100)"><circle r="36" fill="url(#sw)" stroke="#9f1239" stroke-width="1.5"/><path d="M-36 0 A36 36 0 0 1 36 0 A24 24 0 0 1 -36 0" fill="none" stroke="#fff" stroke-width="4" opacity=".55"/><path d="M-24 8 A24 24 0 0 0 24 8" fill="none" stroke="#fff" stroke-width="3" opacity=".4"/><circle cx="-14" cy="-14" r="8" fill="#fff" opacity=".75"/><rect x="-4" y="34" width="8" height="22" rx="4" fill="#fff" stroke="#9f1239" stroke-width="1.5"/></g>',
+sugar:'<defs>'+g('su','#e9d5ff','#7e22ce',0)+'</defs><g transform="translate(100 100)"><rect x="-40" y="-40" width="80" height="80" rx="18" fill="url(#su)" stroke="#581c87" stroke-width="2"/><path d="M-40 -22 Q0 -34 40 -22 L40 -22 Q40 -40 22 -40 L-22 -40 Q-40 -40 -40 -22 Z" fill="#fff" opacity=".35"/><circle cx="-16" cy="-16" r="9" fill="#fff" opacity=".9"/><circle cx="16" cy="-16" r="9" fill="#fff" opacity=".55"/><circle cx="-16" cy="16" r="9" fill="#fff" opacity=".55"/><circle cx="16" cy="16" r="9" fill="#fff" opacity=".9"/></g>',
+bass:'<defs>'+g('ba','#67e8f9','#0e7490',0)+'</defs><g transform="translate(100 100)"><path d="M-46 0 L-64 -14 L-58 0 L-64 14 Z" fill="url(#ba)" stroke="#155e75" stroke-width="2" stroke-linejoin="round"/><path d="M-46 0 Q-20 -32 18 -22 Q40 -14 52 0 Q40 14 18 22 Q-20 32 -46 0 Z" fill="url(#ba)" stroke="#155e75" stroke-width="2"/><path d="M-30 -18 Q-6 -28 18 -18 M-32 0 Q-6 -10 20 -2 M-30 18 Q-6 8 18 14" fill="none" stroke="#fff" stroke-width="1.5" opacity=".4"/><circle cx="-18" cy="-6" r="5" fill="#fff" stroke="#0e7490" stroke-width="1"/><circle cx="-18" cy="-6" r="2" fill="#0a0a0a"/></g>',
+dog:'<defs>'+g('dg','#fb923c','#c2410c',1)+'</defs><g transform="translate(100 100)"><path d="M-34 -14 L-40 -46 L-18 -34 L18 -34 L40 -46 L34 -14 Q34 26 0 42 Q-34 26 -34 -14 Z" fill="url(#dg)" stroke="#7c2d12" stroke-width="2" stroke-linejoin="round"/><path d="M-34 -14 Q-30 6 -18 12 Q-30 -2 -30 -22 Z" fill="#fff" opacity=".25"/><circle cx="-12" cy="-6" r="5" fill="#fff"/><circle cx="12" cy="-6" r="5" fill="#fff"/><circle cx="-12" cy="-6" r="2.2" fill="#0a0a0a"/><circle cx="12" cy="-6" r="2.2" fill="#0a0a0a"/><ellipse cx="0" cy="14" rx="9" ry="7" fill="#fff" stroke="#7c2d12" stroke-width="1"/><ellipse cx="0" cy="12" rx="5" ry="3.5" fill="#0a0a0a"/></g>',
+book:'<defs>'+g('bk','#fcd34d','#b45309',0)+'</defs><g transform="translate(100 100)"><path d="M-42 -46 L42 -46 L42 46 L-42 46 Z" fill="url(#bk)" stroke="#78350f" stroke-width="2"/><path d="M-42 -46 Q0 -58 0 -42 L0 46 Q0 34 -42 46 Z" fill="#fffbeb" stroke="#78350f" stroke-width="1.5"/><path d="M0 -42 Q0 -58 42 -46 L42 46 Q0 34 0 46 Z" fill="#fef3c7" stroke="#78350f" stroke-width="1.5"/><circle cx="22" cy="-8" r="5" fill="#78350f"/><path d="M14 -14 Q22 -22 30 -14 M14 0 Q22 8 30 0 M14 -7 L30 -7" fill="none" stroke="#78350f" stroke-width="1.8"/></g>',
+starburst:'<defs>'+rg('sb','#bfdbfe','#1d4ed8','.55')+'</defs><g transform="translate(100 100)"><path d="M0 -50 L10 -14 L46 -16 L18 4 L30 40 L0 20 L-30 40 L-18 4 L-46 -16 L-10 -14 Z" fill="url(#sb)" stroke="#1e3a8a" stroke-width="2" stroke-linejoin="round"/><path d="M0 -50 L10 -14 L0 -6 L-10 -14 Z" fill="#dbeafe" opacity=".85"/><path d="M18 4 L46 -16 L30 40 Z" fill="#fff" opacity=".18"/><circle r="4" fill="#fff" opacity=".5"/></g>',
+gonzo:'<defs>'+g('gz','#86efac','#15803d',1)+'</defs><g transform="translate(100 100)"><rect x="-50" y="40" width="100" height="8" rx="2" fill="url(#gz)" stroke="#14532d" stroke-width="2"/><path d="M-46 40 L0 -46 L46 40 Z" fill="url(#gz)" stroke="#14532d" stroke-width="2" stroke-linejoin="round"/><path d="M-32 40 L0 -22 L32 40 Z" fill="#bbf7d0" opacity=".5"/><path d="M-18 40 L0 -2 L18 40 Z" fill="#fff" opacity=".35"/><circle cx="0" cy="-32" r="5" fill="#fbbf24" stroke="#78350f" stroke-width="1.5"/></g>',
+buffalo:'<defs>'+g('bf','#a16207','#451a03',1)+'</defs><g transform="translate(100 100)"><path d="M-48 -14 Q-52 -42 -28 -38 Q0 -48 28 -38 Q52 -42 48 -14 Q46 28 0 46 Q-46 28 -48 -14 Z" fill="url(#bf)" stroke="#1c1917" stroke-width="2" stroke-linejoin="round"/><path d="M-48 -14 Q-44 6 -30 14 Q-42 0 -42 -22 Z" fill="#fef3c7" opacity=".18"/><circle cx="-15" cy="-8" r="4.5" fill="#fff"/><circle cx="15" cy="-8" r="4.5" fill="#fff"/><circle cx="-15" cy="-8" r="2.2" fill="#0a0a0a"/><circle cx="15" cy="-8" r="2.2" fill="#0a0a0a"/><ellipse cx="0" cy="16" rx="8" ry="5" fill="#fef3c7" opacity=".9"/></g>',
+wolf:'<defs>'+g('wf','#fde047','#a16207',1)+'</defs><g transform="translate(100 100)"><circle cx="0" cy="-30" r="12" fill="#fef9c3" opacity=".85"/><path d="M-38 -30 L-22 -6 L-12 -24 L0 -14 L12 -24 L22 -6 L38 -30 L28 20 Q0 44 -28 20 Z" fill="url(#wf)" stroke="#713f12" stroke-width="2" stroke-linejoin="round"/><path d="M-38 -30 L-22 -6 L-28 14 Q-36 2 -38 -30 Z" fill="#fff" opacity=".2"/><circle cx="-11" cy="-4" r="3.5" fill="#0a0a0a"/><circle cx="11" cy="-4" r="3.5" fill="#0a0a0a"/><path d="M-5 12 L0 16 L5 12" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/></g>',
+fruit:'<defs>'+rg('fr','#fca5a5','#b91c1c','.55')+'</defs><g transform="translate(100 100)"><path d="M-6 -22 Q-4 -40 20 -44 Q18 -26 -2 -22 Z" fill="#16a34a" stroke="#065f46" stroke-width="1.5" stroke-linejoin="round"/><path d="M-6 -22 Q-4 -32 4 -36" fill="none" stroke="#065f46" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="18" r="20" fill="url(#fr)" stroke="#7f1d1d" stroke-width="1.5"/><circle cx="-12" cy="6" r="24" fill="url(#fr)" stroke="#7f1d1d" stroke-width="1.5"/><circle cx="-20" cy="-4" r="6" fill="#fff" opacity=".6"/><circle cx="8" cy="10" r="4" fill="#fff" opacity=".5"/></g>',
+megaways:'<defs>'+g('mg','#f9a8d4','#9d174d',1)+'</defs><g transform="translate(100 100)"><path d="M0 -46 L38 0 L0 46 L-38 0 Z" fill="url(#mg)" stroke="#831843" stroke-width="2" stroke-linejoin="round"/><path d="M0 -46 L38 0 L0 0 Z" fill="#fff" opacity=".38"/><path d="M0 0 L0 46 L-38 0 Z" fill="#0a0a0a" opacity=".2"/><path d="M0 -46 L-19 -23 L0 0 L19 -23 Z" fill="#fff" opacity=".2"/><path d="M-38 0 L0 0 L0 -46 Z" fill="#0a0a0a" opacity=".08"/></g>'
+};
+function render(k){
+  var b=I[k];if(!b)return '';
+  return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+F+b+'</svg>';
+}
+window.ApexGameIcons={render:render,_keys:Object.keys(I)};
 })();

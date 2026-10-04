@@ -584,15 +584,15 @@
 }
 
 /* ========== Lobby Game Grid ========== */
-.apex-game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px;padding:6px 0 16px}
-.apex-game-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:apex-card-in .42s cubic-bezier(.22,.61,.36,1) both}
+.apex-game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px;padding:6px 0 16px}
+.apex-game-card{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;text-decoration:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:apex-card-in .42s cubic-bezier(.22,.61,.36,1) both}
 .apex-game-card:nth-child(1){animation-delay:0s}.apex-game-card:nth-child(2){animation-delay:.04s}.apex-game-card:nth-child(3){animation-delay:.08s}.apex-game-card:nth-child(4){animation-delay:.12s}.apex-game-card:nth-child(5){animation-delay:.16s}.apex-game-card:nth-child(6){animation-delay:.20s}.apex-game-card:nth-child(7){animation-delay:.24s}.apex-game-card:nth-child(8){animation-delay:.28s}.apex-game-card:nth-child(9){animation-delay:.32s}.apex-game-card:nth-child(10){animation-delay:.36s}.apex-game-card:nth-child(11){animation-delay:.40s}.apex-game-card:nth-child(12){animation-delay:.44s}
 @keyframes apex-card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.apex-game-card-icon{position:relative;display:block;width:100%;max-width:84px;margin:0 auto;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.05);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s ease}
-.apex-game-card-icon svg{display:block;width:100%;height:100%}
+.apex-game-card-icon{position:relative;display:block;width:100%;max-width:88px;margin:0 auto;padding-top:100%;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.05);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s ease}
+.apex-game-card-icon svg{position:absolute;top:0;left:0;display:block;width:100%;height:100%}
 .apex-game-card:hover .apex-game-card-icon{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.08),0 12px 26px rgba(0,0,0,.08)}
 .apex-game-card:active .apex-game-card-icon{transform:scale(.96);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.apex-game-card-name{display:block;width:100%;font-size:12px;font-weight:600;line-height:1.25;text-align:center;color:#0a0a0a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apex-game-card-name{display:block;width:100%;height:16px;line-height:16px;font-size:12px;font-weight:600;text-align:center;color:#0a0a0a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .apex-more-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin-top:4px;padding:12px 14px;border:1px solid #0a0a0a;border-radius:12px;background:#fff;color:#0a0a0a;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .18s ease,color .18s ease,transform .18s ease;-webkit-tap-highlight-color:transparent}
 .apex-more-btn:hover{background:#0a0a0a;color:#fff}
 .apex-more-btn:active{transform:scale(.985)}
