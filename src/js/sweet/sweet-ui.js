@@ -641,10 +641,16 @@ function bind(){
   $('sw-menu').addEventListener('click', actionMode);
   $('sw-mode-action').addEventListener('click', actionMode);
   var _soundOn = true;
+  try {
+    _soundOn = localStorage.getItem('sweetSoundOn') !== '0';
+  } catch(e) { _soundOn = true; }
+  safeAudio(function(){ A.enabled(_soundOn); }, 'toggle');
+  $('sw-sound').style.opacity = _soundOn ? '1' : '0.35';
   $('sw-sound').addEventListener('click', function(){
     _soundOn = !_soundOn;
     safeAudio(function(){ A.enabled(_soundOn); }, 'toggle');
     $('sw-sound').style.opacity = _soundOn ? '1' : '0.35';
+    try { localStorage.setItem('sweetSoundOn', _soundOn ? '1' : '0'); } catch(e) {}
     toast(_soundOn ? '音效已开' : '音效已关', 900);
   });
   $('sw-modal-x').addEventListener('click', closeModal);
