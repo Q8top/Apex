@@ -29,6 +29,65 @@
     <div class="game-carousel-track" id="game-track" aria-live="polite"></div>
   </div>
   <div class="game-dots" id="game-dots" role="tablist" aria-label="轮播图指示器"></div>
+
+    <!-- 游戏信息卡 -->
+    <section class="game-info-card" aria-label="游戏信息">
+      <div class="game-info-badges">
+        <span class="game-badge game-badge--gold"><i class="ri-fire-fill" aria-hidden="true"></i>高波动</span>
+        <span class="game-badge"><i class="ri-trophy-fill" aria-hidden="true"></i>2500x 最大赢</span>
+      </div>
+      <div class="game-info-tags">
+        <span class="game-tag"><i class="ri-grid-fill" aria-hidden="true"></i>6×5 网格</span>
+        <span class="game-tag"><i class="ri-focus-3-line" aria-hidden="true"></i>任意位置赔付</span>
+        <span class="game-tag"><i class="ri-arrow-up-double-line" aria-hidden="true"></i>翻倍机制</span>
+      </div>
+    </section>
+
+    <!-- 核心玩法 -->
+    <section class="game-section" aria-label="核心玩法">
+      <h2 class="game-section-title">核心玩法</h2>
+      <div class="game-features-grid">
+        <article class="game-feature-card">
+          <div class="game-feature-icon game-feature-icon--gold">
+            <i class="ri-cascade-line" aria-hidden="true"></i>
+          </div>
+          <h3 class="game-feature-title">翻倍掉落</h3>
+          <p class="game-feature-desc">任意位置匹配 8 个以上符号即可获胜。获胜符号消失，新符号从上方落下，连击不断累积。</p>
+        </article>
+        <article class="game-feature-card">
+          <div class="game-feature-icon game-feature-icon--purple">
+            <i class="ri-flashlight-line" aria-hidden="true"></i>
+          </div>
+          <h3 class="game-feature-title">随机倍率</h3>
+          <p class="game-feature-desc">每一轮旋转中，宙斯可能降下 2x–2500x 的倍率符号，同一轮内的所有倍率合并计算。</p>
+        </article>
+        <article class="game-feature-card">
+          <div class="game-feature-icon game-feature-icon--cyan">
+            <i class="ri-gift-line" aria-hidden="true"></i>
+          </div>
+          <h3 class="game-feature-title">免费旋转</h3>
+          <p class="game-feature-desc">命中 4 个以上闪电 Scatter 触发 15 次免费旋转，期间所有倍率累加至本局总倍率。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 符号赔付 -->
+    <section class="game-section" aria-label="符号赔付">
+      <h2 class="game-section-title">符号赔付</h2>
+      <div class="game-payout-table">
+        <div class="game-payout-head">
+          <span>符号</span>
+          <span>8 连</span>
+          <span>10 连</span>
+          <span>12+ 连</span>
+        </div>
+        <div class="game-payout-rows" id="game-payout-rows"></div>
+      </div>
+      <div class="game-scatter-note">
+        <i class="ri-flashlight-fill" aria-hidden="true"></i>
+        <span>4 / 5 / 6 个闪电 Scatter 分别赔付 <strong>3x / 5x / 100x</strong></span>
+      </div>
+    </section>
 </main>
 
 <nav class="game-actionbar" aria-label="游戏操作栏">
