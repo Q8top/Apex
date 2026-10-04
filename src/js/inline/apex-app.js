@@ -151,7 +151,7 @@ function initAnnounce(app){
 function renderCatContent(content, catKey){
   if(catKey==='hot'){
     var GAMES=[
-      {id:'olympus',  n:'奥林匹斯之门', k:'olympus'},
+      {id:'olympus',  n:'奥林匹斯',       k:'olympus'},
       {id:'sweet',    n:'糖果连连爆',       k:'sweet'},
       {id:'sugar',    n:'甜蜜爆奖',              k:'sugar'},
       {id:'bass',     n:'巨型鲈鱼',              k:'bass'},
