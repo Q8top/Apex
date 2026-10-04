@@ -1358,3 +1358,13 @@ html, body {
     inset 0 0 1px rgba(255,225,245,.85),
     0 0 24px rgba(255,120,190,.28) !important;
 }
+
+/* ===== APEX-SWEET-C9-POP: 中奖 pop 时长 + easing 增强 =====
+   原 swPop 时长 280ms + 强 ease-in 曲线 → 前 140ms 几乎无变化
+   用户注意力在金额上时容易错过"消失"过程
+   覆盖：500ms + 先快后慢曲线 → 前 200ms 明显缩小
+*/
+.sw-cell.popping {
+  animation-duration: .5s !important;
+  animation-timing-function: cubic-bezier(.2,.9,.3,1) !important;
+}
