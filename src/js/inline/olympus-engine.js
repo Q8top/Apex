@@ -43,22 +43,26 @@ var MULT_TOTAL_W = MULTIPLIERS.reduce(function(a,m){ return a + m.w; }, 0);
 /* ============ 模式配置 ============ */
 var CONFIG = {
   demo: {
-    /* 免费试玩：RTP 高（130~250%），命中率 45~60% */
-    hitRateTarget: 0.52,          // 命中率目标
-    rtpTarget: 1.75,              // RTP 目标 175%
-    payScale: 1.75,               // 赔付倍率缩放
-    scatterWeightBoost: 3.0,      // Scatter 权重放大 3 倍（触发免费旋转更频繁）
-    multProb: 0.20,               // 每次 spin 有 20% 概率降倍率
-    freeSpinRetrigger: 0.35       // 免费旋转重触发概率
+    /* 免费试玩：RTP 130~250%，命中率 45~60% */
+    minMatch: 8,
+    hitRateTarget: 0.52,
+    rtpTarget: 1.75,
+    payScale: 1.75,               // 主局赔付缩放
+    fsPayScale: 0.55,             // FS 内部赔付缩放（防爆炸）
+    scatterWeightBoost: 2.0,      // Scatter 权重（触发频率 1/30~1/40）
+    multProb: 0.08,               // FS 中每次降倍率概率（大砍）
+    freeSpinRetrigger: 0.10       // FS 重触发概率（大砍）
   },
   real: {
     /* 真实模式：RTP 88~93%（≤94%），命中率 20~35% */
+    minMatch: 9,
     hitRateTarget: 0.27,
     rtpTarget: 0.905,
-    payScale: 1.00,
+    payScale: 1.50,               // 校准到 1.50（目标 88~93%）
+    fsPayScale: 1.30,             // FS 内部赔付（略低于主局）
     scatterWeightBoost: 1.0,
-    multProb: 0.16,
-    freeSpinRetrigger: 0.15
+    multProb: 0.12,
+    freeSpinRetrigger: 0.10
   }
 };
 
@@ -120,18 +124,19 @@ function countSymbols(grid){
 }
 
 /* 返回：{ hits:[{sym,count,pay}], scatter: count, totalWin } */
-function evaluateGrid(grid, bet, cfg){
+function evaluateGrid(grid, bet, cfg, payScaleOverride){
   var cs = countSymbols(grid);
   var hits = [];
   var totalWin = 0;
+  var scale = (payScaleOverride !== undefined) ? payScaleOverride : cfg.payScale;
   for (var sym = 0; sym <= 7; sym++) {
     var base = cs.counts[sym] || 0;
     if (base === 0) continue;
     var total = base + cs.wild;
-    if (total < 8) continue;
+    if (total < cfg.minMatch) continue;
     var symDef = SYMBOLS[sym];
     var tier = total >= 12 ? 2 : (total >= 10 ? 1 : 0);
-    var payMulti = symDef.pay[tier] * cfg.payScale;
+    var payMulti = symDef.pay[tier] * scale;
     var win = payMulti * bet;
     hits.push({ sym: sym, count: total, pay: win, tier: tier });
     totalWin += win;
@@ -170,6 +175,109 @@ function tumble(grid, removedSet, cfg){
   return { grid: newGrid, drops: drops };
 }
 
+/* ============ 免费旋转 ============ */
+/* 机制：
+ *   - 4/5/6 scatter → 15/20/25 次免费旋转
+ *   - 每次 FS 内部也跑基础局（tumble）
+ *   - FS 期间降落的倍率符号会累加到本轮总倍率（不重置）
+ *   - 每次 FS 有概率重触发（cfg.freeSpinRetrigger）
+ *   - 所有 FS 中奖 × 本轮总倍率
+ */
+function playFreeSpins(cfg, count){
+  var total = 0;
+  var spins = [];
+  var accumulatedMult = 0;   // 本轮累计倍率
+  var remaining = count;
+  var played = 0;
+  var MAX_LOOP = 500;
+
+  while (remaining > 0 && played < MAX_LOOP) {
+    played++;
+    remaining--;
+
+    // 单次 FS 基础局（用 fsPayScale 缩放，避免爆炸）
+    var fs = playBaseOnly(cfg, cfg.fsPayScale !== undefined ? cfg.fsPayScale : cfg.payScale);
+
+    // 每次 FS 有概率降倍率（并入总倍率）
+    if (randFloat() < cfg.multProb) {
+      accumulatedMult += pickMultiplier();
+    }
+
+    // 记录
+    spins.push({
+      round: played,
+      tumbles: fs.tumbles,
+      baseWin: fs.totalWin,
+      mult: accumulatedMult,
+      scatter: fs.scatter
+    });
+
+    // 重触发
+    if (fs.scatter >= 3 && randFloat() < cfg.freeSpinRetrigger) {
+      remaining += 5; // +5 次
+      spins[spins.length - 1].retrigger = true;
+    }
+  }
+
+  // 计算总赢：每次 FS 的 baseWin × 本轮当时的累计倍率
+  var finalMult = accumulatedMult > 0 ? accumulatedMult : 1;
+  for (var i = 0; i < spins.length; i++) {
+    var effMult = spins[i].mult > 0 ? spins[i].mult : 1;
+    total += spins[i].baseWin * effMult;
+  }
+
+  return {
+    spins: spins,
+    totalWin: total,
+    finalMult: finalMult,
+    played: played
+  };
+}
+
+/* 只跑基础局（不含 FS 检测）——FS 内部用 */
+function playBaseOnly(cfg, payScaleOverride){
+  var grid = makeGrid(cfg);
+  var tumbles = [];
+  var totalWin = 0;
+  var round = 0;
+  var scatter = 0;
+
+  while (round < 30) {
+    var ev = evaluateGrid(grid, 1.0, cfg, payScaleOverride);
+    if (ev.hits.length === 0) break;
+
+    totalWin += ev.totalWin;
+
+    var removed = {};
+    for (var hi = 0; hi < ev.hits.length; hi++) {
+      var sym = ev.hits[hi].sym;
+      for (var r = 0; r < ROWS; r++)
+        for (var c = 0; c < COLS; c++)
+          if (grid[r][c] === sym || grid[r][c] === 8) removed[r + ',' + c] = true;
+    }
+
+    var t = tumble(grid, removed, cfg);
+    tumbles.push({
+      round: round,
+      hits: ev.hits,
+      removed: Object.keys(removed),
+      gridBefore: grid.map(function(r){ return r.slice(); }),
+      gridAfter: t.grid.map(function(r){ return r.slice(); }),
+      drops: t.drops
+    });
+
+    grid = t.grid;
+    round++;
+    if (round > 15) break;
+  }
+
+  // scatter 统计
+  var ev2 = evaluateGrid(grid, 1.0, cfg);
+  scatter = ev2.scatter;
+
+  return { tumbles: tumbles, totalWin: totalWin, scatter: scatter };
+}
+
 /* ============ 单局完整流程 ============ */
 /* 返回：{ initial, tumbles:[...], totalWin, scatter, multiplier, freeSpins } */
 function playOnce(cfg){
@@ -206,18 +314,20 @@ function playOnce(cfg){
           if (grid[r][c] === s || grid[r][c] === 8) removed[r + ',' + c] = true;
     }
 
-    // 记录这一轮
+    // Tumble 后新网格（先算再存，保证动画和引擎一致）
+    var t = tumble(grid, removed, cfg);
+
+    // 记录这一轮（含 gridAfter，动画直接用，不再重新随机）
     result.tumbles.push({
       round: round,
       hits: ev.hits,
       removed: Object.keys(removed),
-      gridBefore: grid.map(function(r){ return r.slice(); })
+      gridBefore: grid.map(function(r){ return r.slice(); }),
+      gridAfter: t.grid.map(function(r){ return r.slice(); }),
+      drops: t.drops
     });
 
-    // Tumble 后新网格
-    var t = tumble(grid, removed, cfg);
     grid = t.grid;
-    result.tumbles[result.tumbles.length - 1].drops = t.drops;
     round++;
     if (round > 15) break; // 防死循环
   }
@@ -230,11 +340,17 @@ function playOnce(cfg){
   // Scatter 触发免费旋转
   var finalEv = evaluateGrid(grid, 1.0, cfg);
   result.scatter = finalEv.scatter;
+
+  // 触发免费旋转
   if (finalEv.scatter >= 4) {
     result.freeSpins = finalEv.scatter >= 6 ? 25 : (finalEv.scatter >= 5 ? 20 : 15);
+    var fs = playFreeSpins(cfg, result.freeSpins);
+    result.fsResult = fs;
+    result.fsWin = fs.totalWin;
   }
 
-  result.totalWin = totalBaseWin * result.multiplier;
+  result.baseWin = totalBaseWin * result.multiplier;
+  result.totalWin = result.baseWin + (result.fsWin || 0);
   return result;
 }
 
@@ -271,6 +387,7 @@ window.ApexOlympus = {
   evaluateGrid: evaluateGrid,
   tumble: tumble,
   playOnce: playOnce,
+  playFreeSpins: playFreeSpins,
   simulate: simulate
 };
 

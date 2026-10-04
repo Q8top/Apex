@@ -305,15 +305,8 @@ function init(){
     var winAmt    = document.getElementById('og-win-amt');
     var spinBtn   = document.getElementById('og-spin');
 
-    // 12 个符号（先用游戏封面 webp 占位，后续换真正的符号图标）
-    var SYMBOLS = [
-      '/assets/games/olympus.webp', '/assets/games/sweet.webp',
-      '/assets/games/sugar.webp',   '/assets/games/book.webp',
-      '/assets/games/dog.webp',     '/assets/games/bass.webp',
-      '/assets/games/gonzo.webp',   '/assets/games/starburst.webp',
-      '/assets/games/megaways.webp','/assets/games/buffalo.webp',
-      '/assets/games/wolf.webp',    '/assets/games/fruit.webp'
-    ];
+    var E = window.ApexOlympus;
+    if (!E) { console.error('[Apex] 引擎未加载'); return; }
 
     var state = {
       mode: 'demo',
@@ -321,18 +314,46 @@ function init(){
       bet: 10,
       win: 0,
       spinning: false,
-      sound: true
+      sound: true,
+      grid: null,
+      inFreeSpins: false
     };
 
-    // -------- 填充网格 --------
-    function fillGrid(){
+    // -------- 渲染网格 --------
+    function renderGrid(grid, animate){
       var html = '';
-      for (var i = 0; i < 30; i++) {
-        var idx = randInt(SYMBOLS.length);
-        var bg  = SYMBOLS[idx];
-        html += '<div class="og-cell" style="background-image:url(\''+bg+'\')"></div>';
+      for (var r = 0; r < E.ROWS; r++) {
+        for (var c = 0; c < E.COLS; c++) {
+          var sym = grid[r][c];
+          var def = E.SYMBOLS[sym];
+          var cls = 'og-cell sym-' + sym + (animate ? ' dropping' : '');
+          var style = animate ? ' style="animation-delay:' + ((c * 40 + r * 25) + 'ms') + '"' : '';
+          html += '<div class="' + cls + '" data-r="' + r + '" data-c="' + c + '" data-sym="' + def.name + '"' + style + '></div>';
+        }
       }
       gridEl.innerHTML = html;
+    }
+
+    // -------- 标记中奖 --------
+    function markWins(hits, removed){
+      var cells = gridEl.querySelectorAll('.og-cell');
+      cells.forEach(function(el){
+        var key = el.getAttribute('data-r') + ',' + el.getAttribute('data-c');
+        if (removed.indexOf(key) >= 0) el.classList.add('winning');
+      });
+    }
+
+    // -------- 移除并掉落 --------
+    function removeAndDrop(removed, newGrid, nextCb){
+      var cells = gridEl.querySelectorAll('.og-cell');
+      cells.forEach(function(el){
+        var key = el.getAttribute('data-r') + ',' + el.getAttribute('data-c');
+        if (removed.indexOf(key) >= 0) el.classList.add('removing');
+      });
+      setTimeout(function(){
+        renderGrid(newGrid, true);
+        setTimeout(nextCb, 500);
+      }, 380);
     }
 
     // -------- 格式化金额 --------
@@ -349,7 +370,7 @@ function init(){
       if (winTotalEl) winTotalEl.textContent = money(state.win);
     }
 
-    // -------- 余额操作按钮（按模式切换） --------
+    // -------- 余额操作按钮 --------
     var balanceAction = document.getElementById('og-balance-action');
     var balanceActionLabel = document.getElementById('og-balance-action-label');
     function updateBalanceAction(){
@@ -372,7 +393,10 @@ function init(){
       if (modeEl) modeEl.textContent = (mode === 'demo') ? '试玩模式' : '真实模式';
       overlay.setAttribute('data-mode', mode);
       updateBalanceAction();
-      fillGrid();
+      // 首次生成
+      var cfg = E.CONFIG[mode];
+      state.grid = E.makeGrid(cfg);
+      renderGrid(state.grid, true);
       updateHud();
       overlay.classList.add('show');
       overlay.setAttribute('aria-hidden', 'false');
@@ -384,19 +408,11 @@ function init(){
       document.body.style.overflow = '';
     }
 
-    // -------- 按钮绑定 --------
     if (closeBtn) closeBtn.addEventListener('click', close);
-
-    // 免费试用
     var trialBtn = document.getElementById('game-trial');
-    if (trialBtn) {
-      trialBtn.addEventListener('click', function(){ open('demo'); });
-    }
-    // 开始游戏
+    if (trialBtn) trialBtn.addEventListener('click', function(){ open('demo'); });
     var startBtn = document.getElementById('game-start');
-    if (startBtn) {
-      startBtn.addEventListener('click', function(){ open('real'); });
-    }
+    if (startBtn) startBtn.addEventListener('click', function(){ open('real'); });
 
     // 下注 -/+
     var BET_STEPS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
@@ -413,15 +429,13 @@ function init(){
     var soundBtn = document.getElementById('og-sound');
     function updateSoundIcon(){
       if (!soundBtn) return;
-      var i = soundBtn.querySelector('i');
-      if (i) i.className = state.sound ? 'ri-volume-up-line' : 'ri-volume-mute-line';
+      var ic = soundBtn.querySelector('i');
+      if (ic) ic.className = state.sound ? 'ri-volume-up-line' : 'ri-volume-mute-line';
     }
-    if (soundBtn) {
-      soundBtn.addEventListener('click', function(){
-        state.sound = !state.sound;
-        updateSoundIcon();
-      });
-    }
+    if (soundBtn) soundBtn.addEventListener('click', function(){
+      state.sound = !state.sound;
+      updateSoundIcon();
+    });
 
     // 重置/充值余额
     if (balanceAction) {
@@ -432,27 +446,175 @@ function init(){
           state.win = 0;
           updateHud();
         } else {
-          // 充值（真实模式）：后续接支付，现在先占位
-          if (window.__apexCharge) {
-            window.__apexCharge();
-          } else {
-            alert('充值功能开发中');
-          }
+          if (window.__apexCharge) window.__apexCharge();
+          else alert('充值功能开发中');
         }
       });
     }
 
-    // 旋转（占位，仅重排符号 + 显示随机中奖）
-    if (spinBtn) spinBtn.addEventListener('click', function(){
+    // -------- 旋转（核心） --------
+    function showWin(amount){
+      if (!winBanner || !winAmt) return;
+      winAmt.textContent = '+' + money(amount);
+      winBanner.classList.add('show');
+      setTimeout(function(){ winBanner.classList.remove('show'); }, 1600);
+    }
+
+    // -------- FS 徽章控制 --------
+    var fsBadge = document.getElementById('og-fs-badge');
+    var fsCur = document.getElementById('og-fs-cur');
+    var fsMax = document.getElementById('og-fs-max');
+    var fsMult = document.getElementById('og-fs-mult');
+
+    function showFsBadge(cur, max, mult){
+      if (!fsBadge) return;
+      fsBadge.classList.add('show');
+      if (fsCur) fsCur.textContent = cur;
+      if (fsMax) fsMax.textContent = max;
+      if (fsMult) fsMult.textContent = '×' + mult;
+    }
+    function updateFsMult(mult){
+      if (!fsMult) return;
+      fsMult.textContent = '×' + mult;
+      fsMult.classList.remove('bump');
+      void fsMult.offsetWidth;
+      fsMult.classList.add('bump');
+    }
+    function hideFsBadge(){
+      if (fsBadge) fsBadge.classList.remove('show');
+    }
+
+    // -------- 通用：播放一串 tumble --------
+    function playTumbles(tumbles, onDone){
+      var idx = 0;
+      function next(){
+        if (idx >= tumbles.length) { onDone(); return; }
+        var t = tumbles[idx];
+        markWins(t.hits, t.removed);
+        setTimeout(function(){
+          removeAndDrop(t.removed, t.gridAfter, function(){
+            idx++;
+            setTimeout(next, 180);
+          });
+        }, 450);
+      }
+      next();
+    }
+
+    // -------- FS 完整播放 --------
+    function playFreeSpinsSequence(fsResult, bet){
+      var spins = fsResult.spins;
+      var idx = 0;
+      var totalFsWin = 0;
+
+      function nextSpin(){
+        if (idx >= spins.length) {
+          hideFsBadge();
+          onAllDone();
+          return;
+        }
+        var sp = spins[idx];
+        showFsBadge(idx + 1, spins.length, sp.mult > 0 ? sp.mult : 1);
+
+        // 渲染初始网格
+        if (sp.tumbles.length > 0) {
+          var firstGrid = sp.tumbles[0].gridBefore;
+          renderGrid(firstGrid, true);
+          setTimeout(function(){
+            playTumbles(sp.tumbles, function(){
+              totalFsWin += sp.baseWin * (sp.mult > 0 ? sp.mult : 1);
+              idx++;
+              setTimeout(nextSpin, 300);
+            });
+          }, 500);
+        } else {
+          idx++;
+          setTimeout(nextSpin, 300);
+        }
+      }
+
+      function onAllDone(){
+        // 累加 FS 总赢
+        var totalWin = fsResult.totalWin * bet;
+        state.win += totalWin;
+        state.balance += totalWin;
+        updateHud();
+        if (totalWin > 0) showWin(totalWin);
+        state.spinning = false;
+        state.inFreeSpins = false;
+        spinBtn.disabled = false;
+      }
+
+      state.inFreeSpins = true;
+      nextSpin();
+    }
+
+    function spin(){
       if (state.spinning) return;
+      if (state.mode === 'real' && state.balance < state.bet) {
+        alert('余额不足，请充值');
+        return;
+      }
       state.spinning = true;
       spinBtn.disabled = true;
-      fillGrid();
-      setTimeout(function(){
-        state.spinning = false;
-        spinBtn.disabled = false;
-      }, 600);
-    });
+
+      // 扣注
+      if (state.mode === 'real') state.balance -= state.bet;
+      state.win = 0;
+      updateHud();
+
+      // 跑一局
+      var cfg = E.CONFIG[state.mode];
+      var result = E.playOnce(cfg);
+
+      // 初始化网格
+      state.grid = result.initial;
+      renderGrid(state.grid, true);
+      if (winBanner) winBanner.classList.remove('show');
+
+      // 依次播放每一轮 tumble
+      var roundIdx = 0;
+      var totalWin = 0;
+      var bet = state.bet;
+
+      function playRound(){
+        if (roundIdx >= result.tumbles.length) {
+          // 基础局结束
+          var baseWin = result.baseWin * bet;
+          state.win = baseWin;
+          state.balance += baseWin;
+          updateHud();
+
+          // 有 FS → 播 FS；没 FS → 收工
+          if (result.freeSpins > 0 && result.fsResult) {
+            setTimeout(function(){
+              showWin(baseWin);
+              setTimeout(function(){
+                playFreeSpinsSequence(result.fsResult, bet);
+              }, 800);
+            }, 300);
+          } else {
+            if (baseWin > 0) showWin(baseWin);
+            state.spinning = false;
+            spinBtn.disabled = false;
+          }
+          return;
+        }
+
+        var t = result.tumbles[roundIdx];
+        markWins(t.hits, t.removed);
+        setTimeout(function(){
+          removeAndDrop(t.removed, t.gridAfter, function(){
+            roundIdx++;
+            setTimeout(playRound, 200);
+          });
+        }, 500);
+      }
+
+      // 起手
+      setTimeout(playRound, 400);
+    }
+    if (spinBtn) spinBtn.addEventListener('click', spin);
 
   })();
 
