@@ -1368,3 +1368,25 @@ html, body {
   animation-duration: .5s !important;
   animation-timing-function: cubic-bezier(.2,.9,.3,1) !important;
 }
+
+/* ===== APEX-SWEET-C10-POP: 中奖消失动画彻底重做 =====
+   根因：
+   1. 原 swPop keyframe 只有 to，没有 from → 插值起点不确定
+   2. 原动画作用在 .sw-cell 上，与 swWinPulse 抢 transform
+   3. paintGrid 里 remove('popping') 直接打断动画
+
+   方案：
+   1. 动画改作用在 > svg（符号本体），不碰 cell 的 transform
+   2. keyframe 明确 from / to
+   3. cell 自身的 pop 动画关闭，避免双重
+*/
+@keyframes swPopSvg {
+  from { transform: scale(1) rotate(0deg);   opacity: 1; }
+  to   { transform: scale(0) rotate(180deg); opacity: 0; }
+}
+.sw-cell.popping {
+  animation: none !important;
+}
+.sw-cell.popping > svg {
+  animation: swPopSvg .6s cubic-bezier(.3,0,.5,1) forwards !important;
+}
