@@ -485,7 +485,7 @@ function playRounds(result, betAmt, fs, token){
           paintGrid(rounds[i].grid);
           setTimeout(playOne, 250);
         } else { paintGrid(result.finalGrid); finish(totalShown, token); }
-      }, 300);
+      }, 220);
     }, 500);
   }
   playOne();
