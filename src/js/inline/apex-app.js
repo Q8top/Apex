@@ -289,15 +289,31 @@ function initTabbar(app){
     b.style.setProperty('--mx',((x-r.left)/r.width*100)+'%');
     b.style.setProperty('--my',((y-r.top)/r.height*100)+'%');
   }
-  var dragState={active:false,startX:0,startIdx:0,pointerId:null};
+  var dragState={active:false,startX:0,lastX:0,startIdx:0,pointerId:null,raf:0};
+  function updateDrag(){
+    dragState.raf=0;
+    if(!dragState.active)return;
+    var dx=dragState.lastX-dragState.startX;
+    var navRect=nav.getBoundingClientRect();
+    var tabWidth=navRect.width/5;
+    var newIdx=dragState.startIdx+dx/tabWidth;
+    newIdx=Math.max(0,Math.min(4,newIdx));
+    nav.style.setProperty('--apex-tab-idx',newIdx);
+  }
   nav.addEventListener('pointerdown',function(e){
     var b=e.target.closest?e.target.closest('.apex-tab'):null;
     if(!b)return;
     var tabs=Array.prototype.slice.call(nav.querySelectorAll('.apex-tab'));
     var idx=tabs.indexOf(b);
-    dragState.active=true;dragState.startX=e.clientX;dragState.startIdx=idx;dragState.pointerId=e.pointerId;
+    dragState.active=true;
+    dragState.startX=e.clientX;
+    dragState.lastX=e.clientX;
+    dragState.startIdx=idx;
+    dragState.pointerId=e.pointerId;
     b.classList.add('pressing');
+    nav.classList.add('is-dragging');
     setSpot(b,e.clientX,e.clientY);
+    try{b.setPointerCapture(e.pointerId);}catch(_){}
     var r=b.getBoundingClientRect();
     var size=Math.max(r.width,r.height)*0.6;
     var sp=document.createElement('span');
@@ -310,18 +326,18 @@ function initTabbar(app){
     setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},600);
   });
   nav.addEventListener('pointermove',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(b&&!dragState.active)setSpot(b,e.clientX,e.clientY);
     if(!dragState.active)return;
-    var dx=e.clientX-dragState.startX;
-    var navRect=nav.getBoundingClientRect();
-    var tabWidth=navRect.width/5;
-    var newIdx=dragState.startIdx+dx/tabWidth;
-    newIdx=Math.max(0,Math.min(4,newIdx));
-    nav.style.setProperty('--apex-tab-idx',newIdx);
+    dragState.lastX=e.clientX;
+    if(!dragState.raf)dragState.raf=requestAnimationFrame(updateDrag);
   });
-  nav.addEventListener('pointerup',function(e){
+  function endDrag(e){
     if(!dragState.active)return;
     dragState.active=false;
-    var dx=e.clientX-dragState.startX;
+    if(dragState.raf){cancelAnimationFrame(dragState.raf);dragState.raf=0;}
+    nav.classList.remove('is-dragging');
+    var dx=(e&&typeof e.clientX==='number'?e.clientX:dragState.lastX)-dragState.startX;
     var navRect=nav.getBoundingClientRect();
     var tabWidth=navRect.width/5;
     var newIdx=Math.round(dragState.startIdx+dx/tabWidth);
@@ -337,29 +353,9 @@ function initTabbar(app){
       main.querySelectorAll('.apex-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===k);});
       main.scrollTop=0;
     }
-  });
-  nav.addEventListener('pointercancel',function(e){
-    if(!dragState.active)return;
-    dragState.active=false;
-    nav.querySelectorAll('.apex-tab').forEach(function(t){t.classList.remove('pressing');});
-  });
-  nav.addEventListener('pointermove',function(e){
-    var b=e.target.closest?e.target.closest('.apex-tab'):null;
-    if(!b||!b.classList.contains('pressing'))return;
-    setSpot(b,e.clientX,e.clientY);
-  });
-  nav.addEventListener('pointerup',function(e){
-    var b=e.target.closest?e.target.closest('.apex-tab'):null;
-    if(b)b.classList.remove('pressing');
-  });
-  nav.addEventListener('pointercancel',function(e){
-    var b=e.target.closest?e.target.closest('.apex-tab'):null;
-    if(b)b.classList.remove('pressing');
-  });
-  nav.addEventListener('pointerleave',function(e){
-    var b=e.target.closest?e.target.closest('.apex-tab'):null;
-    if(b)b.classList.remove('pressing');
-  });
+  }
+  nav.addEventListener('pointerup',endDrag);
+  nav.addEventListener('pointercancel',endDrag);
   nav.addEventListener('click',function(e){
     var b=e.target.closest?e.target.closest('.apex-tab'):null;
     if(!b)return;

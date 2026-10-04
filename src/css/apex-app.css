@@ -423,6 +423,9 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 -1px 0 rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.3s ease;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 @supports ((-webkit-backdrop-filter: url(#liquid-lens)) or (backdrop-filter: url(#liquid-lens))) {
   .apex-tabbar {
@@ -455,11 +458,20 @@
     0 -1px 0 rgba(0,0,0,.03) inset,
     0 2px 6px rgba(0,0,0,.08),
     0 6px 16px rgba(0,0,0,.05);
-  transition: transform .42s cubic-bezier(.34, 1.35, .5, 1);
-  transform: translateX(calc(var(--apex-tab-idx, 0) * 100%));
+  transform: translate3d(calc(var(--apex-tab-idx, 0) * 100%), 0, 0);
+  transition: transform .48s cubic-bezier(.34, 1.42, .5, 1);
   pointer-events: none;
   z-index: 0;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.apex-tabbar.is-dragging .apex-tabbar-slider {
+  transition: none;
+}
+.apex-tabbar.is-dragging .apex-tab.pressing > i {
+  transform: scale(1.08);
+  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
 }
 
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -472,6 +484,8 @@
 
 .apex-tab {
   position: relative;
+  -webkit-user-select: none;
+  user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
