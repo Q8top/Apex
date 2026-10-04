@@ -585,7 +585,7 @@
 
 /* ========== Lobby Game Grid ========== */
 .apex-game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px;padding:6px 0 16px}
-.apex-game-card{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;text-decoration:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:apex-card-in .42s cubic-bezier(.22,.61,.36,1) both}
+.apex-game-card{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;text-decoration:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;animation:apex-card-in .42s cubic-bezier(.22,.61,.36,1) both}
 .apex-game-card:nth-child(1){animation-delay:0s}.apex-game-card:nth-child(2){animation-delay:.04s}.apex-game-card:nth-child(3){animation-delay:.08s}.apex-game-card:nth-child(4){animation-delay:.12s}.apex-game-card:nth-child(5){animation-delay:.16s}.apex-game-card:nth-child(6){animation-delay:.20s}.apex-game-card:nth-child(7){animation-delay:.24s}.apex-game-card:nth-child(8){animation-delay:.28s}.apex-game-card:nth-child(9){animation-delay:.32s}.apex-game-card:nth-child(10){animation-delay:.36s}.apex-game-card:nth-child(11){animation-delay:.40s}.apex-game-card:nth-child(12){animation-delay:.44s}
 @keyframes apex-card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .apex-game-card-icon{position:relative;display:block;width:100%;max-width:72px;margin:0 auto;padding-top:100%;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.05);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s ease}

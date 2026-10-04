@@ -175,6 +175,10 @@ function renderCatContent(content, catKey){
     html+='</div>';
     html+='<button type="button" class="apex-more-btn" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
     content.innerHTML=html;
+    content.querySelectorAll('.apex-game-card').forEach(function(a){
+      a.addEventListener('contextmenu',function(e){e.preventDefault();});
+      a.addEventListener('dragstart',function(e){e.preventDefault();});
+    });
   }else{
     content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
   }
