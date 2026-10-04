@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>奥林匹斯之门 · 游戏中</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/src/css/olympus-game.css">
+<style>html,body,*{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}</style>
+</head>
+<body>
+
+<div id="ol-root" class="ol-root">
+
+  <header class="ol-hud ol-hud-top">
+    <a class="ol-back" href="/olympus.html" aria-label="返回详情">‹</a>
+    <div class="ol-hud-mid">
+      <div class="ol-bal-label">余额</div>
+      <div class="ol-bal" id="ol-balance">0</div>
+    </div>
+    <button type="button" class="ol-icon-btn" id="ol-btn-menu" aria-label="菜单">☰</button>
+  </header>
+
+  <main class="ol-stage">
+    <div class="ol-grid" id="ol-grid" role="grid" aria-label="游戏网格"></div>
+    <div class="ol-win" id="ol-win" aria-live="polite">
+      <div class="ol-win-label">本轮赢奖</div>
+      <div class="ol-win-val" id="ol-win-val">0</div>
+    </div>
+  </main>
+
+  <footer class="ol-hud ol-hud-bottom">
+    <div class="ol-bet-wrap">
+      <button type="button" class="ol-bet-btn" id="ol-bet-minus" aria-label="减小下注">−</button>
+      <div class="ol-bet-mid">
+        <div class="ol-bet-label">下注</div>
+        <div class="ol-bet-val" id="ol-bet-val">1</div>
+      </div>
+      <button type="button" class="ol-bet-btn" id="ol-bet-plus" aria-label="增加下注">+</button>
+    </div>
+    <button type="button" class="ol-spin-btn" id="ol-spin" aria-label="旋转">
+      <span class="ol-spin-txt">旋转</span>
+    </button>
+  </footer>
+
+  <div class="ol-toast" id="ol-toast" role="status" aria-live="polite"></div>
+
+</div>
+
+<script src="/src/js/games/olympus/main.js"></script>
+</body>
+</html>
