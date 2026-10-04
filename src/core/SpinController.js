@@ -42,10 +42,6 @@ export class SpinController {
       logger.debug('spin ignored (locked)');
       return false;
     }
-    if (typeof this._deps.canSpin === 'function' && !this._deps.canSpin()) {
-      logger.debug('spin ignored (canSpin false)');
-      return false;
-    }
 
     this._spinning = true;
     this._locked = true;

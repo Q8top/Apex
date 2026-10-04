@@ -222,7 +222,6 @@ export class OlympusController {
   _canSpin() {
     if (!this.state || !this.spinButton) return false;
     if (this.state.get('spinning')) return false;
-    if (this.state.get('phase') !== PHASE.IDLE) return false;
     if (this.state.get('balance') < this.state.get('bet')) return false;
     return true;
   }
@@ -245,7 +244,7 @@ export class OlympusController {
     this.state.resetRound();
     this.winPresenter.reset();
     this.balance.setWin(0);
-    this.state.set('phase', PHASE.SPINNING);
+    this.state.patch({ phase: PHASE.SPINNING, spinning: true });
     this.spinButton.setState('spinning');
     this.betControl.setLocked(true);
 
@@ -255,8 +254,7 @@ export class OlympusController {
 
     // 完成后回到 IDLE
     if (this._destroyed) return;
-    this.state.set('phase', PHASE.IDLE);
-    this.state.set('spinning', false);
+    this.state.patch({ phase: PHASE.IDLE, spinning: false });
     this.betControl.setLocked(false);
 
     if (this._autoRunning) {
