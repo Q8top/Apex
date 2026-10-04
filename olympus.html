@@ -21,17 +21,32 @@
 <body>
 <div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
 
-<div class="wrap">
+<!-- 顶部导航（吸顶） -->
+<nav class="top-nav">
+  <a class="nav-back" href="/" aria-label="返回">‹</a>
+  <h1 class="nav-title">奥林匹斯之门</h1>
+  <button type="button" class="nav-menu" aria-label="更多菜单">⋯</button>
+</nav>
 
-  <div class="topbar">
-    <a class="back" href="/"><span class="back-ico">‹</span><span>返回</span></a>
+<div class="page-body">
+
+  <!-- 游戏画面区 -->
+  <div class="preview">
+    <div class="preview-slide">
+      <img src="/assets/games/olympus.svg" alt="奥林匹斯之门">
+    </div>
+    <div class="preview-dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
   </div>
 
-  <div class="hero">
-    <div class="hero-icon"><img src="/assets/games/olympus.svg" alt="奥林匹斯之门"></div>
-    <h1 class="hero-title">奥林匹斯之门</h1>
-    <p class="hero-sub">6×5 消除式老虎机 · 万能消除 + 倍数累积 + 免费旋转</p>
-    <div class="hero-tags">
+  <!-- 标题区 -->
+  <div class="title-block">
+    <h1 class="game-title">奥林匹斯之门</h1>
+    <p class="game-subtitle">6×5 消除式老虎机 · 万能消除 + 倍数累积 + 免费旋转</p>
+    <div class="tags">
       <span class="tag">6×5 网格</span>
       <span class="tag">Pay Anywhere</span>
       <span class="tag">Tumble</span>
@@ -40,55 +55,92 @@
     </div>
   </div>
 
-  <div class="actions">
-    <a class="btn-big btn-demo" href="/olympus-play.html?mode=demo">免费试玩</a>
-    <a class="btn-big btn-real" href="/olympus-play.html?mode=real">开始游戏</a>
-  </div>
-
-  <div class="section">
-    <h2>游戏介绍</h2>
+  <!-- 卡片：游戏介绍 -->
+  <section class="card">
+    <h2 class="card-title">游戏介绍</h2>
     <p>奥林匹斯之门是一款 <strong>6 列 × 5 行</strong> 的消除式老虎机。没有传统的中奖线，只要同一种符号出现 <strong>8 个或以上</strong> 即可中奖（Pay Anywhere）。</p>
     <p>中奖符号会在结算后被消除，上方的符号下落填补，新的符号从顶部进入，形成连续的 <strong>Tumble</strong> 连锁反应。每一次连锁都可能带来更高的收益。</p>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>核心机制</h2>
-    <ul>
-      <li><strong>Pay Anywhere</strong>：6×5 网格中任意位置，≥8 个相同符号即中奖。</li>
-      <li><strong>Tumble 连锁</strong>：中奖符号消除后，剩余符号下落，新符号补位，连续结算直到无新中奖。</li>
-      <li><strong>Multiplier 倍数球</strong>：随符号一起出现，本轮内所有倍数累加，最终乘以本回合总赢额。</li>
-      <li><strong>Free Spins 免费旋转</strong>：出现 ≥4 个 Scatter 触发，拥有更高的倍数累积效率。</li>
-    </ul>
-  </div>
+  <!-- 卡片：游戏规则 -->
+  <section class="card">
+    <h2 class="card-title">游戏规则</h2>
+    <ol class="rules">
+      <li>
+        <span class="rule-num">1</span>
+        <div class="rule-body"><strong>Pay Anywhere</strong>：6×5 网格中任意位置，≥8 个相同符号即中奖，无需连线。</div>
+      </li>
+      <li>
+        <span class="rule-num">2</span>
+        <div class="rule-body"><strong>Tumble 连锁</strong>：中奖符号消除后，剩余符号下落、新符号补位，连续结算直到无新中奖。</div>
+      </li>
+      <li>
+        <span class="rule-num">3</span>
+        <div class="rule-body"><strong>Multiplier 倍数球</strong>：随符号一起出现，本轮内所有倍数累加，最终乘以本回合总赢额。</div>
+      </li>
+      <li>
+        <span class="rule-num">4</span>
+        <div class="rule-body"><strong>Free Spins 免费旋转</strong>：出现 ≥4 个 Scatter 触发，拥有更高的倍数累积效率。</div>
+      </li>
+    </ol>
+  </section>
 
-  <div class="section">
-    <h2>符号等级</h2>
+  <!-- 卡片：中奖说明与赔付表 -->
+  <section class="card">
+    <h2 class="card-title">中奖说明与赔付表</h2>
     <p>符号分为四档，等级越高越稀有，赔付也越高：</p>
+
     <div class="sym-grid">
-      <div class="sym-cell">蓝宝石</div>
-      <div class="sym-cell">绿宝石</div>
-      <div class="sym-cell">紫水晶</div>
-      <div class="sym-cell">红宝石</div>
-      <div class="sym-cell">圣杯</div>
-      <div class="sym-cell">金戒指</div>
-      <div class="sym-cell">沙漏</div>
-      <div class="sym-cell">金冠</div>
-      <div class="sym-cell">Scatter</div>
-      <div class="sym-cell">倍数球</div>
+      <div class="sym-item"><span class="sym-name">蓝宝石</span><span class="sym-star">★☆☆☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">绿宝石</span><span class="sym-star">★☆☆☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">紫水晶</span><span class="sym-star">★☆☆☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">红宝石</span><span class="sym-star">★★☆☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">圣杯</span><span class="sym-star">★★★☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">金戒指</span><span class="sym-star">★★★☆☆</span></div>
+      <div class="sym-item"><span class="sym-name">沙漏</span><span class="sym-star">★★★★☆</span></div>
+      <div class="sym-item"><span class="sym-name">金冠</span><span class="sym-star">★★★★★</span></div>
+      <div class="sym-item"><span class="sym-name">Scatter</span><span class="sym-star">触发 FS</span></div>
     </div>
-  </div>
 
-  <div class="section">
-    <h2>温馨提示</h2>
-    <p>免费试玩使用虚拟积分，不消耗真实余额，仅供体验玩法与节奏。</p>
-    <p>开始游戏使用虚拟积分结算，所有数值 <strong>仅作娱乐展示</strong>，不涉及任何真实货币。</p>
-  </div>
+    <ul class="pay-rows">
+      <li><span class="pay-key">8 个相同</span><span class="pay-val">基础赔付</span></li>
+      <li><span class="pay-key">10 个相同</span><span class="pay-val">约 2 倍基础</span></li>
+      <li><span class="pay-key">12 个及以上</span><span class="pay-val">约 5 倍基础</span></li>
+      <li><span class="pay-key">倍数球叠加</span><span class="pay-val">本轮总赢额 × 倍数和</span></li>
+    </ul>
+  </section>
 
-  <div class="footer">
-    <a href="/">返回首页</a> · <a href="/terms.html">用户协议</a> · <a href="/privacy.html">隐私政策</a>
-    <br><br>© 2026 Apex Global Entertainment. All rights reserved.
-  </div>
+  <!-- 卡片：游戏信息 -->
+  <section class="card">
+    <h2 class="card-title">游戏信息</h2>
+    <dl class="info-list">
+      <div class="info-row"><dt>网格</dt><dd>6 × 5（30 格）</dd></div>
+      <div class="info-row"><dt>中奖方式</dt><dd>Pay Anywhere</dd></div>
+      <div class="info-row"><dt>最小中奖数</dt><dd>8 个</dd></div>
+      <div class="info-row"><dt>连锁机制</dt><dd>Tumble</dd></div>
+      <div class="info-row"><dt>倍数机制</dt><dd>Multiplier 累加</dd></div>
+      <div class="info-row"><dt>免费旋转</dt><dd>≥4 Scatter 触发</dd></div>
+    </dl>
+  </section>
 
+</div>
+
+<!-- 底部操作栏（吸底） -->
+<div class="action-bar">
+  <div class="action-left">
+    <button type="button" class="action-mini" aria-label="收藏">
+      <span class="ico">☆</span>
+      <span>收藏</span>
+    </button>
+    <button type="button" class="action-mini" aria-label="在线客服">
+      <span class="ico">💬</span>
+      <span>客服</span>
+    </button>
+  </div>
+  <div class="action-right">
+    <a class="btn-cta btn-demo" href="/olympus-play.html?mode=demo">免费试玩</a>
+    <a class="btn-cta btn-real" href="/olympus-play.html?mode=real">开始游戏</a>
+  </div>
 </div>
 
 <script src="/src/js/inline/apex-loader.js"></script>
