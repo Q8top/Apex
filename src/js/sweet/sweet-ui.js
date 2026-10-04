@@ -19,7 +19,8 @@ var state = {
   spinning: false, grid: null, history: [],
   autoOn: false, ready: false, safetyTimer: null,
   freeSpinMode: false,
-  fsEntranceActive: false
+  fsEntranceActive: false,
+  spinToken: 0
 };
 
 var SYMBOL_POOL = Object.keys(C.SYMBOLS);
@@ -227,7 +228,7 @@ function destroyReelLayer(){
   reelGeom = null;
 }
 
-function spinReel(c, dur, onDone){
+function spinReel(c, dur, onDone, token){
   if (!reelGeom) { if (onDone) onDone(); return; }
   var layer = document.querySelector('.stage-symbols');
   if (!layer || !layer.children[c]) { if (onDone) onDone(); return; }
@@ -245,16 +246,20 @@ function spinReel(c, dur, onDone){
   function settle(){
     if (stopped) return;
     stopped = true;
+    if (token !== state.spinToken) return;
     safeAudio(function(){ A.reelStop(c); }, 'reelStop');
     track.style.transition = 'transform 120ms cubic-bezier(.2,1,.35,1)';
     track.style.transform = 'translate3d(0,' + (yFinal - 4) + 'px,0)';
     setTimeout(function(){
+      if (token !== state.spinToken) return;
       track.style.transition = 'transform 80ms ease-out';
       track.style.transform = 'translate3d(0,' + (yFinal + 1.5) + 'px,0)';
       setTimeout(function(){
+        if (token !== state.spinToken) return;
         track.style.transition = 'transform 60ms ease-out';
         track.style.transform = 'translate3d(0,' + yFinal + 'px,0)';
         setTimeout(function(){
+          if (token !== state.spinToken) return;
           track.style.transition = '';
           reelHandles[c] = null;
           if (onDone) onDone();
@@ -264,6 +269,7 @@ function spinReel(c, dur, onDone){
   }
 
   function loop(now){
+    if (token !== state.spinToken) return;
     var el = now - start;
     if (el >= dur) { settle(); return; }
     var p = el / dur;
@@ -286,6 +292,7 @@ function doSpin(){
   });
   renderWin(0);
 
+  var token = ++state.spinToken;
   state.spinning = true;
   var sb = $('sw-spin'); sb.disabled = true; sb.classList.add('spinning');
   safeAudio(A.init, 'init');
@@ -293,6 +300,7 @@ function doSpin(){
 
   if (state.safetyTimer) clearTimeout(state.safetyTimer);
   state.safetyTimer = setTimeout(function(){
+    if (token !== state.spinToken) return;
     if (state.spinning) {
       console.warn('[Sweet] safety release');
       paintGrid(state.grid || E.spin());
@@ -318,27 +326,29 @@ function doSpin(){
   [0,1,2,3,4,5].forEach(function(c){
     var dur = baseDelay + c * stagger;
     spinReel(c, dur, function(){
+      if (token !== state.spinToken) return;
       done++;
       if (done === 6) {
         var _g1 = document.getElementById('sw-grid'); if (_g1) _g1.style.opacity = '1';
         paintGrid(firstGrid);
         setTimeout(function(){
+          if (token !== state.spinToken) return;
           // 检查免费旋转触发
           var fsCount = C.getFreeSpinCount(result.scatterCount);
           if (fsCount > 0) {
             safeAudio(A.freeSpin, 'freeSpin');
-            playFsEntrance(fsCount, function(){ runFreeSpins(b, fsCount); });
+            playFsEntrance(fsCount, function(){ runFreeSpins(b, fsCount, token); }, token);
           } else {
-            playRounds(result, b, null);
+            playRounds(result, b, null, token);
           }
         }, 250);
       }
-    });
+    }, token);
   });
 }
 
 /* 免费旋转 */
-function playFsEntrance(count, cb){
+function playFsEntrance(count, cb, token){
   if (state.fsEntranceActive) return;
   var banner = $('sw-freespin-banner');
   var stage = document.querySelector('.sw-stage');
@@ -353,6 +363,7 @@ function playFsEntrance(count, cb){
     banner.hidden = true;
     if (stage) stage.classList.remove('fs-entrance-active');
     state.fsEntranceActive = false;
+    if (token !== state.spinToken) return;
     if (cb) cb();
   }
 
@@ -366,7 +377,8 @@ function playFsEntrance(count, cb){
   setTimeout(finish, 1200);
 }
 
-function runFreeSpins(b, fsCount){
+function runFreeSpins(b, fsCount, token){
+  if (token !== state.spinToken) return;
   state.freeSpinMode = true;
   var stage = document.querySelector('.sw-stage');
   if (stage) stage.classList.add('fs-mode');
@@ -386,13 +398,17 @@ function runFreeSpins(b, fsCount){
   var spins = fsResult.spins;
   var idx = 0;
   function nextFs(){
+    if (token !== state.spinToken) return;
     if (idx >= spins.length) {
       state.freeSpinMode = false;
       if (stage) stage.classList.remove('fs-mode');
       safeAudio(A.fsBgStop, 'fsBgStop');
       showFsBanner(0);
       if (totalWin > 0) { safeAudio(A.fsSummary, 'fsSummary'); showFsSummary(totalWin); }
-      setTimeout(function(){ finish(totalWin); }, totalWin > 0 ? 1800 : 200);
+      setTimeout(function(){
+        if (token !== state.spinToken) return;
+        finish(totalWin, token);
+      }, totalWin > 0 ? 1800 : 200);
       return;
     }
     var s = spins[idx];
@@ -403,6 +419,7 @@ function runFreeSpins(b, fsCount){
     var shown = 0;
     s.result.rounds.forEach(function(rd, ri){
       setTimeout(function(){
+        if (token !== state.spinToken) return;
         if (rd.wins && rd.wins.length) {
           var cells = [];
           rd.wins.forEach(function(w){ w.cells.forEach(function(p){ cells.push(p); }); });
@@ -414,11 +431,15 @@ function runFreeSpins(b, fsCount){
           safeAudio(A.tumble, 'tumble');
           if (rd.bombs && rd.bombs.length) safeAudio(A.bomb, 'bomb');
           setTimeout(function(){
+            if (token !== state.spinToken) return;
             cells.forEach(function(p){
               var el = cellAt(p[0], p[1]);
               if (el) el.classList.add('popping');
             });
-            setTimeout(function(){ highlightCells(cells, false); }, 220);
+            setTimeout(function(){
+              if (token !== state.spinToken) return;
+              highlightCells(cells, false);
+            }, 220);
           }, 500);
         }
       }, ri * 700);
@@ -429,14 +450,15 @@ function runFreeSpins(b, fsCount){
 }
 
 /* 逐轮播放（普通 spin） */
-function playRounds(result, betAmt, fs){
+function playRounds(result, betAmt, fs, token){
   var rounds = result.rounds;
   var totalShown = 0;
   var i = 0;
   var stage = document.querySelector('.sw-stage');
 
   function playOne(){
-    if (i >= rounds.length) { paintGrid(result.finalGrid); finish(totalShown); return; }
+    if (token !== state.spinToken) return;
+    if (i >= rounds.length) { paintGrid(result.finalGrid); finish(totalShown, token); return; }
     var rd = rounds[i];
     if (!rd || !rd.wins || rd.wins.length === 0) { i++; playOne(); return; }
     var cells = [];
@@ -446,24 +468,26 @@ function playRounds(result, betAmt, fs){
     renderWin(totalShown, '');
     safeAudio(A.tumble, 'tumble');
     setTimeout(function(){
+      if (token !== state.spinToken) return;
       cells.forEach(function(p){
         var el = cellAt(p[0], p[1]);
         if (el) el.classList.add('popping');
       });
       setTimeout(function(){
+        if (token !== state.spinToken) return;
         highlightCells(cells, false);
         i++;
         if (i < rounds.length && rounds[i] && rounds[i].grid) {
           paintGrid(rounds[i].grid);
           setTimeout(playOne, 250);
-        } else { paintGrid(result.finalGrid); finish(totalShown); }
+        } else { paintGrid(result.finalGrid); finish(totalShown, token); }
       }, 220);
     }, 500);
   }
   playOne();
 }
 
-function finish(totalWin){
+function finish(totalWin, token){
   if (MODE === 'demo') {
     state.balance = state.balance - bet() + totalWin;
     renderBalance(true); saveState();
@@ -478,6 +502,7 @@ function finish(totalWin){
       body: JSON.stringify({bet: bet(), totalWin: totalWin})
     }).then(function(r){ return r.json().catch(function(){ return null; }); })
       .then(function(d){
+        if (token !== state.spinToken) return;
         if (d && d.success) {
           state.balance = Number(d.balanceAfter); renderBalance(true);
           if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
@@ -486,7 +511,10 @@ function finish(totalWin){
           afterSettle(totalWin);
         }
         else { toast('结算失败'); releaseSpin(); stopAuto(); }
-      }).catch(function(){ toast('网络错误'); releaseSpin(); stopAuto(); });
+      }).catch(function(){
+        if (token !== state.spinToken) return;
+        toast('网络错误'); releaseSpin(); stopAuto();
+      });
   }
 }
 
@@ -506,6 +534,7 @@ function afterSettle(totalWin){
 
 function releaseSpin(){
   state.spinning = false;
+  state.spinToken++;
   if (state.safetyTimer) { clearTimeout(state.safetyTimer); state.safetyTimer = null; }
   for (var i = 0; i < 6; i++) {
     if (reelHandles[i]) { cancelAnimationFrame(reelHandles[i]); reelHandles[i] = null; }
