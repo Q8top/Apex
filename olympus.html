@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>奥林匹斯 · Apex Global Entertainment</title>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
+<link rel="stylesheet" href="/src/css/apex-boot.css">
+<link rel="stylesheet" href="/src/css/game.css">
+</head>
+<body>
+<div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
+
+<header class="game-topbar" role="banner">
+  <a class="game-icon-btn game-back" href="/" aria-label="返回">
+    <i class="ri-arrow-left-s-line" aria-hidden="true"></i>
+  </a>
+  <h1 class="game-title">奥林匹斯</h1>
+  <button class="game-icon-btn game-share" type="button" id="game-share" aria-label="分享">
+    <i class="ri-share-line" aria-hidden="true"></i>
+  </button>
+</header>
+
+<main class="game-main">
+  <div class="game-carousel" id="game-carousel">
+    <div class="game-carousel-track" id="game-track" aria-live="polite"></div>
+  </div>
+  <div class="game-dots" id="game-dots" role="tablist" aria-label="轮播图指示器"></div>
+</main>
+
+<script src="/src/js/inline/apex-loader.js"></script>
+<script src="/src/js/inline/game-page.js"></script>
+</body>
+</html>
