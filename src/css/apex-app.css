@@ -160,7 +160,7 @@
 .apex-lang-item > .apex-check { font-size: 16px; color: #111; flex-shrink: 0; }
 
 /* ---------- 主内容区 ---------- */
-.apex-main { flex: 1; overflow-y: auto; padding: 24px 20px 60px; -webkit-overflow-scrolling: touch; }
+.apex-main { flex: 1; overflow-y: auto; padding: 24px 20px calc(96px + env(safe-area-inset-bottom, 0px)); -webkit-overflow-scrolling: touch; }
 .apex-main-inner { max-width: 1240px; margin: 0 auto; }
 .apex-welcome-card {
   position: relative; overflow: hidden;
@@ -198,7 +198,7 @@
   .apex-lang-btn > .apex-flag { font-size: 14px; }
   .apex-lang-btn > .apex-lang-label { font-size: 12px; }
   .apex-lang-btn > i { font-size: 13px; }
-  .apex-main { padding: 16px 14px 60px; }
+  .apex-main { padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px)); }
   .apex-welcome-card { padding: 24px 20px; border-radius: 18px; }
   .apex-welcome-title { font-size: 20px; }
 }
@@ -405,15 +405,24 @@
    ============================================================ */
 
 .apex-tabbar {
-  flex-shrink: 0;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  background: rgba(255,255,255,.94);
-  backdrop-filter: saturate(180%) blur(18px);
-  -webkit-backdrop-filter: saturate(180%) blur(18px);
-  border-top: 1px solid rgba(0,0,0,.06);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  background: rgba(255,255,255,.72);
+  backdrop-filter: saturate(180%) blur(22px);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 999px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.05);
+  padding: 6px 4px;
   z-index: 50;
+  transition: background .25s ease;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .apex-tabbar { background: rgba(255,255,255,.96); }
 }
 
 .apex-tab {
@@ -422,7 +431,7 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  padding: 8px 4px 6px;
+  padding: 6px 4px 4px;
   border: 0;
   background: transparent;
   color: #8a8a8e;
