@@ -71,52 +71,80 @@
   }
   function getBet() { return BET_STEPS[betIdx]; }
 
-  // ── 渲染 ──
-  function blankCell() {
-    return '<div class="ol-cell"></div>';
+  // ── 渲染（6 列 / 绝对定位符号）──
+  function symAt(c, r) {
+    var col = elGrid.children[c];
+    if (!col) return null;
+    return col.children[r];
+  }
+  function layoutGrid() {
+    var H = elGrid.clientHeight;
+    if (!H) return;
+    var pad = 8, gap = 4;
+    var rowH = (H - 2 * pad - (ROWS - 1) * gap) / ROWS;
+    if (rowH > 0) elGrid.style.setProperty('--row-h', rowH + 'px');
   }
   function buildGrid() {
     var h = '';
-    for (var i = 0; i < TOTAL; i++) h += blankCell();
+    for (var c = 0; c < COLS; c++) {
+      h += '<div class="ol-col" data-col="' + c + '">';
+      for (var r = 0; r < ROWS; r++) {
+        h += '<div class="ol-sym" data-col="' + c + '" data-row="' + r + '" style="--row:' + r + '"></div>';
+      }
+      h += '</div>';
+    }
     elGrid.innerHTML = h;
+    layoutGrid();
+  }
+  function setSym(c, r, symId) {
+    var el = symAt(c, r);
+    if (!el) return;
+    var url = SYMBOL_SVG[symId];
+    if (url) {
+      el.innerHTML = '<img src="' + url + '" alt="">';
+    } else {
+      el.innerHTML = '';
+    }
   }
   function renderGridFull(grid) {
-    // grid[col][row]
-    var cells = elGrid.children;
     for (var c = 0; c < COLS; c++) {
       for (var r = 0; r < ROWS; r++) {
-        var idx = c * ROWS + r;
-        var sym = grid[c][r];
-        var img = SYMBOL_SVG[sym];
-        var cell = cells[idx];
-        if (!cell) continue;
-        cell.classList.remove('win', 'remove', 'drop');
-        if (img) {
-          cell.innerHTML = '<img src="' + img + '" alt="">';
-        } else {
-          cell.innerHTML = '';
-        }
+        var el = symAt(c, r);
+        if (!el) continue;
+        el.classList.remove('win', 'remove', 'dim', 'enter');
+        el.style.setProperty('--row', r);
+        setSym(c, r, grid[c][r]);
       }
     }
   }
   function highlightCells(cellList) {
+    // 先把所有标记为非中奖 → dim
+    for (var c = 0; c < COLS; c++) {
+      for (var r = 0; r < ROWS; r++) {
+        var el = symAt(c, r);
+        if (el) el.classList.add('dim');
+      }
+    }
+    // 中奖格亮
     for (var i = 0; i < cellList.length; i++) {
-      var c = cellList[i][0], r = cellList[i][1];
-      var idx = c * ROWS + r;
-      var cell = elGrid.children[idx];
-      if (cell) cell.classList.add('win');
+      var cc = cellList[i][0], rr = cellList[i][1];
+      var el2 = symAt(cc, rr);
+      if (el2) { el2.classList.remove('dim'); el2.classList.add('win'); }
     }
   }
   function clearHighlights() {
-    var cells = elGrid.querySelectorAll('.ol-cell.win');
-    for (var i = 0; i < cells.length; i++) cells[i].classList.remove('win');
+    for (var c = 0; c < COLS; c++) {
+      for (var r = 0; r < ROWS; r++) {
+        var el = symAt(c, r);
+        if (el) el.classList.remove('win', 'dim');
+      }
+    }
   }
   function removeWinningCells(cellList) {
     for (var i = 0; i < cellList.length; i++) {
       var c = cellList[i][0], r = cellList[i][1];
-      var idx = c * ROWS + r;
-      var cell = elGrid.children[idx];
-      if (cell) cell.classList.add('remove');
+      var el = symAt(c, r);
+      if (el) el.classList.add('remove');
     }
   }
 
@@ -150,29 +178,143 @@
   }
 
   // ── 播放一轮 tumble ──
-  function playTumbleRound(grid, wins, roundWin, roundIdx) {
+  // roundIdx: 0=第一轮（初始网格），>=1 表示是下落补位后的新一轮
+  // nextGrid: 下一轮网格（用于下落补位）；最后一轮可传 null
+  function playTumbleRound(grid, wins, roundWin, nextGrid) {
     return new Promise(function (resolve) {
-      // 1. 全量渲染本轮网格
       renderGridFull(grid);
-      // 2. 高亮中奖
+      // 高亮
       var allCells = [];
       for (var i = 0; i < wins.length; i++) {
         allCells = allCells.concat(wins[i].cells);
       }
       highlightCells(allCells);
-      sfx('win', Math.min(3, Math.round(roundWin / getBet() / 5)));
-      // 3. 赢奖累加显示
-      var prevWin = parseFloat(elWinVal.textContent.replace(/[^\d.]/g, '')) || 0;
-      var newWin = prevWin + roundWin;
-      updateWinUI(newWin, true);
-      // 4. 等待高亮展示
+      sfx('win', Math.min(3, Math.max(1, Math.round(roundWin / Math.max(1, getBet()) / 5))));
+
+      // 赢奖显示累加
+      var prevWin = parseFloat((elWinVal.textContent || '0').replace(/[^\d.]/g, '')) || 0;
+      updateWinUI(prevWin + roundWin, true);
+
       setTimeout(function () {
-        // 5. 消格
+        // 消除
         removeWinningCells(allCells);
         setTimeout(function () {
-          resolve();
-        }, 280);
-      }, 500);
+          // 消除完成
+          if (nextGrid) {
+            // 下落 + 补位：先设置起点（新符号从上方进入）
+            // 简单方案：所有格子先 .enter（新位置），下一帧移除 .enter
+            for (var c = 0; c < COLS; c++) {
+              for (var r = 0; r < ROWS; r++) {
+                var el = symAt(c, r);
+                if (!el) continue;
+                setSym(c, r, nextGrid[c][r]);
+                el.style.setProperty('--row', r);
+                // 判断是否原来是中奖格（要入场）
+                var wasWin = false;
+                for (var k = 0; k < allCells.length; k++) {
+                  if (allCells[k][0] === c && allCells[k][1] === r) { wasWin = true; break; }
+                }
+                el.classList.remove('win', 'dim', 'remove');
+                if (wasWin) {
+                  el.classList.add('enter');
+                }
+              }
+            }
+            // 下一帧恢复
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                var enters = elGrid.querySelectorAll('.ol-sym.enter');
+                for (var j = 0; j < enters.length; j++) enters[j].classList.remove('enter');
+                setTimeout(resolve, 420);
+              });
+            });
+          } else {
+            // 无下一轮：直接等待
+            clearHighlights();
+            setTimeout(resolve, 240);
+          }
+        }, 220);
+      }, 480);
+    });
+  }
+
+  // ── Free Spins 播放 ──
+  function playFreeSpins(fs) {
+    return new Promise(function (resolve) {
+      var elStage = document.querySelector('.ol-stage');
+      var elBanner = document.getElementById('ol-fs-banner');
+      var elLeft = document.getElementById('ol-fs-left');
+      var elTotal = document.getElementById('ol-fs-total');
+      var elSum = document.getElementById('ol-fs-summary');
+      var elSumVal = document.getElementById('ol-fs-summary-val');
+
+      var awarded = fs.awarded || (fs.rounds ? fs.rounds.length : 0);
+      var totalWinFS = fs.totalWin || 0;
+      var left = awarded;
+
+      // 进入 FS 模式
+      if (elStage) elStage.classList.add('fs-mode');
+      if (elBanner) {
+        elBanner.setAttribute('aria-hidden', 'false');
+        elBanner.classList.add('show');
+      }
+      if (elLeft) elLeft.textContent = left;
+      if (elTotal) elTotal.textContent = awarded;
+      sfx('scatter');
+
+      // 延迟一点再开始
+      setTimeout(function () {
+        var rounds = fs.rounds || [];
+        var idx = 0;
+
+        function nextRound() {
+          if (idx >= rounds.length) {
+            // FS 结束
+            if (elStage) elStage.classList.remove('fs-mode');
+            if (elBanner) elBanner.classList.remove('show');
+            setTimeout(function () {
+              if (elSumVal) elSumVal.textContent = fmtMoney(totalWinFS);
+              if (elSum) elSum.classList.add('show');
+              setTimeout(function () {
+                if (elSum) elSum.classList.remove('show');
+                if (elBanner) elBanner.setAttribute('aria-hidden', 'true');
+                resolve();
+              }, 3200);
+            }, 300);
+            return;
+          }
+
+          var r = rounds[idx];
+          idx++;
+          left--;
+          if (elLeft) elLeft.textContent = left;
+
+          // 显示本轮初始网格
+          renderGridFull(r.initialGrid);
+
+          var ts = r.tumbles || [];
+          if (ts.length === 0) {
+            setTimeout(nextRound, 400);
+            return;
+          }
+          var j = 0;
+          function nextTumble() {
+            if (j >= ts.length) {
+              setTimeout(nextRound, 240);
+              return;
+            }
+            var t = ts[j];
+            var nextGrid = (j + 1 < ts.length) ? ts[j + 1].grid : null;
+            j++;
+            playTumbleRound(t.grid, t.wins, t.roundWin || 0, nextGrid).then(function () {
+              setTimeout(nextTumble, 160);
+            });
+          }
+          nextTumble();
+        }
+
+        nextRound();
+      }, 700);
     });
   }
 
@@ -204,24 +346,23 @@
       var initialGrid = result.initialGrid;
       var tumbles = result.tumbles || [];
 
-      // 先渲染初始网格
+      // 播放 reel 滚动动画（6 列依次停下），停止后揭示初始网格
+      await spinReels(initialGrid);
       renderGridFull(initialGrid);
       // 播放每一轮
-      var cumulative = 0;
       for (var i = 0; i < tumbles.length; i++) {
         var t = tumbles[i];
         var roundWin = t.roundWin || 0;
-        cumulative += roundWin;
-        await playTumbleRound(t.grid, t.wins, roundWin, i);
-        sfx('reelStop', i);
-      }
-      // 如果有 tumble，最后一轮消格后要渲染最终网格（无中奖）
-      if (tumbles.length > 0) {
-        // 用下一轮的 grid 或空网格
-        // 这里简单处理：tumbles 最后一轮之后就没有 grid 了，我们保留最后的可见状态
+        var nextGrid = (i + 1 < tumbles.length) ? tumbles[i + 1].grid : null;
+        await playTumbleRound(t.grid, t.wins, roundWin, nextGrid);
       }
       // 全部结束：清高亮
       clearHighlights();
+
+      // 触发 Free Spins 播放
+      if (result.freeSpins && result.freeSpins.rounds && result.freeSpins.rounds.length > 0) {
+        await playFreeSpins(result.freeSpins);
+      }
       // 最终赢奖
       if (totalWin > 0) {
         balance += totalWin;
@@ -262,8 +403,28 @@
     }
   }
 
+  // ── FX 尺寸同步（DPR 上限 2）──
+  function resizeFx() {
+    var elFx = document.getElementById('ol-fx');
+    if (!elFx) return;
+    var r = elFx.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    elFx.width = Math.max(1, Math.floor(r.width * dpr));
+    elFx.height = Math.max(1, Math.floor(r.height * dpr));
+  }
+
   // ── 事件绑定 ──
   function bind() {
+    var elBack = document.querySelector('.ol-topbar a[href="/olympus.html"]');
+    if (elBack) {
+      elBack.addEventListener('click', function (e) {
+        // 停 auto
+        if (autoRun) { autoRun = false; if (elAuto) elAuto.classList.remove('active'); clearTimeout(autoTimer); }
+        // 停 reel 层（清空）
+        var elReels = $('ol-reels');
+        if (elReels) { elReels.classList.remove('show'); elReels.innerHTML = ''; }
+      });
+    }
     elSpin.addEventListener('click', function () {
       if (window.olympusAudio && !window.olympusAudio.isUnlocked()) window.olympusAudio.unlock();
       sfx('click');
@@ -306,17 +467,28 @@
   // ── Init ──
   function init() {
     document.getElementById('ol-root').setAttribute('data-mode', MODE);
-    if (MODE === 'demo') {
-      if (elTitle) elTitle.textContent = '奥林匹斯之门 · 试玩';
-    } else {
-      if (elTitle) elTitle.textContent = '奥林匹斯之门';
+    if (elTitle) elTitle.textContent = '奥林匹斯之门';
+    var elBadge = document.getElementById('ol-badge');
+    if (elBadge) {
+      if (MODE === 'demo') {
+        elBadge.textContent = '试玩模式';
+        elBadge.classList.remove('real');
+      } else {
+        elBadge.textContent = '游戏模式';
+        elBadge.classList.add('real');
+      }
     }
     buildGrid();
+    window.addEventListener('resize', layoutGrid);
+    window.addEventListener('orientationchange', function () { setTimeout(layoutGrid, 200); });
     updateBetUI();
     updateBalanceUI();
     updateTotalWinUI();
     updateWinUI(0, false);
     bind();
+    resizeFx();
+    window.addEventListener('resize', resizeFx);
+    window.addEventListener('orientationchange', function () { setTimeout(resizeFx, 200); });
   }
 
   if (document.readyState === 'loading') {

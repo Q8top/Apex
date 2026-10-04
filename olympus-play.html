@@ -17,7 +17,10 @@
     <a class="ol-tb-btn" href="/olympus.html" aria-label="返回">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </a>
-    <div class="ol-title" id="ol-title">奥林匹斯之门 · 试玩</div>
+    <div class="ol-title-wrap">
+      <div class="ol-title" id="ol-title">奥林匹斯之门</div>
+      <span class="ol-badge" id="ol-badge">试玩模式</span>
+    </div>
     <button type="button" class="ol-tb-btn" id="ol-btn-sound" aria-label="音效">
       <svg class="ol-ico-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M19 5a9 9 0 010 14"/></svg>
       <svg class="ol-ico-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>
@@ -29,6 +32,13 @@
 
   <main class="ol-stage">
     <div class="ol-grid" id="ol-grid" role="grid" aria-label="游戏网格"></div>
+    <div class="ol-reels" id="ol-reels" aria-hidden="true"></div>
+    <canvas class="ol-fx" id="ol-fx" aria-hidden="true"></canvas>
+    <div class="ol-fs-banner" id="ol-fs-banner" aria-hidden="true">
+      <div class="ol-fs-title">FREE SPINS</div>
+      <div class="ol-fs-count"><span id="ol-fs-left">0</span> <span class="ol-fs-sep">/</span> <span id="ol-fs-total">0</span></div>
+      <div class="ol-fs-sub">免费旋转</div>
+    </div>
   </main>
 
   <section class="ol-win-section">
@@ -85,6 +95,16 @@
       <span>赔付</span>
     </button>
   </nav>
+
+  <div class="ol-fs-summary" id="ol-fs-summary" aria-hidden="true">
+    <div class="ol-fs-summary-mask"></div>
+    <div class="ol-fs-summary-card">
+      <div class="ol-fs-summary-title">FREE SPINS 完成</div>
+      <div class="ol-fs-summary-label">总赢奖</div>
+      <div class="ol-fs-summary-val" id="ol-fs-summary-val">¥0.00</div>
+      <div class="ol-fs-summary-sub">已累加至本局结果</div>
+    </div>
+  </div>
 
   <div class="ol-toast" id="ol-toast" role="status" aria-live="polite"></div>
 

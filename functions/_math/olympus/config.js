@@ -43,7 +43,7 @@ export const PAYTABLE = {
 };
 
 export const PAYOUT = {
-  scaleReal: 10.41,
+  scaleReal: 9.21,
   scaleDemo: 8.05,
   demoCounts: 3,
   maxWinMultiplier: 5000

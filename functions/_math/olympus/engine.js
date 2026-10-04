@@ -2,12 +2,14 @@
  *
  * 🔒 机密文件 — 严禁暴露到前端
  *    纯函数：接收 RNG + bet + mode，返回 SpinResult
- *    不碰 DOM，不碰网络，不碰时间
  */
 
 import { GRID, SYMBOLS, PAYTABLE, PAYOUT, META } from './config.js';
 
 const SYM_KEYS = Object.keys(SYMBOLS);
+const SCATTER_TRIGGER = 4;
+const FS_BASE = 10;
+const FS_EXTRA_PER_SCATTER = 2;
 
 function weightedSymbol(rng) {
   return rng.pickWeighted(SYM_KEYS, function(k) {
@@ -15,7 +17,6 @@ function weightedSymbol(rng) {
   });
 }
 
-// 生成 6×5 网格：grid[col][row]
 export function generateGrid(rng) {
   var grid = [];
   for (var c = 0; c < GRID.cols; c++) {
@@ -28,7 +29,17 @@ export function generateGrid(rng) {
   return grid;
 }
 
-// 找出所有中奖符号（≥8 且非 SCATTER）
+export function countScatter(grid) {
+  if (!grid) return 0;
+  var n = 0;
+  for (var c = 0; c < grid.length; c++) {
+    for (var r = 0; r < grid[c].length; r++) {
+      if (grid[c][r] === 'SCATTER') n++;
+    }
+  }
+  return n;
+}
+
 export function evaluateGrid(grid) {
   var count = {};
   var cells = {};
@@ -50,7 +61,6 @@ export function evaluateGrid(grid) {
   return wins;
 }
 
-// 从赔付表取档（8/10/12 三档，超出取最高档）
 export function lookupPay(symbol, count) {
   var t = PAYTABLE[symbol];
   if (!t) return 0;
@@ -62,13 +72,11 @@ export function lookupPay(symbol, count) {
   return best;
 }
 
-// 计算赔付金额（bet × payValue × scale）
 export function calcPay(symbol, count, bet, scale) {
   var pv = lookupPay(symbol, count);
   return pv * bet * scale;
 }
 
-// 消除中奖格 → 每列下落 → 顶部补新符号
 export function tumble(grid, wins, rng) {
   var remove = {};
   for (var i = 0; i < wins.length; i++) {
@@ -91,11 +99,8 @@ export function tumble(grid, wins, rng) {
   return next;
 }
 
-// 完整一轮：初始网格 → 循环 tumble 直到无中奖
-export function spin(rng, bet, mode) {
-  var scale = mode === 'demo' ? PAYOUT.scaleDemo : PAYOUT.scaleReal;
-  var seed = rng.getSeed();
-
+// 跑一轮完整盘面（含 tumble 循环）
+function playRound(rng, bet, scale) {
   var initialGrid = generateGrid(rng);
   var grid = initialGrid;
   var tumbles = [];
@@ -119,30 +124,74 @@ export function spin(rng, bet, mode) {
 
     tumbleCount++;
     if (tumbleCount >= GRID.maxTumbles) break;
-
     grid = tumble(grid, wins, rng);
   }
 
-  // 上限保护
+  return {
+    initialGrid: initialGrid,
+    finalGrid: grid,
+    tumbles: tumbles,
+    totalWin: totalWin,
+    tumbleCount: tumbleCount
+  };
+}
+
+// 完整一轮（含 Free Spins）
+export function spin(rng, bet, mode) {
+  var scale = mode === 'demo' ? PAYOUT.scaleDemo : PAYOUT.scaleReal;
+  var seed = rng.getSeed();
+
+  var base = playRound(rng, bet, scale);
+  var scatterCount = countScatter(base.initialGrid);
+
+  var freeSpins = null;
+  var fsTotalWin = 0;
+  var grandTotal = base.totalWin;
+
+  if (scatterCount >= SCATTER_TRIGGER) {
+    var awarded = FS_BASE + (scatterCount - SCATTER_TRIGGER) * FS_EXTRA_PER_SCATTER;
+    var rounds = [];
+    for (var i = 0; i < awarded; i++) {
+      var r = playRound(rng, bet, scale);
+      fsTotalWin += r.totalWin;
+      rounds.push({
+        index: i,
+        initialGrid: r.initialGrid,
+        finalGrid: r.finalGrid,
+        tumbles: r.tumbles,
+        totalWin: r.totalWin
+      });
+    }
+    freeSpins = {
+      awarded: awarded,
+      rounds: rounds,
+      totalWin: fsTotalWin
+    };
+    grandTotal += fsTotalWin;
+  }
+
   var cap = bet * PAYOUT.maxWinMultiplier;
   var capped = false;
-  if (totalWin > cap) { totalWin = cap; capped = true; }
+  if (grandTotal > cap) { grandTotal = cap; capped = true; }
 
   return {
     seed: seed,
     mathVersion: META.mathVersion,
     bet: bet,
     mode: mode,
-    initialGrid: initialGrid,
-    tumbles: tumbles,
-    tumbleCount: tumbleCount,
-    totalWin: totalWin,
+    initialGrid: base.initialGrid,
+    finalGrid: base.finalGrid,
+    tumbles: base.tumbles,
+    tumbleCount: base.tumbleCount,
+    scatterCount: scatterCount,
+    freeSpins: freeSpins,
+    baseTotalWin: base.totalWin,
+    totalWin: grandTotal,
     capped: capped
   };
 }
 
-
-// Demo 模式：跑 N 次取最优（N = PAYOUT.demoCounts）
+// Demo 模式：跑 N 次取最优
 export function spinDemo(rng, bet) {
   var best = null;
   for (var i = 0; i < PAYOUT.demoCounts; i++) {

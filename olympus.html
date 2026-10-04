@@ -65,25 +65,42 @@
   <section class="card">
     <h2 class="card-title">中奖说明</h2>
     <p class="card-note">赔付倍数为 <strong>下注额的相对倍数</strong>，档位越高越稀有：</p>
-    <ul class="pay-list">
-      <li class="pay-row"><span class="pay-sym" style="--c:#4a90d9"></span><span class="pay-name">蓝宝石</span><span class="pay-val">×1 · ×2 · ×5</span></li>
-      <li class="pay-row"><span class="pay-sym" style="--c:#4ad991"></span><span class="pay-name">绿宝石</span><span class="pay-val">×1 · ×2 · ×6</span></li>
-      <li class="pay-row"><span class="pay-sym" style="--c:#a96fe0"></span><span class="pay-name">紫水晶</span><span class="pay-val">×1 · ×3 · ×8</span></li>
-      <li class="pay-row"><span class="pay-sym" style="--c:#e05a5a"></span><span class="pay-name">红宝石</span><span class="pay-val">×2 · ×4 · ×10</span></li>
-      <li class="pay-row"><span class="pay-sym" style="--c:#d4af37"></span><span class="pay-name">圣杯</span><span class="pay-val">×3 · ×6 · ×15</span></li>
-      <li class="pay-row"><span class="pay-sym pay-sym--ring" style="--c:#d4af37"></span><span class="pay-name">金戒指</span><span class="pay-val">×4 · ×8 · ×20</span></li>
-      <li class="pay-row"><span class="pay-sym pay-sym--hour" style="--c:#d4af37"></span><span class="pay-name">沙漏</span><span class="pay-val">×5 · ×10 · ×25</span></li>
-      <li class="pay-row"><span class="pay-sym pay-sym--crown" style="--c:#f5d76e"></span><span class="pay-name">金冠</span><span class="pay-val">×10 · ×20 · ×50</span></li>
+    <ul class="sym-list">
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/gem-blue.svg" alt="蓝宝石"><span class="sym-name">蓝宝石</span><span class="sym-mult">×1 · ×2 · ×5</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/gem-green.svg" alt="绿宝石"><span class="sym-name">绿宝石</span><span class="sym-mult">×1 · ×2 · ×6</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/gem-purple.svg" alt="紫水晶"><span class="sym-name">紫水晶</span><span class="sym-mult">×1 · ×3 · ×8</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/gem-red.svg" alt="红宝石"><span class="sym-name">红宝石</span><span class="sym-mult">×2 · ×4 · ×10</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/chalice.svg" alt="圣杯"><span class="sym-name">圣杯</span><span class="sym-mult">×3 · ×6 · ×15</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/ring.svg" alt="金戒指"><span class="sym-name">金戒指</span><span class="sym-mult">×4 · ×8 · ×20</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/hourglass.svg" alt="沙漏"><span class="sym-name">沙漏</span><span class="sym-mult">×5 · ×10 · ×25</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/crown.svg" alt="金冠"><span class="sym-name">金冠</span><span class="sym-mult">×10 · ×20 · ×50</span></li>
     </ul>
     <p class="card-note">※ 上表为相对档位示意，实际结算以游戏内实时显示为准。</p>
   </section>
 
   <section class="card">
     <h2 class="card-title">特殊符号</h2>
-    <ul class="pay-list">
-      <li class="pay-row"><span class="pay-sym pay-sym--scatter" style="--c:#8e6fe0"></span><span class="pay-name">Scatter</span><span class="pay-val">≥4 个触发 Free Spins</span></li>
-      <li class="pay-row"><span class="pay-sym pay-sym--mult" style="--c:#f5d76e"></span><span class="pay-name">倍数球</span><span class="pay-val">x2 ~ x500，本局累加</span></li>
+    <ul class="sym-list">
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/scatter.svg" alt="Scatter"><span class="sym-name">Scatter</span><span class="sym-mult">≥4 个触发 Free Spins</span></li>
+      <li class="sym-item"><img class="sym-icon" src="/assets/games/symbols/multiplier.svg" alt="倍数球"><span class="sym-name">倍数球</span><span class="sym-mult">x2 ~ x500，本局累加</span></li>
     </ul>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">赔付表</h2>
+    <p class="card-note">每一行为一种符号，三档位从左到右依次对应：8~9 个 / 10~11 个 / 12 个及以上。</p>
+    <ul class="pay-table">
+      <li class="pay-head"><span></span><span>8 个</span><span>10 个</span><span>12+ 个</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/gem-blue.svg" alt=""><span class="pay-name">蓝宝石</span><span class="pay-cell">×1</span><span class="pay-cell">×2</span><span class="pay-cell">×5</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/gem-green.svg" alt=""><span class="pay-name">绿宝石</span><span class="pay-cell">×1</span><span class="pay-cell">×2</span><span class="pay-cell">×6</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/gem-purple.svg" alt=""><span class="pay-name">紫水晶</span><span class="pay-cell">×1</span><span class="pay-cell">×3</span><span class="pay-cell">×8</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/gem-red.svg" alt=""><span class="pay-name">红宝石</span><span class="pay-cell">×2</span><span class="pay-cell">×4</span><span class="pay-cell">×10</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/chalice.svg" alt=""><span class="pay-name">圣杯</span><span class="pay-cell">×3</span><span class="pay-cell">×6</span><span class="pay-cell">×15</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/ring.svg" alt=""><span class="pay-name">金戒指</span><span class="pay-cell">×4</span><span class="pay-cell">×8</span><span class="pay-cell">×20</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/hourglass.svg" alt=""><span class="pay-name">沙漏</span><span class="pay-cell">×5</span><span class="pay-cell">×10</span><span class="pay-cell">×25</span></li>
+      <li><img class="pay-icon" src="/assets/games/symbols/crown.svg" alt=""><span class="pay-name">金冠</span><span class="pay-cell">×10</span><span class="pay-cell">×20</span><span class="pay-cell">×50</span></li>
+    </ul>
+    <p class="card-note">※ 倍数为下注额的相对倍数；符号出现概率为游戏机密，不在页面展示。</p>
   </section>
 
   <section class="card">
@@ -104,22 +121,24 @@
 
 <div class="action-bar">
   <div class="action-left">
-    <button type="button" class="action-mini" aria-label="收藏">
+    <button type="button" class="action-mini" id="action-fav" aria-label="收藏">
       <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l2.9 6.1L21 10l-4.5 4.4L17.7 21 12 17.8 6.3 21l1.2-6.6L3 10l6.1-.9L12 3z"/></svg>
       <span>收藏</span>
     </button>
-    <button type="button" class="action-mini" aria-label="在线客服">
-      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12a9 9 0 10-3.6 7.2L21 20l-.9-3.3A8.96 8.96 0 0021 12z"/></svg>
+    <button type="button" class="action-mini" id="action-support" aria-label="在线客服">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
       <span>在线客服</span>
     </button>
   </div>
   <div class="action-right">
     <a class="btn-cta btn-demo" href="/olympus-play.html?mode=demo">免费试玩</a>
-    <a class="btn-cta btn-real" href="/olympus-play.html?mode=real">开始游戏</a>
+    <a class="btn-cta btn-real" id="action-start-real" href="/olympus-play.html?mode=real">开始游戏</a>
   </div>
 </div>
 
 <script src="/src/js/inline/apex-loader.js"></script>
+<script src="/src/js/apiClient.js?v=20260927e"></script>
 <script src="/src/js/games/olympus/detail.js"></script>
+<script src="/src/js/games/olympus/detail-actions.js"></script>
 </body>
 </html>

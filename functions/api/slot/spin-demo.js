@@ -41,8 +41,12 @@ export async function onRequestPost(context) {
 
   const safeResult = {
     initialGrid: result.initialGrid,
+    finalGrid: result.finalGrid,
     tumbles: result.tumbles,
     tumbleCount: result.tumbleCount,
+    scatterCount: result.scatterCount,
+    freeSpins: result.freeSpins,
+    baseTotalWin: result.baseTotalWin,
     totalWin: result.totalWin,
     capped: result.capped,
   };
