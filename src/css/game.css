@@ -110,19 +110,35 @@ body {
   user-select: none;
 }
 
-.game-carousel-img {
+.game-carousel-placeholder {
   width: 100%;
   max-width: 640px;
   aspect-ratio: 16 / 10;
   border-radius: 16px;
-  background: linear-gradient(135deg, #f4f4f5 0%, #eaeaec 100%);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 12px 32px rgba(0,0,0,.06);
+  border: 1px solid #ededee;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #c4c4c8;
   pointer-events: none;
   -webkit-user-select: none;
   user-select: none;
+}
+.game-ph-icon {
+  width: 64px;
+  height: 64px;
+  color: #c4c4c8;
+  display: block;
+}
+.game-ph-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #c4c4c8;
+  letter-spacing: .5px;
+  line-height: 1;
 }
 
 /* ============ 圆点（在图片下方，独立容器） ============ */

@@ -2,15 +2,8 @@
 (function(){
 'use strict';
 
-/* ===== 占位图：暂时用游戏封面 + 其他游戏的图 ===== */
-var SLIDES = [
-  {img:'/assets/games/olympus.webp',  alt:'奥林匹斯 - 游戏画面 1'},
-  {img:'/assets/games/sweet.webp',    alt:'奥林匹斯 - 游戏画面 2'},
-  {img:'/assets/games/sugar.webp',    alt:'奥林匹斯 - 游戏画面 3'},
-  {img:'/assets/games/book.webp',     alt:'奥林匹斯 - 游戏画面 4'},
-  {img:'/assets/games/gonzo.webp',    alt:'奥林匹斯 - 游戏画面 5'},
-  {img:'/assets/games/megaways.webp', alt:'奥林匹斯 - 游戏画面 6'}
-];
+/* ===== 占位轮播：6 张"游戏画面"空框，等有真实素材再替换 ===== */
+var SLIDE_COUNT = 6;
 
 var AUTO_MS = 4000;
 var PAUSE_AFTER_USER = 6000;
@@ -20,18 +13,24 @@ function init(){
   var dotsBox = document.getElementById('game-dots');
   if (!track || !dotsBox) return;
 
-  /* ===== 渲染 slides ===== */
-  track.innerHTML = SLIDES.map(function(s){
-    return '<div class="game-carousel-slide"><div class="game-carousel-img" role="img" aria-label="' + s.alt + '" style="background-image:url(\'' + s.img + '\')"></div></div>';
-  }).join('');
+  var PH_SVG = '<svg viewBox="0 0 64 64" class="game-ph-icon" aria-hidden="true"><rect x="6" y="10" width="52" height="44" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="24" r="4" fill="currentColor"/><path d="M10 48 L26 32 L38 44 L46 36 L54 44 L54 50 L10 50 Z" fill="currentColor"/></svg>';
+
+  /* ===== 渲染 slides（占位） ===== */
+  var slidesHtml = '';
+  for (var si = 0; si < SLIDE_COUNT; si++) {
+    slidesHtml += '<div class="game-carousel-slide"><div class="game-carousel-placeholder">' + PH_SVG + '<div class="game-ph-label">游戏画面</div></div></div>';
+  }
+  track.innerHTML = slidesHtml;
 
   /* ===== 渲染 dots ===== */
-  dotsBox.innerHTML = SLIDES.map(function(_, i){
-    return '<button type="button" class="game-dot' + (i===0?' active':'') + '" data-idx="' + i + '" aria-label="第 ' + (i+1) + ' 张"></button>';
-  }).join('');
+  var dotsHtml = '';
+  for (var di = 0; di < SLIDE_COUNT; di++) {
+    dotsHtml += '<button type="button" class="game-dot' + (di===0?' active':'') + '" data-idx="' + di + '" aria-label="第 ' + (di+1) + ' 张"></button>';
+  }
+  dotsBox.innerHTML = dotsHtml;
 
   var dots = dotsBox.querySelectorAll('.game-dot');
-  var n = SLIDES.length;
+  var n = SLIDE_COUNT;
   var cur = 0;
   var timer = null;
   var paused = false;
