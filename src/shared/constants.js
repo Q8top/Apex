@@ -87,6 +87,5 @@ export const SFX = {
 
 /** 版本 */
 export const VERSION = {
-  GAME: 'olympus-v1',
   MATH: 'MATH-001'
 };

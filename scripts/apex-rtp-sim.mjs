@@ -21,11 +21,6 @@ const SPEC = {
     },
     trigger: 999, fsFn: null
   },
-  'olympus': {
-    dir: 'olympus', prefix: 'olympus', engine: 'OlympusEngine',
-    spinFn: (E, bet) => E.playFullSpin(bet),
-    trigger: 4, fsFn: (E, bet) => E.playFreeSpins(bet)
-  },
   'sweet': {
     dir: 'sweet', prefix: 'sweet', engine: 'SweetEngine',
     spinFn: (E, bet) => E.playFullSpin(bet, false),

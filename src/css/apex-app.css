@@ -635,21 +635,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.apex-more-games-btn {
-  display: block;
-  width: 100%;
-  margin: auto 0 0;
-  padding: 11px 12px;
-  border: 1px solid #e5e5e7;
-  border-radius: 10px;
-  background: #fafafa;
-  color: #666;
-  font-size: 12.5px;
-  font-weight: 600;
-  text-align: center;
-  cursor: not-allowed;
-  opacity: .85;
-}
 @media (min-width: 460px) {
   .apex-game-grid { gap: 12px 10px; }
   .apex-game-card-name { font-size: 12px; }

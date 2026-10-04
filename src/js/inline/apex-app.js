@@ -150,7 +150,7 @@ function initAnnounce(app){
 
 function renderCatContent(content, catKey){
   if(catKey==='hot'){
-    var GAMES=[{id:'olympus',name:'奥林匹斯之门',icon:'/assets/games/olympus.svg'}];
+    var GAMES=[];
     var html='<div class="apex-game-grid">';
     GAMES.forEach(function(g){
       html+='<a class="apex-game-card" href="/'+g.id+'.html">'
@@ -159,7 +159,6 @@ function renderCatContent(content, catKey){
         +'</a>';
     });
     html+='</div>';
-    html+='<button type="button" class="apex-more-games-btn" disabled>更多热门游戏 ›</button>';
     content.innerHTML=html;
   }else{
     content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
