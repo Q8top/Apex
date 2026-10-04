@@ -650,3 +650,17 @@
   .ax-spin { height: 60px; font-size: 18px; }
   .ax-win-amount { font-size: 30px; }
 }
+
+/* ── App 外层容器 ── */
+.ax-app {
+  position: relative;
+  width: 100%;
+  max-width: var(--ax-max-width);
+  margin: 0 auto;
+  height: 100dvh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ax-bg);
+  overflow: hidden;
+}
