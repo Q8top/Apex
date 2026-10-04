@@ -225,6 +225,61 @@ function init(){
     });
   });
 
+  /* ===== FAQ 折叠 ===== */
+  var FAQ = [
+    {q:'这款游戏怎么玩？', a:'在 6×5 的网格上，任意位置集齐 8 个以上同种符号即可获胜，无需连成直线。获胜后符号消失，新符号从上方落下，可能连续触发多次获胜。'},
+    {q:'免费旋转怎么触发？', a:'一次旋转中出现 4 个以上闪电 Scatter 符号即触发 15 次免费旋转。期间所有倍率符号累加至本局总倍率，有机会打出更高奖励。'},
+    {q:'倍率符号是怎么算的？', a:'每轮旋转中，宙斯可能随机降下 2x 到 2500x 的倍率符号。同一轮内出现的所有倍率会相加合并，作为本局的总倍率。'},
+    {q:'最大能赢多少？', a:'单局理论上限为 2500 倍，触发免费旋转并叠加多个高倍率符号时可接近上限。'},
+    {q:'积分可以兑换吗？', a:'所有积分均为虚拟娱乐积分，不可兑换、不可提现、无实际货币价值，仅供体验使用。'}
+  ];
+  var faqBox = document.getElementById('game-faq');
+  if (faqBox) {
+    faqBox.innerHTML = FAQ.map(function(item, i){
+      return '<div class="game-faq-item' + (i===0?' open':'') + '">' +
+        '<button type="button" class="game-faq-q" aria-expanded="' + (i===0?'true':'false') + '">' +
+        '<span>' + item.q + '</span>' +
+        '<i class="ri-arrow-down-s-line" aria-hidden="true"></i>' +
+        '</button>' +
+        '<div class="game-faq-a"><div class="game-faq-a-inner">' + item.a + '</div></div>' +
+        '</div>';
+    }).join('');
+    faqBox.addEventListener('click', function(e){
+      var q = e.target.closest ? e.target.closest('.game-faq-q') : null;
+      if (!q) return;
+      var item = q.parentNode;
+      var isOpen = item.classList.contains('open');
+      faqBox.querySelectorAll('.game-faq-item').forEach(function(it){
+        it.classList.remove('open');
+        var qq = it.querySelector('.game-faq-q');
+        if (qq) qq.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        q.setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  /* ===== 相似游戏 ===== */
+  var SIMILAR = [
+    {id:'sweet',    n:'糖果连连爆', img:'/assets/games/sweet.webp'},
+    {id:'sugar',    n:'甜蜜爆奖',   img:'/assets/games/sugar.webp'},
+    {id:'starburst',n:'星爆',       img:'/assets/games/starburst.webp'},
+    {id:'gonzo',    n:'刚果探险',   img:'/assets/games/gonzo.webp'},
+    {id:'fruit',    n:'水果派对',   img:'/assets/games/fruit.webp'},
+    {id:'book',     n:'死亡之书',   img:'/assets/games/book.webp'}
+  ];
+  var similarBox = document.getElementById('game-similar');
+  if (similarBox) {
+    similarBox.innerHTML = SIMILAR.map(function(g){
+      return '<a class="game-similar-card" href="/' + g.id + '.html" aria-label="' + g.n + '">' +
+        '<span class="game-similar-cover" style="background-image:url(\'' + g.img + '\')"></span>' +
+        '<span class="game-similar-name">' + g.n + '</span>' +
+        '</a>';
+    }).join('');
+  }
+
   start();
 }
 
