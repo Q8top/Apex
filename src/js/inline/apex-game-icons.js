@@ -27,7 +27,7 @@ megaways:'<defs>'+g('mg','#f9a8d4','#9d174d',1)+'</defs><g transform="translate(
 };
 var IMG={olympus:'/assets/games/olympus.webp',sweet:'/assets/games/sweet.webp',sugar:'/assets/games/sugar.webp',book:'/assets/games/book.webp',dog:'/assets/games/dog.webp',bass:'/assets/games/bass.webp',gonzo:'/assets/games/gonzo.webp',starburst:'/assets/games/starburst.webp',megaways:'/assets/games/megaways.webp',buffalo:'/assets/games/buffalo.webp',wolf:'/assets/games/wolf.webp',fruit:'/assets/games/fruit.webp'};
 function render(k){
-  if(IMG[k])return '<img src="'+IMG[k]+'" alt="" loading="lazy" decoding="async" draggable="false">';
+  if(IMG[k])return '<span class="apex-game-img apex-game-img--'+k+'" aria-hidden="true"></span>';
   var b=I[k];if(!b)return '';
   return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+F+b+'</svg>';
 }
