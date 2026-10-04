@@ -272,6 +272,44 @@ function initTabbar(app){
   var nav=app.querySelector('.apex-tabbar');
   if(!nav)return;
   var main=app.querySelector('.apex-main');
+  function setSpot(b,x,y){
+    var r=b.getBoundingClientRect();
+    b.style.setProperty('--mx',((x-r.left)/r.width*100)+'%');
+    b.style.setProperty('--my',((y-r.top)/r.height*100)+'%');
+  }
+  nav.addEventListener('pointerdown',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(!b)return;
+    b.classList.add('pressing');
+    setSpot(b,e.clientX,e.clientY);
+    var r=b.getBoundingClientRect();
+    var size=Math.max(r.width,r.height)*0.6;
+    var sp=document.createElement('span');
+    sp.className='apex-tab-ripple';
+    sp.style.width=size+'px';
+    sp.style.height=size+'px';
+    sp.style.left=(e.clientX-r.left)+'px';
+    sp.style.top=(e.clientY-r.top)+'px';
+    b.appendChild(sp);
+    setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},600);
+  });
+  nav.addEventListener('pointermove',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(!b||!b.classList.contains('pressing'))return;
+    setSpot(b,e.clientX,e.clientY);
+  });
+  nav.addEventListener('pointerup',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(b)b.classList.remove('pressing');
+  });
+  nav.addEventListener('pointercancel',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(b)b.classList.remove('pressing');
+  });
+  nav.addEventListener('pointerleave',function(e){
+    var b=e.target.closest?e.target.closest('.apex-tab'):null;
+    if(b)b.classList.remove('pressing');
+  });
   nav.addEventListener('click',function(e){
     var b=e.target.closest?e.target.closest('.apex-tab'):null;
     if(!b)return;
