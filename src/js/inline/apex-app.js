@@ -144,101 +144,9 @@ function initAnnounce(app){
     location.href='/announcements.html';
   });
 }
-var APEX_GAMES={
-  hot:[
-    {id:'lucky-fruit',n:'\u5E78\u8FD0\u6C34\u679C\u673A',i:'ri-leaf-fill',c:'#b85050',img:'/assets/games/lucky-fruit.svg'},
-    {id:'olympus',n:'\u5965\u6797\u5339\u65AF\u4E4B\u95E8',i:'ri-flashlight-fill',c:'#6a3fa8',img:'/assets/games/olympus.svg'},
-    {id:'sweet',n:'\u751C\u871C\u871C',i:'ri-heart-3-fill',c:'#d63b8a',img:'/assets/games/sweet.svg'},
-    {id:'sugar',n:'\u7CD6\u679C\u72C2\u6B22',i:'ri-leaf-fill',c:'#ff4d94',img:'/assets/games/sugar.svg'},
-    {id:'starlight',n:'\u661F\u5149\u516C\u4E3B',i:'ri-star-fill',c:'#c54f9a',img:'/assets/games/starlight.svg'},
-    {id:'bigbass',n:'\u5927\u9C7C\u5927\u4EA8',i:'ri-anchor-fill',c:'#2a6da8',img:'/assets/games/bigbass.svg'},
-    {id:'aviator',n:'\u98DE\u884C\u5458',i:'ri-flight-takeoff-fill',c:'#e5484d',img:'/assets/games/aviator.svg'},
-    {id:'crash',n:'\u5D29\u76D8',i:'ri-line-chart-fill',c:'#3a9a58',img:'/assets/games/crash.svg'},
-    {id:'jetx',n:'\u55B7\u6C14\u673A',i:'ri-rocket-2-fill',c:'#a05ee0',img:'/assets/games/jetx.svg'},
-    {id:'blackjack',n:'\u0032\u0031\u70B9',i:'ri-layout-grid-line',c:'#0a5a2a',img:'/assets/games/blackjack.svg'},
-    {id:'roulette-euro',n:'\u6B27\u6D32\u8F6E\u76D8',i:'ri-loader-4-line',c:'#c82828',img:'/assets/games/roulette-euro.svg'},
-    {id:'roulette-amer',n:'\u7F8E\u5F0F\u8F6E\u76D8',i:'ri-loader-4-line',c:'#8a6a18',img:'/assets/games/roulette-amer.svg'}
-  ],
-  slot:[
-    {id:'1001-mg',n:'1001\u7CBE\u7075',i:'ri-magic-line',c:'#6a2f9a',img:'/assets/games/1001-mg.svg'},
-    {id:'1001-mg2',n:'1001\u7CBE\u70752',i:'ri-gamepad-line',c:'#9a2f6a',img:'/assets/games/1001-mg2.svg'},
-    {id:'10001-nights',n:'\u4E00\u4E07\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#1a4a7a',img:'/assets/games/10001-nights.svg'},
-    {id:'10001-mega',n:'\u4E00\u4E07\u96F6\u4E00\u591CMega',i:'ri-gamepad-line',c:'#c9481f',img:'/assets/games/10001-mega.svg'},
-    {id:'1429-seas',n:'1429\u6D77\u57DF',i:'ri-gamepad-line',c:'#0a6a7a',img:'/assets/games/1429-seas.svg'},
-    {id:'5-lions',n:'\u4E94\u72EE',i:'ri-gamepad-line',c:'#a85a1f',img:'/assets/games/5-lions.svg'},
-    {id:'5-lions-gold',n:'\u4E94\u72EE\u9EC4\u91D1',i:'ri-gamepad-line',c:'#c9a227',img:'/assets/games/5-lions-gold.svg'},
-    {id:'5-lions-mega',n:'\u4E94\u72EEMega',i:'ri-gamepad-line',c:'#7a2f1f',img:'/assets/games/5-lions-mega.svg'},
-    {id:'arabian-nights',n:'\u4E00\u5343\u96F6\u4E00\u591C',i:'ri-gamepad-line',c:'#6a2a8a',img:'/assets/games/arabian-nights.svg'},
-    {id:'asgardian',n:'\u963F\u65AF\u52A0\u5FB7',i:'ri-gamepad-line',c:'#2a3a8a',img:'/assets/games/asgardian.svg'},
-    {id:'aces-eights',n:'A\u4E0E8',i:'ri-gamepad-line',c:'#1a1a1a',img:'/assets/games/aces-eights.svg'},
-    {id:'fengshui',n:'\u98CE\u6C34\u70BC\u91D1',i:'ri-gamepad-line',c:'#1a6a3a',img:'/assets/games/fengshui.svg'}
-  ]
-};
-function renderGames(box,catKey){
-  var list=APEX_GAMES[catKey]||[];
-  if(!list.length){box.innerHTML='';return;}
-  var html='<div class="apex-game-grid">'+list.map(function(g){
-    var inner=(g.img)?('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">'):('<i class="'+g.i+'" aria-hidden="true"></i>');
-    return '<div class="apex-game-card" data-game="'+g.id+'">'+
-      '<div class="apex-game-cover" style="--c1:'+g.c+'">'+inner+'</div>'+
-      '<div class="apex-game-name">'+g.n+'</div>'+
-      '</div>';
-  }).join('')+'</div>';
-  if(catKey==='hot'||catKey==='slot'){
-    html+='<button type="button" class="apex-more-games-btn" id="apex-more-games-btn" data-cat-src="'+catKey+'"><span>'+(catKey==='slot'?'更多电子游戏':'更多热门游戏')+'</span><i class="ri-arrow-right-line" aria-hidden="true"></i></button>';
-  }
-  box.innerHTML=html;
-  if(!box.dataset.clickBound){
-    box.dataset.clickBound='1';
-    box.addEventListener('click',function(e){
-      var c=e.target.closest?e.target.closest('.apex-game-card'):null;
-      if(!c)return;
-      var gid=c.getAttribute('data-game');
-      if(gid)location.href='/game.html?id='+encodeURIComponent(gid);
-    });
-  }
-}
-function makeCats(){
-  var CATS=[
-    {k:'hot',   l:'\u70ED\u95E8\u6E38\u620F', i:'ri-fire-line'},
-    {k:'slot',  l:'\u7535\u5B50\u6E38\u620F', i:'ri-gamepad-line'},
-    {k:'roul',  l:'\u8F6E\u76D8\u6E38\u620F', i:'ri-loader-4-line'},
-    {k:'card',  l:'\u7EB8\u724C\u6E38\u620F', i:'ri-file-list-3-line'},
-    {k:'poker', l:'\u6251\u514B\u6E38\u620F', i:'ri-heart-3-line'},
-    {k:'lott',  l:'\u5F69\u7968\u6E38\u620F', i:'ri-ticket-2-line'},
-    {k:'bingo', l:'\u5BBE\u679C\u6E38\u620F', i:'ri-layout-grid-line'},
-    {k:'sport', l:'\u4F53\u80B2\u6295\u6CE8', i:'ri-basketball-line'},
-    {k:'virt',  l:'\u865A\u62DF\u8D5B\u4E8B', i:'ri-trophy-line'},
-    {k:'mult',  l:'\u500D\u6570\u6E38\u620F', i:'ri-percent-line'},
-    {k:'spec',  l:'\u7279\u8272\u73A9\u6CD5', i:'ri-star-line'}
-  ];
-  var wrap=document.createElement('div');
-  wrap.className='apex-cats';
-  var side=document.createElement('aside');
-  side.className='apex-cats-sidebar';
-  side.innerHTML=CATS.map(function(c,i){
-    return '<button type="button" class="apex-cat-item'+(i===0?' active':'')+'" data-cat="'+c.k+'">'+
-      '<i class="'+c.i+'" aria-hidden="true"></i>'+
-      '<span>'+c.l+'</span>'+
-      '</button>';
-  }).join('');
-  var content=document.createElement('section');
-  content.className='apex-cats-content';
-  content.setAttribute('data-cat-content',CATS[0].k);
-  renderGames(content,CATS[0].k);
-  wrap.appendChild(side);
-  wrap.appendChild(content);
-  side.addEventListener('click',function(e){
-    var b=e.target.closest?e.target.closest('.apex-cat-item'):null;
-    if(!b)return;
-    var k=b.getAttribute('data-cat');
-    side.querySelectorAll('.apex-cat-item').forEach(function(x){x.classList.toggle('active',x===b);});
-    content.setAttribute('data-cat-content',k);
-    renderGames(content,k);
-    try{window.dispatchEvent(new CustomEvent('apex:cat-changed',{detail:{cat:k}}));}catch(e2){}
-  });
-  return wrap;
-}
+
+
+
 function mountTabbar(app){
   var main=app.querySelector('.apex-main');
   if(!main)return;
@@ -249,7 +157,6 @@ function mountTabbar(app){
   home.setAttribute('data-pane','home');
   inner.parentNode.removeChild(inner);
   home.appendChild(inner);
-  home.appendChild(makeCats());
   main.appendChild(home);
   var PANES=[
     {k:'activity',i:'ri-gift-line',t:'\u6D3B\u52A8\u529F\u80FD\u5373\u5C06\u4E0A\u7EBF'},
@@ -300,74 +207,4 @@ function hide(){var a=document.getElementById(APP_ID);if(a)a.classList.remove('s
 window.__apexApp={show:show,hide:hide,LANGS:LANGS};
 
 if(typeof ApexLoader!=="undefined"){try{ApexLoader.hide();}catch(e){}}
-
-/* ===== 全屏"全部游戏"弹窗 ===== */
-function buildAllGamesHTML(cat){
-  var all = APEX_GAMES[cat||'hot'] || [];
-  var grid = '<div class="apex-all-games-grid">';
-  grid += all.map(function(g){
-    var inner = (g.img) ? ('<img class="apex-game-img" src="'+g.img+'" alt="'+g.n+'" loading="lazy">') : ('<i class="'+g.i+'" aria-hidden="true"></i>');
-    return '<div class="apex-all-games-card" data-game="'+g.id+'">' +
-      '<div class="apex-game-cover" style="--c1:'+g.c+'">'+inner+'</div>' +
-      '<div class="apex-game-name">'+g.n+'</div>' +
-    '</div>';
-  }).join('');
-  grid += '</div>';
-  return grid;
-}
-
-function initMoreGames(){
-  if (document.getElementById('apex-all-games-modal')) return;
-
-  var modal = document.createElement('div');
-  modal.id = 'apex-all-games-modal';
-  modal.className = 'apex-all-games-modal';
-  modal.setAttribute('aria-hidden', 'true');
-  modal.innerHTML =
-    '<div class="apex-all-games-mask"></div>' +
-    '<div class="apex-all-games-box">' +
-      '<div class="apex-all-games-head">' +
-        '<div class="apex-all-games-title">全部游戏</div>' +
-        '<button type="button" class="apex-all-games-x" aria-label="关闭">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
-        '</button>' +
-      '</div>' +
-      '<div class="apex-all-games-body">' + buildAllGamesHTML() + '</div>' +
-    '</div>';
-  document.body.appendChild(modal);
-
-  var mask = modal.querySelector('.apex-all-games-mask');
-  var xBtn = modal.querySelector('.apex-all-games-x');
-  function close(){
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-  }
-  mask.addEventListener('click', close);
-  xBtn.addEventListener('click', close);
-
-  modal.querySelector('.apex-all-games-body').addEventListener('click', function(e){
-    var c = e.target.closest ? e.target.closest('.apex-all-games-card') : null;
-    if (!c) return;
-    var gid = c.getAttribute('data-game');
-    if (gid) location.href = '/game.html?id=' + encodeURIComponent(gid);
-  });
-}
-
-document.addEventListener('click', function(e){
-  var btn = e.target.closest ? e.target.closest('#apex-more-games-btn') : null;
-  if (!btn) return;
-  var cat = btn.getAttribute('data-cat-src') || 'hot';
-  if (cat === 'slot') { location.href = '/all-games.html'; return; }
-  var modal = document.getElementById('apex-all-games-modal');
-  if (!modal) { initMoreGames(cat); modal = document.getElementById('apex-all-games-modal'); }
-  // 更新标题
-  var title = modal.querySelector('.apex-all-games-title');
-  if (title) title.textContent = cat === 'slot' ? '电子游戏' : '热门游戏';
-  // 更新内容
-  var body = modal.querySelector('.apex-all-games-body');
-  if (body) body.innerHTML = buildAllGamesHTML(cat);
-  modal.classList.add('show');
-  modal.setAttribute('aria-hidden', 'false');
-});
-
 })();
