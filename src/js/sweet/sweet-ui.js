@@ -464,13 +464,12 @@ function playRounds(result, betAmt, fs){
 }
 
 function finish(totalWin){
-  // Big Win 分级横幅（原版 Pragmatic 风格）
-  if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
-    try { ApexBigWin.celebrate(totalWin, bet()); } catch(e){}
-  }
   if (MODE === 'demo') {
     state.balance = state.balance - bet() + totalWin;
     renderBalance(true); saveState();
+    if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
+      try { ApexBigWin.celebrate(totalWin, bet()); } catch(e){}
+    }
     afterSettle(totalWin);
   } else {
     fetch('/api/slot/spin', {
@@ -479,7 +478,13 @@ function finish(totalWin){
       body: JSON.stringify({bet: bet(), totalWin: totalWin})
     }).then(function(r){ return r.json().catch(function(){ return null; }); })
       .then(function(d){
-        if (d && d.success) { state.balance = Number(d.balanceAfter); renderBalance(true); afterSettle(totalWin); }
+        if (d && d.success) {
+          state.balance = Number(d.balanceAfter); renderBalance(true);
+          if (typeof ApexBigWin !== 'undefined' && totalWin > 0) {
+            try { ApexBigWin.celebrate(totalWin, bet()); } catch(e){}
+          }
+          afterSettle(totalWin);
+        }
         else { toast('结算失败'); releaseSpin(); stopAuto(); }
       }).catch(function(){ toast('网络错误'); releaseSpin(); stopAuto(); });
   }
