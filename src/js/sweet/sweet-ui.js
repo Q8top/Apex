@@ -429,7 +429,6 @@ function runFreeSpins(b, fsCount, token){
           renderWin(shown, rd.cumMult ? '×' + rd.cumMult + ' 累计' : '');
           showFsBanner(s.remaining, rd.cumMult);
           safeAudio(A.tumble, 'tumble');
-          if (rd.bombs && rd.bombs.length) safeAudio(A.bomb, 'bomb');
           setTimeout(function(){
             if (token !== state.spinToken) return;
             cells.forEach(function(p){
