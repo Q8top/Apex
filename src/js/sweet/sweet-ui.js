@@ -438,12 +438,20 @@ function runFreeSpins(b, fsCount, token){
             if (token !== state.spinToken) return;
             cells.forEach(function(p){
               var el = cellAt(p[0], p[1]);
-              if (el) el.classList.add('popping');
+              if (!el) return;
+              el.classList.add('popping');
+              var svg = el.querySelector('svg');
+              if (svg) {
+                svg.style.transition = 'transform 220ms cubic-bezier(.2,.9,.3,1), opacity 220ms cubic-bezier(.2,.9,.3,1)';
+                svg.style.transformOrigin = '50% 50%';
+                svg.style.transform = 'scale(0) rotate(180deg)';
+                svg.style.opacity = '0';
+              }
             });
             setTimeout(function(){
               if (token !== state.spinToken) return;
               highlightCells(cells, false);
-            }, 220);
+            }, 260);
           }, 500);
         }
       }, ri * 700);
@@ -475,7 +483,15 @@ function playRounds(result, betAmt, fs, token){
       if (token !== state.spinToken) return;
       cells.forEach(function(p){
         var el = cellAt(p[0], p[1]);
-        if (el) el.classList.add('popping');
+        if (!el) return;
+        el.classList.add('popping');
+        var svg = el.querySelector('svg');
+        if (svg) {
+          svg.style.transition = 'transform 220ms cubic-bezier(.2,.9,.3,1), opacity 220ms cubic-bezier(.2,.9,.3,1)';
+          svg.style.transformOrigin = '50% 50%';
+          svg.style.transform = 'scale(0) rotate(180deg)';
+          svg.style.opacity = '0';
+        }
       });
       setTimeout(function(){
         if (token !== state.spinToken) return;
@@ -485,7 +501,7 @@ function playRounds(result, betAmt, fs, token){
           paintGrid(rounds[i].grid);
           setTimeout(playOne, 250);
         } else { paintGrid(result.finalGrid); finish(totalShown, token); }
-      }, 220);
+      }, 260);
     }, 500);
   }
   playOne();
