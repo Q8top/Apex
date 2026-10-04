@@ -147,6 +147,24 @@ function initAnnounce(app){
 
 
 
+
+function renderCatContent(content, catKey){
+  if(catKey==='hot'){
+    var GAMES=[{id:'olympus',name:'奥林匹斯之门',icon:'/assets/games/olympus.svg'}];
+    var html='<div class="apex-game-grid">';
+    GAMES.forEach(function(g){
+      html+='<a class="apex-game-card" href="/games/'+g.id+'.html">'
+        +'<span class="apex-game-card-icon"><img src="'+g.icon+'" alt="" loading="lazy"></span>'
+        +'<span class="apex-game-card-name">'+g.name+'</span>'
+        +'</a>';
+    });
+    html+='</div>';
+    html+='<button type="button" class="apex-more-games-btn" disabled>更多热门游戏 ›</button>';
+    content.innerHTML=html;
+  }else{
+    content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
+  }
+}
 function makeCats(){
   var CATS=[
     {k:'hot',   l:'\u70ED\u95E8\u6E38\u620F', i:'ri-fire-line'},
@@ -174,7 +192,7 @@ function makeCats(){
   var content=document.createElement('section');
   content.className='apex-cats-content';
   content.setAttribute('data-cat-content',CATS[0].k);
-  content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
+  renderCatContent(content, content.getAttribute('data-cat-content'));
   wrap.appendChild(side);
   wrap.appendChild(content);
   side.addEventListener('click',function(e){
@@ -183,7 +201,7 @@ function makeCats(){
     var k=b.getAttribute('data-cat');
     side.querySelectorAll('.apex-cat-item').forEach(function(x){x.classList.toggle('active',x===b);});
     content.setAttribute('data-cat-content',k);
-    content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
+    renderCatContent(content, content.getAttribute('data-cat-content'));
     try{window.dispatchEvent(new CustomEvent('apex:cat-changed',{detail:{cat:k}}));}catch(e2){}
   });
   return wrap;

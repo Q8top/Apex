@@ -580,3 +580,73 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+/* ========== Lobby Game Grid ========== */
+.apex-game-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 10px;
+  padding: 4px 2px 12px;
+}
+.apex-game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.apex-game-card-icon {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.apex-game-card-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.apex-game-card:active .apex-game-card-icon {
+  transform: scale(.96);
+  box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.apex-game-card-name {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  color: #0a0a0a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.apex-more-games-btn {
+  display: block;
+  width: 100%;
+  margin: 8px 0 4px;
+  padding: 11px 12px;
+  border: 1px solid #e5e5e7;
+  border-radius: 10px;
+  background: #fafafa;
+  color: #666;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  cursor: not-allowed;
+  opacity: .85;
+}
+@media (min-width: 460px) {
+  .apex-game-grid { gap: 14px 12px; }
+  .apex-game-card-name { font-size: 12.5px; }
+}
