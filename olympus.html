@@ -159,6 +159,9 @@
       <h1>奥林匹斯</h1>
       <span class="og-mode" id="og-mode">试玩模式</span>
     </div>
+    <button type="button" class="og-topbtn" id="og-sound" aria-label="音效">
+      <i class="ri-volume-up-line" aria-hidden="true"></i>
+    </button>
     <button type="button" class="og-topbtn" id="og-menu" aria-label="菜单">
       <i class="ri-menu-line" aria-hidden="true"></i>
     </button>
@@ -180,11 +183,19 @@
         <span class="og-hud-label">余额</span>
         <span class="og-hud-value" id="og-balance">¥1,000.00</span>
       </div>
+      <div class="og-hud-row og-hud-row--center">
+        <span class="og-hud-label">本局下注</span>
+        <span class="og-hud-value og-hud-value--bet" id="og-hud-bet">¥10.00</span>
+      </div>
       <div class="og-hud-row og-hud-row--right">
         <span class="og-hud-label">本局赢</span>
         <span class="og-hud-value og-hud-value--win" id="og-win-total">¥0.00</span>
       </div>
     </div>
+    <button type="button" class="og-balance-action" id="og-balance-action" data-action="reset">
+      <i class="ri-refresh-line" aria-hidden="true"></i>
+      <span id="og-balance-action-label">重置余额</span>
+    </button>
   </section>
 
   <section class="og-controls">

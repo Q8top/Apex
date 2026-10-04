@@ -1097,3 +1097,40 @@ body {
   from { opacity: 0; transform: scale(.7); }
   to   { opacity: 1; transform: scale(1); }
 }
+
+/* ===== HUD 3 列 ===== */
+.og-hud-card { justify-content: space-between; }
+.og-hud-row--center { align-items: center; }
+.og-hud-value--bet { color: #fff; font-size: 15px; }
+
+/* ===== 重置/充值余额按钮 ===== */
+.og-balance-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .16s ease, transform .12s ease;
+}
+.og-balance-action > i { font-size: 15px; line-height: 1; }
+.og-balance-action:hover { background: rgba(255, 255, 255, 0.1); }
+.og-balance-action:active { transform: scale(.98); }
+.og-balance-action[data-action="recharge"] {
+  background: linear-gradient(180deg, #f4d47a 0%, #d4a017 100%);
+  color: #2a0e4a;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(244, 212, 122, 0.35);
+}
+.og-balance-action[data-action="recharge"]:hover {
+  filter: brightness(1.05);
+}

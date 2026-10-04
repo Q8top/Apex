@@ -319,7 +319,9 @@ function init(){
       mode: 'demo',
       balance: 1000,
       bet: 10,
-      spinning: false
+      win: 0,
+      spinning: false,
+      sound: true
     };
 
     // -------- 填充网格 --------
@@ -342,6 +344,23 @@ function init(){
     function updateHud(){
       if (balanceEl) balanceEl.textContent = money(state.balance);
       if (betDisp)   betDisp.textContent   = money(state.bet);
+      var hudBet = document.getElementById('og-hud-bet');
+      if (hudBet) hudBet.textContent = money(state.bet);
+      if (winTotalEl) winTotalEl.textContent = money(state.win);
+    }
+
+    // -------- 余额操作按钮（按模式切换） --------
+    var balanceAction = document.getElementById('og-balance-action');
+    var balanceActionLabel = document.getElementById('og-balance-action-label');
+    function updateBalanceAction(){
+      if (!balanceAction || !balanceActionLabel) return;
+      if (state.mode === 'demo') {
+        balanceAction.setAttribute('data-action', 'reset');
+        balanceActionLabel.textContent = '重置余额';
+      } else {
+        balanceAction.setAttribute('data-action', 'recharge');
+        balanceActionLabel.textContent = '充值余额';
+      }
     }
 
     // -------- 打开 / 关闭 --------
@@ -349,7 +368,9 @@ function init(){
       state.mode = mode;
       state.balance = (mode === 'demo') ? 1000 : 0;
       state.bet = 10;
+      state.win = 0;
       if (modeEl) modeEl.textContent = (mode === 'demo') ? '试玩模式' : '真实模式';
+      updateBalanceAction();
       fillGrid();
       updateHud();
       overlay.classList.add('show');
@@ -386,6 +407,39 @@ function init(){
       var i = BET_STEPS.indexOf(state.bet);
       if (i >= 0 && i < BET_STEPS.length - 1) { state.bet = BET_STEPS[i+1]; updateHud(); }
     });
+
+    // 声音开关
+    var soundBtn = document.getElementById('og-sound');
+    function updateSoundIcon(){
+      if (!soundBtn) return;
+      var i = soundBtn.querySelector('i');
+      if (i) i.className = state.sound ? 'ri-volume-up-line' : 'ri-volume-mute-line';
+    }
+    if (soundBtn) {
+      soundBtn.addEventListener('click', function(){
+        state.sound = !state.sound;
+        updateSoundIcon();
+      });
+    }
+
+    // 重置/充值余额
+    if (balanceAction) {
+      balanceAction.addEventListener('click', function(){
+        var action = balanceAction.getAttribute('data-action');
+        if (action === 'reset') {
+          state.balance = 1000;
+          state.win = 0;
+          updateHud();
+        } else {
+          // 充值（真实模式）：后续接支付，现在先占位
+          if (window.__apexCharge) {
+            window.__apexCharge();
+          } else {
+            alert('充值功能开发中');
+          }
+        }
+      });
+    }
 
     // 旋转（占位，仅重排符号 + 显示随机中奖）
     if (spinBtn) spinBtn.addEventListener('click', function(){
