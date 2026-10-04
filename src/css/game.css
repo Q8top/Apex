@@ -1288,3 +1288,116 @@ body {
   from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
+
+/* ============================================================
+   符号 SVG 容器 + 精致动画系统
+   ============================================================ */
+.og-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 2px rgba(0, 0, 0, 0.06) inset;
+  position: relative;
+  overflow: hidden;
+  padding: 4px;
+  will-change: transform, opacity, box-shadow;
+}
+.og-cell::after { content: none !important; }
+.og-cell > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.18));
+  transition: filter .2s ease;
+}
+
+/* ===== 网格底：微光 ===== */
+.og-cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.6), transparent 60%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ===== 入场：掉落（带旋转 + 弹性回弹） ===== */
+.og-cell.dropping {
+  animation: og-drop .55s cubic-bezier(.34, 1.42, .5, 1) both;
+}
+@keyframes og-drop {
+  0%   { transform: translateY(-320%) rotate(-12deg) scale(.7); opacity: 0; }
+  60%  { transform: translateY(6%) rotate(2deg) scale(1.04); opacity: 1; }
+  80%  { transform: translateY(-3%) rotate(-1deg) scale(.98); }
+  100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+}
+
+/* ===== 中奖：金环扩散 + 脉冲 + 发光 ===== */
+.og-cell.winning {
+  animation: og-pulse .7s ease-in-out infinite alternate;
+  z-index: 2;
+  background: linear-gradient(180deg, #fffbe6 0%, #fef3c7 100%);
+}
+.og-cell.winning::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgba(212, 175, 55, 0.9);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7), inset 0 0 12px rgba(212, 175, 55, 0.4);
+  animation: og-ring 1.2s ease-out infinite;
+  pointer-events: none;
+  opacity: 1;
+  background: none;
+}
+.og-cell.winning > svg {
+  filter: drop-shadow(0 0 6px #fde68a) drop-shadow(0 0 12px #d4af37);
+}
+@keyframes og-pulse {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+@keyframes og-ring {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* ===== 移除：缩放 + 淡出 + 上飘 ===== */
+.og-cell.removing {
+  animation: og-remove .38s cubic-bezier(.4, 0, .6, 1) forwards;
+  z-index: 3;
+}
+@keyframes og-remove {
+  0%   { transform: scale(1); opacity: 1; }
+  40%  { transform: scale(1.15); opacity: 1; filter: brightness(1.3); }
+  100% { transform: scale(0.3) translateY(-30px); opacity: 0; }
+}
+
+/* ===== 网格容器：金色微光边框 ===== */
+.og-grid-wrap {
+  position: relative;
+}
+.og-grid-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0) 40%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ===== SCATTER / WILD 特殊底 ===== */
+.og-cell.sym-8 { background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%); }
+.og-cell.sym-9 { background: linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%); }
+
+/* ===== 减少动效 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .og-cell.dropping, .og-cell.winning, .og-cell.removing { animation: none; }
+}

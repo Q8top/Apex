@@ -320,15 +320,17 @@ function init(){
     };
 
     // -------- 渲染网格 --------
+    var SYM_LIB = window.ApexOlympusSymbols;
     function renderGrid(grid, animate){
       var html = '';
       for (var r = 0; r < E.ROWS; r++) {
         for (var c = 0; c < E.COLS; c++) {
           var sym = grid[r][c];
           var def = E.SYMBOLS[sym];
+          var svg = SYM_LIB ? SYM_LIB.byIndex(sym) : '';
           var cls = 'og-cell sym-' + sym + (animate ? ' dropping' : '');
           var style = animate ? ' style="animation-delay:' + ((c * 40 + r * 25) + 'ms') + '"' : '';
-          html += '<div class="' + cls + '" data-r="' + r + '" data-c="' + c + '" data-sym="' + def.name + '"' + style + '></div>';
+          html += '<div class="' + cls + '" data-r="' + r + '" data-c="' + c + '" data-sym="' + def.name + '"' + style + '>' + svg + '</div>';
         }
       }
       gridEl.innerHTML = html;
