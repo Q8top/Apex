@@ -370,6 +370,7 @@ function init(){
       state.bet = 10;
       state.win = 0;
       if (modeEl) modeEl.textContent = (mode === 'demo') ? '试玩模式' : '真实模式';
+      overlay.setAttribute('data-mode', mode);
       updateBalanceAction();
       fillGrid();
       updateHud();
