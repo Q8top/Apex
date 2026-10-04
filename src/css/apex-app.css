@@ -501,7 +501,7 @@
 }
 
 .apex-cats-sidebar {
-  background: #f7f7f8;
+  background: linear-gradient(180deg, #f7f7f8 0%, #f7f7f8 55%, #fafafb 72%, #fdfdfd 86%, #ffffff 100%);
   border-right: 1px solid #ededed;
   overflow-y: auto;
   scrollbar-width: none;
