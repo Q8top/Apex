@@ -1,198 +1,279 @@
-/* Gates of Olympus · 游戏页样式 */
+/* Gates of Olympus · 游戏页样式 v2（对齐商业参考图） */
 :root {
   --ol-gold: #d4af37;
   --ol-gold-lt: #f5d76e;
-  --ol-gold-dk: #a8842a;
   --ol-ink: #0a0a0a;
-  --ol-stage-1: #1a1f3a;
-  --ol-stage-2: #2a1a4a;
-  --ol-stage-3: #0f0a1f;
-  --ol-cell-bg: rgba(255,255,255,.04);
-  --ol-cell-line: rgba(212,175,55,.18);
+  --ol-sub: #666;
+  --ol-line: #ececee;
+  --ol-bg: #fafafa;
+  --ol-card: #ffffff;
+  --ol-stage: #2a1a4a;
+  --ol-stage-2: #1a1030;
   --ol-safe-t: env(safe-area-inset-top, 0px);
   --ol-safe-b: env(safe-area-inset-bottom, 0px);
 }
 * { box-sizing: border-box; }
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background: var(--ol-stage-3);
-  color: #fff;
+  background: var(--ol-bg);
+  color: var(--ol-ink);
   font-family: Manrope, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
+  user-select: none; -webkit-user-select: none;
 }
 .ol-root {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  max-width: 460px;
-  margin: 0 auto;
-  background: linear-gradient(180deg, var(--ol-stage-1) 0%, var(--ol-stage-2) 45%, var(--ol-stage-3) 100%);
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  max-width: 460px; margin: 0 auto;
+  background: var(--ol-bg);
+  padding: var(--ol-safe-t) 0 var(--ol-safe-b);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* ── HUD 顶栏 ── */
-.ol-hud {
+/* ── 顶栏 ── */
+.ol-topbar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 10px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ffffff;
-  color: var(--ol-ink);
-  padding: 0 12px;
 }
-.ol-hud-top {
-  padding-top: calc(var(--ol-safe-t) + 8px);
-  padding-bottom: 8px;
-  min-height: 52px;
-}
-.ol-hud-bottom {
-  padding-top: 10px;
-  padding-bottom: calc(var(--ol-safe-b) + 10px);
-  gap: 12px;
-}
-.ol-back, .ol-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--ol-ink);
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  text-decoration: none;
+.ol-tb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px; border: none;
+  background: transparent; color: var(--ol-ink);
+  cursor: pointer; text-decoration: none;
   -webkit-tap-highlight-color: transparent;
+  transition: background .15s ease;
 }
-.ol-back:active, .ol-icon-btn:active { background: #f0f0f2; }
-.ol-hud-mid {
-  flex: 1;
-  text-align: center;
-  line-height: 1.15;
+.ol-tb-btn:active { background: #f0f0f2; }
+.ol-tb-btn svg { width: 22px; height: 22px; }
+.ol-title {
+  flex: 1; text-align: center;
+  font-size: 15px; font-weight: 700;
+  letter-spacing: .2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 0 4px;
 }
-.ol-bal-label { font-size: 10.5px; color: #999; font-weight: 600; letter-spacing: .3px; }
-.ol-bal { font-size: 17px; font-weight: 800; letter-spacing: .3px; font-variant-numeric: tabular-nums; }
 
 /* ── 舞台 ── */
 .ol-stage {
-  flex: 1;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 8px;
-  min-height: 0;
+  padding: 4px 12px 0;
+  flex-shrink: 0;
 }
 .ol-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 5px;
+  gap: 4px;
   width: 100%;
-  max-width: 440px;
   aspect-ratio: 6 / 5;
-  padding: 6px;
+  padding: 8px;
   border-radius: 14px;
-  background: rgba(0,0,0,.18);
-  border: 1px solid var(--ol-cell-line);
+  background: linear-gradient(180deg, #3a2a5a 0%, #2a1a4a 50%, #1a1030 100%);
+  box-shadow: inset 0 0 0 1px rgba(212,175,55,.18), 0 8px 24px rgba(0,0,0,.15);
 }
 .ol-cell {
   border-radius: 8px;
-  background: var(--ol-cell-bg);
-  border: 1px solid rgba(255,255,255,.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: rgba(255,255,255,.35);
-  font-weight: 700;
-  transition: transform .18s ease, background .18s ease;
+  background: rgba(255,255,255,.05);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: transform .15s ease, opacity .15s ease, background .15s ease;
 }
-.ol-cell.filled { background: rgba(255,255,255,.08); }
+.ol-cell img {
+  width: 82%; height: 82%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.ol-cell.win {
+  background: rgba(245,215,110,.35);
+  box-shadow: 0 0 12px rgba(245,215,110,.7), inset 0 0 8px rgba(255,235,150,.4);
+}
+.ol-cell.win img { animation: ol-pop .35s ease; }
+.ol-cell.remove { transform: scale(0); opacity: 0; }
+.ol-cell.drop { animation: ol-drop .32s cubic-bezier(.4,0,.2,1); }
+@keyframes ol-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes ol-drop {
+  0% { transform: translateY(-60px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
 
-/* ── 赢奖显示 ── */
-.ol-win {
-  margin-top: 12px;
+/* ── 中奖显示 ── */
+.ol-win-section {
   text-align: center;
-  min-height: 44px;
+  padding: 14px 12px 6px;
+  flex-shrink: 0;
 }
-.ol-win-label { font-size: 10.5px; color: rgba(255,255,255,.5); font-weight: 600; letter-spacing: .3px; }
+.ol-win-label {
+  font-size: 12px;
+  color: var(--ol-sub);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
 .ol-win-val {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 800;
-  color: var(--ol-gold-lt);
+  color: var(--ol-ink);
   font-variant-numeric: tabular-nums;
-  line-height: 1.2;
-  text-shadow: 0 0 12px rgba(245,215,110,.35);
-  transition: transform .2s ease;
+  letter-spacing: -.5px;
+  line-height: 1.1;
+  transition: color .2s ease;
 }
-.ol-win-val.bump { transform: scale(1.15); }
+.ol-win-val.win { color: var(--ol-gold); }
+.ol-win-val.bump { animation: ol-bump .3s ease; }
+@keyframes ol-bump {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
 
-/* ── HUD 底栏 ── */
-.ol-bet-wrap {
-  display: flex;
-  align-items: center;
+/* ── 重置余额 ── */
+.ol-reset {
+  display: flex; align-items: center; justify-content: center;
   gap: 6px;
-  padding: 4px;
-  border: 1px solid #e5e5e7;
+  margin: 8px 12px;
+  padding: 12px;
+  width: calc(100% - 24px);
+  border: 1px solid var(--ol-line);
   border-radius: 12px;
-  background: #fafafa;
-}
-.ol-bet-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
   background: #fff;
   color: var(--ol-ink);
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .12s ease, transform .12s ease;
 }
-.ol-bet-btn:active { background: #efeff1; transform: scale(.94); }
-.ol-bet-btn:disabled { opacity: .35; }
-.ol-bet-mid { min-width: 44px; text-align: center; line-height: 1.15; padding: 0 4px; }
-.ol-bet-label { font-size: 9.5px; color: #999; font-weight: 600; }
-.ol-bet-val { font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ol-reset:active { background: #f5f5f7; transform: scale(.98); }
+.ol-reset svg { width: 18px; height: 18px; }
 
-.ol-spin-btn {
+/* ── 三栏信息 ── */
+.ol-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 4px 12px;
+}
+.ol-stat {
+  background: #fff;
+  border: 1px solid var(--ol-line);
+  border-radius: 12px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.ol-stat-label {
+  font-size: 11px;
+  color: var(--ol-sub);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.ol-stat-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ol-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 下注行 ── */
+.ol-bet-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px 6px;
+}
+.ol-bet-btn {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--ol-line);
+  background: #fff;
+  color: var(--ol-ink);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .12s ease, transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ol-bet-btn:active { background: #f0f0f2; transform: scale(.95); }
+.ol-bet-btn:disabled { opacity: .35; cursor: not-allowed; }
+.ol-bet-btn svg { width: 20px; height: 20px; }
+.ol-bet-current {
   flex: 1;
-  height: 54px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--ol-line);
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ol-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 旋转按钮 ── */
+.ol-spin-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  margin: 8px 12px 10px;
+  height: 58px;
+  width: calc(100% - 24px);
   border: none;
   border-radius: 14px;
-  background: linear-gradient(180deg, var(--ol-gold-lt) 0%, var(--ol-gold) 55%, var(--ol-gold-dk) 100%);
-  color: #1a1a1a;
-  font-size: 16px;
+  background: linear-gradient(180deg, #8a6fce 0%, #6a4fb0 100%);
+  color: #fff;
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: .5px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(212,175,55,.35);
-  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: 0 4px 14px rgba(106,79,176,.35);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
-.ol-spin-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(212,175,55,.4); }
-.ol-spin-btn:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
-.ol-spin-btn.spinning { animation: ol-pulse 1s ease-in-out infinite; }
-@keyframes ol-pulse {
-  0%, 100% { opacity: .75; }
-  50% { opacity: 1; }
+.ol-spin-btn:active { transform: scale(.98); box-shadow: 0 2px 8px rgba(106,79,176,.4); }
+.ol-spin-btn svg { width: 22px; height: 22px; }
+.ol-spin-btn:disabled { opacity: .55; cursor: not-allowed; }
+.ol-spin-btn.spinning svg { animation: ol-spin 1s linear infinite; }
+@keyframes ol-spin { to { transform: rotate(360deg); } }
+
+/* ── 底部导航 ── */
+.ol-bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 4px 12px 16px;
 }
+.ol-nav-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 1px solid var(--ol-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ol-ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .12s ease, transform .12s ease;
+}
+.ol-nav-btn:active { background: #f0f0f2; transform: scale(.97); }
+.ol-nav-btn svg { width: 18px; height: 18px; }
+.ol-nav-btn.active { background: var(--ol-ink); color: #fff; border-color: var(--ol-ink); }
+.ol-nav-btn.active svg { color: #fff; }
 
 /* ── Toast ── */
 .ol-toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--ol-safe-b) + 90px);
+  bottom: calc(var(--ol-safe-b) + 40px);
   transform: translateX(-50%) translateY(10px);
   padding: 10px 18px;
   background: rgba(0,0,0,.85);
@@ -211,11 +292,14 @@ html, body {
 
 /* ── 小屏适配 ── */
 @media (max-width: 360px) {
-  .ol-cell { font-size: 16px; border-radius: 6px; }
-  .ol-grid { gap: 4px; padding: 5px; }
-  .ol-spin-btn { height: 48px; font-size: 15px; }
-  .ol-win-val { font-size: 20px; }
+  .ol-grid { gap: 3px; padding: 6px; }
+  .ol-win-val { font-size: 26px; }
+  .ol-spin-btn { height: 52px; font-size: 16px; }
+  .ol-stat-val { font-size: 12.5px; }
+  .ol-bet-current { font-size: 14px; }
+  .ol-nav-btn { font-size: 12.5px; padding: 10px 6px; }
 }
-@media (min-height: 720px) {
-  .ol-grid { max-width: 400px; }
+@media (min-height: 780px) {
+  .ol-win-val { font-size: 34px; }
+  .ol-spin-btn { height: 62px; }
 }
