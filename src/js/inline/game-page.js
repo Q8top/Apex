@@ -286,6 +286,13 @@ function init(){
     var overlay = document.getElementById('og-overlay');
     if (!overlay) return;
 
+    // 安全随机整数（项目硬约束：禁普通伪随机）
+    function randInt(n){
+      var buf = new Uint32Array(1);
+      crypto.getRandomValues(buf);
+      return buf[0] % n;
+    }
+
     var gridEl  = document.getElementById('og-grid');
     var closeBtn= document.getElementById('og-close');
     var modeEl  = document.getElementById('og-mode');
@@ -319,7 +326,7 @@ function init(){
     function fillGrid(){
       var html = '';
       for (var i = 0; i < 30; i++) {
-        var idx = Math.floor(Math.random() * SYMBOLS.length);
+        var idx = randInt(SYMBOLS.length);
         var bg  = SYMBOLS[idx];
         html += '<div class="og-cell" style="background-image:url(\''+bg+'\')"></div>';
       }
