@@ -424,6 +424,13 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.3s ease;
 }
+@supports ((-webkit-backdrop-filter: url(#liquid-lens)) or (backdrop-filter: url(#liquid-lens))) {
+  .apex-tabbar {
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(4px) url(#liquid-lens);
+    backdrop-filter: blur(4px) url(#liquid-lens);
+  }
+}
 
 .apex-tabbar::before {
   content: '';
@@ -692,4 +699,29 @@
 @media (prefers-reduced-motion: reduce) {
   .apex-tab.pressing > i { transform: none; }
   .apex-tab-ripple { animation: none; display: none; }
+}
+
+/* 与 main.css 同规则：登录后主界面完全禁止长按菜单 */
+.apex-app, .apex-app * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.apex-app input,
+.apex-app textarea,
+.apex-app select,
+.apex-app [contenteditable="true"],
+.apex-app .apex-selectable,
+.apex-app .apex-selectable * {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* 搜索框：保留输入 + 光标，禁长按选择菜单 */
+.apex-search > input,
+.apex-search > input:focus {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }

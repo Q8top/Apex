@@ -2538,3 +2538,24 @@ html, body, * {
 input, textarea, select {
   touch-action: auto;
 }
+
+/* ========== 全局禁止长按文字菜单（保留输入框可选择） ========== */
+html, body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+input, textarea, select,
+[contenteditable="true"],
+.apex-selectable,
+.apex-selectable * {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-user-drag: auto;
+}
