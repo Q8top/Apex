@@ -271,8 +271,19 @@ function mountTabbar(app){
 function initTabbar(app){
   var nav=app.querySelector('.apex-tabbar');
   if(!nav)return;
-  nav.classList.add('glass','glass-refract');
   var main=app.querySelector('.apex-main');
+  var slider=document.createElement('div');
+  slider.className='apex-tabbar-slider';
+  slider.setAttribute('aria-hidden','true');
+  nav.insertBefore(slider,nav.firstChild);
+  function moveSlider(b){
+    var tabs=nav.querySelectorAll('.apex-tab');
+    for(var i=0;i<tabs.length;i++){
+      if(tabs[i]===b){nav.style.setProperty('--apex-tab-idx',i);return;}
+    }
+  }
+  var initActive=nav.querySelector('.apex-tab.active');
+  if(initActive)moveSlider(initActive);
   function setSpot(b,x,y){
     var r=b.getBoundingClientRect();
     b.style.setProperty('--mx',((x-r.left)/r.width*100)+'%');
@@ -314,6 +325,7 @@ function initTabbar(app){
   nav.addEventListener('click',function(e){
     var b=e.target.closest?e.target.closest('.apex-tab'):null;
     if(!b)return;
+    moveSlider(b);
     var k=b.getAttribute('data-tab');
     nav.querySelectorAll('.apex-tab').forEach(function(x){x.classList.toggle('active',x===b);});
     main.querySelectorAll('.apex-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===k);});
