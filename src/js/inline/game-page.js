@@ -1,12 +1,13 @@
-/* Apex 游戏详情页 - 轮播 + 自动播放 + 圆点 + 分享 */
+/* Apex 游戏详情页 - 轮播 + 自动播放 + 圆点 + 分享 + 底部操作
+ * 关键设计：用户交互立即 stop()，松手后 PAUSE_AFTER_USER 才 start()
+ */
 (function(){
 'use strict';
 
-/* ===== 占位轮播：6 张"游戏画面"空框，等有真实素材再替换 ===== */
 var SLIDE_COUNT = 6;
-
 var AUTO_MS = 4000;
 var PAUSE_AFTER_USER = 6000;
+var SCROLL_GRACE = 900;
 
 function init(){
   var track = document.getElementById('game-track');
@@ -15,14 +16,12 @@ function init(){
 
   var PH_SVG = '<svg viewBox="0 0 64 64" class="game-ph-icon" aria-hidden="true"><rect x="6" y="10" width="52" height="44" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="24" r="4" fill="currentColor"/><path d="M10 48 L26 32 L38 44 L46 36 L54 44 L54 50 L10 50 Z" fill="currentColor"/></svg>';
 
-  /* ===== 渲染 slides（占位） ===== */
   var slidesHtml = '';
   for (var si = 0; si < SLIDE_COUNT; si++) {
     slidesHtml += '<div class="game-carousel-slide"><div class="game-carousel-placeholder">' + PH_SVG + '<div class="game-ph-label">游戏画面</div></div></div>';
   }
   track.innerHTML = slidesHtml;
 
-  /* ===== 渲染 dots ===== */
   var dotsHtml = '';
   for (var di = 0; di < SLIDE_COUNT; di++) {
     dotsHtml += '<button type="button" class="game-dot' + (di===0?' active':'') + '" data-idx="' + di + '" aria-label="第 ' + (di+1) + ' 张"></button>';
@@ -33,8 +32,9 @@ function init(){
   var n = SLIDE_COUNT;
   var cur = 0;
   var timer = null;
-  var paused = false;
-  var pauseTimer = null;
+  var resumeTimer = null;
+  var lastUserAt = 0;
+  var lastScrollAt = 0;
 
   function setActive(i){
     for (var k = 0; k < dots.length; k++) {
@@ -53,21 +53,37 @@ function init(){
   }
 
   function tick(){
-    if (paused || document.hidden) return;
+    if (document.hidden) return;
+    /* 双保险：用户最近交互过 / 刚滑动过 → 本次不自动 */
+    var now = Date.now();
+    if (now - lastUserAt < AUTO_MS) return;
+    if (now - lastScrollAt < SCROLL_GRACE) return;
     goto(cur + 1);
   }
 
-  function start(){ stop(); timer = setInterval(tick, AUTO_MS); }
-  function stop(){ if (timer) { clearInterval(timer); timer = null; } }
-  function pauseTemporarily(){
-    paused = true;
-    if (pauseTimer) clearTimeout(pauseTimer);
-    pauseTimer = setTimeout(function(){ paused = false; }, PAUSE_AFTER_USER);
+  function start(){
+    stop();
+    timer = setInterval(tick, AUTO_MS);
+  }
+  function stop(){
+    if (timer) { clearInterval(timer); timer = null; }
   }
 
-  /* ===== 滚动时同步圆点 ===== */
+  /* 用户交互：立即停 + 延迟恢复 */
+  function pauseByUser(){
+    lastUserAt = Date.now();
+    stop();
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(function(){
+      resumeTimer = null;
+      if (!document.hidden) start();
+    }, PAUSE_AFTER_USER);
+  }
+
+  /* 滚动时同步圆点 + 记录时间（用户或程序触发的都算） */
   var scrollTick = false;
   track.addEventListener('scroll', function(){
+    lastScrollAt = Date.now();
     if (scrollTick) return;
     scrollTick = true;
     requestAnimationFrame(function(){
@@ -81,21 +97,28 @@ function init(){
     });
   }, {passive: true});
 
-  /* ===== 用户交互时暂停 ===== */
-  track.addEventListener('pointerdown', pauseTemporarily, {passive: true});
-  track.addEventListener('touchstart', pauseTemporarily, {passive: true});
-  track.addEventListener('wheel', pauseTemporarily, {passive: true});
+  /* 用户交互事件：任何都能触发暂停 */
+  track.addEventListener('pointerdown', pauseByUser, {passive: true});
+  track.addEventListener('touchstart', pauseByUser, {passive: true});
+  track.addEventListener('mousedown', pauseByUser, {passive: true});
+  track.addEventListener('wheel', pauseByUser, {passive: true});
 
-  /* ===== 圆点点击跳转 ===== */
+  /* 圆点点击 */
   dotsBox.addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('.game-dot') : null;
     if (!b) return;
     var i = parseInt(b.getAttribute('data-idx'), 10) || 0;
+    lastUserAt = Date.now();
+    stop();
     goto(i);
-    pauseTemporarily();
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(function(){
+      resumeTimer = null;
+      if (!document.hidden) start();
+    }, PAUSE_AFTER_USER);
   });
 
-  /* ===== 窗口尺寸变化时重定位 ===== */
+  /* 窗口尺寸变化重定位 */
   var resizeTimer = null;
   window.addEventListener('resize', function(){
     if (resizeTimer) clearTimeout(resizeTimer);
@@ -104,12 +127,13 @@ function init(){
     }, 120);
   });
 
-  /* ===== 可见性切换 ===== */
+  /* 可见性切换 */
   document.addEventListener('visibilitychange', function(){
-    if (document.hidden) stop(); else start();
+    if (document.hidden) stop();
+    else start();
   });
 
-  /* ===== 分享按钮 ===== */
+  /* 分享按钮 */
   var shareBtn = document.getElementById('game-share');
   if (shareBtn) {
     shareBtn.addEventListener('click', function(){
@@ -127,6 +151,34 @@ function init(){
           setTimeout(function(){ shareBtn.innerHTML = old; }, 1200);
         }).catch(function(){});
       }
+    });
+  }
+
+  /* 底部操作栏 */
+  var favBtn = document.getElementById('game-fav');
+  if (favBtn) {
+    favBtn.addEventListener('click', function(){
+      var on = favBtn.classList.toggle('active');
+      var i = favBtn.querySelector('i');
+      if (i) i.className = on ? 'ri-star-fill' : 'ri-star-line';
+    });
+  }
+  var supportBtn = document.getElementById('game-support');
+  if (supportBtn) {
+    supportBtn.addEventListener('click', function(){
+      /* 暂无客服入口，先占位 */
+    });
+  }
+  var trialBtn = document.getElementById('game-trial');
+  if (trialBtn) {
+    trialBtn.addEventListener('click', function(){
+      /* 免费试用入口占位 */
+    });
+  }
+  var startBtn = document.getElementById('game-start');
+  if (startBtn) {
+    startBtn.addEventListener('click', function(){
+      /* 开始游戏入口占位 */
     });
   }
 

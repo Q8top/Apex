@@ -180,3 +180,85 @@ body {
   .game-carousel-track { scroll-behavior: auto; }
   .game-dot { transition: none; }
 }
+
+/* ============ 底部操作栏 ============ */
+.game-actionbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.25fr 1.55fr;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.game-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 46px;
+  padding: 4px 6px;
+  border: 1px solid #ededed;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: background .16s ease, transform .12s ease, border-color .16s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.game-action-btn > i { font-size: 18px; line-height: 1; color: #0a0a0a; }
+.game-action-btn:hover { background: #f7f7f8; border-color: #e0e0e2; }
+.game-action-btn:active { transform: scale(.96); }
+.game-action-btn.active > i { color: #d4af37; }
+
+.game-action-plain,
+.game-action-primary {
+  height: 46px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: background .16s ease, transform .12s ease, border-color .16s ease, color .16s ease;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-action-plain {
+  border: 1px solid #0a0a0a;
+  background: #ffffff;
+  color: #0a0a0a;
+}
+.game-action-plain:hover { background: #f7f7f8; }
+.game-action-plain:active { transform: scale(.97); }
+
+.game-action-primary {
+  border: 1px solid #0a0a0a;
+  background: #0a0a0a;
+  color: #ffffff;
+}
+.game-action-primary:hover { background: #1a1a1a; }
+.game-action-primary:active { transform: scale(.97); }
+
+/* 让内容不被固定底栏遮住 */
+.game-main {
+  padding-bottom: 88px;
+}
