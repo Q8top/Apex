@@ -15,7 +15,7 @@ rm -rf "$DIST"
 mkdir -p "$DIST"
 
 # 2. 静态 HTML 页面（显式白名单，绝不 *.html 通配）
-for f in index.html home.html 404.html privacy.html terms.html status.html announcements.html game.html slot.html olympus.html sweet.html sweet-v2.html sugar.html starlight.html bigbass.html aviator.html crash.html jetx.html blackjack.html roulette-euro.html roulette-amer.html 1001-mg.html 1001-mg2.html 10001-nights.html 10001-mega.html 1429-seas.html 5-lions.html 5-lions-gold.html 5-lions-mega.html arabian-nights.html asgardian.html aces-eights.html fengshui.html all-games.html; do
+for f in index.html home.html 404.html privacy.html terms.html status.html announcements.html game.html all-games.html; do
   [ -f "$ROOT/$f" ] && cp "$ROOT/$f" "$DIST/" && echo "  [COPY] $f"
 done
 
