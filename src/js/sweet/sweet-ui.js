@@ -280,6 +280,18 @@ function spinReel(c, dur, onDone, token){
   reelHandles[c] = requestAnimationFrame(loop);
 }
 
+function armSafetyTimer(token){
+  if (state.safetyTimer) { clearTimeout(state.safetyTimer); state.safetyTimer = null; }
+  state.safetyTimer = setTimeout(function(){
+    if (token !== state.spinToken) return;
+    if (state.spinning) {
+      console.warn('[Sweet] safety release');
+      paintGrid(state.grid || E.spin());
+      releaseSpin(); stopAuto();
+    }
+  }, 8000);
+}
+
 function doSpin(){
   if (state.spinning || !state.ready) return;
   var b = bet();
@@ -298,15 +310,7 @@ function doSpin(){
   safeAudio(A.init, 'init');
   safeAudio(A.spinStart, 'spinStart');
 
-  if (state.safetyTimer) clearTimeout(state.safetyTimer);
-  state.safetyTimer = setTimeout(function(){
-    if (token !== state.spinToken) return;
-    if (state.spinning) {
-      console.warn('[Sweet] safety release');
-      paintGrid(state.grid || E.spin());
-      releaseSpin(); stopAuto();
-    }
-  }, 8000);
+  armSafetyTimer(token);
 
   var result;
   try {
@@ -399,6 +403,7 @@ function runFreeSpins(b, fsCount, token){
   var idx = 0;
   function nextFs(){
     if (token !== state.spinToken) return;
+    armSafetyTimer(token);
     if (idx >= spins.length) {
       state.freeSpinMode = false;
       if (stage) stage.classList.remove('fs-mode');
@@ -480,7 +485,7 @@ function playRounds(result, betAmt, fs, token){
           paintGrid(rounds[i].grid);
           setTimeout(playOne, 250);
         } else { paintGrid(result.finalGrid); finish(totalShown, token); }
-      }, 220);
+      }, 300);
     }, 500);
   }
   playOne();
@@ -540,6 +545,13 @@ function releaseSpin(){
   }
   destroyReelLayer();
   var _g2 = document.getElementById('sw-grid'); if (_g2) _g2.style.opacity = '1';
+  if (state.freeSpinMode) {
+    state.freeSpinMode = false;
+    var _st = document.querySelector('.sw-stage');
+    if (_st) _st.classList.remove('fs-mode');
+    safeAudio(A.fsBgStop, 'fsBgStop');
+    showFsBanner(0);
+  }
   var sb = $('sw-spin'); if (sb) { sb.disabled = false; sb.classList.remove('spinning'); }
 }
 
