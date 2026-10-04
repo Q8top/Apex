@@ -290,6 +290,8 @@ body {
   line-height: 1;
 }
 .game-badge > i { font-size: 13px; color: #a1a1aa; }
+.game-badge > svg { width: 13px; height: 13px; flex-shrink: 0; }
+.game-badge--gold > svg { width: 13px; height: 13px; }
 .game-badge--gold {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   color: #78350f;
@@ -311,6 +313,8 @@ body {
   line-height: 1;
 }
 .game-tag > i { font-size: 13px; color: #8a8a8e; }
+.game-tag > svg { width: 13px; height: 13px; flex-shrink: 0; }
+.game-scatter-note > svg { width: 16px; height: 16px; flex-shrink: 0; }
 
 /* ============ 通用 section ============ */
 .game-section { margin: 24px 16px 0; }
@@ -347,9 +351,10 @@ body {
   font-size: 20px;
   flex-shrink: 0;
 }
-.game-feature-icon--gold   { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #a16207; }
-.game-feature-icon--purple { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color: #7c3aed; }
-.game-feature-icon--cyan   { background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%); color: #0891b2; }
+.game-feature-icon svg { width: 26px; height: 26px; display: block; }
+.game-feature-icon--gold   { background: linear-gradient(135deg, #fef9e7 0%, #fdf0c2 100%); border: 1px solid #f5dc8a; }
+.game-feature-icon--purple { background: linear-gradient(135deg, #f5f0fe 0%, #e8ddfd 100%); border: 1px solid #d4c1f5; }
+.game-feature-icon--cyan   { background: linear-gradient(135deg, #ecfdff 0%, #d0f7fc 100%); border: 1px solid #a5e5ed; }
 .game-feature-title {
   font-size: 14px;
   font-weight: 700;
@@ -440,4 +445,118 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .game-feature-card, .game-badge, .game-tag { transition: none; }
+}
+
+/* ============ 高级动效 & 细节 ============ */
+
+/* 入场 stagger */
+@keyframes game-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.game-info-card,
+.game-section {
+  animation: game-fade-up .55s cubic-bezier(.22,.61,.36,1) both;
+}
+.game-section:nth-of-type(2) { animation-delay: .12s; }
+.game-section:nth-of-type(3) { animation-delay: .24s; }
+.game-feature-card { animation: game-fade-up .5s cubic-bezier(.22,.61,.36,1) both; }
+.game-feature-card:nth-child(1) { animation-delay: .08s; }
+.game-feature-card:nth-child(2) { animation-delay: .16s; }
+.game-feature-card:nth-child(3) { animation-delay: .24s; }
+
+/* 赔付表头渐变 */
+.game-payout-head {
+  background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+  position: relative;
+}
+.game-payout-head::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,.35) 50%, transparent 100%);
+}
+
+/* 赔付行 hover 微高亮 */
+.game-payout-row {
+  transition: background .18s ease, transform .18s ease;
+}
+.game-payout-row:hover {
+  background: linear-gradient(90deg, rgba(254,249,231,.6) 0%, rgba(255,255,255,0) 100%);
+}
+.game-payout-row:hover .game-payout-symbol svg {
+  transform: scale(1.08);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.game-payout-symbol svg { transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+
+/* 信息卡 hover 微浮起 */
+.game-info-card { transition: box-shadow .28s ease, transform .28s ease; }
+.game-info-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 28px rgba(0,0,0,.06);
+  transform: translateY(-1px);
+}
+
+/* 玩法卡片 hover 微浮起 */
+.game-feature-card { transition: box-shadow .28s ease, transform .28s ease; }
+.game-feature-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,.04), 0 12px 28px rgba(0,0,0,.06);
+  transform: translateY(-2px);
+}
+
+/* 轮播占位框：淡网格纹 */
+.game-carousel-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+.game-carousel-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,0,0,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* 底栏按钮涟漪 */
+.game-action-btn,
+.game-action-plain,
+.game-action-primary {
+  position: relative;
+  overflow: hidden;
+}
+.game-action-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,0,0,.12) 0%, rgba(0,0,0,0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  animation: game-ripple .5s cubic-bezier(.22,.61,.36,1) forwards;
+}
+.game-action-primary .game-action-ripple {
+  background: radial-gradient(circle, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 70%);
+}
+@keyframes game-ripple {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+
+/* 底部栏顶光线 */
+.game-actionbar::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.9) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* 减少动效 */
+@media (prefers-reduced-motion: reduce) {
+  .game-info-card, .game-section, .game-feature-card { animation: none; }
+  .game-action-ripple { display: none; }
+  .game-payout-symbol svg, .game-info-card, .game-feature-card { transition: none; }
 }

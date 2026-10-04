@@ -208,6 +208,23 @@ function init(){
     }).join('');
   }
 
+  /* ===== 底栏按钮涟漪 ===== */
+  var actionBtns = document.querySelectorAll('.game-action-btn, .game-action-plain, .game-action-primary');
+  actionBtns.forEach(function(btn){
+    btn.addEventListener('pointerdown', function(e){
+      var r = btn.getBoundingClientRect();
+      var size = Math.max(r.width, r.height) * 1.2;
+      var sp = document.createElement('span');
+      sp.className = 'game-action-ripple';
+      sp.style.width = size + 'px';
+      sp.style.height = size + 'px';
+      sp.style.left = (e.clientX - r.left) + 'px';
+      sp.style.top = (e.clientY - r.top) + 'px';
+      btn.appendChild(sp);
+      setTimeout(function(){ if (sp.parentNode) sp.parentNode.removeChild(sp); }, 520);
+    });
+  });
+
   start();
 }
 
