@@ -7,6 +7,7 @@
 'use strict';
 
 var Events = window.SweetEvents;
+var RNG = window.SweetRNG;
 
 var MAX_PARTICLES = 200;
 var DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -111,17 +112,17 @@ function burst(cx, cy, opts){
     if (list.length >= MAX_PARTICLES) break;
     var p = acquire();
     if (!p) break;
-    var angle = (Math.PI * 2) * (i / count) + Math.random() * 0.4;
-    var speed = spread * (0.5 + Math.random() * 0.8);
+    var angle = (Math.PI * 2) * (i / count) + RNG.rand() * 0.4;
+    var speed = spread * (0.5 + RNG.rand() * 0.8);
     p.x = cx; p.y = cy;
     p.vx = Math.cos(angle) * speed;
     p.vy = Math.sin(angle) * speed - 0.8;
     p.life = 0;
-    p.maxLife = lifeMin + Math.random() * (lifeMax - lifeMin);
-    p.size = sizeMin + Math.random() * (sizeMax - sizeMin);
+    p.maxLife = lifeMin + RNG.rand() * (lifeMax - lifeMin);
+    p.size = sizeMin + RNG.rand() * (sizeMax - sizeMin);
     p.color = color;
-    p.rotation = Math.random() * Math.PI;
-    p.vr = (Math.random() - 0.5) * 0.2;
+    p.rotation = RNG.rand() * Math.PI;
+    p.vr = (RNG.rand() - 0.5) * 0.2;
     spawn(p);
     used++;
   }
