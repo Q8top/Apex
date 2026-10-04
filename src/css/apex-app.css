@@ -501,6 +501,8 @@
 }
 
 .apex-cats-sidebar {
+  display: grid;
+  grid-template-rows: repeat(11, 1fr);
   background: linear-gradient(180deg, #f7f7f8 0%, #f7f7f8 55%, #fafafb 72%, #fdfdfd 86%, #ffffff 100%);
   border-right: 1px solid #ededed;
   overflow-y: auto;
@@ -515,8 +517,9 @@
   align-items: center;
   gap: 7px;
   width: 100%;
-  padding: 11px 8px 11px 14px;
+  padding: 0 8px 0 14px;
   border: 0;
+  min-height: 34px;
   background: transparent;
   color: #71717a;
   font-family: inherit;
