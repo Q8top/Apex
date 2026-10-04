@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>奥林匹斯之门 · 游戏中</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/src/css/tokens.css?v=ax1">
+<link rel="stylesheet" href="/src/css/base.css?v=ax1">
+<link rel="stylesheet" href="/src/css/components.css?v=ax1">
+</head>
+<body class="ax-game-body">
+<div class="ax-app">
+  <header id="ax-header"></header>
+  <main id="ax-stage" class="ax-stage"></main>
+  <section class="ax-win-row">
+    <div class="ax-win-label">本局中奖</div>
+    <div class="ax-win-amount" id="ax-win-amount">¥0.00</div>
+  </section>
+  <section class="ax-balance-panel">
+    <div class="ax-balance-cell">
+      <div class="ax-balance-label">余额</div>
+      <div class="ax-balance-value" id="ax-balance">¥0.00</div>
+    </div>
+    <div class="ax-balance-right">
+      <div class="ax-balance-row">
+        <span class="ax-balance-label">下注</span>
+        <span class="ax-balance-value" id="ax-bet-display">¥10.00</span>
+      </div>
+      <div class="ax-balance-row">
+        <span class="ax-balance-label">赢得</span>
+        <span class="ax-balance-value" id="ax-total-win">¥0</span>
+      </div>
+    </div>
+  </section>
+  <section class="ax-bet-row">
+    <button type="button" class="ax-bet-btn" id="ax-bet-minus" aria-label="减小下注">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>
+    </button>
+    <div class="ax-bet-value" id="ax-bet-value">¥10.00</div>
+    <button type="button" class="ax-bet-btn" id="ax-bet-plus" aria-label="增加下注">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </section>
+  <section class="ax-spin-row">
+    <button type="button" class="ax-spin" id="ax-spin" aria-label="旋转">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3.51-7.13"/><path d="M21 4v6h-6"/></svg>
+      <span class="ax-spin-label">旋转</span>
+    </button>
+  </section>
+</div>
+
+<div class="ax-fs-banner" id="ax-fs-banner" aria-hidden="true">
+  <div class="ax-fs-title">FREE SPINS</div>
+  <div class="ax-fs-count"><span id="ax-fs-left">0</span><span>/</span><span id="ax-fs-total">0</span></div>
+  <div class="ax-fs-sub">免费旋转</div>
+</div>
+
+<div class="ax-fs-summary" id="ax-fs-summary" aria-hidden="true">
+  <div class="ax-fs-summary-mask"></div>
+  <div class="ax-fs-summary-card">
+    <div class="ax-fs-summary-title">FREE SPINS 完成</div>
+    <div class="ax-fs-summary-label">总赢奖</div>
+    <div class="ax-fs-summary-amount" id="ax-fs-amount">¥0.00</div>
+    <div class="ax-fs-summary-sub">已累加至本局结果</div>
+  </div>
+</div>
+
+<div class="ax-bigwin" id="ax-bigwin" aria-hidden="true">
+  <div class="ax-bigwin-mask"></div>
+  <div class="ax-bigwin-card">
+    <div class="ax-bigwin-title" id="ax-bigwin-title">BIG WIN</div>
+    <div class="ax-bigwin-amount" id="ax-bigwin-amount">¥0.00</div>
+  </div>
+</div>
+
+<script type="module" src="/src/js/games/olympus/main.js?v=ax1"></script>
+</body>
+</html>
