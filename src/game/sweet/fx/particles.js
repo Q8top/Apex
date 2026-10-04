@@ -9,7 +9,7 @@
 var Events = window.SweetEvents;
 var RNG = window.SweetRNG;
 
-var MAX_PARTICLES = 200;
+var MAX_PARTICLES = 60;
 var DPR = Math.min(window.devicePixelRatio || 1, 2);
 
 var canvas = null;
@@ -147,12 +147,12 @@ function bindEvents(){
     var c = d.cells[0];
     var px = rect.width * ((c[1] + 0.5) / 6);
     var py = rect.height * ((c[0] + 0.5) / 5);
-    burst(px, py, { count: 12, color: '#ffd54f', spread: 2.5, lifeMin: 500, lifeMax: 900 });
+    burst(px, py, { count: 6, color: '#ffd54f', spread: 2.5, lifeMin: 500, lifeMax: 900 });
   });
   Events.on('fs:summary', function(){
     if (!canvas) return;
     var rect = canvas.getBoundingClientRect();
-    burst(rect.width / 2, rect.height / 2, { count: 60, color: '#ffe37a', spread: 5, lifeMin: 900, lifeMax: 1600, sizeMin: 3, sizeMax: 5 });
+    burst(rect.width / 2, rect.height / 2, { count: 24, color: '#ffe37a', spread: 5, lifeMin: 900, lifeMax: 1600, sizeMin: 3, sizeMax: 5 });
   });
 }
 

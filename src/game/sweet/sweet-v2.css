@@ -192,7 +192,6 @@ html, body {
   width: 86%;
   height: 86%;
   display: block;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .4));
 }
 
 /* ============ Reel 层（Spin 时显示） ============ */
@@ -236,7 +235,6 @@ html, body {
   width: 86%;
   height: 86%;
   display: block;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .4));
 }
 
 /* ============ 中奖高亮（静态，无 pop） ============ */
