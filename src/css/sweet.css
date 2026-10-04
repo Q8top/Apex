@@ -1414,3 +1414,26 @@ html, body {
 .sw-cell.popping > svg {
   animation: none !important;
 }
+
+/* ===== APEX-SWEET-C12-POP: 快速消失 v4 =====
+   用户反馈：想要消消乐风格"啪一下快速消失"
+   C9-C11 方向错误（时长过长 + 三段式 + 缩小太温和）
+   C12 方案：
+   1. 时长 280ms（恢复原版节奏，比 C11 的 550ms 快一倍）
+   2. keyframe 明确 from / to
+   3. 曲线 cubic-bezier(.5,0,.75,0) — 加速消失（"啪"感）
+   4. 作用在 cell（不碰 svg，避开 Safari 兼容问题）
+   5. 用 .sw-cell.winning.popping 高特异性覆盖 swWinPulse
+*/
+@keyframes swPopV4 {
+  from { transform: scale(1);  opacity: 1; }
+  to   { transform: scale(0);  opacity: 0; }
+}
+.sw-cell.winning.popping,
+.sw-cell.popping {
+  animation: swPopV4 .28s cubic-bezier(.5,0,.75,0) forwards !important;
+  transform-origin: 50% 50% !important;
+}
+.sw-cell.popping > svg {
+  animation: none !important;
+}
