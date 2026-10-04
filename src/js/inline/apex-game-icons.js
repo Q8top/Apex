@@ -25,7 +25,7 @@ wolf:'<defs>'+g('wf','#fde047','#a16207',1)+'</defs><g transform="translate(100 
 fruit:'<defs>'+rg('fr','#fca5a5','#b91c1c','.55')+'</defs><g transform="translate(100 100)"><path d="M-6 -22 Q-4 -40 20 -44 Q18 -26 -2 -22 Z" fill="#16a34a" stroke="#065f46" stroke-width="1.5" stroke-linejoin="round"/><path d="M-6 -22 Q-4 -32 4 -36" fill="none" stroke="#065f46" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="18" r="20" fill="url(#fr)" stroke="#7f1d1d" stroke-width="1.5"/><circle cx="-12" cy="6" r="24" fill="url(#fr)" stroke="#7f1d1d" stroke-width="1.5"/><circle cx="-20" cy="-4" r="6" fill="#fff" opacity=".6"/><circle cx="8" cy="10" r="4" fill="#fff" opacity=".5"/></g>',
 megaways:'<defs>'+g('mg','#f9a8d4','#9d174d',1)+'</defs><g transform="translate(100 100)"><path d="M0 -46 L38 0 L0 46 L-38 0 Z" fill="url(#mg)" stroke="#831843" stroke-width="2" stroke-linejoin="round"/><path d="M0 -46 L38 0 L0 0 Z" fill="#fff" opacity=".38"/><path d="M0 0 L0 46 L-38 0 Z" fill="#0a0a0a" opacity=".2"/><path d="M0 -46 L-19 -23 L0 0 L19 -23 Z" fill="#fff" opacity=".2"/><path d="M-38 0 L0 0 L0 -46 Z" fill="#0a0a0a" opacity=".08"/></g>'
 };
-var IMG={olympus:'/assets/games/olympus.webp',sweet:'/assets/games/sweet.webp',sugar:'/assets/games/sugar.webp'};
+var IMG={olympus:'/assets/games/olympus.webp',sweet:'/assets/games/sweet.webp',sugar:'/assets/games/sugar.webp',book:'/assets/games/book.webp',dog:'/assets/games/dog.webp',bass:'/assets/games/bass.webp'};
 function render(k){
   if(IMG[k])return '<img src="'+IMG[k]+'" alt="" loading="lazy" decoding="async">';
   var b=I[k];if(!b)return '';
