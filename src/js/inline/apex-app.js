@@ -276,10 +276,18 @@ function initTabbar(app){
   slider.className='apex-tabbar-slider';
   slider.setAttribute('aria-hidden','true');
   nav.insertBefore(slider,nav.firstChild);
+  function setSliderX(idx){
+    var sliderEl=nav.querySelector('.apex-tabbar-slider');
+    if(!sliderEl)return;
+    var navRect=nav.getBoundingClientRect();
+    var tabWidth=(navRect.width-8)/5;
+    sliderEl.style.transform='translate3d('+(idx*tabWidth)+'px,0,0)';
+    sliderEl.style.width=tabWidth+'px';
+  }
   function moveSlider(b){
     var tabs=nav.querySelectorAll('.apex-tab');
     for(var i=0;i<tabs.length;i++){
-      if(tabs[i]===b){nav.style.setProperty('--apex-tab-idx',i);return;}
+      if(tabs[i]===b){setSliderX(i);return;}
     }
   }
   var initActive=nav.querySelector('.apex-tab.active');
@@ -295,10 +303,22 @@ function initTabbar(app){
     if(!dragState.active)return;
     var dx=dragState.lastX-dragState.startX;
     var navRect=nav.getBoundingClientRect();
-    var tabWidth=navRect.width/5;
-    var newIdx=dragState.startIdx+dx/tabWidth;
-    newIdx=Math.max(0,Math.min(4,newIdx));
-    nav.style.setProperty('--apex-tab-idx',newIdx);
+    var tabWidth=(navRect.width-8)/5;
+    var progress=dx/tabWidth;
+    var absP=Math.abs(progress);
+    var cycle=absP-Math.floor(absP);
+    var stretchPx=(0.5-Math.abs(cycle-0.5))*0.5*tabWidth;
+    var centerIdx=dragState.startIdx+progress;
+    var totalW=tabWidth+stretchPx*2;
+    var leftPx=centerIdx*tabWidth+4-totalW/2;
+    var maxLeft=navRect.width-4-totalW;
+    if(leftPx<4)leftPx=4;
+    if(leftPx>maxLeft)leftPx=maxLeft;
+    var sliderEl=nav.querySelector('.apex-tabbar-slider');
+    if(sliderEl){
+      sliderEl.style.transform='translate3d('+(leftPx-4)+'px,0,0)';
+      sliderEl.style.width=totalW+'px';
+    }
   }
   nav.addEventListener('pointerdown',function(e){
     var b=e.target.closest?e.target.closest('.apex-tab'):null;
@@ -310,6 +330,7 @@ function initTabbar(app){
     dragState.lastX=e.clientX;
     dragState.startIdx=idx;
     dragState.pointerId=e.pointerId;
+    dragState.lastIdx=idx;
     b.classList.add('pressing');
     nav.classList.add('is-dragging');
     setSpot(b,e.clientX,e.clientY);
@@ -326,33 +347,56 @@ function initTabbar(app){
     setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},600);
   });
   nav.addEventListener('pointermove',function(e){
-    var b=e.target.closest?e.target.closest('.apex-tab'):null;
-    if(b&&!dragState.active)setSpot(b,e.clientX,e.clientY);
-    if(!dragState.active)return;
+    if(!dragState.active){
+      var b0=e.target.closest?e.target.closest('.apex-tab'):null;
+      if(b0)setSpot(b0,e.clientX,e.clientY);
+      return;
+    }
     dragState.lastX=e.clientX;
+    var navRect=nav.getBoundingClientRect();
+    var tabWidth=navRect.width/5;
+    var relX=e.clientX-navRect.left;
+    var curIdx=Math.floor(relX/tabWidth);
+    if(curIdx<0)curIdx=0;
+    if(curIdx>4)curIdx=4;
+    var tabs=nav.querySelectorAll('.apex-tab');
+    tabs.forEach(function(t,i){
+      if(i===curIdx){if(!t.classList.contains('pressing'))t.classList.add('pressing');}
+      else t.classList.remove('pressing');
+    });
+    if(dragState.lastIdx!==curIdx){
+      dragState.lastIdx=curIdx;
+      if(navigator.vibrate)try{navigator.vibrate(6);}catch(_){}
+    }
     if(!dragState.raf)dragState.raf=requestAnimationFrame(updateDrag);
   });
-  function endDrag(e){
+function endDrag(e){
     if(!dragState.active)return;
     dragState.active=false;
     if(dragState.raf){cancelAnimationFrame(dragState.raf);dragState.raf=0;}
-    nav.classList.remove('is-dragging');
     var dx=(e&&typeof e.clientX==='number'?e.clientX:dragState.lastX)-dragState.startX;
     var navRect=nav.getBoundingClientRect();
-    var tabWidth=navRect.width/5;
+    var tabWidth=(navRect.width-8)/5;
     var newIdx=Math.round(dragState.startIdx+dx/tabWidth);
     newIdx=Math.max(0,Math.min(4,newIdx));
     var tabs=nav.querySelectorAll('.apex-tab');
-    tabs.forEach(function(t){t.classList.remove('pressing');});
+    tabs.forEach(function(t){
+      t.classList.remove('pressing');
+      t.classList.add('snap');
+    });
+    nav.classList.remove('is-dragging');
     var targetTab=tabs[newIdx];
     if(targetTab){
-      moveSlider(targetTab);
+      setSliderX(newIdx);
       targetTab.classList.add('active');
       tabs.forEach(function(t){if(t!==targetTab)t.classList.remove('active');});
       var k=targetTab.getAttribute('data-tab');
       main.querySelectorAll('.apex-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===k);});
       main.scrollTop=0;
     }
+    requestAnimationFrame(function(){
+      tabs.forEach(function(t){t.classList.remove('snap');});
+    });
   }
   nav.addEventListener('pointerup',endDrag);
   nav.addEventListener('pointercancel',endDrag);

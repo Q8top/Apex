@@ -427,13 +427,7 @@
   -webkit-user-select: none;
   user-select: none;
 }
-@supports ((-webkit-backdrop-filter: url(#liquid-lens)) or (backdrop-filter: url(#liquid-lens))) {
-  .apex-tabbar {
-    background: rgba(255, 255, 255, 0.75);
-    -webkit-backdrop-filter: blur(4px) url(#liquid-lens);
-    backdrop-filter: blur(4px) url(#liquid-lens);
-  }
-}
+/* 折射改用 CSS 渐变模拟，见下方 .apex-tabbar-slider::after */
 
 .apex-tabbar::before {
   content: '';
@@ -458,11 +452,11 @@
     0 -1px 0 rgba(0,0,0,.03) inset,
     0 2px 6px rgba(0,0,0,.08),
     0 6px 16px rgba(0,0,0,.05);
-  transform: translate3d(calc(var(--apex-tab-idx, 0) * 100%), 0, 0);
-  transition: transform .48s cubic-bezier(.34, 1.42, .5, 1);
+  transform: translate3d(0, 0, 0);
+  transition: transform .48s cubic-bezier(.34, 1.42, .5, 1), width .48s cubic-bezier(.34, 1.42, .5, 1);
   pointer-events: none;
   z-index: 0;
-  will-change: transform;
+  will-change: transform, width;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -739,3 +733,43 @@
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* ========== 去残影 + 模拟透镜 + iOS 26 补充特征 ========== */
+.apex-tab:active { transform: none; }
+.apex-tab > i,
+.apex-tab-label {
+  transition: color .22s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+.apex-tab.snap > i,
+.apex-tab.snap > .apex-tab-label { transition: color .22s ease; }
+
+/* 滑块模拟透镜：中心高光 + 边缘色散 */
+.apex-tabbar-slider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 60% 100% at 50% 25%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 65%),
+    radial-gradient(ellipse 45% 65% at 50% 90%, rgba(180,200,255,0.14) 0%, rgba(255,200,200,0.12) 45%, rgba(255,255,255,0) 75%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* 底栏顶部光线弯曲错觉 */
+.apex-tabbar::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.95) 20%,
+    rgba(255,255,255,0.95) 80%,
+    rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+/* 拖拽时底栏微缩放 */
+.apex-tabbar.is-dragging { transform: scale(1.015); transition: transform .22s cubic-bezier(.34, 1.56, .64, 1); }
+.apex-tabbar:not(.is-dragging) { transform: scale(1); transition: transform .32s cubic-bezier(.34, 1.56, .64, 1); }
