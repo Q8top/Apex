@@ -59,6 +59,13 @@
     <div class="sw-combo" id="sw-combo"></div>
   </section>
 
+  <section class="sw-mode-action-row">
+    <button class="sw-mode-action-btn" id="sw-mode-action" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+      <span id="sw-mode-action-text">重置余额</span>
+    </button>
+  </section>
+
   <section class="sw-balance-panel">
     <div class="sw-balance-main">
       <div class="sw-balance-label">余额</div>
@@ -108,6 +115,18 @@
   </section>
 
   <div class="sw-fs-summary" id="sw-fs-summary"><div class="sw-fs-summary-glow"></div><div class="sw-fs-summary-content"><div class="sw-fs-summary-title">免费旋转总赢分</div><div class="sw-fs-summary-amount" id="sw-fs-total">¥0</div></div></div>
+  <div class="sw-modal" id="sw-modal" aria-hidden="true">
+    <div class="sw-modal-mask" id="sw-modal-mask"></div>
+    <div class="sw-modal-box" role="dialog" aria-modal="true">
+      <div class="sw-modal-head">
+        <div class="sw-modal-title" id="sw-modal-title">标题</div>
+        <button class="sw-modal-x" id="sw-modal-x" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="sw-modal-body" id="sw-modal-body"></div>
+    </div>
+  </div>
   <div class="sw-toast" id="sw-toast"></div>
 </div>
 

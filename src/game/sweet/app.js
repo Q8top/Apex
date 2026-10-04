@@ -374,6 +374,25 @@ function init(){
     if (state.autoOn) doSpin();
   });
 
+  var modeBtn = document.getElementById('sw-mode-action');
+  if (modeBtn) modeBtn.addEventListener('click', function(){ Events.emit('audio:click'); actionMode(); });
+
+  var menuBtn = document.getElementById('sw-menu');
+  if (menuBtn) menuBtn.addEventListener('click', function(){ Events.emit('audio:click'); openMenu(); });
+
+  var histBtn = document.getElementById('sw-history');
+  if (histBtn) histBtn.addEventListener('click', function(){ Events.emit('audio:click'); openHistory(); });
+
+  var payBtn = document.getElementById('sw-paytable');
+  if (payBtn) payBtn.addEventListener('click', function(){ Events.emit('audio:click'); openPaytable(); });
+
+  var modalX = document.getElementById('sw-modal-x');
+  var modalMask = document.getElementById('sw-modal-mask');
+  if (modalX) modalX.addEventListener('click', closeModal);
+  if (modalMask) modalMask.addEventListener('click', closeModal);
+
+  updateModeBtn();
+
   var minus = document.getElementById('sw-bet-minus');
   var plus = document.getElementById('sw-bet-plus');
   if (minus) minus.addEventListener('click', function(){ changeBet(-1); });
@@ -382,6 +401,129 @@ function init(){
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
+
+function openModal(title, html){
+  var t = document.getElementById('sw-modal-title');
+  var b = document.getElementById('sw-modal-body');
+  var m = document.getElementById('sw-modal');
+  if (!t || !b || !m) return;
+  t.textContent = title;
+  b.innerHTML = html;
+  m.classList.add('show');
+  m.setAttribute('aria-hidden', 'false');
+}
+function closeModal(){
+  var m = document.getElementById('sw-modal');
+  if (!m) return;
+  m.classList.remove('show');
+  m.setAttribute('aria-hidden', 'true');
+}
+
+function updateModeBtn(){
+  var btn = document.getElementById('sw-mode-action');
+  if (!btn) return;
+  var txt = btn.querySelector('span');
+  if (!txt) return;
+  txt.textContent = (MODE === 'demo') ? '重置余额' : '充值余额';
+}
+
+function actionMode(){
+  if (State.get() !== State.S.IDLE) { HUD.toast('请等待本局结束'); return; }
+  if (MODE === 'demo') {
+    if (!confirm('重置演示余额为 ' + HUD.fmt(Config.CONFIG.initialBalance) + '？')) return;
+    state.balance = Config.CONFIG.initialBalance;
+    state.betIndex = Config.CONFIG.defaultBetIndex;
+    state.history = [];
+    saveLocal();
+    saveHist();
+    Events.emit('balance:change', { balance: state.balance, animate: false });
+    Events.emit('bet:change', { bet: bet() });
+    HUD.updateWin(0, '');
+    HUD.toast('已重置');
+  } else {
+    openModal('充值', '<p style="text-align:center;padding:14px 0 22px;color:#666;">充值功能开发中，敬请期待。</p>');
+  }
+}
+
+function openMenu(){
+  var isDemo = MODE === 'demo';
+  var soundOn = AudioBridge.isEnabled();
+  var html =
+    '<div class="sw-menu-list">' +
+      '<button type="button" class="sw-menu-item" data-act="sound"><span>音效</span><small>' + (soundOn ? '开' : '关') + '</small></button>' +
+      '<button type="button" class="sw-menu-item" data-act="history"><span>游戏记录</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="paytable"><span>赔付表</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="balance"><span>当前余额</span><small>' + HUD.fmt(state.balance) + '</small></button>' +
+      '<button type="button" class="sw-menu-item" data-act="mode"><span>' + (isDemo ? '重置余额' : '充值余额') + '</span></button>' +
+      '<button type="button" class="sw-menu-item" data-act="info"><span>游戏说明</span></button>' +
+    '</div>';
+  openModal('菜单 · ' + (isDemo ? '试玩模式' : '游戏模式'), html);
+  setTimeout(function(){
+    var body = document.getElementById('sw-modal-body');
+    if (!body || body.__menuBound) return;
+    body.__menuBound = true;
+    body.addEventListener('click', function(e){
+      var item = e.target.closest ? e.target.closest('.sw-menu-item') : null;
+      if (!item) return;
+      var act = item.getAttribute('data-act');
+      if (act === 'sound') {
+        var nv = !AudioBridge.isEnabled();
+        AudioBridge.setEnabled(nv);
+        var st = item.querySelector('small');
+        if (st) st.textContent = nv ? '开' : '关';
+      } else if (act === 'history') { closeModal(); setTimeout(openHistory, 180); }
+      else if (act === 'paytable') { closeModal(); setTimeout(openPaytable, 180); }
+      else if (act === 'mode') { closeModal(); setTimeout(actionMode, 180); }
+      else if (act === 'info') { closeModal(); setTimeout(function(){ HUD.toast('本游戏为虚拟积分娱乐，不涉及真实货币'); }, 240); }
+      else if (act === 'balance') { HUD.toast('当前余额 ' + HUD.fmt(state.balance), 1500); }
+    });
+  }, 30);
+}
+
+function openPaytable(){
+  var order = ['candyBlue','candyGreen','candyPurple','candyRed','candyOrange','candyYellow','banana','grape','watermelon','apple','plum','lollipop'];
+  var html = '<div style="font-size:12.5px;color:#666;margin-bottom:12px;line-height:1.7;">6×5 Cluster Pays（8 个及以上相邻同类消除）</div>';
+  order.forEach(function(id){
+    var s = Config.SYMBOLS[id];
+    var icon = Renderer.get(id);
+    var payText = '';
+    if (id === 'lollipop') payText = '4/5/6 个 → 免费旋转 10/12/15 次';
+    else {
+      var tbl = Config.PAYOUTS[id];
+      if (tbl) payText = '8-9个×' + tbl[8] + ' · 10-11个×' + tbl[10] + ' · 12+个×' + tbl[12];
+    }
+    html += '<div class="sym-row"><div class="sym-icon">' + icon + '</div><div><div class="sym-name">' + s.name + '</div><div class="sym-pay">' + payText + '</div></div></div>';
+  });
+  openModal('赔付表', html);
+}
+
+function openHistory(){
+  if (!state.history.length) {
+    openModal('游戏记录', '<p style="text-align:center;padding:24px 0;color:#999;">暂无记录</p>');
+    return;
+  }
+  var tb = 0, tw = 0, w = 0;
+  state.history.forEach(function(h){ tb += h.bet; tw += h.win; if (h.win > 0) w++; });
+  var rate = (w / state.history.length * 100).toFixed(1);
+  var head = '<div class="hist-summary">' +
+    '<div><span>总局数</span><b>' + state.history.length + '</b></div>' +
+    '<div><span>中奖次数</span><b>' + w + '</b></div>' +
+    '<div><span>中奖率</span><b>' + rate + '%</b></div>' +
+    '<div><span>总下注</span><b>' + HUD.fmt(tb) + '</b></div>' +
+    '<div><span>总中奖</span><b>' + HUD.fmt(tw) + '</b></div>' +
+    '<div><span>净赢</span><b>' + HUD.fmt(tw - tb) + '</b></div>' +
+    '</div>';
+  var rows = '';
+  state.history.slice(0, 20).forEach(function(h){
+    var cls = h.delta > 0 ? 'win' : 'lose';
+    var txt = (h.delta > 0 ? '+' : '') + '¥' + h.delta.toFixed(2);
+    var t = new Date(h.ts);
+    var hh = String(t.getHours()).padStart(2, '0');
+    var mm = String(t.getMinutes()).padStart(2, '0');
+    rows += '<div class="hist-row"><div><div style="font-weight:700;">下注 ' + HUD.fmt(h.bet) + '</div><div style="font-size:12px;color:#999;">' + hh + ':' + mm + ' · 中奖 ' + HUD.fmt(h.win) + '</div></div><div class="hist-amt ' + cls + '">' + txt + '</div></div>';
+  });
+  openModal('游戏记录', head + rows);
+}
 
 window.SweetApp = { init: init, doSpin: doSpin };
 })();
