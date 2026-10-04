@@ -416,12 +416,15 @@
   border-radius: 999px;
   --glass-radius: 999px;
   --glass-tint: 255, 255, 255;
-  --glass-alpha: 0.18;
-  --glass-blur: 18px;
-  --glass-saturate: 1.6;
-  --glass-brightness: 1.08;
-  --glass-rim: 0.6;
+  --glass-alpha: 0.72;
+  --glass-blur: 28px;
+  --glass-saturate: 1.8;
+  --glass-brightness: 1.06;
+  --glass-rim: 0.78;
+  --glass-sheen: 0.16;
   --glass-bloom: 255, 255, 255;
+  --glass-refract-strength: 56;
+  --glass-refract-dispersion: 8;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .apex-tabbar { background: rgba(255,255,255,.96); }
@@ -439,6 +442,7 @@
   overflow: hidden;
   border-radius: 999px;
   isolation: isolate;
+  color: #6b6b73;
   background: transparent;
   color: #8a8a8e;
   font-family: inherit;
