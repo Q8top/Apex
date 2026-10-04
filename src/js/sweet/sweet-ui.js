@@ -324,9 +324,10 @@ function doSpin(){
         paintGrid(firstGrid);
         setTimeout(function(){
           // 检查免费旋转触发
-          if (result.scatterCount >= 4) {
+          var fsCount = C.getFreeSpinCount(result.scatterCount);
+          if (fsCount > 0) {
             safeAudio(A.freeSpin, 'freeSpin');
-            playFsEntrance(10, function(){ runFreeSpins(b); });
+            playFsEntrance(fsCount, function(){ runFreeSpins(b, fsCount); });
           } else {
             playRounds(result, b, null);
           }
@@ -365,14 +366,14 @@ function playFsEntrance(count, cb){
   setTimeout(finish, 1200);
 }
 
-function runFreeSpins(b){
+function runFreeSpins(b, fsCount){
   state.freeSpinMode = true;
   var stage = document.querySelector('.sw-stage');
   if (stage) stage.classList.add('fs-mode');
   safeAudio(A.fsBgStart, 'fsBgStart');
   var fsResult;
   try {
-    fsResult = E.playFreeSpins(b);
+    fsResult = E.playFreeSpins(b, fsCount);
   } catch(e) {
     console.error('[Sweet] freespin error:', e);
     state.freeSpinMode = false;

@@ -51,6 +51,15 @@ var PAYOUTS = {
 var SCATTER_TRIGGER = { 4:10, 5:12, 6:15 };
 var SCATTER_RETRIGGER = 5;  // 免费旋转中再触发 +5 次
 
+/* 根据 scatter 数量返回初始免费旋转次数
+   4 -> 10, 5 -> 12, 6 -> 15，其他返回 0 */
+function getFreeSpinCount(scatterCount){
+  if (scatterCount >= 6) return 15;
+  if (scatterCount >= 5) return 12;
+  if (scatterCount >= 4) return 10;
+  return 0;
+}
+
 /* 炸弹倍数（免费旋转期间掉落） */
 var BOMB_VALUES = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 50, 100];
 var BOMB_WEIGHTS = {
@@ -80,6 +89,7 @@ window.SweetConfig = {
   PAYOUTS: PAYOUTS,
   SCATTER_TRIGGER: SCATTER_TRIGGER,
   SCATTER_RETRIGGER: SCATTER_RETRIGGER,
+  getFreeSpinCount: getFreeSpinCount,
   BOMB_VALUES: BOMB_VALUES,
   BOMB_WEIGHTS: BOMB_WEIGHTS,
   CONFIG: CONFIG

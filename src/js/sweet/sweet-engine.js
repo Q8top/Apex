@@ -191,8 +191,8 @@ function playFullSpin(totalBet, inFreeSpin){
 }
 
 /* ---------- 免费旋转 ---------- */
-function playFreeSpins(totalBet){
-  var remaining = 10;
+function playFreeSpins(totalBet, initialCount){
+  var remaining = (typeof initialCount === 'number' && initialCount > 0) ? initialCount : 10;
   var totalWin = 0;
   var spins = [];
   var spinIdx = 0;
