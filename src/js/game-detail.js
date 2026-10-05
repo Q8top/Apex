@@ -317,6 +317,23 @@
   if (demoBtn)    demoBtn.addEventListener('click',    function () { toast('免费试玩即将开放'); });
   if (playBtn)    playBtn.addEventListener('click',    function () { toast('开始游戏即将开放'); });
 
+  function featureIcon(name){
+    var I = {
+      bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="#6A50C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 L4 14 L11 14 L9 22 L20 9 L13 9 Z"/></svg>',
+      x2:'<svg viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6 L11 12 L5 18 M11 6 L17 12 L11 18 M18 6 L18 18"/></svg>',
+      star:'<svg viewBox="0 0 24 24" fill="none" stroke="#E6A028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L15 9 L22 10 L17 15 L18 22 L12 18 L6 22 L7 15 L2 10 L9 9 Z"/></svg>',
+      play:'<svg viewBox="0 0 24 24" fill="none" stroke="#2E8B33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4 L19 12 L5 20 Z"/></svg>'
+    };
+    return I[name] || I.bolt;
+  }
+
+  var SIMILAR_NAMES = {
+    sugar:'甜蜜爆奖', starburst:'星爆', gonzo:'刚果探险',
+    dog:'狗狗之家', book:'死亡之书', bass:'巨型鲈鱼',
+    sweet:'糖果连连爆', olympus:'奥林匹斯之门', buffalo:'水牛之王',
+    wolf:'狼黄金', fruit:'水果派对', megaways:'大富翁'
+  };
+
   /* ==========================================================
      游戏详情数据（仅 olympus）
      ========================================================== */
@@ -359,10 +376,17 @@
         { id: 'gem-yellow', name: '黄宝石', pay: [0.2, 0.5, 2,   5]   }
       ],
       features: [
-        { title: '连锁掉落', desc: '中奖符号结算后消失，新符号自上方补位，一次旋转可连续触发多轮中奖。' },
-        { title: '倍率之球', desc: '宙斯随机投下倍率之球，数值从 ×2 起逐级递增，多个倍率可叠加计算。' },
-        { title: '天降神迹', desc: '连锁累积到指定次数触发神迹奖励，进入高密度连续掉落状态。' },
-        { title: '直达模式', desc: '可跳过等待，直接进入神迹奖励环节，体验高密度连锁掉落。' }
+        { icon: 'bolt', title: '连锁掉落', desc: '中奖符号结算后消失，新符号自上方补位，一次旋转可连续触发多轮中奖。' },
+        { icon: 'x2',   title: '倍率之球', desc: '宙斯随机投下倍率之球，数值从 ×2 起逐级递增，多个倍率可叠加计算。' },
+        { icon: 'star', title: '天降神迹', desc: '连锁累积到指定次数触发神迹奖励，进入高密度连续掉落状态。' },
+        { icon: 'play', title: '直达模式', desc: '可跳过等待，直接进入神迹奖励环节，体验高密度连锁掉落。' }
+      ],
+      similar: ['sugar', 'starburst', 'gonzo', 'dog', 'book', 'bass'],
+      faq: [
+        { q: '这款游戏怎么玩？', a: '相邻位置出现 3 个或以上相同符号即可组成中奖组合。中奖符号消失后新符号补位，连锁可反复触发。' },
+        { q: '免费旋转怎么触发？', a: '命中 4 个以上闪电 Scatter 触发 15 次免费旋转，期间所有倍率累加至本局总倍率。' },
+        { q: '倍率符号是怎么算的？', a: '每轮旋转中，宙斯可能降下 ×2–×2500 的倍率符号，同一轮内的所有倍率合并计算。' },
+        { q: '最大能赢多少？', a: '连锁掉落与倍率之球层层叠加，可触发高倍收益。具体倍数视盘面组合而定。' }
       ]
     }
   };
@@ -386,24 +410,6 @@
       for (var ai = 0; ai < ps.length; ai++) ah += '<p class="gd-about-p">' + ps[ai] + '</p>';
       aboutTxt.innerHTML = ah;
       aboutSec.hidden = false;
-    }
-
-    /* 游戏符号 */
-    var symSec   = document.getElementById('gdSecSymbols');
-    var symGrid  = document.getElementById('gdSymbolGrid');
-    var symCount = document.getElementById('gdSymbolCount');
-    if (data.symbols && data.symbols.length && symSec && symGrid) {
-      var sh = '';
-      for (var si = 0; si < data.symbols.length; si++) {
-        var sym = data.symbols[si];
-        sh += '<div class="gd-symbol" role="img" aria-label="' + sym.name + '">' +
-                '<div class="gd-symbol-icon">' + renderSymbol(sym.id) + '</div>' +
-                '<div class="gd-symbol-name">' + sym.name + '</div>' +
-              '</div>';
-      }
-      symGrid.innerHTML = sh;
-      if (symCount) symCount.textContent = '共 ' + data.symbols.length + ' 个';
-      symSec.hidden = false;
     }
 
     /* 游戏规则 */
@@ -445,6 +451,41 @@
       paySec.hidden = false;
     }
 
+    /* 常见问题 */
+    var faqSec = document.getElementById('gdSecFaq');
+    var faqBox = document.getElementById('gdFaq');
+    if (data.faq && data.faq.length && faqSec && faqBox) {
+      var qh = '';
+      for (var qi = 0; qi < data.faq.length; qi++) {
+        var f = data.faq[qi];
+        qh += '<details class="gd-faq-item">' +
+                '<summary class="gd-faq-q"><span>' + f.q + '</span>' +
+                  '<svg class="gd-faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+                '</summary>' +
+                '<div class="gd-faq-a">' + f.a + '</div>' +
+              '</details>';
+      }
+      faqBox.innerHTML = qh;
+      faqSec.hidden = false;
+    }
+
+    /* 相似游戏 */
+    var simSec = document.getElementById('gdSecSimilar');
+    var simBox = document.getElementById('gdSimilar');
+    if (data.similar && data.similar.length && simSec && simBox) {
+      var sh = '';
+      for (var xi = 0; xi < data.similar.length; xi++) {
+        var sid = data.similar[xi];
+        var sname = SIMILAR_NAMES[sid] || sid;
+        sh += '<a class="gd-similar-item" href="/game-detail.html?game=' + sid + '">' +
+                '<div class="gd-similar-cover"><img src="/assets/games/' + sid + '.webp" alt="' + sname + '" loading="lazy"></div>' +
+                '<div class="gd-similar-name">' + sname + '</div>' +
+              '</a>';
+      }
+      simBox.innerHTML = sh;
+      simSec.hidden = false;
+    }
+
     /* 游戏特色 */
     var featSec  = document.getElementById('gdSecFeatures');
     var featList = document.getElementById('gdFeatureList');
@@ -453,7 +494,7 @@
       for (var fi = 0; fi < data.features.length; fi++) {
         var f = data.features[fi];
         fh += '<li class="gd-feature">' +
-                '<span class="gd-feature-num">' + (fi + 1) + '</span>' +
+                '<span class="gd-feature-icon">' + featureIcon(f.icon) + '</span>' +
                 '<div class="gd-feature-body">' +
                   '<h3 class="gd-feature-title">' + f.title + '</h3>' +
                   '<p class="gd-feature-desc">' + f.desc + '</p>' +
