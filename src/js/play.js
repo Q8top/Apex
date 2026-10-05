@@ -631,7 +631,7 @@
       var real = (mode !== 'demo');
       buyFsBtn.hidden = real || fsRemaining > 0;
       if (!buyFsBtn.hidden && buyFsText) {
-        buyFsText.textContent = '购买免费旋转 · ' + fmtMoney(BET_STEPS[betIndex] * 100);
+        buyFsText.textContent = '买 FS · ' + fmtMoney(BET_STEPS[betIndex] * 100);
       }
     }
     if (betValueEl) {
@@ -1314,6 +1314,8 @@
     if (page && lowPerf) page.classList.add('is-lowperf');
     if (typeof pref.theme === 'string') applyTheme(pref.theme);
   })();
+
+  daily = loadDaily();
 
   renderBoard();
   refreshUI();

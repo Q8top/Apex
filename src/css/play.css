@@ -1958,3 +1958,24 @@ button:focus:not(:focus-visible) { outline: none; }
   background: rgba(255,255,255,.08);
   color: rgba(255,255,255,.6);
 }
+
+/* ---------- 购买FS + 旋转 并排 ---------- */
+.gp-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.gp-actions-row .gp-btn {
+  height: 46px;
+  font-size: 14px;
+}
+.gp-actions-row .gp-btn-buyfs {
+  height: 46px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.gp-actions-row .gp-btn-buyfs svg { width: 14px; height: 14px; }
+.gp-actions-row .gp-btn-primary {
+  height: 46px;
+  font-size: 15px;
+}
