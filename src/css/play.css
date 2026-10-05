@@ -7,8 +7,8 @@
   --gp-accent:    #111114;
   --gp-mode:      #d97706;
   --gp-mode-bg:   #fef3c7;
-  --gp-board-bg:  #F7F4EE;
-  --gp-board-cell:#FFFFFF;
+  --gp-board-bg:  #1A0F05;
+  --gp-board-cell:#2A1B0A;
 }
 
 * { box-sizing: border-box; }
@@ -126,11 +126,11 @@ body {
   padding: 6px;
   border-radius: 14px;
   background: var(--gp-board-bg);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), 0 8px 22px -12px rgba(160,120,40,.28);
+  box-shadow: inset 0 0 0 1px rgba(255,200,80,.10), 0 10px 28px -14px rgba(0,0,0,.65);
   width: 100%;
   max-width: 100%;
   aspect-ratio: 6 / 5;
-  border: 1px solid rgba(212,160,23,.22);
+  border: 1px solid rgba(212,160,23,.35);
 }
 
 .gp-cell {
@@ -142,12 +142,20 @@ body {
   justify-content: center;
   overflow: hidden;
 }
+.gp-cell.is-dim {
+  opacity: .28;
+  filter: saturate(.4);
+  transition: opacity .25s ease, filter .25s ease;
+}
+
 .gp-cell.is-win {
-  background: rgba(255, 215, 80, .20);
+  background: rgba(255, 200, 60, .30);
   box-shadow:
     0 0 0 2px rgba(255, 200, 60, .85),
     0 0 14px rgba(255, 200, 60, .45),
     inset 0 0 10px rgba(255, 220, 100, .30);
+  transform: scale(1.06);
+  z-index: 1;
   animation: gp-win-pulse 1.2s ease-in-out infinite;
 }
 @keyframes gp-win-pulse {

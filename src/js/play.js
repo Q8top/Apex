@@ -234,10 +234,14 @@
     if (grid.length !== COLS * ROWS) newGrid();
     window.ApexOlympusSymbols.ensureDefs();
     var hl = highlightPositions || [];
+    var hasWin = hl.length > 0;
     var frag = '';
     for (var i = 0; i < grid.length; i++) {
       var isWin = hl.indexOf(i) >= 0;
-      frag += '<div class="gp-cell' + (isWin ? ' is-win' : '') + '">' + renderSym(grid[i]) + '</div>';
+      var cls = 'gp-cell';
+      if (isWin) cls += ' is-win';
+      else if (hasWin) cls += ' is-dim';
+      frag += '<div class="' + cls + '">' + renderSym(grid[i]) + '</div>';
     }
     boardEl.innerHTML = frag;
   }
