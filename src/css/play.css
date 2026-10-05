@@ -1354,3 +1354,45 @@ body {
   box-shadow: 0 0 8px rgba(255,200,80,.85);
   transition: width .3s ease;
 }
+
+/* ---------- 幸运热度条 ---------- */
+.gp-hype {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 16px 0;
+  padding: 0;
+}
+.gp-hype[hidden] { display: none; }
+
+.gp-hype-track {
+  flex: 1;
+  height: 6px;
+  background: #F0F0F4;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.gp-hype-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #C4A6FF 0%, #8B50D8 55%, #FFD84D 100%);
+  box-shadow: 0 0 8px rgba(139, 80, 216, .55);
+  transition: width .35s cubic-bezier(.22,1,.36,1);
+}
+.gp-hype.is-hot .gp-hype-fill {
+  animation: gp-hype-glow 1.2s ease-in-out infinite;
+}
+@keyframes gp-hype-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(139, 80, 216, .55); }
+  50%      { box-shadow: 0 0 16px rgba(255, 216, 77, .95); }
+}
+.gp-hype-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: #8B50D8;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

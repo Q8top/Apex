@@ -95,6 +95,8 @@
   var lastWin     = 0;
   var fsRemaining = 0;
   var fsTotal = 0;
+  var hypeCount = 0;
+  var HYPE_MAX = 15;
   var grid        = [];
   var bonusBalls  = {};
   var spinning    = false;
@@ -695,6 +697,20 @@
         mult: r.mult || 0,
         fs: !!isFS
       });
+
+      /* 热度逻辑（仅 demo，且非 FS 内） */
+      if (mode === 'demo' && !isFS) {
+        if (lastWin > 0) {
+          /* 中奖 → 热度减半（不是清零，保持"运气延续"） */
+          hypeCount = Math.floor(hypeCount / 2);
+        } else {
+          hypeCount++;
+        }
+        if (hypeCount >= HYPE_MAX) {
+          await triggerHypeReward(bet);
+        }
+        updateHypeUI();
+      }
       recordStats({
         bet: bet,
         win: lastWin,
@@ -718,8 +734,10 @@
       rechargeEl.addEventListener('click', function () {
         balance = cfg.startBalance;
         lastWin = 0;
+        hypeCount = 0;
         setResult('');
         refreshUI();
+        updateHypeUI();
         toast('余额已重置');
       });
     } else {
@@ -980,6 +998,7 @@
   renderBoard();
   refreshUI();
   updateFsUI();
+  updateHypeUI();
   loadRealBalance();
   setTimeout(startTutorial, 400);
 })();
