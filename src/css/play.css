@@ -1515,3 +1515,37 @@ body {
   90%  { opacity: 1; }
   100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
 }
+
+/* ---------- 低性能模式：屏蔽所有高开销动画 ---------- */
+.gp-page.is-lowperf .gp-cell.is-idle,
+.gp-page.is-lowperf .gp-board.is-idle,
+.gp-page.is-lowperf .gp-cell.is-win,
+.gp-page.is-lowperf .gp-cell.is-ball svg,
+.gp-page.is-lowperf .gp-link,
+.gp-page.is-lowperf .gp-particle,
+.gp-page.is-lowperf .gp-coin,
+.gp-page.is-lowperf .gp-fs-banner,
+.gp-page.is-lowperf .gp-fs-flash,
+.gp-page.is-lowperf .gp-flash,
+.gp-page.is-lowperf .gp-combo,
+.gp-page.is-lowperf .gp-win-float,
+.gp-page.is-lowperf .gp-btn-primary.is-turbo svg,
+.gp-page.is-lowperf .gp-cell.is-spinning > svg {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 屏蔽后中奖格保留静态金光 */
+.gp-page.is-lowperf .gp-cell.is-win {
+  background: rgba(255, 200, 60, .30);
+  box-shadow: 0 0 0 2px rgba(255, 200, 60, .85);
+}
+.gp-page.is-lowperf .gp-cell.is-dim {
+  opacity: .35;
+}
+.gp-page.is-lowperf .gp-flash,
+.gp-page.is-lowperf .gp-combo,
+.gp-page.is-lowperf .gp-win-float,
+.gp-page.is-lowperf .gp-coinrain {
+  display: none !important;
+}

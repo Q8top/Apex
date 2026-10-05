@@ -314,7 +314,7 @@
     } else {
       while (svg.firstChild) svg.removeChild(svg.firstChild);
     }
-    if (hasWin) drawWinLinks(hl);
+    if (hasWin && !lowPerf) drawWinLinks(hl);
   }
 
   /* ---------- 中奖连线（相邻对连金线） ---------- */
@@ -401,7 +401,7 @@
   }
 
   function spawnParticles(cellEl) {
-    if (!cellEl) return;
+    if (!cellEl || lowPerf) return;
     var n = 6;
     for (var i = 0; i < n; i++) {
       var p = document.createElement('span');
@@ -947,6 +947,7 @@
   /* ---------- 菜单 ---------- */
   var vibeOn = true;
   var bgmOn = false;
+  var lowPerf = false;
   if (menuBtn) menuBtn.addEventListener('click', function () {
     var html = '<div class="gp-menu">' +
                  '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><span>赔付表</span></button>' +
@@ -971,6 +972,11 @@
                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 V5 L21 3 V16"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' +
                    '<span>背景音乐</span>' +
                    '<button type="button" class="gp-switch" id="gpSwitchBgm" role="switch" aria-checked="' + (bgmOn ? 'true' : 'false') + '"><span></span></button>' +
+                 '</div>' +
+                 '<div class="gp-menu-row">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 L3 14 H12 L11 22 L21 10 H12 Z"/></svg>' +
+                   '<span>低性能模式</span>' +
+                   '<button type="button" class="gp-switch" id="gpSwitchLowperf" role="switch" aria-checked="' + (lowPerf ? 'true' : 'false') + '"><span></span></button>' +
                  '</div>' +
                  '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>退出游戏</span></button>' +
                '</div>';
@@ -1021,6 +1027,17 @@
       toast(turboOn ? '极速旋转已开启' : '极速旋转已关闭');
     });
 
+    /* 低性能模式开关 */
+    var swLow = document.getElementById('gpSwitchLowperf');
+    if (swLow) swLow.addEventListener('click', function () {
+      lowPerf = !lowPerf;
+      swLow.setAttribute('aria-checked', lowPerf ? 'true' : 'false');
+      if (page) page.classList.toggle('is-lowperf', lowPerf);
+      if (lowPerf) exitIdle();
+      try { localStorage.setItem('apex.lowperf', lowPerf ? '1' : '0'); } catch (e) {}
+      toast(lowPerf ? '低性能模式已开启' : '低性能模式已关闭');
+    });
+
     /* 背景音乐开关 */
     var swBgm = document.getElementById('gpSwitchBgm');
     if (swBgm) swBgm.addEventListener('click', function () {
@@ -1068,6 +1085,14 @@
   }
 
   /* 初始化 */
+  /* 恢复低性能设置 */
+  try {
+    if (localStorage.getItem('apex.lowperf') === '1') {
+      lowPerf = true;
+      if (page) page.classList.add('is-lowperf');
+    }
+  } catch (e) {}
+
   renderBoard();
   refreshUI();
   updateFsUI();
