@@ -8,7 +8,7 @@
 <title>糖果连连爆 · 试玩 · Apex</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/src/css/sweet.css">
-<link rel="stylesheet" href="/src/css/sweet-demo.css?v=1791215587">
+<link rel="stylesheet" href="/src/css/sweet-demo.css?v=1791243571">
 </head>
 <body class="sd-demo-body">
 <main class="demo-shell">
@@ -27,6 +27,7 @@
   </header>
 
   <section class="demo-board" aria-label="游戏盘面">
+    <div class="demo-freespins" id="demo-freespins" aria-live="polite"></div>
     <div class="demo-reels" id="demo-reels"></div>
   </section>
 
@@ -94,6 +95,9 @@
 
 </main>
 
+<!-- 大额中奖弹层 -->
+<div class="demo-bigwin" id="demo-bigwin" aria-live="assertive"></div>
+
 <!-- ═══ 记录抽屉（从下往上） ═══ -->
 <div class="demo-drawer-mask" id="demo-drawer-mask" aria-hidden="true"></div>
 <aside class="demo-drawer" id="demo-drawer" role="dialog" aria-modal="true"
@@ -128,7 +132,8 @@
   <div class="demo-drawer__body" id="paytable-body"></div>
 </aside>
 
-<script src="/src/js/sweet.js" defer></script>
-<script src="/src/js/sweet-demo.js?v=1791215587" defer></script>
+<script src="/src/js/sweet.js?v=1791243571" defer></script>
+<script src="/src/js/sweet-rtp.js?v=1791243571" defer></script>
+<script src="/src/js/sweet-demo.js?v=1791243571" defer></script>
 </body>
 </html>

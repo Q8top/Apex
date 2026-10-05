@@ -649,3 +649,86 @@ button {
   color: #ffce6b;
   font-weight: 800;
 }
+
+/* ══════════════ 免费旋转徽章 ══════════════ */
+.demo-freespins {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  padding: 6px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  color: #1a0b1f;
+  background: linear-gradient(90deg, #ffce6b 0%, #ff7eb6 100%);
+  box-shadow: 0 4px 16px rgba(255,206,107,.4), 0 0 0 3px rgba(26,11,31,.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s cubic-bezier(.3,.7,.4,1.4);
+  z-index: 10;
+}
+.demo-freespins.is-show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.demo-board { position: relative; }
+
+/* ══════════════ 大额中奖弹层 ══════════════ */
+.demo-bigwin {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,206,107,.28) 0%, rgba(26,11,31,.85) 60%, rgba(0,0,0,.92) 100%);
+  transition: opacity .3s ease;
+}
+.demo-bigwin.is-show { opacity: 1; }
+
+.demo-bigwin__label {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  background: linear-gradient(90deg, #ffe27a 0%, #ff7eb6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px rgba(255,206,107,.5);
+  animation: bigwin-pop .8s cubic-bezier(.3,.7,.4,1.6);
+  margin-bottom: 12px;
+}
+.demo-bigwin__amount {
+  font-size: 42px;
+  font-weight: 900;
+  color: #ffce6b;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  text-shadow: 0 0 24px rgba(255,206,107,.7), 0 4px 12px rgba(0,0,0,.5);
+  animation: bigwin-pop .8s .15s cubic-bezier(.3,.7,.4,1.6) both;
+}
+.demo-bigwin--mega .demo-bigwin__label { font-size: 36px; }
+.demo-bigwin--mega .demo-bigwin__amount { font-size: 48px; }
+.demo-bigwin--epic .demo-bigwin__label { font-size: 40px; }
+.demo-bigwin--epic .demo-bigwin__amount { font-size: 54px; }
+
+@keyframes bigwin-pop {
+  0% { transform: scale(.4); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 免费旋转期间整个 board 微光 */
+.demo-board.is-freespin {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.14),
+    inset 0 -3px 6px rgba(0,0,0,.5),
+    0 10px 32px rgba(0,0,0,.55),
+    0 0 40px rgba(255,206,107,.35);
+  transition: box-shadow .3s ease;
+}

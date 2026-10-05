@@ -23,7 +23,8 @@
     history: [],
     seed: 0,
     round: 0,
-    drawerOpen: false
+    drawerOpen: false,
+    freeSpins: 0
   };
 
   /* ── 持久化：加载 / 保存 ── */
@@ -113,26 +114,99 @@
   }
 
   /* ── 生成一次盘面（60% 概率有主符号 → 中奖） ── */
+  /* ── 由 RTP 引擎驱动的盘面生成 ──
+     返回 { grid, decision }
+     保证 rollGrid 结果与 calcWin 一致：
+       isWin=true → 一定有符号组 ≥8
+       isWin=false → 所有符号组 ≤7 */
   function rollGrid() {
     var pool = symbolPool;
-    var result = [];
-    var main = null;
-    if (nextRand() < 0.6) {
-      main = pool[Math.floor(nextRand() * pool.length)];
+    var basePool = [], highPool = [], i;
+    for (i = 0; i < pool.length; i++) {
+      if (pool[i].type === 'base') basePool.push(pool[i]);
+      else if (pool[i].type === 'high') highPool.push(pool[i]);
     }
-    for (var i = 0; i < TOTAL; i++) {
-      if (main && i < 10) result.push(main);
-      else result.push(pool[Math.floor(nextRand() * pool.length)]);
+
+    var rtp = window.ApexSweetRTP;
+    var decision = rtp ? rtp.decide(state.mode) : { isWin: nextRand() < 0.6, level: null, hasScatter: false };
+
+    var result = new Array(TOTAL);
+    var used = 0;
+
+    /* ── 决定主符号组 ── */
+    var mainSpec = null;
+    var mainCount = 0;
+
+    if (decision.isWin && decision.level) {
+      var lv = decision.level;
+      var sourcePool = (lv.tier === 'high') ? highPool : basePool;
+      if (sourcePool.length === 0) sourcePool = pool;
+      mainSpec = sourcePool[Math.floor(nextRand() * sourcePool.length)];
+      mainCount = lv.count[0] + Math.floor(nextRand() * (lv.count[1] - lv.count[0] + 1));
+      if (mainCount > TOTAL) mainCount = TOTAL;
+    } else {
+      /* 未中奖：挑一个符号最多放 7 个（不触线），剩下随机 */
+      mainSpec = pool[Math.floor(nextRand() * pool.length)];
+      mainCount = 0;
     }
-    /* Fisher-Yates 洗牌 */
+
+    /* ── 铺主符号 ── */
+    for (i = 0; i < mainCount; i++) { result[i] = mainSpec; used++; }
+
+    /* ── 未中奖模式：再铺一些同符号，但不超过 7 ── */
+    if (!decision.isWin) {
+      var fillerCount = 4 + Math.floor(nextRand() * 4); /* 4~7 */
+      for (i = 0; i < fillerCount && used < TOTAL; i++) {
+        result[used++] = mainSpec;
+      }
+    }
+
+    /* ── 剩余格子：随机填，避开让任何符号 ≥8 ── */
+    var counts = {};
+    for (i = 0; i < used; i++) {
+      counts[result[i].id] = (counts[result[i].id] || 0) + 1;
+    }
+    var safety = 0;
+    while (used < TOTAL && safety < 500) {
+      safety++;
+      var cand = pool[Math.floor(nextRand() * pool.length)];
+      if (!decision.isWin && (counts[cand.id] || 0) >= 7) continue;
+      result[used++] = cand;
+      counts[cand.id] = (counts[cand.id] || 0) + 1;
+    }
+    /* 兜底：万一还有剩余，强填 */
+    while (used < TOTAL) {
+      result[used++] = pool[Math.floor(nextRand() * pool.length)];
+    }
+
+    /* ── 洗牌 ── */
     for (var k = result.length - 1; k > 0; k--) {
       var j = Math.floor(nextRand() * (k + 1));
       var t = result[k]; result[k] = result[j]; result[j] = t;
     }
-    return result;
+
+    /* ── Scatter 处理（免费旋转触发） ── */
+    if (decision.hasScatter) {
+      var scatterSpec = findSpec('lolli');
+      if (scatterSpec) {
+        var scCount = 4 + Math.floor(nextRand() * 3); /* 4~6 */
+        var placed = 0, tries = 0;
+        while (placed < scCount && tries < 60) {
+          tries++;
+          var pos = Math.floor(nextRand() * TOTAL);
+          if (result[pos].id !== 'lolli') {
+            result[pos] = scatterSpec;
+            placed++;
+          }
+        }
+      }
+    }
+
+    return { grid: result, decision: decision };
   }
 
-  /* ── 中奖判定（同种 ≥8） ── */
+  /* ── 中奖判定（同种 ≥8） ──
+     返回 { total, winIds, tier, maxCount, scatterCount } */
   function calcWin(symbols, bet) {
     var counts = {};
     for (var i = 0; i < symbols.length; i++) {
@@ -141,9 +215,13 @@
     }
     var total = 0;
     var winIds = [];
+    var maxCount = 0;
+    var scatterCount = counts['lolli'] || 0;
+
     for (var id2 in counts) {
       if (!Object.prototype.hasOwnProperty.call(counts, id2)) continue;
       var c = counts[id2];
+      if (id2 === 'lolli' || id2 === 'wild') continue;
       if (c < 8) continue;
       var spec = findSpec(id2);
       if (!spec) continue;
@@ -152,9 +230,27 @@
       if (mult > 0) {
         total += mult * bet;
         winIds.push(id2);
+        if (c > maxCount) maxCount = c;
       }
     }
-    return { total: total, winIds: winIds };
+
+    /* 中奖等级（用于触发大额中奖特效） */
+    var ratio = bet > 0 ? (total / bet) : 0;
+    var tier = 'none';
+    if (ratio > 0 && ratio < 10) tier = 'small';
+    else if (ratio < 30) tier = 'nice';
+    else if (ratio < 60) tier = 'big';
+    else if (ratio < 150) tier = 'mega';
+    else if (ratio >= 150) tier = 'epic';
+
+    return {
+      total: total,
+      winIds: winIds,
+      tier: tier,
+      ratio: ratio,
+      maxCount: maxCount,
+      scatterCount: scatterCount
+    };
   }
 
   /* ── 更新 UI ── */
@@ -187,9 +283,9 @@
   }
 
   /* ── 旋转 ── */
-  function spin() {
+  function spin(isFree) {
     if (state.spinning) return;
-    if (state.balance < BETS[state.betIndex]) {
+    if (!isFree && state.balance < BETS[state.betIndex]) {
       toast('余额不足，请重置或降低下注');
       return;
     }
@@ -197,7 +293,9 @@
     var btn = document.getElementById('demo-spin');
     if (btn) btn.disabled = true;
 
-    state.balance -= BETS[state.betIndex];
+    if (!isFree) {
+      state.balance -= BETS[state.betIndex];
+    }
     state.won = 0;
     updateAll();
 
@@ -205,13 +303,21 @@
     for (var i = 0; i < cells.length; i++) cells[i].classList.add('is-spinning');
     for (var j = 0; j < cells.length; j++) cells[j].classList.remove('is-win');
 
-    var newGrid = rollGrid();
+    var rolled = rollGrid();
+    var newGrid = rolled.grid;
+    var decision = rolled.decision;
 
     setTimeout(function () {
       grid = newGrid;
       for (var k = 0; k < grid.length; k++) paintCell(k, grid[k]);
 
       var win = calcWin(grid, BETS[state.betIndex]);
+
+      /* 免费旋转倍数累加（简化：若免费旋转期间触发，则乘 1.5） */
+      if (isFree && win.total > 0) {
+        win.total = win.total * 1.5;
+      }
+
       state.won = win.total;
       state.balance += win.total;
 
@@ -228,6 +334,27 @@
       updateAll();
       if (win.total > 0) popWinAmount();
 
+      /* ── 反馈：音效 + 震动 + 大额中奖提示 ── */
+      playSpinFeedback(win);
+
+      /* ── RTP 记录 ── */
+      var rtp = window.ApexSweetRTP;
+      if (rtp && !isFree) rtp.record(state.mode, BETS[state.betIndex], win.total);
+
+      /* ── 免费旋转触发检测 ── */
+      var scatterCount = win.scatterCount;
+      var freeAwarded = 0;
+      if (scatterCount >= 6) freeAwarded = 15;
+      else if (scatterCount === 5) freeAwarded = 12;
+      else if (scatterCount === 4) freeAwarded = 10;
+
+      if (freeAwarded > 0 && !isFree) {
+        state.freeSpins = freeAwarded;
+        updateFreeSpinUI();
+        toast('🎉 触发 ' + freeAwarded + ' 次免费旋转！');
+      }
+
+      /* ── 历史记录 ── */
       state.round += 1;
       var winDetails = [];
       for (var wi = 0; wi < win.winIds.length; wi++) {
@@ -242,6 +369,7 @@
         bet: BETS[state.betIndex],
         won: win.total,
         time: Date.now(),
+        free: !!isFree,
         details: winDetails
       });
       if (state.history.length > 100) state.history.shift();
@@ -251,11 +379,97 @@
       state.spinning = false;
       if (btn) btn.disabled = false;
 
-      /* 自动模式继续 */
-      if (state.auto) {
+      /* ── 免费旋转：自动续转 ── */
+      if (freeAwarded > 0 && !isFree) {
+        setTimeout(function () {
+          for (var fi = 0; fi < freeAwarded; fi++) {
+            (function (round) {
+              setTimeout(function () {
+                state.freeSpins = freeAwarded - round - 1;
+                updateFreeSpinUI();
+                spin(true);
+              }, round * 1600);
+            })(fi);
+          }
+        }, 800);
+        return;
+      }
+
+      /* ── 自动模式 ── */
+      if (state.auto && state.freeSpins <= 0) {
         state.autoTimer = setTimeout(spin, AUTO_INTERVAL);
       }
     }, SPIN_DELAY);
+  }
+
+  /* ── 音效 + 震动 + 大额中奖 ── */
+  function playSpinFeedback(win) {
+    /* 震动 */
+    if (navigator.vibrate) {
+      if (win.tier === 'epic' || win.tier === 'mega') {
+        navigator.vibrate([60, 40, 60, 40, 120]);
+      } else if (win.total > 0) {
+        navigator.vibrate(35);
+      }
+    }
+    /* 音效（Web Audio 合成，无素材依赖） */
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!window.__apexCtx) window.__apexCtx = new AC();
+      var ctx = window.__apexCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      var now = ctx.currentTime;
+      if (win.total > 0) {
+        var freqs = win.tier === 'epic' ? [523, 659, 784, 1047] : [660, 880];
+        for (var i = 0; i < freqs.length; i++) {
+          var o = ctx.createOscillator();
+          var g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.value = freqs[i];
+          g.gain.setValueAtTime(0.0001, now + i * 0.08);
+          g.gain.exponentialRampToValueAtTime(0.14, now + i * 0.08 + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.22);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(now + i * 0.08);
+          o.stop(now + i * 0.08 + 0.25);
+        }
+      }
+    } catch (e) {}
+
+    /* 大额中奖提示 */
+    var tierLabels = {
+      nice: '不错！', big: '大额中奖！', mega: '超大奖！', epic: '惊天巨奖！'
+    };
+    if (tierLabels[win.tier]) {
+      showBigWin(win.tier, tierLabels[win.tier], win.total);
+    }
+  }
+
+  function showBigWin(tier, label, amount) {
+    var el = document.getElementById('demo-bigwin');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'demo-bigwin';
+      el.className = 'demo-bigwin';
+      document.body.appendChild(el);
+    }
+    el.className = 'demo-bigwin is-show demo-bigwin--' + tier;
+    el.innerHTML =
+      '<div class="demo-bigwin__label">' + label + '</div>' +
+      '<div class="demo-bigwin__amount">' + fmtMoney(amount) + '</div>';
+    setTimeout(function () { el.classList.remove('is-show'); }, 1800);
+  }
+
+  function updateFreeSpinUI() {
+    var el = document.getElementById('demo-freespins');
+    if (!el) return;
+    if (state.freeSpins > 0) {
+      el.classList.add('is-show');
+      el.textContent = '免费旋转 ×' + state.freeSpins;
+    } else {
+      el.classList.remove('is-show');
+    }
   }
 
   /* ══════════════ 记录抽屉 ══════════════ */
