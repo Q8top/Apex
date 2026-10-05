@@ -71,7 +71,7 @@ export const WEIGHTS = {
     yellow:    15,
     green:     16,
     blue:      17,
-    scatter:   1
+    scatter:   2
   }
 };
 

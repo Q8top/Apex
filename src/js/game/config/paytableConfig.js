@@ -21,8 +21,8 @@ export const TIER_THRESHOLDS = [8, 10, 12];
 export const SCATTER_PAY = [3.0, 5.0, 100.0];
 
 export const PAY_SCALE = {
-  demo: 0.65,  // 反推：413.89% × (0.65/1.35) ≈ 200%
-  real: 2.55   // 已达标（89.90%）
+  demo: 0.65,  // 已达标（199.28%）
+  real: 2.41   // 反推：95.24% × (2.41/2.55) ≈ 90%
 };
 
 export function getTierMultiplier(symbolId, count) {
