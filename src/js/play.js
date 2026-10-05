@@ -626,8 +626,7 @@
     if (betEl)     betEl.textContent     = fmtMoney(BET_STEPS[betIndex]);
     if (winEl)     winEl.textContent     = fmtMoney(lastWin);
     if (prizeEl)   prizeEl.textContent   = fmtMoney(lastWin);
-    updateFsUI();
-    if (buyFsBtn) {
+      if (buyFsBtn) {
       var real = (mode !== 'demo');
       buyFsBtn.hidden = real || fsRemaining > 0;
       if (!buyFsBtn.hidden && buyFsText) {
@@ -816,7 +815,7 @@
           fsRemaining = 15;
           fsTotal = 15;
           bonusBalls = {};
-          updateFsUI();
+        
           if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
           unlockAch('first_fs');
           sfx('fsTrigger');
@@ -847,7 +846,6 @@
         if (countScatters() >= 4) {
           fsRemaining += 15;
           fsTotal += 15;
-          updateFsUI();
           setResult('⚡ 再次触发 +15 次免费旋转！', true);
           refreshUI();
           await sleep(1200);
@@ -856,7 +854,6 @@
 
       if (fsRemaining === 0 && lastWin > 0) {
         sfx('fsEnd');
-        updateFsUI();
         if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('idle');
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
         showFsSummary(lastWin, bet, fsTotal);
@@ -884,8 +881,7 @@
         if (hypeCount >= HYPE_MAX) {
           await triggerHypeReward(bet);
         }
-        updateHypeUI();
-      }
+            }
       recordStats({
         bet: bet,
         win: lastWin,
@@ -921,7 +917,7 @@
         hypeCount = 0;
         setResult('');
         refreshUI();
-        updateHypeUI();
+      
         toast('余额已重置');
       });
     } else {
@@ -950,7 +946,6 @@
     triggerFlash('big');
     if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
     setResult('⚡ 已购买 · 15 次免费旋转', true);
-    updateFsUI();
     unlockAch('buy_fs');
     await sleep(1200);
 
@@ -959,7 +954,6 @@
     try {
       while (fsRemaining > 0) {
         fsRemaining--;
-        updateFsUI();
         await sleep(300);
         sfx('fsSpin');
         var fr = await runSpin(bet, true);
@@ -971,7 +965,6 @@
         if (countScatters() >= 4) {
           fsRemaining += 15;
           fsTotal += 15;
-          updateFsUI();
           setResult('⚡ 再次触发 +15 次免费旋转！', true);
           await sleep(1200);
         }
@@ -1317,8 +1310,6 @@
 
   renderBoard();
   refreshUI();
-  updateFsUI();
-  updateHypeUI();
   loadRealBalance();
   resetIdleTimer();
   setTimeout(startTutorial, 400);
