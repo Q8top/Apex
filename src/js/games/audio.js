@@ -114,6 +114,49 @@
     error:    function () { tone(240, 140, 0.25, 'square', 0.28); }
   };
 
+  /* ============ 背景音乐（循环琶音） ============ */
+  var bgmTimer = null;
+  var bgmPlaying = false;
+  var bgmMode = 'idle';   /* idle | fs */
+  var noteIdx = 0;
+
+  /* 希腊调式（A 小调）琶音序列 */
+  var SEQ_IDLE = [
+    220.00, 261.63, 329.63, 440.00, 329.63, 261.63,   /* A3 C4 E4 A4 E4 C4 */
+    246.94, 293.66, 349.23, 493.88, 349.23, 293.66    /* B3 D4 F4 B4 F4 D4 */
+  ];
+  var SEQ_FS = [
+    220.00, 277.18, 329.63, 440.00, 554.37, 440.00, 329.63, 277.18,
+    246.94, 311.13, 369.99, 493.88, 622.25, 493.88, 369.99, 311.13
+  ];
+
+  function bgmNote(freq) {
+    var c = ctx(); if (!c || !masterGain) return;
+    var t = c.currentTime;
+    var o = c.createOscillator();
+    var o2 = c.createOscillator();
+    var g = c.createGain();
+    o.type = 'triangle';
+    o2.type = 'sine';
+    o.frequency.value = freq;
+    o2.frequency.value = freq * 2;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.10, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    o.connect(g); o2.connect(g);
+    g.connect(masterGain);
+    o.start(t); o.stop(t + 0.6);
+    o2.start(t); o2.stop(t + 0.6);
+  }
+
+  function bgmTick() {
+    if (!bgmPlaying) return;
+    var seq = (bgmMode === 'fs') ? SEQ_FS : SEQ_IDLE;
+    bgmNote(seq[noteIdx % seq.length]);
+    noteIdx++;
+    bgmTimer = setTimeout(bgmTick, bgmMode === 'fs' ? 280 : 480);
+  }
+
   window.ApexAudio = {
     sounds: Sounds,
     play: function (name) {
@@ -123,7 +166,25 @@
     },
     unlock: unlock,
     setEnabled: function (v) { enabled = !!v; },
-    isEnabled: function () { return enabled; }
+    isEnabled: function () { return enabled; },
+
+    startBgm: function (mode) {
+      if (!ctx()) return;
+      if (unlocked === false) unlock();
+      bgmMode = (mode === 'fs') ? 'fs' : 'idle';
+      if (bgmPlaying) return;
+      bgmPlaying = true;
+      noteIdx = 0;
+      bgmTick();
+    },
+    stopBgm: function () {
+      bgmPlaying = false;
+      if (bgmTimer) { clearTimeout(bgmTimer); bgmTimer = null; }
+    },
+    setBgmMode: function (mode) {
+      bgmMode = (mode === 'fs') ? 'fs' : 'idle';
+    },
+    isBgmPlaying: function () { return bgmPlaying; }
   };
 
   /* 首次任意指针 / 键盘事件 → 解锁 */
