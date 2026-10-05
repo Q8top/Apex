@@ -51,6 +51,7 @@ function star(cx,cy,r){
        + '<line x1="'+(cx-r*.6)+'" y1="'+(cy-r*.6)+'" x2="'+(cx+r*.6)+'" y2="'+(cy+r*.6)+'" stroke="#fff" stroke-width=".6" opacity=".65"/>'
        + '<line x1="'+(cx-r*.6)+'" y1="'+(cy+r*.6)+'" x2="'+(cx+r*.6)+'" y2="'+(cy-r*.6)+'" stroke="#fff" stroke-width=".6" opacity=".65"/>';
 }
+function meander(x0,y,w,h,n,c){var seg=w/n,s='';for(var i=0;i<n;i++){var x=x0+i*seg;s+='<path d="M'+x+','+y+' h'+(seg*.75)+' v'+(-h*.6)+' h'+(-seg*.4)+' v'+(h*.3)+' h'+(seg*.15)+'" fill="none" stroke="'+c+'" stroke-width="'+(h*.18).toFixed(2)+'" stroke-linejoin="miter"/>';}return s;}
 function pts2str(p){ var s=''; for (var i=0;i<p.length;i++) s += p[i][0].toFixed(2)+','+p[i][1].toFixed(2)+' '; return s.trim(); }
 function poly(p, fill, stroke, sw){
   return '<polygon points="'+pts2str(p)+'" fill="'+(fill||'none')+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||1)+'" stroke-linejoin="round"':'')+'/>';
@@ -58,36 +59,25 @@ function poly(p, fill, stroke, sw){
 
 /* ---------- 宙斯 · 完全中轴对称 ---------- */
 function zeus(){
-  var s = sh(50,94,22,2.6,.18);
-  /* 权杖杆（竖直） */
-  s += '<rect x="45" y="42" width="10" height="46" rx="2" fill="url(#oly-gold-diag)" stroke="#6A4600" stroke-width="1.2"/>';
-  s += '<line x1="47.5" y1="44" x2="47.5" y2="86" stroke="#FFFCE8" stroke-width="1.4" opacity=".9"/>';
-  s += '<line x1="53" y1="44" x2="53" y2="86" stroke="#7A5000" stroke-width=".8" opacity=".6"/>';
-  /* 3 道缠金环（对称） */
-  s += '<rect x="43" y="52" width="14" height="4" rx="1.5" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".7"/>';
-  s += '<line x1="44" y1="53.2" x2="56" y2="53.2" stroke="#FFFCE8" stroke-width=".6" opacity=".9"/>';
-  s += '<rect x="43" y="64" width="14" height="4" rx="1.5" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".7"/>';
-  s += '<line x1="44" y1="65.2" x2="56" y2="65.2" stroke="#FFFCE8" stroke-width=".6" opacity=".9"/>';
-  s += '<rect x="43" y="76" width="14" height="4" rx="1.5" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".7"/>';
-  s += '<line x1="44" y1="77.2" x2="56" y2="77.2" stroke="#FFFCE8" stroke-width=".6" opacity=".9"/>';
-  /* 底部金座 */
-  s += '<path d="M38 88 L62 88 L58 94 L42 94 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".9" stroke-linejoin="round"/>';
-  s += '<line x1="40" y1="90" x2="60" y2="90" stroke="#FFFCE8" stroke-width=".6" opacity=".85"/>';
-  /* 顶部三叉闪电（中高侧低，完全对称） */
-  s += '<path d="M46 36 L42 12 L50 22 L58 12 L54 36 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.4" stroke-linejoin="round"/>';
-  s += '<path d="M46 36 L44 18 L47 22 L48 36 Z" fill="#FFFCE8" opacity=".8"/>';
-  s += '<path d="M54 36 L52 18 L49 22 L48 36 Z" fill="#7A5000" opacity=".5"/>';
-  /* 中心宝石（顶部嵌） */
-  s += '<circle cx="50" cy="14" r="2.6" fill="#8B50D8" stroke="#3D0A70" stroke-width=".7"/>';
-  s += '<ellipse cx="49.2" cy="13" rx=".9" ry=".6" fill="#fff" opacity=".95"/>';
-  /* 左右对称小尖（装饰） */
-  s += '<path d="M30 44 L26 28 L34 34 L38 30 L38 44 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.1" stroke-linejoin="round"/>';
-  s += '<path d="M70 44 L74 28 L66 34 L62 30 L62 44 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.1" stroke-linejoin="round"/>';
-  /* 杖身左右对称光弧 */
-  s += arc('M30 48 Q28 60 32 76','#FFFCE8',1,.75);
-  s += arc('M70 48 Q72 60 68 76','#FFFCE8',1,.75);
-  /* 盘面高光（保留光泽感） */
-  s += hl(50,40,20,5,.22);
+  var s = sh(50,92,24,3,.18);
+  s += '<path d="M20 34 L28 22 L38 30 L50 14 L62 30 L72 22 L80 34 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.4" stroke-linejoin="round"/>';
+  s += '<path d="M28 22 L38 30 L50 14 L50 20 L38 34 L30 28 Z" fill="#FFFCE8" opacity=".55"/>';
+  s += '<circle cx="50" cy="14" r="2.2" fill="#8B50D8" stroke="#3D0A70" stroke-width=".6"/>';
+  s += '<ellipse cx="49.2" cy="13.2" rx=".8" ry=".5" fill="#fff" opacity=".95"/>';
+  s += '<ellipse cx="50" cy="50" rx="22" ry="24" fill="url(#oly-skin)" stroke="#8A5A28" stroke-width="1.1"/>';
+  s += '<path d="M32 40 Q36 32 46 32 Q40 38 38 48 Q34 46 32 40 Z" fill="#fff" opacity=".35"/>';
+  s += '<ellipse cx="42" cy="49" rx="1.8" ry="2.2" fill="#2A1A08"/>';
+  s += '<ellipse cx="58" cy="49" rx="1.8" ry="2.2" fill="#2A1A08"/>';
+  s += '<circle cx="41.4" cy="48.2" r=".6" fill="#fff" opacity=".95"/>';
+  s += '<circle cx="57.4" cy="48.2" r=".6" fill="#fff" opacity=".95"/>';
+  s += '<path d="M36 44 Q42 42 48 44" fill="none" stroke="#8A5A28" stroke-width="1.4" stroke-linecap="round"/>';
+  s += '<path d="M52 44 Q58 42 64 44" fill="none" stroke="#8A5A28" stroke-width="1.4" stroke-linecap="round"/>';
+  s += '<path d="M50 50 L48.5 55 L51.5 55" fill="none" stroke="#8A5A28" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/>';
+  s += '<path d="M30 56 Q32 68 50 76 Q68 68 70 56 Q66 62 60 64 Q56 66 50 66 Q44 66 40 64 Q34 62 30 56 Z" fill="url(#oly-beard)" stroke="#9A8A68" stroke-width=".9"/>';
+  s += '<path d="M44 60 Q50 63 56 60" fill="none" stroke="#7A2018" stroke-width="1.1" stroke-linecap="round"/>';
+  s += '<path d="M12 30 L8 48 L13 48 L10 64 L18 44 L14 44 L16 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
+  s += '<path d="M88 30 L92 48 L87 48 L90 64 L82 44 L86 44 L84 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
+  s += hl(30,30,6,3,.3);
   return s;
 }
 
@@ -107,8 +97,8 @@ function crown(){
   /* 底部金座 */
   s += '<rect x="9" y="60" width="82" height="14" rx="3" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.2"/>';
   s += '<line x1="12" y1="64" x2="88" y2="64" stroke="#FFFCE8" stroke-width="1" opacity=".95"/>';
-  s += '<line x1="12" y1="68" x2="88" y2="68" stroke="#7A5000" stroke-width=".5" opacity=".7"/>';
-  s += '<line x1="12" y1="71" x2="88" y2="71" stroke="#7A5000" stroke-width=".4" opacity=".5"/>';
+  s += '<line x1="12" y1="64.5" x2="88" y2="64.5" stroke="#7A5000" stroke-width=".5" opacity=".7"/>';
+  s += meander(12, 71, 76, 3, 6, '#7A5000');
   /* 底座珍珠（左右对称：5 颗） */
   var pxs = [18, 34, 50, 66, 82];
   for (var p=0; p<pxs.length; p++){
@@ -173,6 +163,7 @@ function ring(){
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="none" stroke="#6A4600" stroke-width=".8"/>';
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx-3.6)+'" ry="'+(ry-3.6)+'" fill="none" stroke="#6A4600" stroke-width=".5" opacity=".65"/>';
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx+3.6)+'" ry="'+(ry+3.6)+'" fill="none" stroke="#6A4600" stroke-width=".5" opacity=".65"/>';
+  s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx-6)+'" ry="'+(ry-6)+'" fill="none" stroke="#7A5000" stroke-width=".8" stroke-dasharray="2 2.5" opacity=".65"/>';
   s += arc('M22 62 Q22 44 34 42','#FFFCE8',2,.9);
   s += arc('M24 62 Q24 48 34 46','#fff',1,.6);
   s += arc('M78 62 Q78 80 66 82','#5A3A00',2,.55);
@@ -234,17 +225,17 @@ function hourglass(){
 }
 
 /* ---------- 宝石（8 切面 + 台面 + 星芒） ---------- */
-function makeGem(c){
+function makeGem(n, c){
   var cx=50, cy=50, r=40, tr=18, i, j;
   var pts=[], tt=[];
-  for (i=0;i<8;i++){
-    var a=(i*45-90)*Math.PI/180;
+  for (i=0;i<n;i++){
+    var a=(i*(360/n)-90)*Math.PI/180;
     pts.push([cx+r*Math.cos(a), cy+r*Math.sin(a)]);
     tt.push([cx+tr*Math.cos(a), cy+tr*Math.sin(a)]);
   }
   var s = sh(50,92,26,2.6,.2);
-  for (i=0;i<8;i++){
-    j=(i+1)%8;
+  for (i=0;i<n;i++){
+    j=(i+1)%n;
     s += '<polygon points="'+cx+','+cy+' '+pts[i][0].toFixed(2)+','+pts[i][1].toFixed(2)+' '+pts[j][0].toFixed(2)+','+pts[j][1].toFixed(2)+'" fill="'+c.shades[i]+'" stroke="'+c.edge+'" stroke-width=".4" stroke-linejoin="round"/>';
   }
   s += poly(tt, c.table, null, 0);
@@ -253,28 +244,28 @@ function makeGem(c){
   s += hl(cx-10, cy-11, 4, 2.2, .85);
   s += poly(pts, null, c.rim, 1.3);
   s += poly(pts, null, c.edge, .5);
-  s += '<polyline points="'+pts[6][0].toFixed(2)+','+pts[6][1].toFixed(2)+' '+pts[7][0].toFixed(2)+','+pts[7][1].toFixed(2)+'" fill="none" stroke="#fff" stroke-width="1.4" opacity=".9" stroke-linecap="round"/>';
-  s += '<polyline points="'+pts[7][0].toFixed(2)+','+pts[7][1].toFixed(2)+' '+pts[0][0].toFixed(2)+','+pts[0][1].toFixed(2)+'" fill="none" stroke="#fff" stroke-width="1" opacity=".6" stroke-linecap="round"/>';
+  s += '<polyline points="'+pts[n-2][0].toFixed(2)+','+pts[n-2][1].toFixed(2)+' '+pts[n-1][0].toFixed(2)+','+pts[n-1][1].toFixed(2)+'" fill="none" stroke="#fff" stroke-width="1.4" opacity=".9" stroke-linecap="round"/>';
+  s += '<polyline points="'+pts[n-1][0].toFixed(2)+','+pts[n-1][1].toFixed(2)+' '+pts[0][0].toFixed(2)+','+pts[0][1].toFixed(2)+'" fill="none" stroke="#fff" stroke-width="1" opacity=".6" stroke-linecap="round"/>';
   s += star(cx+18, cy-14, 3.5);
   return s;
 }
 
 var GEMS = {
-  gemRed:    {table:'#FFD0D8', shades:['#FFA0B0','#F05070','#D02040','#A80828','#7A0018','#A80828','#D02040','#F05070'], edge:'#3A0008', rim:'#FF8898'},
-  gemPurple: {table:'#E8D0FF', shades:['#D8B8FF','#B078F0','#9050E0','#7030B8','#4A1080','#7030B8','#9050E0','#B078F0'], edge:'#1A0A3D', rim:'#B890FF'},
-  gemBlue:   {table:'#C8E8FF', shades:['#A0D8FF','#60B0F8','#3090E8','#1060C0','#083888','#1060C0','#3090E8','#60B0F8'], edge:'#031843', rim:'#80C0FF'},
-  gemGreen:  {table:'#C8F8D0', shades:['#A8F0B0','#70D880','#40B050','#208030','#0A5018','#208030','#40B050','#70D880'], edge:'#052008', rim:'#90F0A0'},
-  gemYellow: {table:'#FFF0B0', shades:['#FFE878','#FFD040','#F0B020','#C08810','#885A00','#C08810','#F0B020','#FFD040'], edge:'#3D2900', rim:'#FFE090'}
+  gemRed:    {n:4, table:'#FFD0D8', shades:['#FFA0B0','#F05070','#D02040','#A80828','#7A0018','#A80828','#D02040','#F05070'], edge:'#3A0008', rim:'#FF8898'},
+  gemPurple: {n:3, table:'#E8D0FF', shades:['#D8B8FF','#B078F0','#9050E0','#7030B8','#4A1080','#7030B8','#9050E0','#B078F0'], edge:'#1A0A3D', rim:'#B890FF'},
+  gemBlue:   {n:4, table:'#C8E8FF', shades:['#A0D8FF','#60B0F8','#3090E8','#1060C0','#083888','#1060C0','#3090E8','#60B0F8'], edge:'#031843', rim:'#80C0FF'},
+  gemGreen:  {n:6, table:'#C8F8D0', shades:['#A8F0B0','#70D880','#40B050','#208030','#0A5018','#208030','#40B050','#70D880'], edge:'#052008', rim:'#90F0A0'},
+  gemYellow: {n:8, table:'#FFF0B0', shades:['#FFE878','#FFD040','#F0B020','#C08810','#885A00','#C08810','#F0B020','#FFD040'], edge:'#3D2900', rim:'#FFE090'}
 };
 
 var R = {
   zeus:{t:'premier',f:zeus}, crown:{t:'high',f:crown}, chalice:{t:'high',f:chalice},
   ring:{t:'high',f:ring}, hourglass:{t:'high',f:hourglass},
-  gemRed:{t:'common',f:function(){return makeGem(GEMS.gemRed);}},
-  gemPurple:{t:'common',f:function(){return makeGem(GEMS.gemPurple);}},
-  gemBlue:{t:'common',f:function(){return makeGem(GEMS.gemBlue);}},
-  gemGreen:{t:'common',f:function(){return makeGem(GEMS.gemGreen);}},
-  gemYellow:{t:'common',f:function(){return makeGem(GEMS.gemYellow);}}
+  gemRed:{t:'common',f:function(){return makeGem(GEMS.gemRed.n, GEMS.gemRed);}},
+  gemPurple:{t:'common',f:function(){return makeGem(GEMS.gemPurple.n, GEMS.gemPurple);}},
+  gemBlue:{t:'common',f:function(){return makeGem(GEMS.gemBlue.n, GEMS.gemBlue);}},
+  gemGreen:{t:'common',f:function(){return makeGem(GEMS.gemGreen.n, GEMS.gemGreen);}},
+  gemYellow:{t:'common',f:function(){return makeGem(GEMS.gemYellow.n, GEMS.gemYellow);}}
 };
 
 window.ApexOlympusSymbols = {
