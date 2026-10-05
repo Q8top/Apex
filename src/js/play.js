@@ -94,6 +94,7 @@
   var betIndex    = 3;
   var lastWin     = 0;
   var fsRemaining = 0;
+  var fsTotal = 0;
   var grid        = [];
   var bonusBalls  = {};
   var spinning    = false;
@@ -638,6 +639,7 @@
         var sc = countScatters();
         if (sc >= 4) {
           fsRemaining = 15;
+          fsTotal = 15;
           bonusBalls = {};
           updateFsUI();
           if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
@@ -667,6 +669,7 @@
         /* 再次触发 */
         if (countScatters() >= 4) {
           fsRemaining += 15;
+          fsTotal += 15;
           updateFsUI();
           setResult('⚡ 再次触发 +15 次免费旋转！', true);
           refreshUI();
@@ -679,6 +682,8 @@
         updateFsUI();
         if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('idle');
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
+        showFsSummary(lastWin, bet, fsTotal);
+        fsTotal = 0;
       }
 
       /* 记录到历史 */
