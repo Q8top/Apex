@@ -1315,8 +1315,6 @@
     if (typeof pref.theme === 'string') applyTheme(pref.theme);
   })();
 
-  daily = loadDaily();
-
   renderBoard();
   refreshUI();
   updateFsUI();
