@@ -62,9 +62,17 @@
       ' C ' + (cx + r * 0.5) + ' ' + (cy + r * 0.55) + ', ' + (cx - r * 0.3) + ' ' + (cy + r * 0.55) + ', ' + (cx - r * 0.62) + ' ' + (cy - r * 0.42) + ' Z';
   }
   function pGrape(cx, cy, r) {
-    var d = '', grid = [[0,-1],[-0.7,-0.4],[0.7,-0.4],[-0.35,0.25],[0.35,0.25],[0,0.85],[0,-0.35],[0,0.25]];
-    for (var i = 0; i < grid.length; i++) d += pCircle(cx + grid[i][0] * r * 0.62, cy + grid[i][1] * r * 0.62, r * 0.42) + ' ';
-    return d.trim();
+    var grid = [[0,-1],[-0.7,-0.4],[0.7,-0.4],[-0.35,0.25],[0.35,0.25],[0,0.85],[0,-0.35],[0,0.25]];
+    var d = '', sparks = [];
+    for (var i = 0; i < grid.length; i++) {
+      var gx = cx + grid[i][0] * r * 0.62;
+      var gy = cy + grid[i][1] * r * 0.62;
+      var gr = r * 0.42;
+      d += pCircle(gx, gy, gr) + ' ';
+      sparks.push({ cx: gx - gr * 0.34, cy: gy - gr * 0.40, r: gr * 0.34, opacity: 0.82 });
+      sparks.push({ cx: gx + gr * 0.42, cy: gy + gr * 0.48, r: gr * 0.16, opacity: 0.42 });
+    }
+    return { d: d.trim(), sparks: sparks };
   }
   function pWatermelon(cx, cy, r) {
     return 'M ' + (cx - r) + ' ' + (cy - r * 0.3) +
@@ -171,8 +179,9 @@
 
     var cx = 50, cy = 50, r = 30;
     var sd = SHAPES[spec.shape](cx, cy, r);
-    var d = (typeof sd === 'string') ? sd : sd.d;
-    var fillRule = (typeof sd === 'object' && sd.fillRule) || 'nonzero';
+    var d, fillRule = 'nonzero', sparks = [];
+    if (typeof sd === 'string') { d = sd; }
+    else { d = sd.d; fillRule = sd.fillRule || 'nonzero'; sparks = sd.sparks || []; }
     cp.setAttribute('d', d);
     if (fillRule === 'evenodd') cp.setAttribute('clip-rule', 'evenodd');
 
@@ -225,6 +234,19 @@
       'clip-path': 'url(#' + cpId + ')'
     }));
 
+    /* ── sparks（葡萄等） ── */
+    if (sparks.length) {
+      var gSp = svg('g', { 'class': 'sd-sym-specks', 'clip-path': 'url(#' + cpId + ')' });
+      for (var si = 0; si < sparks.length; si++) {
+        var sp = sparks[si];
+        gSp.appendChild(svg('circle', {
+          cx: n2(sp.cx), cy: n2(sp.cy), r: n2(sp.r),
+          fill: '#ffffff', opacity: n2(sp.opacity != null ? sp.opacity : 0.7)
+        }));
+      }
+      gHi.appendChild(gSp);
+    }
+
     /* 装饰斑点 */
     var cnt = 2 + Math.floor(seeded(spec.id.length + 5) * 3);
     for (var i = 0; i < cnt; i++) {
@@ -248,12 +270,23 @@
       }));
     }
     if (spec.shape === 'lollipop') {
+      var halo = svg('g', { 'class': 'sd-sym-halo' });
+      var neon = [t.accent, '#ff3d7f', '#06b6d4', '#22c55e', '#7c5cff', '#facc15'];
+      for (var hi = 0; hi < 6; hi++) {
+        var ang = hi * Math.PI / 3;
+        halo.appendChild(svg('circle', {
+          cx: n2(cx + Math.cos(ang) * r * 1.05),
+          cy: n2(cy + Math.sin(ang) * r * 1.05),
+          r: '2.2', fill: neon[hi], opacity: '0.9'
+        }));
+      }
+      gHi.appendChild(halo);
       var sparkle = svg('g', { 'class': 'sd-sym-spark', opacity: '0.9' });
       for (var k = 1; k <= 3; k++) {
         sparkle.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(k * 2.1) * r * 0.6),
-          cy: n2(cy + Math.sin(k * 2.1) * r * 0.6),
-          r: n2(1.4 + k * 0.3), fill: t.accent, opacity: '0.85'
+          cx: n2(cx + Math.cos(k * 2.1) * r * 0.55),
+          cy: n2(cy - r * 0.22 + Math.sin(k * 2.1) * r * 0.55),
+          r: n2(1.4 + k * 0.3), fill: '#ffffff', opacity: '0.85'
         }));
       }
       gHi.appendChild(sparkle);
@@ -279,6 +312,51 @@
         'class': 'sd-sym-shine', 'clip-path': 'url(#' + cpId + ')'
       }));
     }
+    if (spec.shape === 'banana') {
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.45) + ' ' + n2(cy + r * 0.28) +
+           ' Q ' + n2(cx - r * 0.02) + ' ' + n2(cy + r * 0.78) + ' ' + n2(cx + r * 0.55) + ' ' + n2(cy + r * 0.32),
+        fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
+        'stroke-linecap': 'round', opacity: '0.85',
+        'clip-path': 'url(#' + cpId + ')'
+      }));
+      gHi.appendChild(svg('ellipse', {
+        cx: n2(cx - r * 0.28), cy: n2(cy + r * 0.18),
+        rx: n2(r * 0.16), ry: n2(r * 0.07),
+        fill: '#ffffff', opacity: '0.9',
+        'clip-path': 'url(#' + cpId + ')'
+      }));
+    }
+    if (spec.shape === 'watermelon') {
+      var seeds = [[-0.4,0.05],[-0.15,0.25],[0.15,0.25],[0.4,0.05],[-0.28,-0.15],[0.28,-0.15]];
+      for (var wi = 0; wi < seeds.length; wi++) {
+        gHi.appendChild(svg('ellipse', {
+          cx: n2(cx + seeds[wi][0] * r), cy: n2(cy + seeds[wi][1] * r),
+          rx: '1.6', ry: '2.4', fill: t.dark, opacity: '0.55',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+      }
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.75) + ' ' + n2(cy - r * 0.1) +
+           ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.75) + ' ' + n2(cx + r * 0.75) + ' ' + n2(cy - r * 0.1),
+        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.6',
+        'stroke-linecap': 'round', opacity: '0.7',
+        'clip-path': 'url(#' + cpId + ')'
+      }));
+    }
+    if (spec.shape === 'cherry') {
+      var balls = [[-0.5, 0.35, 0.62], [0.5, 0.35, 0.62]];
+      for (var ci = 0; ci < balls.length; ci++) {
+        var bx = cx + balls[ci][0] * r, by = cy + balls[ci][1] * r, br = balls[ci][2] * r;
+        gHi.appendChild(svg('circle', { cx: n2(bx - br * 0.32), cy: n2(by - br * 0.38), r: n2(br * 0.32), fill: '#ffffff', opacity: '0.85' }));
+        gHi.appendChild(svg('circle', { cx: n2(bx + br * 0.36), cy: n2(by + br * 0.42), r: n2(br * 0.16), fill: '#ffffff', opacity: '0.45' }));
+      }
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy - r * 0.2) +
+           ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.1) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.2),
+        fill: 'none', stroke: '#22c55e', 'stroke-width': '2.4', 'stroke-linecap': 'round'
+      }));
+    }
     if (spec.shape === 'wild') {
       /* 彩虹环 */
       var rbow = svg('g', { 'class': 'sd-sym-glow', 'clip-path': 'url(#' + cpId + ')' });
@@ -302,9 +380,7 @@
     { q: '如何触发免费旋转？',           a: '单局中同时出现 4 个及以上棒棒糖 Scatter 符号，即可获得 10 次免费旋转；5 个为 12 次，6 个为 15 次。' },
     { q: '免费旋转中的倍数如何累加？',   a: '免费旋转期间若出现糖果炸弹，其倍数会被收集并累加至本轮最终赔付，单个炸弹倍数范围 ×2 ~ ×100。' },
     { q: '最大可以赢多少倍？',           a: '在最优触发条件下，理论最大赔付倍数为 ×21,100。' },
-    { q: '彩虹糖 WILD 有什么作用？',      a: '彩虹糖可替代任意基础或高级符号参与结算，但不会替代棒棒糖 Scatter。' },
-    { q: '免费试玩与正式游戏有区别吗？', a: '免费试玩使用虚拟余额，游戏逻辑、赔率与正式游戏一致，可用于熟悉规则。' }
-  ];
+    { q: '彩虹糖 WILD 有什么作用？',      a: '彩虹糖可替代任意基础或高级符号参与结算，但不会替代棒棒糖 Scatter。' },];
 
   var SIMILAR = [
     { name: '甜蜜爆奖', cover: 'assets/games/sugar.webp' },
