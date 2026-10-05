@@ -570,6 +570,165 @@
     }
   }
 
+  /* ============================================================
+     以下为补齐的演出函数（之前定义未成功插入，现统一补上）
+     ============================================================ */
+  var flashEl       = document.getElementById('gpFlash');
+  var comboEl       = document.getElementById('gpCombo');
+  var settleEl      = document.getElementById('gpSettle');
+  var settleChainEl = document.getElementById('gpSettleChain');
+  var settleWinEl   = document.getElementById('gpSettleWin');
+  var settleMultEl  = document.getElementById('gpSettleMult');
+  var settleTimer   = null;
+  var bigwinEl      = document.getElementById('gpBigwin');
+  var bigwinTitleEl = document.getElementById('gpBigwinTitle');
+  var bigwinAmtEl   = document.getElementById('gpBigwinAmount');
+  var bigwinSubEl   = document.getElementById('gpBigwinSub');
+  var bigwinTimer   = null;
+  var shareBtnEl    = document.getElementById('gpSettleShare');
+
+  /* ---------- 全屏金光 ---------- */
+  function triggerFlash(level) {
+    if (!flashEl || lowPerf) return;
+    flashEl.classList.remove('is-small', 'is-mid', 'is-big');
+    void flashEl.offsetWidth;
+    flashEl.classList.add(level === 'big' ? 'is-big' : (level === 'mid' ? 'is-mid' : 'is-small'));
+    setTimeout(function () {
+      flashEl.classList.remove('is-small', 'is-mid', 'is-big');
+    }, level === 'big' ? 1700 : 900);
+  }
+
+  /* ---------- COMBO ---------- */
+  function showCombo(n) {
+    if (!comboEl || n < 2) return;
+    if (lowPerf) { comboEl.hidden = true; return; }
+    comboEl.classList.remove('is-show', 'is-hot', 'is-fire');
+    void comboEl.offsetWidth;
+    comboEl.textContent = 'COMBO ×' + n;
+    if (n >= 5) comboEl.classList.add('is-fire');
+    else if (n >= 3) comboEl.classList.add('is-hot');
+    comboEl.hidden = false;
+    comboEl.classList.add('is-show');
+    clearTimeout(showCombo._t);
+    showCombo._t = setTimeout(function () {
+      comboEl.classList.remove('is-show');
+    }, 820);
+  }
+
+  /* ---------- 中奖金额浮层 ---------- */
+  function popupWin(positions, amount) {
+    if (lowPerf || !positions || !positions.length || amount <= 0) return;
+    var boardRect = boardEl.getBoundingClientRect();
+    var cells = boardEl.querySelectorAll('.gp-cell');
+    var sumX = 0, sumY = 0, n = 0;
+    for (var i = 0; i < positions.length; i++) {
+      var el = cells[positions[i]];
+      if (!el) continue;
+      var r = el.getBoundingClientRect();
+      sumX += (r.left + r.right) / 2;
+      sumY += (r.top + r.bottom) / 2;
+      n++;
+    }
+    if (!n) return;
+    var cx = sumX / n - boardRect.left;
+    var cy = sumY / n - boardRect.top;
+    var div = document.createElement('div');
+    div.className = 'gp-win-float';
+    div.textContent = '+' + fmtMoney(amount);
+    div.style.left = cx.toFixed(1) + 'px';
+    div.style.top = cy.toFixed(1) + 'px';
+    boardEl.appendChild(div);
+    setTimeout(function () {
+      if (div.parentNode) div.parentNode.removeChild(div);
+    }, 1500);
+  }
+
+  /* ---------- 结算面板 ---------- */
+  function showSettle(chain, win, mult, bet) {
+    if (!settleEl || win <= 0) return;
+    var ratio = win / Math.max(1, bet);
+    settleEl.classList.toggle('is-jackpot', ratio >= 20);
+    settleChainEl.textContent = chain > 1 ? ('连锁 ' + chain + ' 次') : '';
+    settleWinEl.textContent = fmtMoney(win);
+    if (mult > 1) {
+      settleMultEl.textContent = '倍率 x' + mult;
+      settleMultEl.hidden = false;
+    } else {
+      settleMultEl.hidden = true;
+    }
+    if (shareBtnEl) shareBtnEl.hidden = false;
+    settleEl.hidden = false;
+    requestAnimationFrame(function () {
+      settleEl.classList.add('is-show');
+      settleEl.setAttribute('aria-hidden', 'false');
+    });
+    var dur = ratio >= 20 ? 3600 : (ratio >= 5 ? 2600 : 1800);
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(hideSettle, dur);
+  }
+
+  function hideSettle() {
+    if (!settleEl) return;
+    if (shareBtnEl) shareBtnEl.hidden = true;
+    settleEl.classList.remove('is-show');
+    settleEl.setAttribute('aria-hidden', 'true');
+    setTimeout(function () { settleEl.hidden = true; }, 260);
+  }
+
+  if (settleEl) settleEl.addEventListener('click', hideSettle);
+
+  /* ---------- 大奖演出 ---------- */
+  function showBigwin(win, bet, chain, mult) {
+    if (!bigwinEl || win <= 0) return;
+    var ratio = win / Math.max(1, bet);
+    var tier = '';
+    if      (ratio >= 500) tier = 'super';
+    else if (ratio >= 100) tier = 'mega';
+    else if (ratio >= 30)  tier = 'big';
+    else return;
+    var title = { big: 'BIG WIN', mega: 'MEGA WIN', super: 'SUPER WIN' }[tier];
+    bigwinEl.classList.remove('is-show', 'is-mega', 'is-super');
+    bigwinEl.classList.add('is-show');
+    if (tier === 'mega')  bigwinEl.classList.add('is-mega');
+    if (tier === 'super') bigwinEl.classList.add('is-super');
+    bigwinTitleEl.textContent = title;
+    bigwinAmtEl.textContent = fmtMoney(win);
+    var subParts = [];
+    subParts.push(ratio.toFixed(1) + '×');
+    if (chain > 1) subParts.push('连锁 ' + chain + ' 次');
+    if (mult > 1)  subParts.push('倍率 x' + mult);
+    bigwinSubEl.textContent = subParts.join(' · ');
+    bigwinEl.hidden = false;
+    bigwinEl.setAttribute('aria-hidden', 'false');
+    if (window.ApexAudio) {
+      window.ApexAudio.play('fsTrigger');
+      setTimeout(function () { window.ApexAudio.play('fsTrigger'); }, 380);
+    }
+    if (navigator.vibrate && vibeOn) {
+      try {
+        if (tier === 'super') navigator.vibrate([80, 60, 80, 60, 200]);
+        else if (tier === 'mega') navigator.vibrate([60, 50, 120]);
+        else navigator.vibrate([40, 40, 80]);
+      } catch (e) {}
+    }
+    var dur = tier === 'super' ? 3200 : (tier === 'mega' ? 2600 : 2200);
+    clearTimeout(bigwinTimer);
+    bigwinTimer = setTimeout(hideBigwin, dur);
+  }
+
+  function hideBigwin() {
+    if (!bigwinEl) return;
+    bigwinEl.classList.remove('is-show');
+    bigwinEl.setAttribute('aria-hidden', 'true');
+    setTimeout(function () {
+      bigwinEl.hidden = true;
+      bigwinEl.classList.remove('is-mega', 'is-super');
+    }, 320);
+  }
+
+  if (bigwinEl) bigwinEl.addEventListener('click', hideBigwin);
+
+
   function dropDown() {
     for (var col = 0; col < COLS; col++) {
       var stack = [];
