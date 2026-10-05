@@ -299,6 +299,26 @@
     return n;
   }
 
+  function spawnParticles(cellEl) {
+    if (!cellEl) return;
+    var n = 6;
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement('span');
+      p.className = 'gp-particle ' + (i % 2 === 0 ? 'is-star' : 'is-white');
+      var ang = (i / n) * Math.PI * 2 + rnd() * 0.7;
+      var dist = 24 + rnd() * 18;
+      var dx = Math.cos(ang) * dist;
+      var dy = Math.sin(ang) * dist - 4;
+      p.style.setProperty('--dx', dx.toFixed(1) + 'px');
+      p.style.setProperty('--dy', dy.toFixed(1) + 'px');
+      p.style.animationDelay = (rnd() * 60) + 'ms';
+      cellEl.appendChild(p);
+      (function (el) {
+        setTimeout(function () { if (el && el.parentNode) el.parentNode.removeChild(el); }, 720);
+      })(p);
+    }
+  }
+
   function dropDown() {
     for (var col = 0; col < COLS; col++) {
       var stack = [];
@@ -420,7 +440,7 @@
       var now = boardEl.querySelectorAll('.gp-cell');
       for (var pi = 0; pi < positions.length; pi++) {
         var el = now[positions[pi]];
-        if (el) el.classList.add('is-clearing');
+        if (el) { el.classList.add('is-clearing'); spawnParticles(el); }
       }
       await sleep(320);
       sfx('drop');
