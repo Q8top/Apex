@@ -375,6 +375,7 @@
     if (betEl)     betEl.textContent     = fmtMoney(BET_STEPS[betIndex]);
     if (winEl)     winEl.textContent     = fmtMoney(lastWin);
     if (prizeEl)   prizeEl.textContent   = fmtMoney(lastWin);
+    updateFsUI();
     if (betValueEl) {
       if (fsRemaining > 0) {
         betValueEl.textContent = '免费旋转 · 剩余 ' + fsRemaining + ' 次';
@@ -515,6 +516,7 @@
         if (sc >= 4) {
           fsRemaining = 15;
           bonusBalls = {};
+          updateFsUI();
           sfx('fsTrigger');
           triggerFlash('big');
           setResult('⚡ ' + sc + ' 个闪电 · 触发免费旋转 15 次！', true);
@@ -541,6 +543,7 @@
         /* 再次触发 */
         if (countScatters() >= 4) {
           fsRemaining += 15;
+          updateFsUI();
           setResult('⚡ 再次触发 +15 次免费旋转！', true);
           refreshUI();
           await sleep(1200);
@@ -549,6 +552,7 @@
 
       if (fsRemaining === 0 && lastWin > 0) {
         sfx('fsEnd');
+        updateFsUI();
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
       }
 
@@ -791,5 +795,6 @@
   /* 初始化 */
   renderBoard();
   refreshUI();
+  updateFsUI();
   loadRealBalance();
 })();
