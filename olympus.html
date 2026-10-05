@@ -280,11 +280,7 @@
         <span class="og-switch" id="og-set-fast-val"></span>
       </button>
     </div>
-    <div class="og-modal-note">
-      <i class="ri-information-line" aria-hidden="true"></i>
-      <span>所有积分均为虚拟娱乐积分，不可兑换、不可提现</span>
     </div>
-  </div>
 </div>
 
 <!-- 赔付表弹层 -->
@@ -308,13 +304,39 @@
 <!-- 记录弹层 -->
 <div class="og-modal" id="og-history-modal" aria-hidden="true">
   <div class="og-modal-bg" data-close="1"></div>
-  <div class="og-modal-panel"><div class="og-modal-handle"></div>
+  <div class="og-modal-panel">
+    <div class="og-modal-handle"></div>
     <header class="og-modal-head">
-      <h2>游戏记录</h2>
-      <button type="button" class="og-modal-close" data-close="1" aria-label="关闭">
-        <i class="ri-close-line" aria-hidden="true"></i>
-      </button>
+      <h2>游戏记录 <span class="og-history-mode-label" id="og-history-mode-label"></span></h2>
+      <div class="og-history-actions">
+        <button type="button" class="og-history-btn" id="og-history-clear" aria-label="清空">
+          <i class="ri-delete-bin-6-line" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="og-modal-close" data-close="1" aria-label="关闭">
+          <i class="ri-close-line" aria-hidden="true"></i>
+        </button>
+      </div>
     </header>
+
+    <div class="og-history-stats" id="og-history-stats">
+      <div class="og-hs-cell">
+        <span class="og-hs-label">总局数</span>
+        <span class="og-hs-value" id="og-hs-spins">0</span>
+      </div>
+      <div class="og-hs-cell">
+        <span class="og-hs-label">总下注</span>
+        <span class="og-hs-value" id="og-hs-bet">¥0.00</span>
+      </div>
+      <div class="og-hs-cell">
+        <span class="og-hs-label">总赢</span>
+        <span class="og-hs-value" id="og-hs-win">¥0.00</span>
+      </div>
+      <div class="og-hs-cell og-hs-cell--net">
+        <span class="og-hs-label">净盈亏</span>
+        <span class="og-hs-value" id="og-hs-net">¥0.00</span>
+      </div>
+    </div>
+
     <div class="og-history-list" id="og-history-list"></div>
   </div>
 </div>

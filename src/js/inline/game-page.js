@@ -687,82 +687,133 @@ function init(){
       box.innerHTML = html;
     }
 
-    // ============ 记录 ============
-    var history = [];
-    function pushHistory(bet, win, mode){
+    // ============ 记录（按模式分离）============
+    var history = [];  // 全部记录
+
+    function pushHistory(bet, win, mode, extra){
       var now = new Date();
       var t = ('0'+now.getHours()).slice(-2) + ':' + ('0'+now.getMinutes()).slice(-2) + ':' + ('0'+now.getSeconds()).slice(-2);
-      history.unshift({ time: t, bet: bet, win: win, mode: mode });
-      if (history.length > 100) history.pop();
+      extra = extra || {};
+      history.unshift({
+        time: t,
+        bet: bet,
+        win: win,
+        mode: mode,           // 'demo' / 'real' / 'demo+fs' / 'real+fs'
+        fs: extra.fs || 0,
+        mult: extra.mult || 1,
+        scatter: extra.scatter || 0,
+        tumbles: extra.tumbles || 0,
+        big: extra.big || false
+      });
+      if (history.length > 200) history.pop();
       renderHistory();
     }
+
+    /* 按当前模式过滤 */
+    function currentList(){
+      var m = state.mode === 'demo' ? 'demo' : 'real';
+      return history.filter(function(h){ return h.mode.indexOf(m) === 0; });
+    }
+
+    function calcStats(list){
+      var spins = list.length;
+      var totalBet = 0, totalWin = 0;
+      list.forEach(function(h){ totalBet += h.bet; totalWin += h.win; });
+      var net = totalWin - totalBet;
+      var spinsEl = document.getElementById('og-hs-spins');
+      if (!spinsEl) return;
+      spinsEl.textContent = spins;
+      document.getElementById('og-hs-bet').textContent = '¥' + totalBet.toFixed(2);
+      document.getElementById('og-hs-win').textContent = '¥' + totalWin.toFixed(2);
+      var netEl = document.getElementById('og-hs-net');
+      netEl.textContent = (net >= 0 ? '+' : '') + '¥' + net.toFixed(2);
+      netEl.classList.remove('win', 'lose');
+      if (net > 0) netEl.classList.add('win');
+      else if (net < 0) netEl.classList.add('lose');
+    }
+
     function renderHistory(){
       var box = document.getElementById('og-history-list');
       if (!box) return;
-      if (history.length === 0) {
+
+      var list = currentList();
+      calcStats(list);
+
+      // 更新模式标签
+      var label = document.getElementById('og-history-mode-label');
+      if (label) {
+        if (state.mode === 'demo') {
+          label.textContent = '试玩';
+          label.className = 'og-history-mode-label demo';
+        } else {
+          label.textContent = '真实';
+          label.className = 'og-history-mode-label real';
+        }
+      }
+
+      if (list.length === 0) {
         box.innerHTML = '<div class="og-history-empty">暂无记录</div>';
         return;
       }
-      box.innerHTML = history.map(function(h){
+
+      box.innerHTML = list.map(function(h){
         var net = h.win - h.bet;
         var cls = net > 0 ? ' og-history-amount--win' : (net < 0 ? ' og-history-amount--lose' : '');
         var sign = net > 0 ? '+' : '';
-        return '<div class="og-history-item">' +
-          '<span class="og-history-time">' + h.time + ' · 注 ¥' + h.bet.toFixed(2) + '</span>' +
-          '<span class="og-history-amount' + cls + '">' + sign + '¥' + net.toFixed(2) + '</span>' +
+        var tags = '';
+        if (h.fs > 0) tags += '<span class="og-history-tag og-history-tag--fs"><i class="ri-flashlight-fill"></i>免费旋转 ×' + h.fs + '</span>';
+        if (h.mult > 1) tags += '<span class="og-history-tag og-history-tag--mult">倍率 ×' + h.mult + '</span>';
+        if (h.scatter >= 4) tags += '<span class="og-history-tag og-history-tag--scatter">SCATTER ×' + h.scatter + '</span>';
+        if (h.tumbles >= 2) tags += '<span class="og-history-tag og-history-tag--tumble">连击 ×' + h.tumbles + '</span>';
+        if (h.big) tags += '<span class="og-history-tag og-history-tag--big">大赢</span>';
+        var modeLabel = h.mode.indexOf('fs') >= 0 ? (h.mode.indexOf('demo') === 0 ? '试玩·FS' : '真实·FS') : (h.mode === 'demo' ? '试玩' : '真实');
+
+        var detailHtml = '<div class="og-history-detail">';
+        detailHtml += '<div class="og-history-detail-row"><span>下注</span><span>¥' + h.bet.toFixed(2) + '</span></div>';
+        detailHtml += '<div class="og-history-detail-row"><span>中奖</span><span>¥' + h.win.toFixed(2) + '</span></div>';
+        if (h.mult > 1) detailHtml += '<div class="og-history-detail-row"><span>倍率</span><span>×' + h.mult + '</span></div>';
+        if (h.fs > 0) detailHtml += '<div class="og-history-detail-row"><span>免费旋转</span><span>' + h.fs + ' 次</span></div>';
+        if (h.tumbles > 0) detailHtml += '<div class="og-history-detail-row"><span>连击</span><span>' + h.tumbles + ' 次</span></div>';
+        if (h.scatter > 0) detailHtml += '<div class="og-history-detail-row"><span>Scatter</span><span>' + h.scatter + ' 个</span></div>';
+        detailHtml += '<div class="og-history-detail-row"><span>净盈亏</span><span>' + sign + '¥' + net.toFixed(2) + '</span></div>';
+        detailHtml += '</div>';
+
+        return '<div class="og-history-item' + (h.big ? ' big-win' : '') + '">' +
+          '<div class="og-history-line1">' +
+            '<span class="og-history-time">' + h.time + '</span>' +
+            '<span class="og-history-mode">' + modeLabel + '</span>' +
+          '</div>' +
+          '<div class="og-history-line2">' +
+            '<span>下注 ¥' + h.bet.toFixed(2) + '</span>' +
+            '<span>中奖 ¥' + h.win.toFixed(2) + '</span>' +
+          '</div>' +
+          '<div class="og-history-tags">' + tags + '</div>' +
+          '<div class="og-history-amount' + cls + '">' + sign + '¥' + net.toFixed(2) + '</div>' +
+          detailHtml +
           '</div>';
       }).join('');
+
+      // 点击展开
+      box.querySelectorAll('.og-history-item').forEach(function(it){
+        it.addEventListener('click', function(){
+          it.classList.toggle('expanded');
+        });
+      });
     }
 
-    // ============ 设置菜单 ============
-    var menuBtn = document.getElementById('og-menu');
-    var setSoundBtn = document.getElementById('og-set-sound');
-    var setSoundVal = document.getElementById('og-set-sound-val');
-    var setMusicBtn = document.getElementById('og-set-music');
-    var setMusicVal = document.getElementById('og-set-music-val');
-    var setShakeBtn = document.getElementById('og-set-shake');
-    var setShakeVal = document.getElementById('og-set-shake-val');
-    var setFastBtn = document.getElementById('og-set-fast');
-    var setFastVal = document.getElementById('og-set-fast-val');
-
-    function syncSettings(){
-      if (setSoundVal) setSoundVal.classList.toggle('on', state.sound);
-      if (setMusicVal) setMusicVal.classList.toggle('on', state.music);
-      if (setShakeVal) setShakeVal.classList.toggle('on', state.shake);
-      if (setFastVal)  setFastVal.classList.toggle('on', state.fast);
-    }
-
-    if (menuBtn) menuBtn.addEventListener('click', function(){
-      syncSettings();
-      openModal('og-menu-modal');
-    });
-    if (setSoundBtn) setSoundBtn.addEventListener('click', function(){
-      state.sound = !state.sound;
-      if (A) A.setEnabled(state.sound);
-      syncSettings();
-      if (A) A.sClick();
-    });
-    if (setMusicBtn) setMusicBtn.addEventListener('click', function(){
-      state.music = !state.music;
-      if (A) {
-        if (state.music) A.bgmStart('base');
-        else A.bgmStop();
-      }
-      syncSettings();
-      if (A && state.music) A.sClick();
-    });
-    if (setShakeBtn) setShakeBtn.addEventListener('click', function(){
-      state.shake = !state.shake;
-      syncSettings();
-      if (A) A.sClick();
-    });
-    if (setFastBtn) setFastBtn.addEventListener('click', function(){
-      state.fast = !state.fast;
-      syncSettings();
-      if (A) A.sClick();
+    // 清空按钮（只清当前模式的）
+    var clearBtn = document.getElementById('og-history-clear');
+    if (clearBtn) clearBtn.addEventListener('click', function(){
+      var list = currentList();
+      if (list.length === 0) return;
+      var modeName = state.mode === 'demo' ? '试玩' : '真实';
+      if (!confirm('清空全部' + modeName + '记录？')) return;
+      var m = state.mode === 'demo' ? 'demo' : 'real';
+      history = history.filter(function(h){ return h.mode.indexOf(m) !== 0; });
+      renderHistory();
     });
 
-    // ============ 绑定弹层按钮 ============
+    // ============ 绑定弹层按钮 ============    // ============ 绑定弹层按钮 ============
     var paytableBtn = document.getElementById('og-paytable');
     if (paytableBtn) paytableBtn.addEventListener('click', function(){
       renderPaytable();
@@ -773,6 +824,8 @@ function init(){
       renderHistory();
       openModal('og-history-modal');
     });
+    // 打开 overlay 时重置 renderHistory 显示
+    // （open() 里已调用 updateHud，record 会在打开时自动 filter）
 
     // -------- FS 徽章控制 --------
     var fsBadge = document.getElementById('og-fs-badge');
@@ -861,7 +914,13 @@ function init(){
         if (totalWin > 0) showWin(totalWin);
         if (A) A.sFsEnd();
         if (A) A.bgmSetMode('base');
-        pushHistory(0, totalWin, state.mode + '+fs');
+        pushHistory(0, totalWin, state.mode + '+fs', {
+          fs: fsResult.played,
+          mult: fsResult.finalMult,
+          scatter: 0,
+          tumbles: 0,
+          big: totalWin > bet * 50
+        });
         state.spinning = false;
         state.inFreeSpins = false;
         spinBtn.disabled = false;
@@ -961,7 +1020,22 @@ function init(){
             }, 300);
           } else {
             if (baseWin > 0) showWin(baseWin);
-            pushHistory(bet, baseWin, state.mode);
+            // 收集本局信息
+            var maxTier = 0;
+            var totalHits = 0;
+            result.tumbles.forEach(function(t){
+              t.hits.forEach(function(hh){
+                totalHits += hh.count;
+                if (hh.tier > maxTier) maxTier = hh.tier;
+              });
+            });
+            pushHistory(bet, baseWin, state.mode, {
+              fs: result.freeSpins || 0,
+              mult: result.multiplier || 1,
+              scatter: result.scatter || 0,
+              tumbles: result.tumbles.length,
+              big: baseWin > bet * 50
+            });
             state.spinning = false;
             spinBtn.disabled = false;
             maybeAutoNext();
