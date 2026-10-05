@@ -7,6 +7,12 @@
   var enabled = true;
   var unlocked = false;
 
+  var _rb = new Uint32Array(1024), _rp = _rb.length;
+  function randSigned() {
+    if (_rp >= _rb.length) { (window.crypto || window.msCrypto).getRandomValues(_rb); _rp = 0; }
+    return (_rb[_rp++] / 2147483648) - 1;   /* 范围 -1 ~ +1 */
+  }
+
   function ctx() {
     if (!AC) {
       var C = window.AudioContext || window.webkitAudioContext;
@@ -58,7 +64,7 @@
     var len = Math.max(1, Math.floor(c.sampleRate * dur));
     var buf = c.createBuffer(1, len, c.sampleRate);
     var ch = buf.getChannelData(0);
-    for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    for (var i = 0; i < len; i++) ch[i] = randSigned() * (1 - i / len);
     var src = c.createBufferSource(); src.buffer = buf;
     var g = c.createGain(); g.gain.value = gain || 0.4;
     var f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1200;
