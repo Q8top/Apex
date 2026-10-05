@@ -172,13 +172,15 @@
     root.appendChild(defs);
 
     var cx = 50, cy = 50, r = 30;
-    /* 细长弯月（香蕉本体） */
-    var d = 'M ' + n2(cx + r * 0.85) + ' ' + n2(cy - r * 0.75) +
-      ' C ' + n2(cx + r * 1.05) + ' ' + n2(cy + r * 0.05) + ', ' + n2(cx + r * 0.75) + ' ' + n2(cy + r * 1.05) + ', ' + n2(cx - r * 0.15) + ' ' + n2(cy + r * 1.25) +
-      ' C ' + n2(cx - r * 0.75) + ' ' + n2(cy + r * 1.35) + ', ' + n2(cx - r * 1.05) + ' ' + n2(cy + r * 1.05) + ', ' + n2(cx - r * 1.0) + ' ' + n2(cy + r * 0.85) +
-      ' C ' + n2(cx - r * 0.85) + ' ' + n2(cy + r * 0.82) + ', ' + n2(cx - r * 0.55) + ' ' + n2(cy + r * 0.92) + ', ' + n2(cx - r * 0.2) + ' ' + n2(cy + r * 0.95) +
-      ' C ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 0.72) + ', ' + n2(cx + r * 0.52) + ' ' + n2(cy + r * 0.15) + ', ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.32) +
-      ' C ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.65) + ', ' + n2(cx + r * 0.68) + ' ' + n2(cy - r * 0.78) + ', ' + n2(cx + r * 0.85) + ' ' + n2(cy - r * 0.75) + ' Z';
+    /* 香蕉本体：emoji 🍌 弯月形（凸向右下，两端尖） */
+    var d = 'M ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.78) +
+      /* 外侧曲线：从右端蒂 → 右下方凸出 → 左端尾 */
+      ' C ' + n2(cx + r * 1.15) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.98) + ', ' + n2(cx - r * 0.20) + ' ' + n2(cy + r * 1.12) +
+      ' C ' + n2(cx - r * 0.82) + ' ' + n2(cy + r * 1.22) + ', ' + n2(cx - r * 1.18) + ' ' + n2(cy + r * 0.78) + ', ' + n2(cx - r * 1.05) + ' ' + n2(cy + r * 0.42) +
+      /* 内侧曲线：从左端尾 → 内侧凹处 → 右端蒂 */
+      ' C ' + n2(cx - r * 0.90) + ' ' + n2(cy + r * 0.62) + ', ' + n2(cx - r * 0.42) + ' ' + n2(cy + r * 0.72) + ', ' + n2(cx - r * 0.05) + ' ' + n2(cy + r * 0.68) +
+      ' C ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.60) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.20) + ', ' + n2(cx + r * 0.58) + ' ' + n2(cy - r * 0.32) +
+      ' C ' + n2(cx + r * 0.52) + ' ' + n2(cy - r * 0.62) + ', ' + n2(cx + r * 0.62) + ' ' + n2(cy - r * 0.78) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.78) + ' Z';
     cp.setAttribute('d', d);
 
     /* ① 底部阴影 */
@@ -195,12 +197,12 @@
       transform: 'translate(0 -0.6)', opacity: '0.7',
       'clip-path': 'url(#' + cpId + ')'
     }));
-    /* ④ 主高光（顶部弯月白光） */
+    /* ④ 主高光（沿香蕉凸面弧线） */
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.75) + ' ' + n2(cy + r * 0.75) +
-         ' Q ' + n2(cx - r * 0.2) + ' ' + n2(cy + r * 1.05) + ' ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 0.72),
-      fill: 'none', stroke: '#ffffff', 'stroke-width': '3.6', 'stroke-linecap': 'round',
-      opacity: '0.85', 'clip-path': 'url(#' + cpId + ')'
+      d: 'M ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 0.95) +
+         ' Q ' + n2(cx + r * 0.05) + ' ' + n2(cy + r * 1.18) + ' ' + n2(cx + r * 0.62) + ' ' + n2(cy + r * 0.62),
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '3.2', 'stroke-linecap': 'round',
+      opacity: '0.8', 'clip-path': 'url(#' + cpId + ')'
     }));
     /* ⑤ 反光（下部） */
     root.appendChild(svg('path', {
@@ -347,23 +349,23 @@
 
     var cx = 50, cy = 50, r = 30;
 
-    /* 外层绿皮楔形 */
-    var dOuter = 'M ' + n2(cx - r * 0.98) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.18) + ' ' + n2(cx + r * 0.98) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.48) + ' ' + n2(cx) + ' ' + n2(cy + r * 0.98) +
-      ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy + r * 0.48) + ' ' + n2(cx - r * 0.98) + ' ' + n2(cy - r * 0.28) + ' Z';
+    /* 外层绿皮楔形（尖朝上，圆弧在下） */
+    var dOuter = 'M ' + n2(cx) + ' ' + n2(cy - r * 1.05) +
+      ' Q ' + n2(cx + r * 0.55) + ' ' + n2(cy - r * 0.4) + ' ' + n2(cx + r * 0.98) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx) + ' ' + n2(cy + r * 1.05) + ' ' + n2(cx - r * 0.98) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx - r * 0.55) + ' ' + n2(cy - r * 0.4) + ' ' + n2(cx) + ' ' + n2(cy - r * 1.05) + ' Z';
 
-    /* 内层浅绿圈 */
-    var dMid = 'M ' + n2(cx - r * 0.86) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.02) + ' ' + n2(cx + r * 0.86) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx + r * 0.37) + ' ' + n2(cy + r * 0.40) + ' ' + n2(cx) + ' ' + n2(cy + r * 0.84) +
-      ' Q ' + n2(cx - r * 0.37) + ' ' + n2(cy + r * 0.40) + ' ' + n2(cx - r * 0.86) + ' ' + n2(cy - r * 0.28) + ' Z';
+    /* 内层浅绿圈（翻转） */
+    var dMid = 'M ' + n2(cx) + ' ' + n2(cy - r * 0.88) +
+      ' Q ' + n2(cx + r * 0.48) + ' ' + n2(cy - r * 0.32) + ' ' + n2(cx + r * 0.86) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.92) + ' ' + n2(cx - r * 0.86) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx - r * 0.48) + ' ' + n2(cy - r * 0.32) + ' ' + n2(cx) + ' ' + n2(cy - r * 0.88) + ' Z';
 
-    /* 红瓤 */
-    var dPulp = 'M ' + n2(cx - r * 0.72) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.85) + ' ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.28) +
-      ' Q ' + n2(cx + r * 0.32) + ' ' + n2(cy + r * 0.32) + ' ' + n2(cx) + ' ' + n2(cy + r * 0.68) +
-      ' Q ' + n2(cx - r * 0.32) + ' ' + n2(cy + r * 0.32) + ' ' + n2(cx - r * 0.72) + ' ' + n2(cy - r * 0.28) + ' Z';
+    /* 红瓤（翻转） */
+    var dPulp = 'M ' + n2(cx) + ' ' + n2(cy - r * 0.72) +
+      ' Q ' + n2(cx + r * 0.40) + ' ' + n2(cy - r * 0.25) + ' ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.76) + ' ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 0.22) +
+      ' Q ' + n2(cx - r * 0.40) + ' ' + n2(cy - r * 0.25) + ' ' + n2(cx) + ' ' + n2(cy - r * 0.72) + ' Z';
     cp.setAttribute('d', dPulp);
 
     /* ① 底部阴影 */
@@ -382,18 +384,18 @@
 
     /* ⑤ 红瓤内纤维纹理（3 条白弧） */
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy - r * 0.12) + ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.55) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.12),
+      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy + r * 0.1) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.55) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy + r * 0.1),
       fill: 'none', stroke: '#fecaca', 'stroke-width': '1.4', 'stroke-linecap': 'round', opacity: '0.7',
       'clip-path': 'url(#' + cpId + ')'
     }));
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.35) + ' ' + n2(cy + 0) + ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.35) + ' ' + n2(cx + r * 0.35) + ' ' + n2(cy + 0),
+      d: 'M ' + n2(cx - r * 0.35) + ' ' + n2(cy - 2) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.35) + ' ' + n2(cx + r * 0.35) + ' ' + n2(cy - 2),
       fill: 'none', stroke: '#fecaca', 'stroke-width': '1.2', 'stroke-linecap': 'round', opacity: '0.55',
       'clip-path': 'url(#' + cpId + ')'
     }));
 
     /* ⑥ 黑籽 5 颗（每颗带高光） */
-    var seeds = [[-0.42, 0.02], [-0.18, 0.22], [0.18, 0.22], [0.42, 0.02], [0.0, 0.42]];
+    var seeds = [[-0.42, -0.05], [-0.18, -0.28], [0.18, -0.28], [0.42, -0.05], [0.0, -0.45]];
     for (var i = 0; i < seeds.length; i++) {
       var sx = cx + seeds[i][0] * r;
       var sy = cy + seeds[i][1] * r;
@@ -407,9 +409,9 @@
       }));
     }
 
-    /* ⑦ 顶部白色反光 */
+    /* ⑦ 反光弧（下方） */
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy - r * 0.35) + ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.72) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.35),
+      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy + r * 0.4) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.78) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy + r * 0.4),
       fill: 'none', stroke: '#ffffff', 'stroke-width': '2.2', 'stroke-linecap': 'round', opacity: '0.7'
     }));
 
