@@ -268,3 +268,114 @@ button { font-family: inherit; }
     transition: none !important;
   }
 }
+
+/* ══════════════ V2 · 一屏无滚动布局 ══════════════ */
+html, body.sd-demo-body {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+body.sd-demo-body { display: flex; }
+
+.demo-shell {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Header 去掉 sticky，不再遮挡 */
+.demo-header {
+  position: static;
+  flex: 0 0 auto;
+  padding: 6px 0 8px;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  grid-template-columns: 40px 1fr 40px;
+  gap: 10px;
+}
+.demo-header__icon { width: 40px; height: 40px; }
+.demo-header__name { font-size: 16px; }
+.demo-header__badge { font-size: 10px; padding: 2px 8px; margin-top: 2px; }
+
+/* Board 占满剩余空间 */
+.demo-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 10px;
+  margin-top: 2px;
+  overflow: hidden;
+}
+
+/* Reels：高度撑满 board，宽度按 6/5 比例，居中 */
+.demo-reels {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-self: center;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 6 / 5;
+  max-width: 100%;
+  max-height: 100%;
+  gap: 4px;
+}
+ auto.demo-cell {
+  /* 保持正方形，交给父 grid 拉伸 */
+  aspect-ratio: 1 / 1;
+  border-radius: 9px;
+}
+
+/* Win 区压缩 */
+.demo-win { flex: 0 0 auto; padding: 6px 0 2px; }
+.demo-win__label { font-size: 10.5px; letter-spacing: .14em; }
+.demo-win__amount { font-size: 22px; margin-top: 0; }
+
+/* Reset 压缩 */
+.demo-reset { flex: 0 0; padding: 2px 0 6px; }
+.demo-reset__btn { padding: 6px 14px; font-size: 12px; gap: 6px; }
+.demo-reset__btn svg { width: 14px; height: 14px; }
+
+/* Stats 压缩 */
+.demo-stats { flex: 0 0 auto; margin-bottom: 6px; border-radius: 12px; }
+.demo-stat { padding: 7px 10px 8px; }
+.demo-stat__k { font-size: 10px; margin-bottom: 1px; }
+.demo-stat__v { font-size: 14px; }
+
+/* Bet 压缩 */
+.demo-bet { flex: 0 0 auto; margin-bottom: 6px; gap: 8px; grid-template-columns: 42px 1fr 42px; }
+.demo-bet__btn { width: 42px; height: 42px; }
+.demo-bet__display { height: 42px; border-radius: 12px; gap: 8px; }
+.demo-bet__k { font-size: 11px; }
+.demo-bet__v { font-size: 16px; }
+
+/* Spin 压缩 */
+.demo-spin { flex: 0 0 auto; margin-bottom: 6px; }
+.demo-spin__btn { height: 50px; font-size: 18px; gap: 8px; }
+.demo-spin__btn svg { width: 22px; height: 22px; }
+
+/* Actions 压缩 */
+.demo-actions { flex: 0 0 auto; padding-bottom: 8px; gap: 6px; }
+.demo-action { height: 38px; font-size: 12px; gap: 5px; border-radius: 10px; }
+.demo-action svg { width: 16px; height: 16px; }
+
+/* 小屏再压 */
+@media (max-height: 640px) {
+  .demo-header { padding: 4px 0 6px; }
+  .demo-header__icon { width: 36px; height: 36px; }
+  .demo-win__amount { font-size: 20px; }
+  .demo-stat__v { font-size: 13px; }
+  .demo-bet__btn { width: 38px; height: 38px; }
+  .demo-bet__display { height: 38px; }
+  .demo-spin__btn { height: 46px; font-size: 17px; }
+  .demo-action { height: 34px; font-size: 11px; }
+}
