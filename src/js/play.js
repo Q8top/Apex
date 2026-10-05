@@ -207,6 +207,28 @@
     if (e.key === 'Escape') closeSheet();
   });
 
+  /* ---------- 用户偏好本地化 ---------- */
+  var PREF_KEY = 'apex.pref';
+  function loadPref() {
+    try {
+      var raw = localStorage.getItem(PREF_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return {};
+  }
+  function savePref() {
+    try {
+      localStorage.setItem(PREF_KEY, JSON.stringify({
+        betIndex: betIndex,
+        sound:    soundOn,
+        vibe:     vibeOn,
+        turbo:    turboOn,
+        bgm:      bgmOn,
+        lowperf:  lowPerf
+      }));
+    } catch (e) {}
+  }
+
   /* ---------- 全局统计（localStorage 持久化） ---------- */
   var STATS_KEY = 'apex.stats.' + gameId;
   function loadStats() {
@@ -768,8 +790,8 @@
   });
 
   /* 下注 */
-  if (betMinus) betMinus.addEventListener('click', function () { if (betIndex > 0) { betIndex--; refreshUI(); } });
-  if (betPlus)  betPlus.addEventListener('click',  function () { if (betIndex < BET_STEPS.length - 1) { betIndex++; refreshUI(); } });
+  if (betMinus) betMinus.addEventListener('click', function () { if (betIndex > 0) { betIndex--; refreshUI(); savePref(); } });
+  if (betPlus)  betPlus.addEventListener('click',  function () { if (betIndex < BET_STEPS.length - 1) { betIndex++; refreshUI(); savePref(); } });
 
   /* 重置/充值 */
   if (rechargeEl) {
@@ -1040,6 +1062,7 @@
       if (soundBtn) soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
       if (window.ApexAudio) window.ApexAudio.setEnabled(soundOn);
       if (soundOn && window.ApexAudio) window.ApexAudio.play('click');
+      savePref();
     });
 
     /* 震动开关 */
@@ -1048,6 +1071,7 @@
       vibeOn = !vibeOn;
       swVibe.setAttribute('aria-checked', vibeOn ? 'true' : 'false');
       if (vibeOn && navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+      savePref();
     });
 
     /* 极速旋转开关 */
@@ -1057,6 +1081,7 @@
       swTurbo.setAttribute('aria-checked', turboOn ? 'true' : 'false');
       if (spinBtn) spinBtn.classList.toggle('is-turbo', turboOn);
       toast(turboOn ? '极速旋转已开启' : '极速旋转已关闭');
+      savePref();
     });
 
     /* 低性能模式开关 */
@@ -1066,7 +1091,7 @@
       swLow.setAttribute('aria-checked', lowPerf ? 'true' : 'false');
       if (page) page.classList.toggle('is-lowperf', lowPerf);
       if (lowPerf) exitIdle();
-      try { localStorage.setItem('apex.lowperf', lowPerf ? '1' : '0'); } catch (e) {}
+      savePref();
       toast(lowPerf ? '低性能模式已开启' : '低性能模式已关闭');
     });
 
@@ -1083,6 +1108,7 @@
         window.ApexAudio.stopBgm();
         toast('背景音乐已关闭');
       }
+      savePref();
     });
   });
 
@@ -1100,6 +1126,7 @@
     soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
     if (window.ApexAudio) window.ApexAudio.setEnabled(soundOn);
     if (soundOn) sfx('click');
+    savePref();
   });
 
   /* 真实模式：读后端余额 */
@@ -1131,13 +1158,23 @@
   }
 
   /* 初始化 */
-  /* 恢复低性能设置 */
-  try {
-    if (localStorage.getItem('apex.lowperf') === '1') {
-      lowPerf = true;
-      if (page) page.classList.add('is-lowperf');
+  /* 恢复偏好（一次性） */
+  (function restorePref() {
+    var pref = loadPref();
+    if (typeof pref.betIndex === 'number' && pref.betIndex >= 0 && pref.betIndex < BET_STEPS.length) {
+      betIndex = pref.betIndex;
     }
-  } catch (e) {}
+    if (typeof pref.sound   === 'boolean') { soundOn  = pref.sound; }
+    if (typeof pref.vibe    === 'boolean') { vibeOn   = pref.vibe; }
+    if (typeof pref.turbo   === 'boolean') { turboOn  = pref.turbo; }
+    if (typeof pref.bgm     === 'boolean') { bgmOn    = pref.bgm; }
+    if (typeof pref.lowperf === 'boolean') { lowPerf  = pref.lowperf; }
+    /* 同步到 UI */
+    if (window.ApexAudio) window.ApexAudio.setEnabled(soundOn);
+    if (soundBtn) soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    if (spinBtn) spinBtn.classList.toggle('is-turbo', turboOn);
+    if (page && lowPerf) page.classList.add('is-lowperf');
+  })();
 
   renderBoard();
   refreshUI();
