@@ -172,15 +172,14 @@
     root.appendChild(defs);
 
     var cx = 50, cy = 50, r = 30;
-    /* 香蕉本体：emoji 🍌 弯月形（凸向右下，两端尖） */
-    var d = 'M ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.78) +
-      /* 外侧曲线：从右端蒂 → 右下方凸出 → 左端尾 */
-      ' C ' + n2(cx + r * 1.15) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.98) + ', ' + n2(cx - r * 0.20) + ' ' + n2(cy + r * 1.12) +
-      ' C ' + n2(cx - r * 0.82) + ' ' + n2(cy + r * 1.22) + ', ' + n2(cx - r * 1.18) + ' ' + n2(cy + r * 0.78) + ', ' + n2(cx - r * 1.05) + ' ' + n2(cy + r * 0.42) +
-      /* 内侧曲线：从左端尾 → 内侧凹处 → 右端蒂 */
-      ' C ' + n2(cx - r * 0.90) + ' ' + n2(cy + r * 0.62) + ', ' + n2(cx - r * 0.42) + ' ' + n2(cy + r * 0.72) + ', ' + n2(cx - r * 0.05) + ' ' + n2(cy + r * 0.68) +
-      ' C ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.60) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.20) + ', ' + n2(cx + r * 0.58) + ' ' + n2(cy - r * 0.32) +
-      ' C ' + n2(cx + r * 0.52) + ' ' + n2(cy - r * 0.62) + ', ' + n2(cx + r * 0.62) + ' ' + n2(cy - r * 0.78) + ', ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.78) + ' Z';
+    /* 香蕉本体：emoji 🍌 斜弯月（柄右上 → 尾左下，凸面向右下） */
+    var d = 'M ' + n2(cx + r * 0.83) + ' ' + n2(cy - r * 1.13) +
+      /* 外弧：从柄端沿右下凸出到尾部 */
+      ' C ' + n2(cx + r * 1.20) + ' ' + n2(cy - r * 0.75) + ', ' + n2(cx + r * 1.38) + ' ' + n2(cy + r * 0.05) + ', ' + n2(cx + r * 0.78) + ' ' + n2(cy + r * 0.65) +
+      ' C ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 1.22) + ', ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 1.32) + ', ' + n2(cx - r * 1.17) + ' ' + n2(cy + r * 0.80) +
+      /* 内弧：从尾部沿左上凹回收 */
+      ' C ' + n2(cx - r * 0.85) + ' ' + n2(cy + r * 0.90) + ', ' + n2(cx - r * 0.18) + ' ' + n2(cy + r * 0.82) + ', ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 0.35) +
+      ' C ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.12) + ', ' + n2(cx + r * 0.92) + ' ' + n2(cy - r * 0.65) + ', ' + n2(cx + r * 0.83) + ' ' + n2(cy - r * 1.13) + ' Z';
     cp.setAttribute('d', d);
 
     /* ① 底部阴影 */
@@ -197,12 +196,12 @@
       transform: 'translate(0 -0.6)', opacity: '0.7',
       'clip-path': 'url(#' + cpId + ')'
     }));
-    /* ④ 主高光（沿香蕉凸面弧线） */
+    /* ④ 主高光（沿外弧偏内） */
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 0.95) +
-         ' Q ' + n2(cx + r * 0.05) + ' ' + n2(cy + r * 1.18) + ' ' + n2(cx + r * 0.62) + ' ' + n2(cy + r * 0.62),
+      d: 'M ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 1.02) +
+         ' Q ' + n2(cx + r * 0.30) + ' ' + n2(cy + r * 1.18) + ' ' + n2(cx + r * 0.85) + ' ' + n2(cy + r * 0.30),
       fill: 'none', stroke: '#ffffff', 'stroke-width': '3.2', 'stroke-linecap': 'round',
-      opacity: '0.8', 'clip-path': 'url(#' + cpId + ')'
+      opacity: '0.82', 'clip-path': 'url(#' + cpId + ')'
     }));
     /* ⑤ 反光（下部） */
     root.appendChild(svg('path', {
@@ -213,17 +212,17 @@
     }));
     /* ⑥ 两端蒂部暗色 */
     root.appendChild(svg('ellipse', {
-      cx: n2(cx + r * 0.83), cy: n2(cy - r * 0.72),
-      rx: n2(r * 0.16), ry: n2(r * 0.10),
-      fill: '#4a2206', opacity: '0.85',
-      transform: 'rotate(-25 ' + n2(cx + r * 0.83) + ' ' + n2(cy - r * 0.72) + ')',
+      cx: n2(cx + r * 0.82), cy: n2(cy - r * 1.10),
+      rx: n2(r * 0.14), ry: n2(r * 0.10),
+      fill: '#4a2206', opacity: '0.9',
+      transform: 'rotate(-40 ' + n2(cx + r * 0.82) + ' ' + n2(cy - r * 1.10) + ')',
       'clip-path': 'url(#' + cpId + ')'
     }));
     root.appendChild(svg('ellipse', {
-      cx: n2(cx - r * 1.0), cy: n2(cy + r * 0.85),
-      rx: n2(r * 0.13), ry: n2(r * 0.09),
-      fill: '#4a2206', opacity: '0.7',
-      transform: 'rotate(20 ' + n2(cx - r * 1.0) + ' ' + n2(cy + r * 0.85) + ')',
+      cx: n2(cx - r * 1.13), cy: n2(cy + r * 0.80),
+      rx: n2(r * 0.12), ry: n2(r * 0.09),
+      fill: '#4a2206', opacity: '0.75',
+      transform: 'rotate(30 ' + n2(cx - r * 1.13) + ' ' + n2(cy + r * 0.80) + ')',
       'clip-path': 'url(#' + cpId + ')'
     }));
     return root;
