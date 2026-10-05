@@ -128,7 +128,7 @@
     if (toastTimer) window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(function () {
       toastEl.classList.remove('is-show');
-    }, 1800);
+    }, 2600);
   }
 
   /* ---------- 金额格式化 ---------- */
@@ -152,6 +152,12 @@
 
   /* ---------- 盘面数据（symbol id 数组，长度 COLS*ROWS） ---------- */
   var grid = [];
+
+  function renderSym(symId) {
+    if (!window.ApexOlympusSymbols) return '';
+    var camel = String(symId).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
+    return window.ApexOlympusSymbols.render(camel);
+  }
 
   function newGrid() {
     grid = [];
@@ -211,17 +217,18 @@
   }
 
   /* ---------- 渲染盘面 ---------- */
-  function renderBoard() {
+  function renderBoard(highlightPositions) {
     if (!window.ApexOlympusSymbols) {
       boardEl.innerHTML = '<div style="grid-column:1/-1;color:#fff;padding:20px;text-align:center;font-size:12px">符号库加载中…</div>';
       return;
     }
     if (grid.length !== COLS * ROWS) newGrid();
     window.ApexOlympusSymbols.ensureDefs();
+    var hl = highlightPositions || [];
     var frag = '';
     for (var i = 0; i < grid.length; i++) {
-      var svg = window.ApexOlympusSymbols.render(grid[i]);
-      frag += '<div class="gp-cell">' + svg + '</div>';
+      var isWin = hl.indexOf(i) >= 0;
+      frag += '<div class="gp-cell' + (isWin ? ' is-win' : '') + '">' + renderSym(grid[i]) + '</div>';
     }
     boardEl.innerHTML = frag;
   }
@@ -278,9 +285,7 @@
     var timer = window.setInterval(function () {
       for (var i = 0; i < cellEls.length; i++) {
         if (rnd() < 0.4) {
-          cellEls[i].innerHTML = window.ApexOlympusSymbols
-            ? window.ApexOlympusSymbols.render(pick())
-            : '';
+          cellEls[i].innerHTML = renderSym(pick());
         }
       }
       tick++;
@@ -289,12 +294,16 @@
 
         /* 结算 */
         newGrid();
-        renderBoard();
-
         var wins = findWins();
         var totalWin = calcTotalWin(wins, bet);
         lastWin = totalWin;
         balance += totalWin;
+
+        var winPositions = [];
+        for (var wi = 0; wi < wins.length; wi++) {
+          winPositions = winPositions.concat(wins[wi].positions);
+        }
+        renderBoard(winPositions);
         refreshUI();
 
         if (wins.length === 0) {
