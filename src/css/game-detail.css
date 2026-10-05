@@ -442,3 +442,6 @@ body {
 .gd-paysym-name { font-size: 13px; color: var(--gd-text); font-weight: 500; }
 .gd-payval { font-variant-numeric: tabular-nums; font-weight: 600; text-align: center; color: var(--gd-text); }
 .gd-payval.is-top { color: var(--gd-text); }
+
+.gd-symbol-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.gd-paysym img { width: 24px; height: 24px; object-fit: contain; display: block; flex: 0 0 auto; }
