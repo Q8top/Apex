@@ -907,3 +907,35 @@ body {
               0 0 40px rgba(255,200,80,.35),
               inset 0 1px 0 rgba(255,255,255,.9);
 }
+
+/* ---------- 全屏金光（中奖分级） ---------- */
+.gp-flash {
+  position: fixed; inset: 0; z-index: 65;
+  pointer-events: none;
+  opacity: 0;
+}
+.gp-flash.is-small {
+  background: radial-gradient(circle at 50% 42%, rgba(255,220,120,.35) 0%, rgba(255,220,120,0) 55%);
+  animation: gp-flash-in .5s ease-out;
+}
+.gp-flash.is-mid {
+  background: radial-gradient(circle at 50% 42%, rgba(255,210,90,.55) 0%, rgba(255,210,90,0) 62%);
+  animation: gp-flash-in .8s ease-out;
+}
+.gp-flash.is-big {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,240,180,.85) 0%, rgba(255,210,90,.45) 30%, rgba(255,210,90,0) 70%),
+    linear-gradient(110deg, transparent 20%, rgba(255,255,255,.65) 48%, transparent 76%);
+  background-size: 100% 100%, 300% 100%;
+  animation: gp-flash-big 1.6s ease-out;
+}
+@keyframes gp-flash-in {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes gp-flash-big {
+  0%   { opacity: 0; background-position: 100% 0, -100% 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; background-position: 100% 0, 200% 0; }
+}

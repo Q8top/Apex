@@ -435,6 +435,10 @@
       lastWin = totalWin;
       refreshUI();
       animateNumber(prizeEl, prevWin, totalWin, 320);
+      var ratio = totalWin / Math.max(1, bet);
+      if (ratio >= 20) triggerFlash('big');
+      else if (ratio >= 5) triggerFlash('mid');
+      else triggerFlash('small');
       await sleep(900);
 
       var now = boardEl.querySelectorAll('.gp-cell');
@@ -512,6 +516,7 @@
           fsRemaining = 15;
           bonusBalls = {};
           sfx('fsTrigger');
+          triggerFlash('big');
           setResult('⚡ ' + sc + ' 个闪电 · 触发免费旋转 15 次！', true);
           refreshUI();
           await sleep(1400);
