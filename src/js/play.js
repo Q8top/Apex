@@ -109,7 +109,12 @@
   }
 
   /* 工具 */
-  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  var turboOn = false;
+  function sleep(ms) {
+    var t = turboOn ? Math.max(40, Math.round(ms * 0.4)) : ms;
+    return new Promise(function (r) { setTimeout(r, t); });
+  }
+
 
   function fmtMoney(n) {
     return '¥' + Number(n).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -808,6 +813,11 @@
                    '<span>震动</span>' +
                    '<button type="button" class="gp-switch" id="gpSwitchVibe" role="switch" aria-checked="' + (vibeOn ? 'true' : 'false') + '"><span></span></button>' +
                  '</div>' +
+                 '<div class="gp-menu-row">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' +
+                   '<span>极速旋转</span>' +
+                   '<button type="button" class="gp-switch" id="gpSwitchTurbo" role="switch" aria-checked="' + (turboOn ? 'true' : 'false') + '"><span></span></button>' +
+                 '</div>' +
                  '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>退出游戏</span></button>' +
                '</div>';
     openSheet('菜单', html);
@@ -835,6 +845,15 @@
       vibeOn = !vibeOn;
       swVibe.setAttribute('aria-checked', vibeOn ? 'true' : 'false');
       if (vibeOn && navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+    });
+
+    /* 极速旋转开关 */
+    var swTurbo = document.getElementById('gpSwitchTurbo');
+    if (swTurbo) swTurbo.addEventListener('click', function () {
+      turboOn = !turboOn;
+      swTurbo.setAttribute('aria-checked', turboOn ? 'true' : 'false');
+      if (spinBtn) spinBtn.classList.toggle('is-turbo', turboOn);
+      toast(turboOn ? '极速旋转已开启' : '极速旋转已关闭');
     });
   });
 

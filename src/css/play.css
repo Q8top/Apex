@@ -1291,3 +1291,11 @@ body {
   fill: #FFE888;
   filter: drop-shadow(0 0 6px rgba(255,220,100,.95));
 }
+
+/* ---------- 极速旋转：按钮图标转更快 ---------- */
+.gp-btn-primary.is-turbo svg {
+  animation: gp-turbo-spin .55s linear infinite;
+}
+@keyframes gp-turbo-spin {
+  to { transform: rotate(360deg); }
+}
