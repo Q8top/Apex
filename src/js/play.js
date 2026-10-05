@@ -729,6 +729,132 @@
   if (bigwinEl) bigwinEl.addEventListener('click', hideBigwin);
 
 
+  /* ============================================================
+     补齐缺失函数：待机 / FS总结 / 新手引导
+     ============================================================ */
+
+  /* ---------- 待机呼吸 ---------- */
+  var idleTimer = null;
+  var idleOn = false;
+  function enterIdle() {
+    if (lowPerf || idleOn || spinning || autoRunning) return;
+    idleOn = true;
+    var cells = boardEl.querySelectorAll('.gp-cell');
+    for (var i = 0; i < cells.length; i++) {
+      if (rnd() < 0.30) {
+        cells[i].classList.add('is-idle');
+        cells[i].style.setProperty('--idle-delay', (rnd() * 2.4).toFixed(2) + 's');
+      }
+    }
+    if (boardEl) boardEl.classList.add('is-idle');
+  }
+  function exitIdle() {
+    if (!idleOn) return;
+    idleOn = false;
+    var cells = boardEl.querySelectorAll('.gp-cell');
+    for (var i = 0; i < cells.length; i++) {
+      cells[i].classList.remove('is-idle');
+      cells[i].style.removeProperty('--idle-delay');
+    }
+    if (boardEl) boardEl.classList.remove('is-idle');
+  }
+  function resetIdleTimer() {
+    exitIdle();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(enterIdle, 3000);
+  }
+  ['pointerdown', 'keydown', 'touchstart', 'mousemove', 'wheel'].forEach(function (ev) {
+    document.addEventListener(ev, resetIdleTimer, { passive: true });
+  });
+
+  /* ---------- FS 结束总结 ---------- */
+  function showFsSummary(totalWin, bet, count) {
+    if (!settleEl || totalWin <= 0) return;
+    var ratio = totalWin / Math.max(1, bet);
+    settleEl.classList.toggle('is-jackpot', ratio >= 20);
+    settleChainEl.textContent = 'FREE SPINS · ' + count + ' 次';
+    settleWinEl.textContent = fmtMoney(totalWin);
+    settleMultEl.hidden = true;
+    settleEl.hidden = false;
+    requestAnimationFrame(function () {
+      settleEl.classList.add('is-show');
+      settleEl.setAttribute('aria-hidden', 'false');
+    });
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(hideSettle, ratio >= 20 ? 3200 : 2400);
+  }
+
+  /* ---------- 新手引导 ---------- */
+  var TUT_KEY = 'apex.tut.' + gameId;
+  var tutEl    = document.getElementById('gpTutorial');
+  var tutMask  = document.getElementById('gpTutMask');
+  var tutCard  = document.getElementById('gpTutCard');
+  var tutStep  = document.getElementById('gpTutStep');
+  var tutTitle = document.getElementById('gpTutTitle');
+  var tutDesc  = document.getElementById('gpTutDesc');
+  var tutNext  = document.getElementById('gpTutNext');
+  var tutSkip  = document.getElementById('gpTutSkip');
+
+  var TUT_STEPS = [
+    { sel: '#gpBoard',  title: '这是游戏盘面', desc: '6 列 × 5 行，30 个格子。相邻 3 个以上相同符号即可中奖。' },
+    { sel: '#gpSpin',   title: '点这里开始旋转', desc: '每次旋转消耗一个下注额。中奖符号会消失，上方符号下落补位，可连续连锁。' },
+    { sel: '.gp-tools', title: '这里有更多功能', desc: '自动旋转 · 游戏记录 · 赔付表。顶部菜单里还能切换音效和震动。' }
+  ];
+
+  var tutIdx = 0;
+  var tutSpot = null;
+
+  function tutHide() {
+    if (!tutEl) return;
+    tutEl.hidden = true;
+    if (tutSpot && tutSpot.parentNode) tutSpot.parentNode.removeChild(tutSpot);
+    tutSpot = null;
+    try { localStorage.setItem(TUT_KEY, '1'); } catch (e) {}
+  }
+
+  function tutRender() {
+    var step = TUT_STEPS[tutIdx];
+    if (tutStep)  tutStep.textContent  = (tutIdx + 1) + ' / ' + TUT_STEPS.length;
+    if (tutTitle) tutTitle.textContent = step.title;
+    if (tutDesc)  tutDesc.textContent  = step.desc;
+    if (tutNext)  tutNext.textContent  = (tutIdx === TUT_STEPS.length - 1) ? '开始游戏' : '下一步';
+    if (tutSpot && tutSpot.parentNode) tutSpot.parentNode.removeChild(tutSpot);
+    var target = document.querySelector(step.sel);
+    if (target) {
+      var r = target.getBoundingClientRect();
+      tutSpot = document.createElement('div');
+      tutSpot.className = 'gp-tut-spot';
+      tutSpot.style.left   = (r.left   - 6) + 'px';
+      tutSpot.style.top    = (r.top    - 6) + 'px';
+      tutSpot.style.width  = (r.width  + 12) + 'px';
+      tutSpot.style.height = (r.height + 12) + 'px';
+      document.body.appendChild(tutSpot);
+      var midY = r.top + r.height / 2;
+      if (tutCard) {
+        tutCard.style.marginTop = (midY < window.innerHeight / 2) ? '25vh' : '-25vh';
+      }
+    }
+  }
+
+  function tutNextStep() {
+    if (tutIdx < TUT_STEPS.length - 1) { tutIdx++; tutRender(); }
+    else tutHide();
+  }
+
+  if (tutNext) tutNext.addEventListener('click', tutNextStep);
+  if (tutSkip) tutSkip.addEventListener('click', tutHide);
+  if (tutMask) tutMask.addEventListener('click', tutHide);
+
+  function startTutorial() {
+    var done = false;
+    try { done = localStorage.getItem(TUT_KEY) === '1'; } catch (e) {}
+    if (done || !tutEl) return;
+    tutEl.hidden = false;
+    tutIdx = 0;
+    tutRender();
+  }
+
+
   function dropDown() {
     for (var col = 0; col < COLS; col++) {
       var stack = [];
