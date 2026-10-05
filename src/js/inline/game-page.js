@@ -348,7 +348,6 @@ function init(){
     function spawnParticles(x, y, count, colors, opts){
       opts = opts || {};
       for (var i = 0; i < count; i++) {
-        var angle = Math.random ? 0 : 0; // 用 crypto
         var buf = new Uint32Array(2);
         crypto.getRandomValues(buf);
         var a = (buf[0] / 4294967296) * Math.PI * 2;
@@ -465,16 +464,27 @@ function init(){
 
     // -------- 渲染网格 --------
     var SYM_LIB = window.ApexOlympusSymbols;
+    var CANVAS_LIB = window.ApexCanvasSymbols;
+    // 符号模式：'canvas'（默认，高质量）/ 'svg'（兼容）
+    var SYM_MODE = 'canvas';
     function renderGrid(grid, animate){
       var html = '';
+      var mode = (window.__apexSymbolMode || SYM_MODE);
+      var KEYS = ['crown','red','purple','yellow','green','blue','goblet','hourglass','wild','scatter'];
       for (var r = 0; r < E.ROWS; r++) {
         for (var c = 0; c < E.COLS; c++) {
           var sym = grid[r][c];
           var def = E.SYMBOLS[sym];
-          var svg = SYM_LIB ? SYM_LIB.byIndex(sym) : '';
+          var content = '';
+          if (mode === 'canvas' && CANVAS_LIB && CANVAS_LIB.render) {
+            var url = CANVAS_LIB.render(KEYS[sym], 200);
+            content = url ? '<img src="' + url + '" alt="" draggable="false">' : '';
+          } else if (SYM_LIB) {
+            content = SYM_LIB.byIndex(sym);
+          }
           var cls = 'og-cell sym-' + sym + (animate ? ' dropping' : '');
-          var style = animate ? ' style="animation-delay:' + ((c * 40 + r * 25) + 'ms') + '"' : '';
-          html += '<div class="' + cls + '" data-r="' + r + '" data-c="' + c + '" data-sym="' + def.name + '"' + style + '>' + svg + '</div>';
+          var style = animate ? (' style="animation-delay:' + ((c * 40 + r * 25)) + 'ms"') : '';
+          html += '<div class="' + cls + '" data-r="' + r + '" data-c="' + c + '" data-sym="' + def.name + '"' + style + '>' + content + '</div>';
         }
       }
       gridEl.innerHTML = html;
@@ -936,12 +946,15 @@ function init(){
     var setShakeVal = document.getElementById('og-set-shake-val');
     var setFastBtn = document.getElementById('og-set-fast');
     var setFastVal = document.getElementById('og-set-fast-val');
+    var setSymBtn = document.getElementById('og-set-sym');
+    var setSymVal = document.getElementById('og-set-sym-val');
 
     function syncSettings(){
       if (setSoundVal) setSoundVal.classList.toggle('on', state.sound);
       if (setMusicVal) setMusicVal.classList.toggle('on', state.music);
       if (setShakeVal) setShakeVal.classList.toggle('on', state.shake);
       if (setFastVal)  setFastVal.classList.toggle('on', state.fast);
+      if (setSymVal) setSymVal.classList.toggle('on', (window.__apexSymbolMode || 'canvas') === 'canvas');
     }
 
     if (menuBtn) menuBtn.addEventListener('click', function(){
@@ -971,6 +984,13 @@ function init(){
     if (setFastBtn) setFastBtn.addEventListener('click', function(){
       state.fast = !state.fast;
       if (AN) AN.setSpeed(state.fast ? 'fast' : 'normal');
+      syncSettings();
+      if (A) A.sClick();
+    });
+    if (setSymBtn) setSymBtn.addEventListener('click', function(){
+      window.__apexSymbolMode = (window.__apexSymbolMode === 'svg') ? 'canvas' : 'svg';
+      // 重新渲染
+      if (state.grid) renderGrid(state.grid, false);
       syncSettings();
       if (A) A.sClick();
     });
