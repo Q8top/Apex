@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#05070f">
+<meta name="color-scheme" content="dark">
+<title>Olympius · Apex</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/src/css/game-play.css">
+</head>
+<body class="oly-play">
+
+<main class="oly-stage" role="application" aria-label="Olympius 游戏舞台">
+
+  <header class="oly-hud" aria-label="游戏信息栏">
+    <div class="oly-hud-cell">
+      <span class="oly-hud-label">Balance</span>
+      <span class="oly-hud-value" id="oly-balance" aria-live="polite">10,000</span>
+    </div>
+    <div class="oly-hud-cell oly-hud-cell--center">
+      <span class="oly-hud-label">Bet</span>
+      <span class="oly-hud-value" id="oly-bet" aria-live="polite">10</span>
+    </div>
+    <div class="oly-hud-cell oly-hud-cell--right">
+      <span class="oly-hud-label">Win</span>
+      <span class="oly-hud-value" id="oly-win" aria-live="polite">0</span>
+    </div>
+  </header>
+
+  <section class="oly-grid-wrap" aria-label="游戏网格">
+    <div class="oly-grid" id="oly-grid">
+      <canvas id="olympius-stage" aria-hidden="true"></canvas>
+    </div>
+  </section>
+
+  <footer class="oly-controls" aria-label="操作区">
+    <button class="oly-btn oly-btn--icon" id="oly-auto" type="button" aria-label="自动旋转">A</button>
+    <button class="oly-btn oly-btn--spin" id="oly-spin" type="button" aria-label="开始旋转">Spin</button>
+    <button class="oly-btn oly-btn--icon" id="oly-menu" type="button" aria-label="菜单">☰</button>
+  </footer>
+
+</main>
+
+<noscript><p class="oly-sr">需要启用 JavaScript 才能游玩 Olympius。</p></noscript>
+
+<script type="module" src="/src/js/inline/play-boot.js"></script>
+</body>
+</html>
