@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="format-detection" content="telephone=no">
+<title>糖果连连爆 Sweet Bonanza · Apex Global Entertainment</title>
+<meta name="description" content="糖果连连爆 Sweet Bonanza 游戏详情：玩法规则、符号倍率、常见问题与相似游戏推荐。">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="src/css/sweet.css">
+</head>
+<body class="sweet-body">
+<main class="sd-shell" id="sweet-page" data-game="sweet">
+
+  <!-- ═══ 顶部导航栏 ═══ -->
+  <header class="sd-header">
+    <button class="sd-header__icon" type="button" id="sd-back" aria-label="返回">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1 class="sd-header__title">糖果连连爆</h1>
+    <button class="sd-header__icon" type="button" id="sd-share" aria-label="分享">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ═══ 图片轮播 ═══ -->
+  <section class="sd-carousel" aria-label="游戏画面轮播">
+    <div class="sd-carousel__viewport" id="sd-carousel-viewport">
+      <div class="sd-carousel__track" id="sd-carousel-track"></div>
+    </div>
+    <div class="sd-carousel__dots" id="sd-carousel-dots"></div>
+  </section>
+
+  <!-- ═══ 游戏介绍 ═══ -->
+  <section class="sd-section">
+    <header class="sd-section__head">
+      <h2 class="sd-section__title">游戏介绍</h2>
+      <span class="sd-section__badge">Sweet Bonanza</span>
+    </header>
+    <p class="sd-section__text">
+      糖果连连爆（Sweet Bonanza）是一款高波动的糖果主题老虎机。采用 6×5 网格与「任意位置赔付」（Scatter Pays）机制，
+      同一种符号在任意位置出现 8 个及以上即可中奖。免费旋转阶段，糖果炸弹倍数会累加至本轮总奖金。
+    </p>
+    <ul class="sd-facts">
+      <li><span class="sd-facts__k">开发商</span><span class="sd-facts__v">Pragmatic Play</span></li>
+      <li><span class="sd-facts__k">网格</span><span class="sd-facts__v">6 × 5</span></li>
+      <li><span class="sd-facts__k">波动性</span><span class="sd-facts__v">高</span></li>
+      <li><span class="sd-facts__k">RTP</span><span class="sd-facts__v">96.48%</span></li>
+      <li><span class="sd-facts__k">最大倍数</span><span class="sd-facts__v">×21,100</span></li>
+      <li><span class="sd-facts__k">赔付方式</span><span class="sd-facts__v">Scatter Pays</span></li>
+    </ul>
+  </section>
+
+  <!-- ═══ 玩法规则（表/页） ═══ -->
+  <section class="sd-section">
+    <header class="sd-section__head">
+      <h2 class="sd-section__title">玩法规则</h2>
+    </header>
+    <div class="sd-tabs" id="sd-tabs" role="tablist">
+      <button class="sd-tab is-active" type="button" role="tab" data-tab="base" aria-selected="true">基础规则</button>
+      <button class="sd-tab" type="button" role="tab" data-tab="pay" aria-selected="false">中奖条件</button>
+      <button class="sd-tab" type="button" role="tab" data-tab="bonus" aria-selected="false">免费旋转</button>
+    </div>
+    <div class="sd-tabpanels" id="sd-tabpanels">
+      <div class="sd-tabpanel is-active" data-panel="base">
+        <table class="sd-table"><tbody>
+          <tr><th>网格</th><td>6 列 × 5 行</td></tr>
+          <tr><th>赔付方式</th><td>任意位置 8 个及以上相同符号</td></tr>
+          <tr><th>最低赔付</th><td>8 个符号即可触发</td></tr>
+          <tr><th>下注范围</th><td>0.20 ~ 100.00</td></tr>
+          <tr><th>最大倍数</th><td>×21,100</td></tr>
+        </tbody></table>
+      </div>
+      <div class="sd-tabpanel" data-panel="pay">
+        <table class="sd-table">
+          <thead><tr><th>符号数</th><th>低倍数符号</th><th>高倍数符号</th></tr></thead>
+          <tbody>
+            <tr><td>8 ~ 9</td><td>×0.25 ~ ×0.5</td><td>×0.75 ~ ×2</td></tr>
+            <tr><td>10 ~ 11</td><td>×0.75 ~ ×1.5</td><td>×2 ~ ×5</td></tr>
+            <tr><td>12+</td><td>×2 ~ ×5</td><td>×5 ~ ×50</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sd-tabpanel" data-panel="bonus">
+        <p class="sd-section__text">集齐 4 个及以上棒棒糖 Scatter 符号即可触发 10 次免费旋转。免费旋转期间，糖果炸弹倍数会累加至本轮总奖金。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 符号倍率表 ═══ -->
+  <section class="sd-section">
+    <header class="sd-section__head">
+      <h2 class="sd-section__title">符号倍率</h2>
+      <span class="sd-section__badge" id="sd-symbol-count">8 个符号</span>
+    </header>
+    <div class="sd-symbols" id="sd-symbols"></div>
+  </section>
+
+  <!-- ═══ FAQ 折叠面板 ═══ -->
+  <section class="sd-section">
+    <header class="sd-section__head">
+      <h2 class="sd-section__title">常见问题</h2>
+    </header>
+    <div class="sd-faq" id="sd-faq"></div>
+  </section>
+
+  <!-- ═══ 相似游戏（横向滑动） ═══ -->
+  <section class="sd-section sd-section--flush">
+    <header class="sd-section__head">
+      <h2 class="sd-section__title">相似游戏</h2>
+    </header>
+    <div class="sd-similar" id="sd-similar"></div>
+  </section>
+
+  <!-- ═══ 底部悬浮操作栏 ═══ -->
+  <nav class="sd-bottom" aria-label="游戏操作">
+    <button class="sd-bottom__icon" type="button" id="sd-fav" aria-pressed="false">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17.3l-5.7 3 1.1-6.4-4.6-4.5 6.4-0.9L12 2.6l2.8 5.9 6.4 0.9-4.6 4.5 1.1 6.4z"/></svg>
+      <span>收藏</span>
+    </button>
+    <button class="sd-bottom__icon" type="button" id="sd-service">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>客服</span>
+    </button>
+    <button class="sd-bottom__cta sd-bottom__cta--ghost" type="button" id="sd-demo">免费试玩</button>
+    <button class="sd-bottom__cta sd-bottom__cta--primary" type="button" id="sd-play">开始游戏</button>
+  </nav>
+
+</main>
+
+<script src="src/js/sweet.js" defer></script>
+</body>
+</html>
