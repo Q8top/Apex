@@ -49,7 +49,7 @@ var CONFIG = {
     rtpTarget: 1.75,
     payScale: 1.75,               // 主局赔付缩放
     fsPayScale: 0.55,             // FS 内部赔付缩放（防爆炸）
-    scatterWeightBoost: 2.0,      // Scatter 权重（触发频率 1/30~1/40）
+    scatterWeightBoost: 20.0,      // Scatter 权重（触发频率 1/30~1/40）
     multProb: 0.08,               // FS 中每次降倍率概率（大砍）
     freeSpinRetrigger: 0.10       // FS 重触发概率（大砍）
   },
