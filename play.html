@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>奥林匹斯之门 · 试玩</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/src/css/play.css">
+</head>
+<body>
+<main class="gp-page" data-game-id="olympus">
+  <header class="gp-topbar">
+    <button class="gp-icon-btn" id="gpBack" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18 L9 12 L15 6"/></svg>
+    </button>
+    <div class="gp-title-wrap">
+      <h1 class="gp-title" id="gpTitle">奥林匹斯之门</h1>
+      <span class="gp-mode" id="gpMode">试玩模式</span>
+    </div>
+    <button class="gp-icon-btn" id="gpMenu" type="button" aria-label="菜单">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </header>
+  <section class="gp-stage" id="gpStage" aria-label="游戏画面">
+    <img src="/assets/games/placeholder-game-screen.svg" alt="游戏画面占位" draggable="false">
+  </section>
+</main>
+<div class="gp-toast" id="gpToast" role="status" aria-live="polite"></div>
+<script src="/src/js/play.js" defer></script>
+</body>
+</html>

@@ -313,9 +313,14 @@
     renderFav();
     toast(favOn ? '已收藏' : '已取消收藏');
   });
+  var PLAY_READY = { olympus: true };
+  function gotoPlay(mode) {
+    if (!PLAY_READY[gameId]) { toast('该游戏即将开放'); return; }
+    window.location.href = '/play.html?game=' + encodeURIComponent(gameId) + '&mode=' + mode;
+  }
   if (serviceBtn) serviceBtn.addEventListener('click', function () { toast('客服功能即将开放'); });
-  if (demoBtn)    demoBtn.addEventListener('click',    function () { toast('免费试玩即将开放'); });
-  if (playBtn)    playBtn.addEventListener('click',    function () { toast('开始游戏即将开放'); });
+  if (demoBtn)    demoBtn.addEventListener('click',    function () { gotoPlay('demo'); });
+  if (playBtn)    playBtn.addEventListener('click',    function () { gotoPlay('real'); });
 
   function featureIcon(name){
     var I = {
