@@ -59,25 +59,39 @@ function poly(p, fill, stroke, sw){
 
 /* ---------- 宙斯 · 完全中轴对称 ---------- */
 function zeus(){
-  var s = sh(50,92,24,3,.18);
-  s += '<path d="M20 34 L28 22 L38 30 L50 14 L62 30 L72 22 L80 34 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.4" stroke-linejoin="round"/>';
-  s += '<path d="M28 22 L38 30 L50 14 L50 20 L38 34 L30 28 Z" fill="#FFFCE8" opacity=".55"/>';
-  s += '<circle cx="50" cy="14" r="2.2" fill="#8B50D8" stroke="#3D0A70" stroke-width=".6"/>';
-  s += '<ellipse cx="49.2" cy="13.2" rx=".8" ry=".5" fill="#fff" opacity=".95"/>';
-  s += '<ellipse cx="50" cy="50" rx="22" ry="24" fill="url(#oly-skin)" stroke="#8A5A28" stroke-width="1.1"/>';
-  s += '<path d="M32 40 Q36 32 46 32 Q40 38 38 48 Q34 46 32 40 Z" fill="#fff" opacity=".35"/>';
-  s += '<ellipse cx="42" cy="49" rx="1.8" ry="2.2" fill="#2A1A08"/>';
-  s += '<ellipse cx="58" cy="49" rx="1.8" ry="2.2" fill="#2A1A08"/>';
-  s += '<circle cx="41.4" cy="48.2" r=".6" fill="#fff" opacity=".95"/>';
-  s += '<circle cx="57.4" cy="48.2" r=".6" fill="#fff" opacity=".95"/>';
-  s += '<path d="M36 44 Q42 42 48 44" fill="none" stroke="#8A5A28" stroke-width="1.4" stroke-linecap="round"/>';
-  s += '<path d="M52 44 Q58 42 64 44" fill="none" stroke="#8A5A28" stroke-width="1.4" stroke-linecap="round"/>';
-  s += '<path d="M50 50 L48.5 55 L51.5 55" fill="none" stroke="#8A5A28" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/>';
-  s += '<path d="M30 56 Q32 68 50 76 Q68 68 70 56 Q66 62 60 64 Q56 66 50 66 Q44 66 40 64 Q34 62 30 56 Z" fill="url(#oly-beard)" stroke="#9A8A68" stroke-width=".9"/>';
-  s += '<path d="M44 60 Q50 63 56 60" fill="none" stroke="#7A2018" stroke-width="1.1" stroke-linecap="round"/>';
-  s += '<path d="M12 30 L8 48 L13 48 L10 64 L18 44 L14 44 L16 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
-  s += '<path d="M88 30 L92 48 L87 48 L90 64 L82 44 L86 44 L84 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
-  s += hl(30,30,6,3,.3);
+  var s = sh(50,94,22,3,.2);
+  /* 后方雷云（对称椭圆，暗金） */
+  s += '<ellipse cx="32" cy="52" rx="14" ry="9" fill="#3A2A6A" opacity=".35"/>';
+  s += '<ellipse cx="68" cy="52" rx="14" ry="9" fill="#3A2A6A" opacity=".35"/>';
+  s += '<ellipse cx="50" cy="56" rx="18" ry="10" fill="#4A3A80" opacity=".32"/>';
+  /* 闪电（左右对称，从云中射出） */
+  s += '<path d="M22 30 L14 52 L21 52 L16 74 L30 48 L24 48 L28 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.2" stroke-linejoin="round"/>';
+  s += '<path d="M78 30 L86 52 L79 52 L84 74 L70 48 L76 48 L72 30 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.2" stroke-linejoin="round"/>';
+  /* 闪电高光 */
+  s += '<path d="M22 30 L16 52 L19 52 L18 62" fill="none" stroke="#FFFCE8" stroke-width="1" opacity=".9" stroke-linecap="round"/>';
+  s += '<path d="M78 30 L84 52 L81 52 L82 62" fill="none" stroke="#FFFCE8" stroke-width="1" opacity=".9" stroke-linecap="round"/>';
+  /* 中央金杖（竖直，主体） */
+  s += '<rect x="45" y="18" width="10" height="72" rx="2" fill="url(#oly-gold-diag)" stroke="#6A4600" stroke-width="1.2"/>';
+  s += '<line x1="47.5" y1="20" x2="47.5" y2="88" stroke="#FFFCE8" stroke-width="1.6" opacity=".95"/>';
+  s += '<line x1="52.5" y1="20" x2="52.5" y2="88" stroke="#7A5000" stroke-width=".8" opacity=".6"/>';
+  /* 3 道缠金环（对称） */
+  var y;
+  var ringYs = [30, 52, 74];
+  for (var r=0; r<ringYs.length; r++){
+    y = ringYs[r];
+    s += '<rect x="42" y="'+y+'" width="16" height="5" rx="1.8" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".8"/>';
+    s += '<line x1="43" y1="'+(y+1.4)+'" x2="57" y2="'+(y+1.4)+'" stroke="#FFFCE8" stroke-width=".7" opacity=".95"/>';
+  }
+  /* 杖顶雷球（多切面宝石质感） */
+  s += '<circle cx="50" cy="14" r="9" fill="#7A50C8" stroke="#3D0A70" stroke-width="1.4"/>';
+  s += '<circle cx="50" cy="14" r="9" fill="none" stroke="url(#oly-gold)" stroke-width="1.4"/>';
+  s += '<circle cx="46.5" cy="10.5" r="3" fill="#fff" opacity=".55"/>';
+  s += '<circle cx="45" cy="9.5" r="1.6" fill="#fff" opacity=".85"/>';
+  /* 顶部小金冠（3 尖，对称） */
+  s += '<path d="M42 6 L46 0 L50 -3 L54 0 L58 6 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width=".8" stroke-linejoin="round"/>';
+  /* 杖底金座（梯形） */
+  s += '<path d="M38 86 L62 86 L58 94 L42 94 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
+  s += '<line x1="40" y1="88" x2="60" y2="88" stroke="#FFFCE8" stroke-width=".7" opacity=".9"/>';
   return s;
 }
 
