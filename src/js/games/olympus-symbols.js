@@ -63,23 +63,25 @@ function zeus(){
   s += '<circle cx="50" cy="50" r="42" fill="none" stroke="#6A4600" stroke-width="2.4"/>';
   s += '<circle cx="50" cy="50" r="39" fill="none" stroke="url(#oly-gold)" stroke-width="2.6"/>';
   s += '<circle cx="50" cy="50" r="36.5" fill="none" stroke="#FFF8C8" stroke-width=".5" opacity=".7"/>';
-  /* 中心主闪电（竖直对称） */
-  s += '<path d="M50 16 L42 46 L48 46 L42 84 L58 52 L52 52 L60 16 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.4" stroke-linejoin="round"/>';
-  s += '<path d="M50 16 L44 46 L47 46 L45 72" fill="none" stroke="#FFFCE8" stroke-width="1.2" opacity=".9" stroke-linecap="round" stroke-linejoin="round"/>';
-  s += '<path d="M60 16 L54 44 L57 44 L55 58" fill="none" stroke="#7A5000" stroke-width=".9" opacity=".55" stroke-linecap="round"/>';
-  /* 左右对称小闪电 */
-  s += '<path d="M22 24 L18 42 L23 42 L20 58 L28 42 L24 42 L26 24 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
-  s += '<path d="M78 24 L82 42 L77 42 L80 58 L72 42 L76 42 L74 24 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
-  s += '<path d="M22 24 L20 42 L22 42 L21 50" fill="none" stroke="#FFFCE8" stroke-width=".8" opacity=".7" stroke-linecap="round"/>';
-  s += '<path d="M78 24 L80 42 L78 42 L79 50" fill="none" stroke="#FFFCE8" stroke-width=".8" opacity=".7" stroke-linecap="round"/>';
-  /* 圆盘高光 */
-  s += hl(30,26,12,8,.30);
-  s += hl(28,24,6,3.5,.55);
-  /* 对称装饰弧 */
-  s += arc('M68 78 Q82 68 84 50','#FFFCE8',1,.6);
-  s += arc('M32 78 Q18 68 16 50','#FFFCE8',1,.6);
-  /* 对称星芒 */
-  s += star(82,22,4) + star(18,22,4);
+  /* 对称光芒线（8 条，从中心向外，只在盘面边缘） */
+  for (var a=0; a<8; a++){
+    var ang = (a*45 - 90) * Math.PI/180;
+    var x1 = 50 + 32*Math.cos(ang), y1 = 50 + 32*Math.sin(ang);
+    var x2 = 50 + 37*Math.cos(ang), y2 = 50 + 37*Math.sin(ang);
+    s += '<line x1="'+x1.toFixed(2)+'" y1="'+y1.toFixed(2)+'" x2="'+x2.toFixed(2)+'" y2="'+y2.toFixed(2)+'" stroke="url(#oly-gold)" stroke-width="1.6" opacity=".85" stroke-linecap="round"/>';
+  }
+  /* 底部王座弧（金弧） */
+  s += '<path d="M28 76 Q50 64 72 76" fill="none" stroke="url(#oly-gold)" stroke-width="3.2" stroke-linecap="round"/>';
+  s += '<path d="M30 78 Q50 67 70 78" fill="none" stroke="#FFFCE8" stroke-width="1" opacity=".7" stroke-linecap="round"/>';
+  /* 中央大闪电（居中，粗犷） */
+  s += '<path d="M50 14 L38 48 L46 48 L38 86 L62 50 L54 50 L62 14 Z" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.6" stroke-linejoin="round"/>';
+  /* 闪电左高光 */
+  s += '<path d="M50 14 L42 48 L45 48 L43 72" fill="none" stroke="#FFFCE8" stroke-width="1.4" opacity=".95" stroke-linecap="round" stroke-linejoin="round"/>';
+  /* 闪电右暗面 */
+  s += '<path d="M62 14 L56 46 L59 46 L56 62" fill="none" stroke="#7A5000" stroke-width="1" opacity=".55" stroke-linecap="round"/>';
+  /* 盘面左上高光 */
+  s += hl(30,26,12,8,.28);
+  s += hl(28,24,6,3.5,.5);
   return s;
 }
 
@@ -128,11 +130,17 @@ function chalice(){
   s += '<path d="M30 28 Q32 44 42 52" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6" stroke-linecap="round"/>';
   s += '<path d="M74 26 Q72 48 60 56" fill="none" stroke="#5A3A00" stroke-width="2" opacity=".5" stroke-linecap="round"/>';
   /* 左右对称雕花（藤蔓） */
-  s += arc('M34 30 Q38 44 44 50','#7A5000',.8,.65);
-  s += arc('M66 30 Q62 44 56 50','#7A5000',.8,.65);
-  s += arc('M40 28 Q50 32 60 28','#7A5000',.7,.55);
-  s += arc('M38 38 Q50 42 62 38','#7A5000',.6,.45);
-  s += '<circle cx="50" cy="40" r="1.4" fill="#7A5000" opacity=".6"/>';
+  s += arc('M32 28 Q36 44 44 52','#7A5000',1.4,.85);
+  s += arc('M68 28 Q64 44 56 52','#7A5000',1.4,.85);
+  s += arc('M38 26 Q50 30 62 26','#7A5000',1.2,.75);
+  s += arc('M36 36 Q50 40 64 36','#7A5000',1.2,.7);
+  s += arc('M40 46 Q50 49 60 46','#7A5000',1,.6);
+  s += arc('M32 28 Q36 44 44 52','#FFFCE8',.5,.55);
+  s += arc('M68 28 Q64 44 56 52','#FFFCE8',.5,.55);
+  s += '<circle cx="50" cy="38" r="2.2" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
+  s += '<ellipse cx="49.2" cy="37.2" rx=".7" ry=".5" fill="#fff" opacity=".95"/>';
+  s += '<circle cx="46" cy="28" r="1.2" fill="#7A5000" opacity=".7"/>';
+  s += '<circle cx="54" cy="28" r="1.2" fill="#7A5000" opacity=".7"/>';
   s += '<rect x="46" y="60" width="8" height="14" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1"/>';
   s += '<line x1="48" y1="62" x2="48" y2="72" stroke="#FFFCE8" stroke-width=".9" opacity=".9"/>';
   s += '<ellipse cx="50" cy="78" rx="24" ry="5" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.2"/>';
@@ -185,10 +193,18 @@ function hourglass(){
   s += arc('M32 23 Q32 36 42 44','#fff',1.5,.95);
   s += arc('M32 77 Q32 64 42 56','#fff',1.2,.75);
   /* 顶部 + 底部对称金珠 */
-  s += '<circle cx="50" cy="8" r="2.4" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
-  s += '<ellipse cx="49.2" cy="7" rx=".9" ry=".6" fill="#fff" opacity=".95"/>';
-  s += '<circle cx="50" cy="92" r="2.4" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
-  s += '<ellipse cx="49.2" cy="91" rx=".9" ry=".6" fill="#fff" opacity=".95"/>';
+  s += '<circle cx="50" cy="6" r="3.4" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".8"/>';
+  s += '<ellipse cx="49" cy="4.8" rx="1.2" ry=".8" fill="#fff" opacity=".95"/>';
+  s += '<circle cx="50" cy="94" r="3.4" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".8"/>';
+  s += '<ellipse cx="49" cy="92.8" rx="1.2" ry=".8" fill="#fff" opacity=".95"/>';
+  /* 左右对称金饰（小圆点 + 短金线） */
+  s += '<circle cx="20" cy="14.5" r="2" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
+  s += '<circle cx="80" cy="14.5" r="2" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
+  s += '<circle cx="20" cy="85.5" r="2" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
+  s += '<circle cx="80" cy="85.5" r="2" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".6"/>';
+  /* 玻璃反光加强 */
+  s += arc('M32 22 Q32 36 42 44','#fff',1.8,.95);
+  s += arc('M33 24 Q33 34 40 41','#fff',1,.7);
   return s;
 }
 
