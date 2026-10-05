@@ -151,10 +151,10 @@
   });
 
   /* ---------- 游戏记录 ---------- */
-  var history = [];   /* [{bet, win, chain, fs, t}] */
-  function recordHistory(bet, win, chain, fs) {
-    history.unshift({ bet: bet, win: win, chain: chain, fs: fs, t: Date.now() });
-    if (history.length > 50) history.length = 50;
+  var history = [];
+  function recordHistory(entry) {
+    history.unshift(entry);
+    if (history.length > 100) history.length = 100;
   }
 
   function setResult(text, isWin) {
@@ -468,7 +468,14 @@
       }
 
       /* 记录到历史 */
-      recordHistory(bet, lastWin, r.chain || 0, false);
+      recordHistory({
+        t: Date.now(),
+        bet: bet,
+        win: lastWin,
+        chain: r.chain || 0,
+        mult: r.mult || 0,
+        fs: !!isFS
+      });
     } catch (e) { /* noop */ }
 
     spinning = false;
@@ -544,21 +551,72 @@
   /* ---------- 记录 ---------- */
   if (histBtn) histBtn.addEventListener('click', function () {
     if (!history.length) {
-      openSheet('游戏记录', '<p class="gp-sheet-empty">暂无记录</p>');
+      openSheet('游戏记录', '<p class="gp-sheet-empty">暂无记录，旋转几次后再来查看</p>');
       return;
     }
-    var html = '<div class="gp-hist">';
-    for (var i = 0; i < history.length && i < 30; i++) {
-      var h = history[i];
-      var cls = h.win > 0 ? 'is-win' : '';
-      html += '<div class="gp-hist-row ' + cls + '">' +
-                '<span class="gp-hist-bet">注 ' + fmtMoney(h.bet) + '</span>' +
-                '<span class="gp-hist-chain">' + (h.fs ? '⚡ ' : '') + h.chain + ' 连</span>' +
-                '<span class="gp-hist-win">' + (h.win > 0 ? '+' + fmtMoney(h.win) : '—') + '</span>' +
-              '</div>';
+
+    /* 顶部统计 */
+    var totalBet = 0, totalWin = 0, hits = 0, fsRounds = 0;
+    for (var i = 0; i < history.length; i++) {
+      totalBet += history[i].bet;
+      totalWin += history[i].win;
+      if (history[i].win > 0) hits++;
+      if (history[i].fs) fsRounds++;
+    }
+    var net = totalWin - totalBet;
+    var hitRate = (hits / history.length * 100).toFixed(1);
+
+    var html = '';
+    html += '<div class="gp-hist-stats">';
+    html += '<div class="gp-hist-stat"><span>总局数</span><strong>' + history.length + '</strong></div>';
+    html += '<div class="gp-hist-stat"><span>总下注</span><strong>' + fmtMoney(totalBet) + '</strong></div>';
+    html += '<div class="gp-hist-stat"><span>总赢</span><strong>' + fmtMoney(totalWin) + '</strong></div>';
+    html += '<div class="gp-hist-stat"><span>净收益</span><strong class="' + (net >= 0 ? 'is-win' : 'is-lose') + '">' + (net >= 0 ? '+' : '') + fmtMoney(net) + '</strong></div>';
+    html += '<div class="gp-hist-stat"><span>命中率</span><strong>' + hitRate + '%</strong></div>';
+    html += '<div class="gp-hist-stat"><span>免费旋转</span><strong>' + fsRounds + ' 局</strong></div>';
+    html += '</div>';
+
+    /* 逐局列表 */
+    html += '<div class="gp-hist">';
+    var maxShow = Math.min(history.length, 50);
+    for (var j = 0; j < maxShow; j++) {
+      var h = history[j];
+      var d = new Date(h.t);
+      var hh = String(d.getHours()).padStart(2, '0');
+      var mm2 = String(d.getMinutes()).padStart(2, '0');
+      var ss = String(d.getSeconds()).padStart(2, '0');
+      var rowNet = h.win - h.bet;
+      var cls = h.win > 0 ? 'is-win' : 'is-lose';
+      html += '<div class="gp-hist-row ' + cls + '">';
+      html += '  <div class="gp-hist-time">' + hh + ':' + mm2 + ':' + ss + (h.fs ? ' <em>FS</em>' : '') + '</div>';
+      html += '  <div class="gp-hist-mid">';
+      html += '    <span class="gp-hist-tag">注 ' + fmtMoney(h.bet) + '</span>';
+      html += '    <span class="gp-hist-tag">' + h.chain + ' 连</span>';
+      if (h.mult > 0) html += '<span class="gp-hist-tag is-mult">x' + h.mult + '</span>';
+      html += '  </div>';
+      html += '  <div class="gp-hist-right">';
+      if (h.win > 0) {
+        html += '<span class="gp-hist-win">+' + fmtMoney(h.win) + '</span>';
+        html += '<span class="gp-hist-net ' + (rowNet >= 0 ? 'is-win' : 'is-lose') + '">' + (rowNet >= 0 ? '+' : '') + fmtMoney(rowNet) + '</span>';
+      } else {
+        html += '<span class="gp-hist-win is-none">—</span>';
+        html += '<span class="gp-hist-net is-lose">' + fmtMoney(rowNet) + '</span>';
+      }
+      html += '  </div>';
+      html += '</div>';
     }
     html += '</div>';
-    openSheet('游戏记录（最近 30 局）', html);
+
+    html += '<button type="button" class="gp-hist-clear" id="gpHistClear">清空记录</button>';
+
+    openSheet('游戏记录', html);
+
+    var clr = document.getElementById('gpHistClear');
+    if (clr) clr.addEventListener('click', function () {
+      history = [];
+      closeSheet();
+      toast('记录已清空');
+    });
   });
 
   /* ---------- 赔付表 ---------- */
