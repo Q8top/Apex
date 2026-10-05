@@ -1,87 +1,114 @@
-/* Sweet Bonanza · 试玩页 / 正式游戏页共用样式 */
+/* Sweet Bonanza · 试玩 / 正式游戏页 · 一屏无滚动 + 防双击缩放 */
 
 *, *::before, *::after { box-sizing: border-box; }
 
+html {
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
 body.sd-demo-body {
   margin: 0;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background:
     radial-gradient(120% 80% at 50% 0%, #3a1638 0%, #1a0b1f 55%, #0d0512 100%);
   color: #ffffff;
   font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  padding-bottom: 24px;
+  overscroll-behavior: none;
 }
-button { font-family: inherit; }
+button {
+  font-family: inherit;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
 
+/* ═══ Shell：竖向 flex，撑满整屏 ═══ */
 .demo-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   max-width: 480px;
+  height: 100dvh;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: calc(6px + env(safe-area-inset-top, 0px)) 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  gap: 8px;
+  overflow: hidden;
 }
 
-/* ══ Header ══ */
+/* ═══ Header ═══ */
 .demo-header {
+  flex: 0 0 auto;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 42px 1fr 42px;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0 16px;
-  position: sticky; top: 0; z-index: 20;
-  background: linear-gradient(180deg, rgba(26,11,31,.95) 0%, rgba(26,11,31,.75) 70%, rgba(26,11,31,0) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  gap: 10px;
+  height: 52px;
 }
 .demo-header__icon {
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   display: grid; place-items: center;
   border: 0; border-radius: 50%;
   background: rgba(255,255,255,.08);
   color: #fff; padding: 0; cursor: pointer;
-  transition: background .18s ease, transform .18s cubic-bezier(.3,.7,.4,1.4);
+  transition: background .15s ease, transform .15s cubic-bezier(.3,.7,.4,1.4);
 }
 .demo-header__icon:active { background: rgba(255,255,255,.16); transform: scale(.92); }
-.demo-header__title { text-align: center; }
+.demo-header__title { text-align: center; overflow: hidden; }
 .demo-header__name {
-  display: block; font-size: 17px; font-weight: 800; letter-spacing: .02em;
+  display: block; font-size: 16px; font-weight: 800; letter-spacing: .02em;
   background: linear-gradient(90deg, #ff6ba6 0%, #ffb84d 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
+  line-height: 1.1;
 }
 .demo-header__badge {
-  display: inline-block; margin-top: 3px;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
-  padding: 2px 9px; border-radius: 999px;
+  display: inline-block; margin-top: 2px;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  padding: 1px 8px; border-radius: 999px;
   color: #ffd580; background: rgba(255,180,60,.12);
   border: 1px solid rgba(255,180,60,.35);
 }
 
-/* ══ Board ══ */
+/* ═══ Board：flex 1，撑满剩余 ═══ */
 .demo-board {
-  position: relative;
-  margin-top: 4px;
-  padding: 14px;
-  border-radius: 22px;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 20px;
   background: linear-gradient(180deg, #5c2a63 0%, #3e1c4b 55%, #2a1035 100%);
   box-shadow:
     inset 0 2px 0 rgba(255,255,255,.14),
     inset 0 -3px 6px rgba(0,0,0,.5),
-    0 12px 40px rgba(0,0,0,.55);
+    0 10px 32px rgba(0,0,0,.55);
   border: 1px solid rgba(255,255,255,.06);
+  overflow: hidden;
 }
+
+/* Reels：宽度撑满，6/5 比例；高度和宽度都受约束，取小值 */
 .demo-reels {
+  width: 100%;
+  aspect-ratio: 6 / 5;
+  max-height: 100%;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 5px;
+  gap: 4px;
 }
 .demo-cell {
   position: relative;
-  aspect-ratio: 1 / 1;
-  border-radius: 11px;
+  border-radius: 9px;
   display: grid; place-items: center;
   background:
     radial-gradient(80% 80% at 50% 30%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 65%),
@@ -91,162 +118,152 @@ button { font-family: inherit; }
     inset 0 -2px 3px rgba(0,0,0,.4),
     0 1px 2px rgba(0,0,0,.3);
   overflow: hidden;
+  min-width: 0;
+  min-height: 0;
 }
 .demo-cell__sym {
-  width: 82%; height: 82%;
+  width: 84%; height: 84%;
   display: grid; place-items: center;
 }
 .demo-cell__sym svg { width: 100%; height: 100%; display: block; }
 
-/* 中奖闪烁 */
-.demo-cell.is-win {
-  animation: demo-win-flash 0.6s ease-in-out infinite alternate;
-}
+.demo-cell.is-win { animation: demo-win-flash 0.6s ease-in-out infinite alternate; }
 @keyframes demo-win-flash {
   from { box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.4), 0 0 12px rgba(255,215,120,.55); }
   to   { box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 3px rgba(0,0,0,.4), 0 0 22px rgba(255,215,120,.95); }
 }
-/* 旋转滚动动画 */
-.demo-cell.is-spinning .demo-cell__sym {
-  animation: demo-spin-blur 0.28s linear infinite;
-}
+.demo-cell.is-spinning .demo-cell__sym { animation: demo-spin-blur 0.28s linear infinite; }
 @keyframes demo-spin-blur {
   0%   { transform: translateY(-30%); opacity: .3; }
   50%  { transform: translateY(0);    opacity: 1; }
   100% { transform: translateY(30%);  opacity: .3; }
 }
 
-/* ══ Win 提示 ══ */
-.demo-win {
-  text-align: center;
-  padding: 16px 0 8px;
-}
+/* ═══ 中奖提示 ═══ */
+.demo-win { flex: 0 0 auto; text-align: center; padding: 2px 0 0; }
 .demo-win__label {
-  font-size: 12px; font-weight: 700; letter-spacing: .16em;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
   color: rgba(255,255,255,.55);
 }
 .demo-win__amount {
-  font-size: 32px; font-weight: 900; letter-spacing: -.01em;
-  margin-top: 2px;
+  font-size: 22px; font-weight: 900; letter-spacing: -.01em;
+  margin-top: 0; line-height: 1.15;
   background: linear-gradient(90deg, #ff7eb6 0%, #ffb547 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  transition: transform .2s ease;
 }
 .demo-win__amount.is-pop { animation: demo-pop .5s cubic-bezier(.3,.7,.4,1.6); }
 @keyframes demo-pop {
   0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); }
 }
 
-/* ══ Reset ══ */
+/* ═══ 重置按钮：放大！ ═══ */
 .demo-reset {
+  flex: 0 0 auto;
   display: flex; justify-content: center;
-  padding: 4px 0 14px;
+  padding: 2px 0 4px;
 }
 .demo-reset__btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 18px;
-  border: 1px solid rgba(255,255,255,.16);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: 999px;
-  background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.92);
-  font-size: 13px; font-weight: 700; letter-spacing: .02em;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.95);
+  font-size: 14px; font-weight: 700; letter-spacing: .02em;
   cursor: pointer;
-  transition: background .18s ease, transform .18s cubic-bezier(.3,.7,.4,1.4);
+  transition: background .15s ease, transform .15s cubic-bezier(.3,.7,.4,1.4);
 }
-.demo-reset__btn:active { background: rgba(255,255,255,.14); transform: scale(.97); }
+.demo-reset__btn svg { width: 17px; height: 17px; }
+.demo-reset__btn:active { background: rgba(255,255,255,.18); transform: scale(.97); }
 
-/* ══ Stats ══ */
+/* ═══ 数据三栏 ═══ */
 .demo-stats {
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
   gap: 1px;
   background: rgba(255,255,255,.08);
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
-  margin-bottom: 12px;
 }
-.demo-stat {
-  padding: 12px 12px 14px;
-  background: rgba(20,8,26,.55);
-  text-align: left;
-}
+.demo-stat { padding: 8px 12px 9px; background: rgba(20,8,26,.55); text-align: left; }
 .demo-stat__k {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em;
-  color: rgba(255,255,255,.45);
-  margin-bottom: 4px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+  color: rgba(255,255,255,.45); margin-bottom: 1px;
 }
 .demo-stat__v {
-  font-size: 17px; font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -.01em;
+  font-size: 15px; font-weight: 800;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
 }
 .demo-stat__v--win { color: #ffce6b; }
 
-/* ══ Bet ══ */
+/* ═══ 下注 ═══ */
 .demo-bet {
+  flex: 0 0 auto;
   display: grid;
-  grid-template-columns: 52px 1fr 52px;
+  grid-template-columns: 46px 1fr 46px;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
 }
 .demo-bet__btn {
-  width: 52px; height: 52px;
+  width: 46px; height: 46px;
   border: 0; border-radius: 50%;
   background: rgba(255,255,255,.10);
   color: #fff; cursor: pointer;
   display: grid; place-items: center; padding: 0;
-  transition: background .18s ease, transform .18s cubic-bezier(.3,.7,.4,1.4);
+  transition: background .15s ease, transform .15s cubic-bezier(.3,.7,.4,1.4);
 }
-.demo-bet__btn:active { background: rgba(255,255,255,.2); transform: scale(.9); }
+.demo-bet__btn:active { background: rgba(255,255,255,.22); transform: scale(.9); }
 .demo-bet__display {
-  height: 52px;
-  border-radius: 14px;
+  height: 46px;
+  border-radius: 12px;
   background: rgba(255,255,255,.06);
-  display: flex; align-items: center; justify-content: center; gap: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.demo-bet__k { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: .08em; }
-.demo-bet__v { font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.demo-bet__k { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: .08em; }
+.demo-bet__v { font-size: 18px; font-weight: 900; font-variant-numeric: tabular-nums; }
 
-/* ══ Spin ══ */
-.demo-spin { margin-bottom: 12px; }
+/* ═══ 旋转 ═══ */
+.demo-spin { flex: 0 0 auto; }
 .demo-spin__btn {
-  width: 100%; height: 62px;
+  width: 100%; height: 54px;
   border: 0; border-radius: 999px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: linear-gradient(180deg, #ffffff 0%, #f0e8f5 100%);
-  color: #1a0b1f; font-size: 20px; font-weight: 900; letter-spacing: .04em;
-  box-shadow: 0 6px 20px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.9);
+  color: #1a0b1f; font-size: 18px; font-weight: 900; letter-spacing: .04em;
+  box-shadow: 0 4px 16px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.9);
   transition: transform .15s cubic-bezier(.3,.7,.4,1.4), box-shadow .2s ease;
 }
-.demo-spin__btn:active { transform: scale(.98); box-shadow: 0 2px 8px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.9); }
+.demo-spin__btn:active { transform: scale(.98); box-shadow: 0 2px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.9); }
 .demo-spin__btn:disabled {
   opacity: .55; cursor: not-allowed;
   background: linear-gradient(180deg, #d8c6e0 0%, #bca8cb 100%);
 }
 
-/* ══ Actions ══ */
+/* ═══ 辅助栏 ═══ */
 .demo-actions {
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 .demo-action {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  height: 44px;
+  height: 42px;
   border: 1px solid rgba(255,255,255,.14);
-  border-radius: 12px;
+  border-radius: 11px;
   background: rgba(255,255,255,.04);
   color: rgba(255,255,255,.88);
   font-size: 13px; font-weight: 700; letter-spacing: .02em;
   cursor: pointer;
-  transition: background .18s ease, transform .18s cubic-bezier(.3,.7,.4,1.4);
+  transition: background .15s ease, transform .15s cubic-bezier(.3,.7,.4,1.4);
 }
 .demo-action:active { background: rgba(255,255,255,.12); transform: scale(.97); }
+.demo-action.is-on { background: rgba(255,120,180,.22); border-color: rgba(255,120,180,.5); color: #ffb1d0; }
 
-/* ══ Toast ══ */
+/* ═══ Toast ═══ */
 .demo-toast {
-  position: fixed; left: 50%; bottom: 40px;
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   transform: translate(-50%, 8px);
   z-index: 200; opacity: 0; pointer-events: none;
   padding: 10px 18px; border-radius: 999px;
@@ -256,126 +273,20 @@ button { font-family: inherit; }
 }
 .demo-toast.is-show { opacity: 1; transform: translate(-50%, 0); }
 
-/* ══ Responsive ══ */
-@media (max-width: 360px) {
-  .demo-stat__v { font-size: 15px; }
-  .demo-spin__btn { font-size: 18px; }
+/* ═══ 小屏微调 ═══ */
+@media (max-height: 700px) {
+  .demo-shell { gap: 6px; }
+  .demo-header { height: 46px; grid-template-columns: 38px 1fr 38px; }
+  .demo-header__icon { width: 38px; height: 38px; }
+  .demo-win__amount { font-size: 20px; }
+  .demo-stat__v { font-size: 14px; }
+  .demo-bet__btn { width: 42px; height: 42px; }
+  .demo-bet__display { height: 42px; }
+  .demo-spin__btn { height: 48px; font-size: 17px; }
+  .demo-action { height: 38px; font-size: 12px; }
+  .demo-reset__btn { padding: 8px 18px; font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* ══════════════ V2 · 一屏无滚动布局 ══════════════ */
-html, body.sd-demo-body {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  padding-bottom: 0;
-}
-body.sd-demo-body { display: flex; }
-
-.demo-shell {
-  flex: 1 1 auto;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 0 12px;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* Header 去掉 sticky，不再遮挡 */
-.demo-header {
-  position: static;
-  flex: 0 0 auto;
-  padding: 6px 0 8px;
-  background: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  grid-template-columns: 40px 1fr 40px;
-  gap: 10px;
-}
-.demo-header__icon { width: 40px; height: 40px; }
-.demo-header__name { font-size: 16px; }
-.demo-header__badge { font-size: 10px; padding: 2px 8px; margin-top: 2px; }
-
-/* Board 占满剩余空间 */
-.demo-board {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 10px;
-  margin-top: 2px;
-  overflow: hidden;
-}
-
-/* Reels：高度撑满 board，宽度按 6/5 比例，居中 */
-.demo-reels {
-  flex: 1 1 auto;
-  min-height: 0;
-  align-self: center;
-  height: 100%;
-  width: auto;
-  aspect-ratio: 6 / 5;
-  max-width: 100%;
-  max-height: 100%;
-  gap: 4px;
-}
- auto.demo-cell {
-  /* 保持正方形，交给父 grid 拉伸 */
-  aspect-ratio: 1 / 1;
-  border-radius: 9px;
-}
-
-/* Win 区压缩 */
-.demo-win { flex: 0 0 auto; padding: 6px 0 2px; }
-.demo-win__label { font-size: 10.5px; letter-spacing: .14em; }
-.demo-win__amount { font-size: 22px; margin-top: 0; }
-
-/* Reset 压缩 */
-.demo-reset { flex: 0 0; padding: 2px 0 6px; }
-.demo-reset__btn { padding: 6px 14px; font-size: 12px; gap: 6px; }
-.demo-reset__btn svg { width: 14px; height: 14px; }
-
-/* Stats 压缩 */
-.demo-stats { flex: 0 0 auto; margin-bottom: 6px; border-radius: 12px; }
-.demo-stat { padding: 7px 10px 8px; }
-.demo-stat__k { font-size: 10px; margin-bottom: 1px; }
-.demo-stat__v { font-size: 14px; }
-
-/* Bet 压缩 */
-.demo-bet { flex: 0 0 auto; margin-bottom: 6px; gap: 8px; grid-template-columns: 42px 1fr 42px; }
-.demo-bet__btn { width: 42px; height: 42px; }
-.demo-bet__display { height: 42px; border-radius: 12px; gap: 8px; }
-.demo-bet__k { font-size: 11px; }
-.demo-bet__v { font-size: 16px; }
-
-/* Spin 压缩 */
-.demo-spin { flex: 0 0 auto; margin-bottom: 6px; }
-.demo-spin__btn { height: 50px; font-size: 18px; gap: 8px; }
-.demo-spin__btn svg { width: 22px; height: 22px; }
-
-/* Actions 压缩 */
-.demo-actions { flex: 0 0 auto; padding-bottom: 8px; gap: 6px; }
-.demo-action { height: 38px; font-size: 12px; gap: 5px; border-radius: 10px; }
-.demo-action svg { width: 16px; height: 16px; }
-
-/* 小屏再压 */
-@media (max-height: 640px) {
-  .demo-header { padding: 4px 0 6px; }
-  .demo-header__icon { width: 36px; height: 36px; }
-  .demo-win__amount { font-size: 20px; }
-  .demo-stat__v { font-size: 13px; }
-  .demo-bet__btn { width: 38px; height: 38px; }
-  .demo-bet__display { height: 38px; }
-  .demo-spin__btn { height: 46px; font-size: 17px; }
-  .demo-action { height: 34px; font-size: 11px; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
