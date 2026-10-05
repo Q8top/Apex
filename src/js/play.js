@@ -185,6 +185,48 @@
     return window.ApexOlympusSymbols.render(camel);
   }
 
+  /* ---------- 倍率之球 ---------- */
+  var bonusBalls = {};   /* { idx: 倍率值 } */
+
+  function dropBall() {
+    var count = 0;
+    for (var k in bonusBalls) if (bonusBalls.hasOwnProperty(k)) count++;
+    if (count >= 3) return 0;
+    if (rnd() > 0.18) return 0;
+
+    var candidates = [];
+    for (var i = 0; i < grid.length; i++) {
+      if (bonusBalls[i] === undefined) candidates.push(i);
+    }
+    if (!candidates.length) return 0;
+
+    var idx = candidates[Math.floor(rnd() * candidates.length)];
+    var vals = [2, 2, 2, 2, 2, 5, 5, 5, 10, 10, 25, 50, 100, 500];
+    var v = vals[Math.floor(rnd() * vals.length)];
+    bonusBalls[idx] = v;
+    return v;
+  }
+
+  function sumMultiplier() {
+    var total = 0;
+    for (var k in bonusBalls) {
+      if (bonusBalls.hasOwnProperty(k)) total += bonusBalls[k];
+    }
+    return total;
+  }
+
+  function renderBall(value) {
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+      + '<circle cx="50" cy="50" r="42" fill="#7A50C8" stroke="#FFD84D" stroke-width="2.5"/>'
+      + '<circle cx="50" cy="50" r="36" fill="none" stroke="#C4A6FF" stroke-width="1" opacity=".55"/>'
+      + '<ellipse cx="34" cy="30" rx="14" ry="10" fill="#fff" opacity=".28"/>'
+      + '<ellipse cx="30" cy="26" rx="6" ry="4" fill="#fff" opacity=".55"/>'
+      + '<text x="50" y="63" text-anchor="middle" font-size="32" font-weight="800" '
+      + 'fill="#FFE888" stroke="#3D0A70" stroke-width=".8" '
+      + 'font-family="sans-serif">x' + value + '</text>'
+      + '</svg>';
+  }
+
   function newGrid() {
     grid = [];
     for (var i = 0; i < COLS * ROWS; i++) grid.push(pick());
@@ -198,6 +240,7 @@
 
     for (var start = 0; start < grid.length; start++) {
       if (visited[start]) continue;
+      if (bonusBalls[start] !== undefined) { visited[start] = true; continue; }
       var sym = grid[start];
       var stack = [start];
       var group = [];
@@ -216,6 +259,7 @@
             if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
             var ni = nr * COLS + nc;
             if (visited[ni]) continue;
+            if (bonusBalls[ni] !== undefined) continue;
             if (grid[ni] !== sym) continue;
             visited[ni] = true;
             stack.push(ni);
@@ -254,11 +298,14 @@
     var hasWin = hl.length > 0;
     var frag = '';
     for (var i = 0; i < grid.length; i++) {
+      var isBall = bonusBalls[i] !== undefined;
       var isWin = hl.indexOf(i) >= 0;
       var cls = 'gp-cell';
-      if (isWin) cls += ' is-win';
+      if (isBall) cls += ' is-ball';
+      else if (isWin) cls += ' is-win';
       else if (hasWin) cls += ' is-dim';
-      frag += '<div class="' + cls + '">' + renderSym(grid[i]) + '</div>';
+      var content = isBall ? renderBall(bonusBalls[i]) : renderSym(grid[i]);
+      frag += '<div class="' + cls + '">' + content + '</div>';
     }
     boardEl.innerHTML = frag;
   }
@@ -319,6 +366,7 @@
 
     /* 2) 新盘面 */
     newGrid();
+    bonusBalls = {};
     renderBoard();
     await sleep(200);
 
@@ -327,6 +375,14 @@
     var chain = 0;
 
     while (true) {
+      /* 尝试降下倍率之球 */
+      var dv = dropBall();
+      if (dv) {
+        renderBoard();
+        setResult('倍率之球 x' + dv + '！', true);
+        await sleep(520);
+      }
+
       var wins = findWins();
       if (wins.length === 0) break;
 
@@ -362,13 +418,17 @@
     }
 
     /* 4) 结算 */
+    var mult = sumMultiplier();
     if (chain === 0) {
       setResult('未中奖', false);
     } else {
-      balance += totalWin;
-      lastWin = totalWin;
+      var finalWin = totalWin * (mult > 0 ? mult : 1);
+      balance += finalWin;
+      lastWin = finalWin;
       refreshUI();
-      setResult(chain + ' 连锁 · 总赢 ' + fmtMoney(totalWin), true);
+      var msg = chain + ' 连锁 · 总赢 ' + fmtMoney(finalWin);
+      if (mult > 0) msg = chain + ' 连锁 · 倍率 x' + mult + ' · 总赢 ' + fmtMoney(finalWin);
+      setResult(msg, true);
     }
 
     spinning = false;

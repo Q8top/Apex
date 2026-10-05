@@ -155,6 +155,20 @@ body {
   60%  { transform: translateY(4%);   opacity: 1;  }
   100% { transform: translateY(0);    opacity: 1;  }
 }
+.gp-cell.is-ball {
+  background: transparent;
+  box-shadow: none;
+}
+.gp-cell.is-ball svg {
+  width: 100%;
+  height: 100%;
+  animation: gp-ball-glow 1.6s ease-in-out infinite;
+}
+@keyframes gp-ball-glow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(180, 120, 255, .6)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(200, 150, 255, .95)); }
+}
+
 .gp-cell.is-dim {
   opacity: .28;
   filter: saturate(.4);
