@@ -45,6 +45,34 @@
     return out;
   })();
 
+  /* 符号赔率表：数组 index = 连线长度 - 3（3/4/5/6+） */
+  var PAYTABLE = {
+    'zeus':       [2.5, 10,  25,  100],
+    'crown':      [2,   8,   20,  50 ],
+    'chalice':    [1.5, 5,   15,  40 ],
+    'ring':       [1.2, 4,   12,  30 ],
+    'hourglass':  [1,   3,   10,  25 ],
+    'gem-red':    [0.5, 2,   5,   12 ],
+    'gem-purple': [0.4, 1.5, 4,   10 ],
+    'gem-blue':   [0.3, 1,   3,   8  ],
+    'gem-green':  [0.2, 0.8, 2.5, 6  ],
+    'gem-yellow': [0.2, 0.5, 2,   5  ]
+  };
+
+  /* 符号中文名（用于中奖提示） */
+  var SYMBOL_NAMES = {
+    'zeus':       '宙斯',
+    'crown':      '金冠',
+    'chalice':    '圣杯',
+    'ring':       '神戒',
+    'hourglass':  '沙漏',
+    'gem-red':    '红宝石',
+    'gem-purple': '紫宝石',
+    'gem-blue':   '蓝宝石',
+    'gem-green':  '绿宝石',
+    'gem-yellow': '黄宝石'
+  };
+
   /* 下注档位 */
   var BET_STEPS = [1, 2, 5, 10, 20, 50, 100];
   var DEFAULT_BALANCE = { demo: 10000, real: 0 };
@@ -122,17 +150,77 @@
     return POOL_FLAT[Math.floor(rnd() * POOL_FLAT.length)];
   }
 
+  /* ---------- 盘面数据（symbol id 数组，长度 COLS*ROWS） ---------- */
+  var grid = [];
+
+  function newGrid() {
+    grid = [];
+    for (var i = 0; i < COLS * ROWS; i++) grid.push(pick());
+  }
+
+  /* 8 方向相邻同符号连通组，>=3 个算中奖 */
+  function findWins() {
+    var visited = new Array(grid.length).fill(false);
+    var wins = [];
+    var dirs = [-1, 0, 1];
+
+    for (var start = 0; start < grid.length; start++) {
+      if (visited[start]) continue;
+      var sym = grid[start];
+      var stack = [start];
+      var group = [];
+      visited[start] = true;
+
+      while (stack.length) {
+        var cur = stack.pop();
+        group.push(cur);
+        var r = Math.floor(cur / COLS);
+        var c = cur % COLS;
+        for (var di = 0; di < 3; di++) {
+          for (var dj = 0; dj < 3; dj++) {
+            if (dirs[di] === 0 && dirs[dj] === 0) continue;
+            var nr = r + dirs[di];
+            var nc = c + dirs[dj];
+            if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+            var ni = nr * COLS + nc;
+            if (visited[ni]) continue;
+            if (grid[ni] !== sym) continue;
+            visited[ni] = true;
+            stack.push(ni);
+          }
+        }
+      }
+
+      if (group.length >= 3) {
+        wins.push({ symbol: sym, positions: group, count: group.length });
+      }
+    }
+    return wins;
+  }
+
+  /* 计算总赢额（单位：注额倍数 × 下注额） */
+  function calcTotalWin(wins, bet) {
+    var total = 0;
+    for (var i = 0; i < wins.length; i++) {
+      var w = wins[i];
+      var pay = PAYTABLE[w.symbol] || [0, 0, 0, 0];
+      var tier = Math.min(w.count - 3, 3);
+      total += pay[tier];
+    }
+    return total * bet;
+  }
+
   /* ---------- 渲染盘面 ---------- */
   function renderBoard() {
     if (!window.ApexOlympusSymbols) {
       boardEl.innerHTML = '<div style="grid-column:1/-1;color:#fff;padding:20px;text-align:center;font-size:12px">符号库加载中…</div>';
       return;
     }
+    if (grid.length !== COLS * ROWS) newGrid();
     window.ApexOlympusSymbols.ensureDefs();
     var frag = '';
-    for (var i = 0; i < COLS * ROWS; i++) {
-      var id = pick();
-      var svg = window.ApexOlympusSymbols.render(id);
+    for (var i = 0; i < grid.length; i++) {
+      var svg = window.ApexOlympusSymbols.render(grid[i]);
       frag += '<div class="gp-cell">' + svg + '</div>';
     }
     boardEl.innerHTML = frag;
@@ -190,16 +278,34 @@
     var timer = window.setInterval(function () {
       for (var i = 0; i < cellEls.length; i++) {
         if (rnd() < 0.4) {
-          var id = pick();
           cellEls[i].innerHTML = window.ApexOlympusSymbols
-            ? window.ApexOlympusSymbols.render(id)
+            ? window.ApexOlympusSymbols.render(pick())
             : '';
         }
       }
       tick++;
       if (tick >= 8) {
         window.clearInterval(timer);
+
+        /* 结算 */
+        newGrid();
         renderBoard();
+
+        var wins = findWins();
+        var totalWin = calcTotalWin(wins, bet);
+        lastWin = totalWin;
+        balance += totalWin;
+        refreshUI();
+
+        if (wins.length === 0) {
+          toast('未中奖');
+        } else if (wins.length === 1) {
+          var w = wins[0];
+          toast(SYMBOL_NAMES[w.symbol] + ' ' + w.count + ' 连 → 赢得 ' + fmtMoney(totalWin));
+        } else {
+          toast(wins.length + ' 组中奖 → 赢得 ' + fmtMoney(totalWin));
+        }
+
         spinning = false;
       }
     }, 80);
