@@ -110,9 +110,16 @@
     });
   }
 
+  /* ---------- 随机数（基于 crypto 的均匀随机） ---------- */
+  var rndBuf = new Uint32Array(1);
+  function rnd() {
+    (window.crypto || window.msCrypto).getRandomValues(rndBuf);
+    return rndBuf[0] / 4294967296;
+  }
+
   /* ---------- 随机符号 ---------- */
   function pick() {
-    return POOL_FLAT[Math.floor(Math.random() * POOL_FLAT.length)];
+    return POOL_FLAT[Math.floor(rnd() * POOL_FLAT.length)];
   }
 
   /* ---------- 渲染盘面 ---------- */
@@ -182,7 +189,7 @@
     var tick = 0;
     var timer = window.setInterval(function () {
       for (var i = 0; i < cellEls.length; i++) {
-        if (Math.random() < 0.4) {
+        if (rnd() < 0.4) {
           var id = pick();
           cellEls[i].innerHTML = window.ApexOlympusSymbols
             ? window.ApexOlympusSymbols.render(id)
