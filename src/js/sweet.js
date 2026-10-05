@@ -982,9 +982,13 @@
     var svc = document.getElementById('sd-service');
     if (svc) svc.addEventListener('click', function () { toast('客服即将接入'); });
     var demo = document.getElementById('sd-demo');
-    if (demo) demo.addEventListener('click', function () { toast('免费试玩即将开放'); });
+    if (demo) demo.addEventListener('click', function () {
+      window.location.href = 'sweet-demo.html?mode=demo';
+    });
     var play = document.getElementById('sd-play');
-    if (play) play.addEventListener('click', function () { toast('请先登录后开始游戏'); });
+    if (play) play.addEventListener('click', function () {
+      window.location.href = 'sweet-demo.html?mode=play';
+    });
   }
 
   /* ── Init ── */
@@ -1003,4 +1007,15 @@
   } else {
     init();
   }
+
+  /* ═══ 暴露接口给试玩 / 正式游戏页复用 ═══ */
+  window.ApexSweetSymbols = {
+    list: SYMBOLS,
+    build: function (specId, size) {
+      for (var i = 0; i < SYMBOLS.length; i++) {
+        if (SYMBOLS[i].id === specId) return buildSymbolArt(SYMBOLS[i], size);
+      }
+      return null;
+    }
+  };
 })();
