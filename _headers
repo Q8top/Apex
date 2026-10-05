@@ -31,10 +31,19 @@
 /privacy.html
   Cache-Control: no-store
 
+/privacy
+  Cache-Control: no-store
+
 /terms.html
   Cache-Control: no-store
 
+/terms
+  Cache-Control: no-store
+
 /status.html
+  Cache-Control: no-store
+
+/status
   Cache-Control: no-store
 
 
@@ -95,10 +104,10 @@
 
 # === APEX-CACHE-SRC ===
 /src/css/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=31536000, immutable
 
 /src/js/*
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=31536000, immutable
 
 /i18n/*
   Cache-Control: public, max-age=3600
@@ -107,10 +116,19 @@
 /announcements.html
   Cache-Control: no-store
 
+/announcements
+  Cache-Control: no-store
+
 /game.html
   Cache-Control: no-store
 
+/game
+  Cache-Control: no-store
+
 /slot.html
+  Cache-Control: no-store
+
+/slot
   Cache-Control: no-store
 
 
@@ -118,8 +136,17 @@
 /olympus.html
   Cache-Control: no-store
 
+/olympus
+  Cache-Control: no-store
+
 /sweet.html
   Cache-Control: no-store
 
+/sweet
+  Cache-Control: no-store
+
 /sugar.html
+  Cache-Control: no-store
+
+/sugar
   Cache-Control: no-store
