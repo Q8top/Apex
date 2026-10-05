@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>奥林匹斯之门 · Apex</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/src/css/game-detail.css">
+</head>
+<body>
+
+<main class="gd-page" data-game-id="olympus">
+  <header class="gd-topbar">
+    <button class="gd-icon-btn" id="gdBack" type="button" aria-label="返回">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18 L9 12 L15 6"/>
+      </svg>
+    </button>
+
+    <h1 class="gd-title">奥林匹斯之门</h1>
+
+    <button class="gd-icon-btn" id="gdShare" type="button" aria-label="分享">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/>
+        <circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/>
+        <path d="M8.6 13.5 L15.4 17.5"/>
+        <path d="M15.4 6.5 L8.6 10.5"/>
+      </svg>
+    </button>
+  </header>
+
+  <section class="gd-carousel" id="gdCarousel"
+           aria-roledescription="carousel" aria-label="游戏画面">
+    <div class="gd-track" id="gdTrack"></div>
+  </section>
+
+  <div class="gd-dots" id="gdDots" role="tablist" aria-label="选择游戏画面"></div>
+</main>
+
+<div class="gd-toast" id="gdToast" role="status" aria-live="polite"></div>
+
+<script src="/src/js/game-detail.js" defer></script>
+</body>
+</html>

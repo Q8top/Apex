@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1052 663" width="1052" height="663" role="img" aria-label="游戏画面">
+  <rect width="1052" height="663" fill="#fbfbfc"/>
+  <g fill="none" stroke="#c6c6cc" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="478" y="236" width="96" height="96" rx="8"/>
+    <path d="M490 320 L516 290 L536 312 L552 296 L568 320"/>
+  </g>
+  <circle cx="506" cy="264" r="8" fill="#c6c6cc"/>
+  <text x="526" y="412" text-anchor="middle"
+        font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="34" fill="#b6b6bd">游戏画面</text>
+</svg>
