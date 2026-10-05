@@ -340,5 +340,189 @@
     playBtn.addEventListener('click', function () { toast('开始游戏即将开放'); });
   }
 
+  /* ==========================================================
+     游戏详情内容（gd-game-details-v1）
+     仅当 GAME_DETAILS 存在该 gameId 时才渲染
+     ========================================================== */
+
+  function svgGem(gradId) {
+    return '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+      '<polygon points="32,6 54,24 46,58 18,58 10,24" fill="url(#' + gradId + ')" ' +
+        'stroke="rgba(0,0,0,.16)" stroke-width=".8" stroke-linejoin="round"/>' +
+      '<polygon points="10,24 22,24 18,58" fill="#000" opacity=".14"/>' +
+      '<polygon points="54,24 42,24 46,58" fill="#000" opacity=".14"/>' +
+      '<polygon points="32,6 42,24 32,30 22,24" fill="#fff" opacity=".38"/>' +
+      '<polygon points="22,24 42,24 46,58 18,58" fill="url(#' + gradId + ')" opacity=".35"/>' +
+      '<path d="M32 6 L22 24 L32 30 L42 24 Z" fill="#fff" opacity=".22"/>' +
+    '</svg>';
+  }
+
+  var SYMBOL_SVG = {
+    zeus:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M10 60 Q14 46 32 44 Q50 46 54 60 Z" fill="#ffffff" stroke="#c8c8ce" stroke-width="1"/>' +
+        '<path d="M16 32 Q14 52 32 56 Q50 52 48 32 Q44 42 32 44 Q20 42 16 32 Z" ' +
+          'fill="#f6f6f8" stroke="#c8c8ce" stroke-width="1"/>' +
+        '<path d="M22 36 Q26 46 32 48 Q38 46 42 36" fill="none" stroke="#dedee4" stroke-width="1"/>' +
+        '<ellipse cx="32" cy="30" rx="14" ry="16" fill="#f5d6b8" stroke="#d4a57d" stroke-width=".8"/>' +
+        '<circle cx="26" cy="28" r="1.6" fill="#222"/>' +
+        '<circle cx="38" cy="28" r="1.6" fill="#222"/>' +
+        '<path d="M22 24 L28 25" stroke="#8b6508" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<path d="M42 24 L36 25" stroke="#8b6508" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<path d="M32 30 L31 34 L33 34" fill="none" stroke="#d4a57d" stroke-width=".8"/>' +
+        '<path d="M18 18 L20 10 L26 15 L32 6 L38 15 L44 10 L46 18 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1" stroke-linejoin="round"/>' +
+        '<circle cx="32" cy="14" r="1.6" fill="#e74c3c"/>' +
+      '</svg>',
+
+    crown:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M10 46 L14 20 L24 32 L32 14 L40 32 L50 20 L54 46 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1.2" stroke-linejoin="round"/>' +
+        '<path d="M14 20 L24 32 L18 32 Z" fill="#fff" opacity=".35"/>' +
+        '<rect x="10" y="46" width="44" height="6" rx="2" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<circle cx="32" cy="43" r="2.6" fill="#e74c3c"/>' +
+        '<circle cx="20" cy="43" r="2" fill="#6c5ce7"/>' +
+        '<circle cx="44" cy="43" r="2" fill="#6c5ce7"/>' +
+      '</svg>',
+
+    chalice:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M16 12 L48 12 Q46 32 32 34 Q18 32 16 12 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1.2" stroke-linejoin="round"/>' +
+        '<path d="M22 12 L42 12 Q41 26 32 28 Q23 26 22 12 Z" fill="#fff" opacity=".25"/>' +
+        '<rect x="29" y="34" width="6" height="12" fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<rect x="20" y="46" width="24" height="6" rx="3" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<ellipse cx="32" cy="12" rx="16" ry="2.5" fill="#fff4c8" stroke="#8b6508" stroke-width="1"/>' +
+      '</svg>',
+
+    ring:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<circle cx="32" cy="38" r="17" fill="none" stroke="url(#gdg-gold)" stroke-width="6"/>' +
+        '<circle cx="32" cy="38" r="17" fill="none" stroke="#8b6508" stroke-width="1"/>' +
+        '<circle cx="32" cy="38" r="14" fill="none" stroke="#8b6508" stroke-width=".6"/>' +
+        '<polygon points="32,6 40,16 32,26 24,16" ' +
+          'fill="url(#gdg-purple)" stroke="#4a3f9e" stroke-width="1"/>' +
+        '<polygon points="32,8 37,16 32,22 27,16" fill="#fff" opacity=".42"/>' +
+      '</svg>',
+
+    hourglass:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<rect x="18" y="8" width="28" height="5" rx="1.5" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<rect x="18" y="51" width="28" height="5" rx="1.5" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M22 13 Q22 28 32 32 Q42 28 42 13 Z" fill="#f5c542" opacity=".9" ' +
+          'stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M22 51 Q22 36 32 32 Q42 36 42 51 Z" fill="#f5c542" opacity=".9" ' +
+          'stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M26 13 Q26 24 32 28 Q38 24 38 13 Z" fill="#ffe9a6" opacity=".7"/>' +
+        '<line x1="32" y1="13" x2="32" y2="32" stroke="#8b6508" stroke-width=".8"/>' +
+        '<line x1="32" y1="32" x2="32" y2="51" stroke="#8b6508" stroke-width=".8"/>' +
+      '</svg>',
+
+    'gem-red':    svgGem('gdg-red'),
+    'gem-purple': svgGem('gdg-purple'),
+    'gem-blue':   svgGem('gdg-blue'),
+    'gem-green':  svgGem('gdg-green'),
+    'gem-yellow': svgGem('gdg-yellow')
+  };
+
+  var GAME_DETAILS = {
+    olympus: {
+      about: '奥林匹斯之门是一款以希腊神话为背景的电子游戏。玩家将置身于众神居住的奥林匹斯山巅，见证万神之王宙斯挥动雷霆之力，召唤连锁掉落与倍率奖励。每一次旋转都可能触发新的中奖组合，神王随机投下的倍率之球，让奖励层层叠加。',
+      symbols: [
+        { id: 'zeus',       name: '宙斯' },
+        { id: 'crown',      name: '金冠' },
+        { id: 'chalice',    name: '圣杯' },
+        { id: 'ring',       name: '神戒' },
+        { id: 'hourglass',  name: '沙漏' },
+        { id: 'gem-red',    name: '红宝石' },
+        { id: 'gem-purple', name: '紫宝石' },
+        { id: 'gem-blue',   name: '蓝宝石' },
+        { id: 'gem-green',  name: '绿宝石' },
+        { id: 'gem-yellow', name: '黄宝石' }
+      ],
+      features: [
+        { title: '连锁掉落', desc: '中奖符号结算后从盘面消失，新符号自上方掉落补位，一次旋转可连续触发多次中奖。' },
+        { title: '倍率之球', desc: '万神之王宙斯随机投下倍率之球，数值从 ×2 起逐级递增，多个倍率可叠加计算。' },
+        { title: '天降神迹', desc: '连续中奖累积能量，触发神迹奖励环节，获得额外的连续旋转机会。' },
+        { title: '直达模式', desc: '可跳过等待，直接进入神迹奖励环节，体验高密度的连锁掉落。' }
+      ],
+      meta: [
+        { k: '开发商', v: 'Pragmatic Play' },
+        { k: '类型',   v: '电子游戏' },
+        { k: '主题',   v: '希腊神话' },
+        { k: '布局',   v: '6 × 5' },
+        { k: '支付线', v: '20 条' },
+        { k: '上线',   v: '2020 年' }
+      ]
+    }
+  };
+
+  (function renderGameDetails() {
+    var data = GAME_DETAILS[gameId];
+    if (!data) return;
+
+    var aboutSec = document.getElementById('gdSecAbout');
+    var aboutTxt = document.getElementById('gdAboutText');
+    if (data.about && aboutSec && aboutTxt) {
+      aboutTxt.textContent = data.about;
+      aboutSec.hidden = false;
+    }
+
+    var symSec   = document.getElementById('gdSecSymbols');
+    var symGrid  = document.getElementById('gdSymbolGrid');
+    var symCount = document.getElementById('gdSymbolCount');
+    if (data.symbols && data.symbols.length && symSec && symGrid) {
+      var sh = '';
+      for (var si = 0; si < data.symbols.length; si++) {
+        var sym = data.symbols[si];
+        sh += '<div class="gd-symbol" role="img" aria-label="' + sym.name + '">' +
+                '<div class="gd-symbol-icon">' + (SYMBOL_SVG[sym.id] || '') + '</div>' +
+                '<div class="gd-symbol-name">' + sym.name + '</div>' +
+              '</div>';
+      }
+      symGrid.innerHTML = sh;
+      if (symCount) symCount.textContent = '共 ' + data.symbols.length + ' 个';
+      symSec.hidden = false;
+    }
+
+    var featSec  = document.getElementById('gdSecFeatures');
+    var featList = document.getElementById('gdFeatureList');
+    if (data.features && data.features.length && featSec && featList) {
+      var fh = '';
+      for (var fi = 0; fi < data.features.length; fi++) {
+        var f = data.features[fi];
+        fh += '<li class="gd-feature">' +
+                '<span class="gd-feature-num">' + (fi + 1) + '</span>' +
+                '<div class="gd-feature-body">' +
+                  '<h3 class="gd-feature-title">' + f.title + '</h3>' +
+                  '<p class="gd-feature-desc">' + f.desc + '</p>' +
+                '</div>' +
+              '</li>';
+      }
+      featList.innerHTML = fh;
+      featSec.hidden = false;
+    }
+
+    var metaSec  = document.getElementById('gdSecMeta');
+    var metaList = document.getElementById('gdMetaList');
+    if (data.meta && data.meta.length && metaSec && metaList) {
+      var mh = '';
+      for (var mi = 0; mi < data.meta.length; mi++) {
+        var m = data.meta[mi];
+        mh += '<div class="gd-meta-item">' +
+                '<dt class="gd-meta-k">' + m.k + '</dt>' +
+                '<dd class="gd-meta-v">' + m.v + '</dd>' +
+              '</div>';
+      }
+      metaList.innerHTML = mh;
+      metaSec.hidden = false;
+    }
+  })();
+
   play();
 })();
