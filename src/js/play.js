@@ -389,22 +389,42 @@
 
   /* 核心旋转（含连锁 + 倍率球） */
   async function runSpin(bet, isFS) {
-    /* 闪烁 */
+    /* 1) 准备新盘面数据 */
+    newGrid();
+    var newCells = grid.slice();
+
+    /* 2) 所有格子进入滚动状态 */
     var cells = boardEl.querySelectorAll('.gp-cell');
+    for (var ci = 0; ci < cells.length; ci++) cells[ci].classList.add('is-spinning');
+
+    /* 3) 快速变符号（视觉滚动） */
     var t = 0;
     var ft = setInterval(function () {
       for (var i = 0; i < cells.length; i++) {
-        if (rnd() < 0.4) cells[i].innerHTML = renderSym(pick());
+        if (rnd() < 0.35) cells[i].innerHTML = renderSym(pick());
       }
       t++;
       if (t >= 8) clearInterval(ft);
     }, 80);
     await sleep(700);
+    clearInterval(ft);
 
-    newGrid();
-    renderBoard();
-    sfx('land');
-    await sleep(200);
+    /* 4) 逐列定格（列错开 60ms） */
+    for (var col = 0; col < COLS; col++) {
+      for (var rr = 0; rr < ROWS; rr++) {
+        var idx = rr * COLS + col;
+        var el = cells[idx];
+        if (!el) continue;
+        el.innerHTML = renderSym(newCells[idx]);
+        el.classList.remove('is-spinning');
+        el.classList.add('is-land');
+      }
+      sfx('land');
+      await sleep(60);
+    }
+    await sleep(140);
+    for (var li = 0; li < cells.length; li++) cells[li].classList.remove('is-land');
+    await sleep(80);
 
     var totalWin = 0, chain = 0;
     while (true) {
