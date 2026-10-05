@@ -115,8 +115,32 @@
     return '¥' + Number(n).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  var VIB = {
+    click: 8,
+    spin: 15,
+    land: 15,
+    drop: 20,
+    ball: [30, 30, 60],
+    chain: [25],
+    win: function (amount, bet) {
+      var r = amount / Math.max(1, bet);
+      if (r >= 50) return [50, 40, 80, 40, 120];
+      if (r >= 10) return [30, 30, 60];
+      if (r >= 3) return [20];
+      return [10];
+    },
+    fsTrigger: [60, 40, 60, 40, 200],
+    fsSpin: [15],
+    fsEnd: [40, 40, 100],
+    error: 80
+  };
+
   function sfx(name) {
     if (window.ApexAudio) window.ApexAudio.play.apply(null, arguments);
+    if (!navigator.vibrate) return;
+    var v = VIB[name];
+    if (typeof v === 'function') v = v(arguments[1], arguments[2]);
+    if (v) { try { navigator.vibrate(v); } catch (e) {} }
   }
 
   function toast(msg) {
@@ -310,6 +334,22 @@
     return t;
   }
 
+  var rollingId = 0;
+  function animateNumber(el, from, to, dur) {
+    if (!el) return;
+    var myId = ++rollingId;
+    var start = performance.now();
+    function tick(now) {
+      if (myId !== rollingId) return;
+      var t = Math.min(1, (now - start) / dur);
+      var e = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmtMoney(from + (to - from) * e);
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = fmtMoney(to);
+    }
+    requestAnimationFrame(tick);
+  }
+
   function refreshUI() {
     if (balanceEl) balanceEl.textContent = fmtMoney(balance);
     if (betEl)     betEl.textContent     = fmtMoney(BET_STEPS[betIndex]);
@@ -371,8 +411,10 @@
       sfx('chain', chain);
       sfx('win', winAmount, bet);
       setResult('第 ' + chain + ' 连 · +' + fmtMoney(winAmount), true);
+      var prevWin = lastWin;
       lastWin = totalWin;
       refreshUI();
+      animateNumber(prizeEl, prevWin, totalWin, 320);
       await sleep(900);
 
       var now = boardEl.querySelectorAll('.gp-cell');
@@ -393,9 +435,12 @@
     var mult = isFS ? sumBalls() : 0;
     var finalWin = totalWin * (mult > 0 ? mult : 1);
     if (finalWin > 0) {
+      var prevTotal = lastWin;
       balance += finalWin;
       lastWin = finalWin;
       refreshUI();
+      animateNumber(prizeEl, prevTotal, finalWin, 450);
+      animateNumber(balanceEl, balance - finalWin, balance, 450);
     } else {
       lastWin = 0;
     }
