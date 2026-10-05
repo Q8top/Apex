@@ -1,3 +1,21 @@
+/* ============================================================
+   APEX OLYMPUS · CSS 结构说明（Phase 2）
+   ============================================================
+   本文件按"追加覆盖"方式累积，区块顺序如下：
+
+   1. DESIGN TOKENS        (顶)              ← CSS Variables
+   2. ORIGINAL BASE        (~line 100)       ← 最初的基础样式
+   3. GAME PAGE (初始)     (~line 1000)      ← 详情页样式
+   4. OVERLAY 初始         (~line 1500)      ← overlay 骨架
+   5. P0/P1 PATCHES        (~line 1600+)     ← 后续所有 patch（!important 密集）
+   6. FINAL OVERRIDES      (~line 2400+)     ← 最新的最终覆盖层
+
+   维护建议：
+   - 新增样式请追加到文件末尾（FINAL OVERRIDES 之后）
+   - 不要删除历史区块（可能仍被引用）
+   - 完整重构 !important 推迟到所有玩法完成后
+   ============================================================ */
+
 /* === APEX DESIGN TOKENS === */
 /* 建立于 Phase 1 · 后续所有样式优先引用 token */
 :root {
@@ -1301,7 +1319,8 @@ body {
 /* 每个符号的配色 */
 .sym-0 { background: linear-gradient(180deg, #fde68a 0%, #d4af37 100%); }  /* 皇冠 - 金 */
 .sym-1 { background: linear-gradient(180deg, #fca5a5 0%, #dc2626 100%); }  /* 红宝石 */
-.sym-2 { background: linear-gradient(180deg, #d8b4fe 0%, #8b5cf6 100%); }  /* 紫宝石 */
+/* .sym-2 已由 SVG 符号替代，保留空声明避免旧规则命中 */
+.sym-2 { background: linear-gradient(180deg, #f5f3ff 0%, #e9d5ff 100%); }  /* 紫宝石 */
 .sym-3 { background: linear-gradient(180deg, #fef08a 0%, #eab308 100%); }  /* 黄宝石 */
 .sym-4 { background: linear-gradient(180deg, #6ee7b7 0%, #10b981 100%); }  /* 绿宝石 */
 .sym-5 { background: linear-gradient(180deg, #93c5fd 0%, #3b82f6 100%); }  /* 蓝宝石 */
@@ -1818,7 +1837,7 @@ body {
 .og-grid-wrap {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(180, 120, 255, 0.28) 0%, transparent 55%),
-    linear-gradient(180deg, #2a1252 0%, #150a2e 100%);
+    linear-gradient(180deg, var(--game-stage) 0%, var(--game-bg) 100%);
   border: 1.5px solid rgba(212, 175, 55, 0.45);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.15) inset,
@@ -2419,7 +2438,7 @@ body {
 
 /* ===== 旋转按钮：紫色渐变 ===== */
 .og-spin {
-  background: linear-gradient(180deg, #7c4dff 0%, #5a2dcc 100%) !important;
+  background: var(--apex-text) !important;
   color: #ffffff !important;
   border: 0 !important;
   box-shadow:
@@ -2498,7 +2517,7 @@ body {
 .og-grid-wrap {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(180, 120, 255, 0.28) 0%, transparent 55%),
-    linear-gradient(180deg, #2a1252 0%, #150a2e 100%) !important;
+    linear-gradient(180deg, var(--game-stage) 0%, var(--game-bg) 100%) !important;
   border: 1.5px solid rgba(212, 175, 55, 0.45) !important;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.15) inset,
