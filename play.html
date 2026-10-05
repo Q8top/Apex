@@ -42,7 +42,7 @@
   </header>
 
   <section class="gp-stage">
-    <div class="gp-board" id="gpBoard" aria-label="游戏盘面"><svg class="gp-links" id="gpLinks" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div>
+    <div class="gp-board" id="gpBoard" role="grid" aria-label="6 列 5 行游戏盘面"><svg class="gp-links" id="gpLinks" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div>
   </section>
 
   <div class="gp-result" id="gpResult" aria-live="polite"></div>
@@ -71,15 +71,15 @@
     <div class="gp-stats">
       <div class="gp-stat">
         <span class="gp-stat-k">余额</span>
-        <strong class="gp-stat-v" id="gpBalance">¥10,000.00</strong>
+        <strong class="gp-stat-v" id="gpBalance" aria-live="polite">¥10,000.00</strong>
       </div>
       <div class="gp-stat">
         <span class="gp-stat-k">下注</span>
-        <strong class="gp-stat-v" id="gpBet">¥10.00</strong>
+        <strong class="gp-stat-v" id="gpBet" aria-live="polite">¥10.00</strong>
       </div>
       <div class="gp-stat">
         <span class="gp-stat-k">赢得</span>
-        <strong class="gp-stat-v" id="gpWin">¥0.00</strong>
+        <strong class="gp-stat-v" id="gpWin" aria-live="polite">¥0.00</strong>
       </div>
     </div>
 
@@ -123,6 +123,8 @@
     </div>
   </section>
 </main>
+<div class="gp-sr-only" id="gpSrOnly" role="status" aria-live="polite" aria-atomic="true"></div>
+
 <div class="gp-combo" id="gpCombo" hidden></div>
 
 
@@ -154,7 +156,7 @@
 
 
 <div class="gp-settle" id="gpSettle" hidden aria-hidden="true">
-  <div class="gp-settle-card" role="status">
+  <div class="gp-settle-card" role="alert" aria-live="assertive">
     <div class="gp-settle-chain" id="gpSettleChain"></div>
     <div class="gp-settle-label">本局总赢</div>
     <div class="gp-settle-win" id="gpSettleWin">¥0.00</div>

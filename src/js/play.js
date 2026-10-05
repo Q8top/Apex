@@ -153,6 +153,15 @@
     if (v) { try { navigator.vibrate(v); } catch (e) {} }
   }
 
+  var srEl = document.getElementById('gpSrOnly');
+  var _lastAnnounce = '';
+  function announce(msg) {
+    if (!srEl || !msg || msg === _lastAnnounce) return;
+    _lastAnnounce = msg;
+    srEl.textContent = '';
+    setTimeout(function () { srEl.textContent = msg; }, 30);
+  }
+
   function toast(msg) {
     if (!toastEl) return;
     toastEl.textContent = msg;
@@ -175,6 +184,13 @@
     requestAnimationFrame(function () {
       sheetEl.classList.add('is-open');
       sheetEl.setAttribute('aria-hidden', 'false');
+      /* 焦点移入抽屉（优先第一个按钮） */
+      var first = sheetBody.querySelector('button, a, [tabindex]');
+      if (first && first.focus) first.focus();
+      else if (sheetTitle && sheetTitle.focus) {
+        sheetTitle.setAttribute('tabindex', '-1');
+        sheetTitle.focus();
+      }
     });
   }
   function closeSheet() {
@@ -182,6 +198,9 @@
     sheetEl.classList.remove('is-open');
     sheetEl.setAttribute('aria-hidden', 'true');
     setTimeout(function () { sheetEl.hidden = true; }, 300);
+    if (document.activeElement && sheetEl.contains(document.activeElement)) {
+      if (menuBtn && menuBtn.focus) menuBtn.focus();
+    }
   }
   if (sheetBd) sheetBd.addEventListener('click', closeSheet);
   document.addEventListener('keydown', function (e) {
@@ -561,6 +580,7 @@
       sfx('win', winAmount, bet);
       popupWin(positions, winAmount);
       showCombo(chain);
+      announce('第 ' + chain + ' 次连锁中奖 ' + fmtMoney(winAmount));
       setResult('第 ' + chain + ' 连 · +' + fmtMoney(winAmount), true);
       var prevWin = lastWin;
       lastWin = totalWin;
@@ -597,6 +617,7 @@
       animateNumber(prizeEl, prevTotal, finalWin, 450);
       animateNumber(balanceEl, balance - finalWin, balance, 450);
       /* FS 内不弹（避免连转频繁打断），普通局弹结算 */
+      announce('本局总赢 ' + fmtMoney(finalWin));
       if (!isFS) {
         showSettle(chain, finalWin, mult, bet);
         /* 大奖时先放专属演出，结算面板稍微延后 */
@@ -660,11 +681,12 @@
           if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
           sfx('fsTrigger');
           triggerFlash('big');
+          announce('触发免费旋转 15 次');
           setResult('⚡ ' + sc + ' 个闪电 · 触发免费旋转 15 次！', true);
           refreshUI();
           await sleep(1400);
         } else {
-          if (r.chain === 0) setResult('未中奖', false);
+          if (r.chain === 0) { announce('本局未中奖'); setResult('未中奖', false); }
           else if (r.finalWin > 0) setResult(r.chain + ' 连锁 · 总赢 ' + fmtMoney(r.finalWin), true);
         }
       }
