@@ -124,6 +124,7 @@ body {
 }
 
 .gp-board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -979,4 +980,29 @@ body {
     0 10px 32px -14px rgba(90, 40, 160, .8),
     0 0 26px rgba(139, 80, 216, .4);
   transition: background-color .55s ease, box-shadow .55s ease;
+}
+
+/* ---------- 中奖金额浮层 ---------- */
+.gp-win-float {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .3px;
+  color: #FFE888;
+  text-shadow:
+    0 0 10px rgba(255,200,60,.95),
+    0 0 4px rgba(255,200,60,.85),
+    0 2px 4px rgba(0,0,0,.75);
+  pointer-events: none;
+  z-index: 20;
+  white-space: nowrap;
+  animation: gp-float-up 1.4s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes gp-float-up {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.55); }
+  18%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  38%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -160%) scale(1); }
 }
