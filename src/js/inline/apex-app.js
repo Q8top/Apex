@@ -166,10 +166,10 @@ function renderCatContent(content, catKey){
     var html='<div class="apex-game-grid">';
     GAMES.forEach(function(g){
       var svg=(window.ApexGameIcons&&window.ApexGameIcons.render)?window.ApexGameIcons.render(g.k):'';
-      html+='<span class="apex-game-card" aria-label="'+g.n+'">'
+      html+='<a class="apex-game-card" aria-label="'+g.n+'">'
         +'<span class="apex-game-card-icon">'+svg+'</span>'
         +'<span class="apex-game-card-name">'+g.n+'</span>'
-        +'</span>';
+        +'</a>';
     });
     html+='</div>';
     html+='<button type="button" class="apex-more-btn" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
