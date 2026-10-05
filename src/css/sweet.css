@@ -348,3 +348,137 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   V2 覆盖 · 2026-10-05
+   1) 轮播一次一张  2) 占位图改灰白图片图标  3) 符号倍率改表格
+   4) 相似游戏缩小  5) 玩法列表 / 表格滚动容器
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1) 轮播：一次只显示一张，无前后溢出 ── */
+.sd-carousel { padding: 12px 0 4px; }
+.sd-carousel__viewport { scroll-padding-inline: 16px; }
+.sd-carousel__track { gap: 0; padding: 0 16px; }
+.sd-carousel__slide {
+  flex: 0 0 calc(100% - 32px);
+  scroll-snap-align: center;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  background: #f6f6f8;
+  box-shadow: 0 1px 2px rgba(10,10,10,.05), 0 2px 8px rgba(10,10,10,.04);
+}
+
+/* ── 2) 占位图：灰白图片图标 + 「游戏画面」 ── */
+.sd-carousel__ph {
+  background: #f6f6f8;
+  color: #b8b8c0;
+  gap: 10px;
+}
+.sd-carousel__ph-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b8b8c0;
+  letter-spacing: .04em;
+}
+.sd-carousel__ph-sub { display: none; }
+.sd-carousel__ph-icon {
+  width: 72px; height: 72px;
+  display: grid; place-items: center;
+  color: #c8c8d0;
+}
+.sd-carousel__ph-icon svg { display: block; width: 100%; height: 100%; }
+.sd-carousel__dots { padding: 10px 0 2px; }
+.sd-carousel__dot { width: 6px; height: 6px; }
+.sd-carousel__dot.is-active { width: 20px; }
+
+/* ── 3) 符号倍率表格 ── */
+.sd-table-wrap {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; border-radius: var(--sd-r-m);
+}
+.sd-table-wrap::-webkit-scrollbar { display: none; }
+
+.sd-table--symbols {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 13px;
+}
+.sd-table--symbols thead th {
+  padding: 9px 4px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+.sd-table--symbols thead th:first-child {
+  width: 40%;
+  text-align: left;
+  padding-left: 12px;
+}
+.sd-table--symbols tbody td {
+  padding: 10px 4px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--sd-fg);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--sd-line-2);
+}
+.sd-table--symbols tbody td:first-child {
+  text-align: left;
+  padding: 8px 12px 8px 12px;
+  font-weight: 600;
+  color: var(--sd-fg-2);
+}
+.sd-table--symbols tbody tr:last-child td { border-bottom: 0; }
+
+.sd-sym-cell {
+  display: flex; align-items: center; gap: 10px;
+}
+.sd-sym-cell__art {
+  flex: 0 0 34px; width: 34px; height: 34px;
+  display: grid; place-items: center;
+}
+.sd-sym-cell__art svg { display: block; width: 100%; height: 100%; }
+.sd-sym-cell__name {
+  font-size: 13px; font-weight: 700; color: var(--sd-fg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sd-table--symbols .sd-mult {
+  display: inline-block;
+  padding: 2px 8px; border-radius: 999px;
+  background: #fff0f6; color: var(--sd-accent);
+  font-size: 12px; font-weight: 800;
+  letter-spacing: .01em;
+  min-width: 44px;
+}
+.sd-table--symbols .sd-mult--scatter {
+  background: #eef7ff; color: #0369a1;
+}
+
+/* ── 4) 相似游戏卡片缩小 ── */
+.sd-similar { gap: 10px; padding: 4px 16px 12px; }
+.sd-card { flex: 0 0 92px; gap: 6px; }
+.sd-card__cover {
+  width: 92px;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+}
+.sd-card__name { font-size: 11.5px; }
+
+/* ── 5) 玩法列表 ── */
+.sd-list {
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: var(--sd-fg-2);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.sd-list li { padding-left: 2px; }
+.sd-list li + li { margin-top: 4px; }
+.sd-list li::marker { color: var(--sd-accent); }
+
+/* ── 6) 删除旧 facts（V2 已不用）── */
+.sd-facts { display: none; }
+
+/* ── 7) 玩法表格内文本对齐优化 ── */
+.sd-tabpanel .sd-table td { font-weight: 600; }
+.sd-tabpanel .sd-table thead th { white-space: nowrap; }

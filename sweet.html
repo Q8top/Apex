@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="format-detection" content="telephone=no">
 <title>糖果连连爆 Sweet Bonanza · Apex Global Entertainment</title>
-<meta name="description" content="糖果连连爆 Sweet Bonanza 游戏详情：玩法规则、符号倍率、常见问题与相似游戏推荐。">
+<meta name="description" content="糖果连连爆 Sweet Bonanza 游戏详情：玩法规则、符号倍率与相似游戏推荐。">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="fonts/fonts.css">
@@ -15,7 +15,6 @@
 <body class="sweet-body">
 <main class="sd-shell" id="sweet-page" data-game="sweet">
 
-  <!-- ═══ 顶部导航栏 ═══ -->
   <header class="sd-header">
     <button class="sd-header__icon" type="button" id="sd-back" aria-label="返回">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
@@ -29,7 +28,6 @@
     </button>
   </header>
 
-  <!-- ═══ 图片轮播 ═══ -->
   <section class="sd-carousel" aria-label="游戏画面轮播">
     <div class="sd-carousel__viewport" id="sd-carousel-viewport">
       <div class="sd-carousel__track" id="sd-carousel-track"></div>
@@ -37,27 +35,19 @@
     <div class="sd-carousel__dots" id="sd-carousel-dots"></div>
   </section>
 
-  <!-- ═══ 游戏介绍 ═══ -->
   <section class="sd-section">
     <header class="sd-section__head">
       <h2 class="sd-section__title">游戏介绍</h2>
-      <span class="sd-section__badge">Sweet Bonanza</span>
+      <span class="sd-section__badge">SWEET BONANZA</span>
     </header>
     <p class="sd-section__text">
-      糖果连连爆（Sweet Bonanza）是一款高波动的糖果主题老虎机。采用 6×5 网格与「任意位置赔付」（Scatter Pays）机制，
-      同一种符号在任意位置出现 8 个及以上即可中奖。免费旋转阶段，糖果炸弹倍数会累加至本轮总奖金。
+      糖果连连爆（Sweet Bonanza）是一款高波动糖果主题老虎机，采用 6×5 网格与「任意位置赔付」（Scatter Pays）机制。单局中同一种符号在任意位置出现 8 个及以上即可中奖，不受行列连线限制。
     </p>
-    <ul class="sd-facts">
-      <li><span class="sd-facts__k">开发商</span><span class="sd-facts__v">Pragmatic Play</span></li>
-      <li><span class="sd-facts__k">网格</span><span class="sd-facts__v">6 × 5</span></li>
-      <li><span class="sd-facts__k">波动性</span><span class="sd-facts__v">高</span></li>
-      <li><span class="sd-facts__k">RTP</span><span class="sd-facts__v">96.48%</span></li>
-      <li><span class="sd-facts__k">最大倍数</span><span class="sd-facts__v">×21,100</span></li>
-      <li><span class="sd-facts__k">赔付方式</span><span class="sd-facts__v">Scatter Pays</span></li>
-    </ul>
+    <p class="sd-section__text">
+      免费旋转阶段，场上的糖果炸弹会将其倍数累加至本轮总奖金，最高可叠加至数千倍。游戏节奏明快、触发频繁，兼具糖果主题的轻松观感与高波动的刺激体验。
+    </p>
   </section>
 
-  <!-- ═══ 玩法规则（表/页） ═══ -->
   <section class="sd-section">
     <header class="sd-section__head">
       <h2 class="sd-section__title">玩法规则</h2>
@@ -70,39 +60,71 @@
     <div class="sd-tabpanels" id="sd-tabpanels">
       <div class="sd-tabpanel is-active" data-panel="base">
         <table class="sd-table"><tbody>
-          <tr><th>网格</th><td>6 列 × 5 行</td></tr>
-          <tr><th>赔付方式</th><td>任意位置 8 个及以上相同符号</td></tr>
-          <tr><th>最低赔付</th><td>8 个符号即可触发</td></tr>
-          <tr><th>下注范围</th><td>0.20 ~ 100.00</td></tr>
+          <tr><th>游戏网格</th><td>6 列 × 5 行 = 30 格</td></tr>
+          <tr><th>赔付方式</th><td>任意位置赔付（Scatter Pays）</td></tr>
+          <tr><th>最低中奖</th><td>同种符号出现 8 个及以上</td></tr>
+          <tr><th>下注档位</th><td>0.20 ~ 100.00（共 12 档）</td></tr>
           <tr><th>最大倍数</th><td>×21,100</td></tr>
+          <tr><th>自动旋转</th><td>10 / 25 / 50 / 100 次</td></tr>
+          <tr><th>回合结构</th><td>下注 → 结算 → 触发免费旋转（可选）</td></tr>
+          <tr><th>赔率来源</th><td>符号数量 × 符号单价 × 下注档位</td></tr>
         </tbody></table>
       </div>
       <div class="sd-tabpanel" data-panel="pay">
         <table class="sd-table">
-          <thead><tr><th>符号数</th><th>低倍数符号</th><th>高倍数符号</th></tr></thead>
+          <thead><tr><th>符号数</th><th>低倍符号</th><th>中倍符号</th><th>高倍符号</th></tr></thead>
           <tbody>
-            <tr><td>8 ~ 9</td><td>×0.25 ~ ×0.5</td><td>×0.75 ~ ×2</td></tr>
-            <tr><td>10 ~ 11</td><td>×0.75 ~ ×1.5</td><td>×2 ~ ×5</td></tr>
-            <tr><td>12+</td><td>×2 ~ ×5</td><td>×5 ~ ×50</td></tr>
+            <tr><td>8 ~ 9</td><td>×0.20 ~ ×0.50</td><td>×0.50 ~ ×1.00</td><td>×1.00 ~ ×2.50</td></tr>
+            <tr><td>10 ~ 11</td><td>×0.50 ~ ×1.00</td><td>×1.00 ~ ×2.50</td><td>×2.50 ~ ×10.00</td></tr>
+            <tr><td>12 ~ 14</td><td>×1.00 ~ ×2.00</td><td>×2.00 ~ ×5.00</td><td>×10.00 ~ ×25.00</td></tr>
+            <tr><td>15+</td><td>×2.00 ~ ×5.00</td><td>×5.00 ~ ×10.00</td><td>×25.00 ~ ×50.00</td></tr>
           </tbody>
         </table>
+        <p class="sd-section__text" style="margin-top:14px">
+          中奖判定与行列位置无关，仅统计同种符号的总数量。多个符号组合同一局可同时结算，赔付独立叠加。
+        </p>
       </div>
       <div class="sd-tabpanel" data-panel="bonus">
-        <p class="sd-section__text">集齐 4 个及以上棒棒糖 Scatter 符号即可触发 10 次免费旋转。免费旋转期间，糖果炸弹倍数会累加至本轮总奖金。</p>
+        <p class="sd-section__text">单局中出现 4 个及以上棒棒糖 Scatter 符号即可触发免费旋转：</p>
+        <table class="sd-table">
+          <thead><tr><th>Scatter 数量</th><th>免费旋转次数</th></tr></thead>
+          <tbody>
+            <tr><td>4 个</td><td>10 次</td></tr>
+            <tr><td>5 个</td><td>12 次</td></tr>
+            <tr><td>6 个</td><td>15 次</td></tr>
+          </tbody>
+        </table>
+        <p class="sd-section__text" style="margin-top:14px">免费旋转期间：</p>
+        <ul class="sd-list">
+          <li>场上出现糖果炸弹时，炸弹倍数被收集，并在本轮结束时叠加至总奖金</li>
+          <li>单个炸弹倍数范围 ×2 ~ ×100</li>
+          <li>若再次出现 4 个及以上 Scatter，可继续追加旋转次数</li>
+          <li>免费旋转使用触发时的下注档位，不消耗额外余额</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 符号倍率表 ═══ -->
   <section class="sd-section">
     <header class="sd-section__head">
       <h2 class="sd-section__title">符号倍率</h2>
-      <span class="sd-section__badge" id="sd-symbol-count">8 个符号</span>
+      <span class="sd-section__badge">8 个起赔付</span>
     </header>
-    <div class="sd-symbols" id="sd-symbols"></div>
+    <div class="sd-table-wrap">
+      <table class="sd-table sd-table--symbols">
+        <thead>
+          <tr>
+            <th>符号</th>
+            <th>8~9</th>
+            <th>10~11</th>
+            <th>12+</th>
+          </tr>
+        </thead>
+        <tbody id="sd-symbols"></tbody>
+      </table>
+    </div>
   </section>
 
-  <!-- ═══ FAQ 折叠面板 ═══ -->
   <section class="sd-section">
     <header class="sd-section__head">
       <h2 class="sd-section__title">常见问题</h2>
@@ -110,7 +132,6 @@
     <div class="sd-faq" id="sd-faq"></div>
   </section>
 
-  <!-- ═══ 相似游戏（横向滑动） ═══ -->
   <section class="sd-section sd-section--flush">
     <header class="sd-section__head">
       <h2 class="sd-section__title">相似游戏</h2>
@@ -118,7 +139,6 @@
     <div class="sd-similar" id="sd-similar"></div>
   </section>
 
-  <!-- ═══ 底部悬浮操作栏 ═══ -->
   <nav class="sd-bottom" aria-label="游戏操作">
     <button class="sd-bottom__icon" type="button" id="sd-fav" aria-pressed="false">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17.3l-5.7 3 1.1-6.4-4.6-4.5 6.4-0.9L12 2.6l2.8 5.9 6.4 0.9-4.6 4.5 1.1 6.4z"/></svg>
