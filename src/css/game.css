@@ -2781,3 +2781,302 @@ body {
     drop-shadow(0 0 6px #fde68a)
     drop-shadow(0 0 14px #d4af37) !important;
 }
+
+/* ================================================================
+   Phase 5 · 倍率符号降落
+   ================================================================ */
+.og-mult-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+.og-mult-popup.show {
+  animation: og-mult-drop 1.6s cubic-bezier(.34, 1.42, .5, 1) forwards;
+}
+.og-mult-glow {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 220, 120, 0.55) 0%, rgba(255, 200, 80, 0.25) 40%, rgba(255, 180, 60, 0) 70%);
+  animation: og-mult-pulse 0.8s ease-in-out infinite alternate;
+}
+.og-mult-num {
+  position: relative;
+  font-family: var(--font-sans);
+  font-size: 64px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2px;
+  text-shadow:
+    0 0 8px rgba(255, 220, 120, 0.9),
+    0 0 24px rgba(212, 175, 55, 0.8),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+}
+@keyframes og-mult-drop {
+  0%   { opacity: 0; transform: translate(-50%, -150%) scale(0.5) rotate(-8deg); }
+  25%  { opacity: 1; transform: translate(-50%, -50%) scale(1.25) rotate(2deg); }
+  40%  { opacity: 1; transform: translate(-50%, -50%) scale(0.95) rotate(0deg); }
+  50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(0deg); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0) rotate(0deg); }
+  75%  { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+}
+@keyframes og-mult-pulse {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .og-mult-popup.show { animation: og-mult-fade 1s ease forwards; }
+  .og-mult-glow { animation: none; }
+}
+@keyframes og-mult-fade {
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+  30%, 70% { opacity: 1; }
+}
+
+/* ================================================================
+   Phase 6 · Scatter 免费旋转转场
+   ================================================================ */
+.og-fs-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.og-fs-intro.show { display: flex; }
+
+.og-fs-intro-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(80, 40, 160, 0.95) 0%, rgba(20, 8, 40, 0.98) 60%);
+  opacity: 0;
+  animation: og-fs-bg 0.4s ease forwards;
+}
+@keyframes og-fs-bg {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.og-fs-intro-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vmin;
+  height: 80vmin;
+  border-radius: 50%;
+  border: 3px solid rgba(244, 212, 122, 0.8);
+  box-shadow:
+    0 0 40px rgba(244, 212, 122, 0.6),
+    inset 0 0 40px rgba(244, 212, 122, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  animation: og-fs-ring 1.4s cubic-bezier(.22,.61,.36,1) 0.2s forwards;
+}
+@keyframes og-fs-ring {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  30%  { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+  70%  { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+.og-fs-intro-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  animation: og-fs-content 1.6s ease 0.3s forwards;
+}
+@keyframes og-fs-content {
+  0%   { opacity: 0; transform: scale(0.6) translateY(20px); }
+  20%  { opacity: 1; transform: scale(1.05) translateY(0); }
+  30%  { transform: scale(1); }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1); }
+}
+.og-fs-intro-icon {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(0 0 20px rgba(244, 212, 122, 0.9));
+  animation: og-fs-bolt 1.4s ease-in-out 0.3s infinite;
+}
+@keyframes og-fs-bolt {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(2deg); }
+}
+.og-fs-intro-icon svg { width: 100%; height: 100%; display: block; }
+.og-fs-intro-title {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 900;
+  color: #f4d47a;
+  letter-spacing: 6px;
+  margin: 0;
+  text-shadow:
+    0 0 12px rgba(244, 212, 122, 0.8),
+    0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.og-fs-intro-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.og-fs-intro-count-num {
+  font-family: var(--font-sans);
+  font-size: 72px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-shadow:
+    0 0 20px rgba(255, 220, 120, 0.9),
+    0 0 40px rgba(244, 212, 122, 0.6);
+  animation: og-fs-count 0.6s cubic-bezier(.34, 1.42, .5, 1) 0.7s both;
+}
+@keyframes og-fs-count {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+.og-fs-intro-count-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(244, 212, 122, 0.9);
+  letter-spacing: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .og-fs-intro-ring,
+  .og-fs-intro-icon { animation: none; }
+}
+
+/* ================================================================
+   Phase 7 · 大赢分级（BIG/MEGA/SUPER/EPIC/DIVINE）
+   ================================================================ */
+.og-bigwin {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.og-bigwin.show { display: flex; }
+
+.og-bigwin-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(20, 10, 40, 0.92) 0%, rgba(5, 3, 12, 0.98) 70%);
+  opacity: 0;
+  animation: og-bw-bg 0.3s ease forwards;
+}
+@keyframes og-bw-bg { to { opacity: 1; } }
+
+.og-bigwin-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200vmax;
+  height: 200vmax;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg, rgba(244, 212, 122, 0.35) 4deg, transparent 8deg,
+    transparent 30deg, rgba(244, 212, 122, 0.25) 34deg, transparent 38deg,
+    transparent 60deg, rgba(244, 212, 122, 0.3) 64deg, transparent 68deg,
+    transparent 90deg, rgba(244, 212, 122, 0.35) 94deg, transparent 98deg,
+    transparent 120deg, rgba(244, 212, 122, 0.25) 124deg, transparent 128deg,
+    transparent 150deg, rgba(244, 212, 122, 0.3) 154deg, transparent 158deg,
+    transparent 180deg, rgba(244, 212, 122, 0.35) 184deg, transparent 188deg,
+    transparent 210deg, rgba(244, 212, 122, 0.25) 214deg, transparent 218deg,
+    transparent 240deg, rgba(244, 212, 122, 0.3) 244deg, transparent 248deg,
+    transparent 270deg, rgba(244, 212, 122, 0.35) 274deg, transparent 278deg,
+    transparent 300deg, rgba(244, 212, 122, 0.25) 304deg, transparent 308deg,
+    transparent 330deg, rgba(244, 212, 122, 0.3) 334deg, transparent 338deg
+  );
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: og-bw-rays 12s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+}
+@keyframes og-bw-rays {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.og-bigwin-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: og-bw-content 0.5s cubic-bezier(.34, 1.42, .5, 1) forwards;
+}
+@keyframes og-bw-content {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.og-bigwin-tier {
+  font-family: var(--font-sans);
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  color: #fde68a;
+  text-shadow:
+    0 0 16px rgba(244, 212, 122, 0.9),
+    0 0 40px rgba(212, 175, 55, 0.6),
+    0 4px 16px rgba(0, 0, 0, 0.6);
+  animation: og-bw-tier 1.5s ease-in-out infinite alternate;
+}
+@keyframes og-bw-tier {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+.og-bigwin-amount {
+  font-family: var(--font-sans);
+  font-size: 56px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 0 20px rgba(255, 220, 120, 0.9),
+    0 0 50px rgba(244, 212, 122, 0.6),
+    0 6px 20px rgba(0, 0, 0, 0.6);
+}
+.og-bigwin-mult {
+  font-size: 20px;
+  font-weight: 800;
+  color: #f4d47a;
+  letter-spacing: 1px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: rgba(244, 212, 122, 0.15);
+  border: 1px solid rgba(244, 212, 122, 0.55);
+}
+
+/* 高等级变体 */
+.og-bigwin.tier-epic .og-bigwin-tier { color: #c4b5fd; text-shadow: 0 0 20px rgba(196, 181, 253, 0.9), 0 0 50px rgba(160, 100, 240, 0.7), 0 4px 16px rgba(0, 0, 0, 0.6); }
+.og-bigwin.tier-epic .og-bigwin-rays { background: conic-gradient(from 0deg, transparent 0deg, rgba(196, 181, 253, 0.4) 6deg, transparent 12deg, transparent 40deg, rgba(196, 181, 253, 0.3) 46deg, transparent 52deg, transparent 80deg, rgba(196, 181, 253, 0.4) 86deg, transparent 92deg, transparent 120deg, rgba(196, 181, 253, 0.3) 126deg, transparent 132deg, transparent 160deg, rgba(196, 181, 253, 0.4) 166deg, transparent 172deg, transparent 200deg, rgba(196, 181, 253, 0.3) 206deg, transparent 212deg, transparent 240deg, rgba(196, 181, 253, 0.4) 246deg, transparent 252deg, transparent 280deg, rgba(196, 181, 253, 0.3) 286deg, transparent 292deg, transparent 320deg, rgba(196, 181, 253, 0.4) 326deg, transparent 332deg); }
+.og-bigwin.tier-divine .og-bigwin-tier { color: #fca5a5; text-shadow: 0 0 24px rgba(255, 180, 180, 0.95), 0 0 60px rgba(220, 60, 60, 0.8), 0 4px 16px rgba(0, 0, 0, 0.6); }
+.og-bigwin.tier-divine .og-bigwin-bg { background: radial-gradient(ellipse at center, rgba(60, 10, 20, 0.92) 0%, rgba(15, 3, 6, 0.98) 70%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .og-bigwin-rays { animation: none; }
+  .og-bigwin-tier { animation: none; }
+}

@@ -169,6 +169,43 @@
 
   <div class="og-flash" id="og-flash" aria-hidden="true"></div>
   <canvas class="og-particles" id="og-particles" aria-hidden="true"></canvas>
+  <div class="og-bigwin" id="og-bigwin" aria-hidden="true">
+    <div class="og-bigwin-bg"></div>
+    <div class="og-bigwin-rays"></div>
+    <div class="og-bigwin-content">
+      <div class="og-bigwin-tier" id="og-bigwin-tier">BIG WIN</div>
+      <div class="og-bigwin-amount" id="og-bigwin-amount">¥0.00</div>
+      <div class="og-bigwin-mult" id="og-bigwin-mult">×10</div>
+    </div>
+  </div>
+  <div class="og-fs-intro" id="og-fs-intro" aria-hidden="true">
+    <div class="og-fs-intro-bg"></div>
+    <div class="og-fs-intro-ring"></div>
+    <div class="og-fs-intro-content">
+      <div class="og-fs-intro-icon">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="fsi-bolt" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="0.5" stop-color="#fde68a"/>
+              <stop offset="1" stop-color="#d4a017"/>
+            </linearGradient>
+          </defs>
+          <path d="M60 14 L28 54 L46 54 L38 86 L74 44 L54 44 L62 14 Z"
+                fill="url(#fsi-bolt)" stroke="#7a4a08" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="og-fs-intro-title">FREE SPINS</h2>
+      <div class="og-fs-intro-count">
+        <span class="og-fs-intro-count-num" id="og-fs-intro-num">15</span>
+        <span class="og-fs-intro-count-label">次免费旋转</span>
+      </div>
+    </div>
+  </div>
+  <div class="og-mult-popup" id="og-mult-popup" aria-hidden="true">
+    <span class="og-mult-glow"></span>
+    <span class="og-mult-num" id="og-mult-num">×2</span>
+  </div>
 
   <section class="og-stage">
     <div class="og-fs-badge" id="og-fs-badge" aria-hidden="true">
@@ -340,6 +377,7 @@
   </div>
 </div>
 
+<script src="/src/js/inline/olympus-state.js"></script>
 <script src="/src/js/inline/olympus-anim.js"></script>
 <script src="/src/js/inline/olympus-audio.js"></script>
 <script src="/src/js/inline/olympus-symbols.js"></script>

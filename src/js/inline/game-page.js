@@ -443,6 +443,7 @@ function init(){
     var E = window.ApexOlympus;
     var A = window.ApexAudio;
     var AN = window.ApexAnim;
+    var ST = window.ApexState;
     if (!E) { console.error('[Apex] 引擎未加载'); return; }
 
     var state = {
@@ -571,6 +572,7 @@ function init(){
       document.body.style.overflow = 'hidden';
       if (A) { A.unlock(); A.bgmStart('base'); }
       syncSettings();
+      if (ST) ST.reset();
     }
     function close(){
       overlay.classList.remove('show');
@@ -627,6 +629,107 @@ function init(){
     }
 
     // -------- 旋转（核心） --------
+    // ===== 大赢分级 =====
+    var bigWinEl = document.getElementById('og-bigwin');
+    var bwTier = document.getElementById('og-bigwin-tier');
+    var bwAmount = document.getElementById('og-bigwin-amount');
+    var bwMult = document.getElementById('og-bigwin-mult');
+
+    var WIN_TIERS = [
+      { key: 'divine', label: 'DIVINE WIN', mult: 1000 },
+      { key: 'epic',   label: 'EPIC WIN',   mult: 500 },
+      { key: 'super',  label: 'SUPER WIN',  mult: 100 },
+      { key: 'mega',   label: 'MEGA WIN',   mult: 50 },
+      { key: 'big',    label: 'BIG WIN',    mult: 10 }
+    ];
+    function classifyWin(winAmount, bet){
+      if (!bet || bet <= 0) return null;
+      var mult = winAmount / bet;
+      for (var i = 0; i < WIN_TIERS.length; i++) {
+        if (mult >= WIN_TIERS[i].mult) return WIN_TIERS[i];
+      }
+      return null;
+    }
+    function countUpAmount(el, from, to, dur){
+      var start = performance.now();
+      function tick(now){
+        var t = (now - start) / dur;
+        if (t > 1) t = 1;
+        var e = 1 - Math.pow(1 - t, 3);
+        var v = from + (to - from) * e;
+        el.textContent = '¥' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    function showBigWin(tier, winAmount, bet, onDone){
+      if (!bigWinEl || !tier) { if (onDone) onDone(); return; }
+      bigWinEl.classList.remove('tier-epic', 'tier-divine');
+      if (tier.key === 'epic') bigWinEl.classList.add('tier-epic');
+      if (tier.key === 'divine') bigWinEl.classList.add('tier-divine');
+      if (bwTier) bwTier.textContent = tier.label;
+      if (bwMult) bwMult.textContent = '×' + Math.floor(winAmount / bet);
+      if (bwAmount) bwAmount.textContent = '¥0.00';
+      bigWinEl.classList.add('show');
+      if (A) A.sBigWin();
+      // 数字滚动
+      (AN ? AN.after(200, function(){
+        countUpAmount(bwAmount, 0, winAmount, AN ? AN.ms(1200) : 1200);
+      }) : setTimeout(function(){
+        countUpAmount(bwAmount, 0, winAmount, 1200);
+      }, 200));
+      // 停留 + 淡出（根据等级 2.4~3.2s）
+      var holdMs = tier.key === 'divine' ? 3200 : (tier.key === 'epic' ? 2800 : 2400);
+      (AN ? AN.after(holdMs, function(){
+        bigWinEl.classList.remove('show');
+        if (onDone) onDone();
+      }) : setTimeout(function(){
+        bigWinEl.classList.remove('show');
+        if (onDone) onDone();
+      }, holdMs));
+    }
+
+    // ===== Scatter 免费旋转转场 =====
+    var fsIntro = document.getElementById('og-fs-intro');
+    var fsIntroNum = document.getElementById('og-fs-intro-num');
+    function playFsIntro(fsCount, onDone){
+      if (!fsIntro) { if (onDone) onDone(); return; }
+      if (fsIntroNum) fsIntroNum.textContent = fsCount;
+      fsIntro.classList.add('show');
+      if (A) A.sScatter();
+      // 转场总时长 1.8s
+      (AN ? AN.after(1800, function(){
+        fsIntro.classList.remove('show');
+        if (onDone) onDone();
+      }) : setTimeout(function(){
+        fsIntro.classList.remove('show');
+        if (onDone) onDone();
+      }, 1800));
+    }
+
+    // ===== 倍率弹出 =====
+    var multPopup = document.getElementById('og-mult-popup');
+    var multNum = document.getElementById('og-mult-num');
+    function showMultiplier(v, isFs){
+      if (!multPopup || !multNum) return;
+      if (!v || v <= 1) return;
+      multNum.textContent = '×' + v;
+      // FS 用紫色光晕，普通用金色
+      var glow = multPopup.querySelector('.og-mult-glow');
+      if (glow) {
+        glow.style.background = isFs
+          ? 'radial-gradient(circle, rgba(200, 140, 255, 0.55) 0%, rgba(160, 100, 240, 0.25) 40%, rgba(120, 70, 220, 0) 70%)'
+          : 'radial-gradient(circle, rgba(255, 220, 120, 0.55) 0%, rgba(255, 200, 80, 0.25) 40%, rgba(255, 180, 60, 0) 70%)';
+        multNum.style.textShadow = isFs
+          ? '0 0 8px rgba(200, 140, 255, 0.9), 0 0 24px rgba(160, 100, 240, 0.8), 0 4px 12px rgba(0, 0, 0, 0.5)'
+          : '0 0 8px rgba(255, 220, 120, 0.9), 0 0 24px rgba(212, 175, 55, 0.8), 0 4px 12px rgba(0, 0, 0, 0.5)';
+      }
+      multPopup.classList.remove('show');
+      void multPopup.offsetWidth;
+      multPopup.classList.add('show');
+      if (A) A.sWin(2);
+    }
+
     function showWin(amount){
       if (curWinVal) {
         curWinVal.textContent = '¥' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -951,6 +1054,7 @@ function init(){
         }
         var sp = spins[idx];
         showFsBadge(idx + 1, spins.length, sp.mult > 0 ? sp.mult : 1);
+        if (sp.mult > 1) showMultiplier(sp.mult, true);
 
         // 渲染初始网格
         if (sp.tumbles.length > 0) {
@@ -994,10 +1098,20 @@ function init(){
         state.spinning = false;
         state.inFreeSpins = false;
         spinBtn.disabled = false;
-        maybeAutoNext();
+        var fsTier = classifyWin(totalWin, bet);
+        if (fsTier) {
+          showBigWin(fsTier, totalWin, bet, function(){
+            if (ST) { ST.enter('COMPLETE'); ST.enter('IDLE'); }
+            maybeAutoNext();
+          });
+        } else {
+          if (ST) { ST.enter('COMPLETE'); ST.enter('IDLE'); }
+          maybeAutoNext();
+        }
       }
 
       state.inFreeSpins = true;
+      if (ST) ST.enter('FREE_SPINS');
       if (A) A.bgmSetMode('fs');
       nextSpin();
     }
@@ -1051,6 +1165,7 @@ function init(){
       }
       state.spinning = true;
       spinBtn.disabled = true;
+      if (ST) ST.enter('SPINNING');
       if (A) A.sSpin();
 
       // 扣注
@@ -1074,6 +1189,7 @@ function init(){
       var bet = state.bet;
 
       function playRound(){
+        if (ST && ST.is('SPINNING')) ST.enter('EVALUATING');
         if (roundIdx >= result.tumbles.length) {
           // 基础局结束
           var baseWin = result.baseWin * bet;
@@ -1081,14 +1197,28 @@ function init(){
           state.balance += baseWin;
           updateHud();
 
-          // 有 FS → 播 FS；没 FS → 收工
+          // 有 FS → 播放转场 → FS；没 FS → 收工
           if (result.freeSpins > 0 && result.fsResult) {
-            setTimeout(function(){
+            if (ST) { ST.enter('WINNING'); ST.enter('FS_TRIGGER'); }
+            (AN ? AN.after(300, function(){
+              showWin(baseWin);
+              (AN ? AN.after(900, function(){
+                playFsIntro(result.freeSpins, function(){
+                  playFreeSpinsSequence(result.fsResult, bet);
+                });
+              }) : setTimeout(function(){
+                playFsIntro(result.freeSpins, function(){
+                  playFreeSpinsSequence(result.fsResult, bet);
+                });
+              }, 900));
+            }) : setTimeout(function(){
               showWin(baseWin);
               setTimeout(function(){
-                playFreeSpinsSequence(result.fsResult, bet);
-              }, 800);
-            }, 300);
+                playFsIntro(result.freeSpins, function(){
+                  playFreeSpinsSequence(result.fsResult, bet);
+                });
+              }, 900);
+            }, 300));
           } else {
             if (baseWin > 0) showWin(baseWin);
             // 收集本局信息
@@ -1107,16 +1237,33 @@ function init(){
               tumbles: result.tumbles.length,
               big: baseWin > bet * 50
             });
+            // 倍率展示（如果本局有倍率）
+            if (result.multiplier && result.multiplier > 1) {
+              showMultiplier(result.multiplier, false);
+            }
+            // 大赢分级
+            var tier = classifyWin(baseWin, bet);
             state.spinning = false;
-            spinBtn.disabled = false;
-            maybeAutoNext();
+            if (tier) {
+              spinBtn.disabled = false;
+              showBigWin(tier, baseWin, bet, function(){
+                if (ST) { ST.enter('COMPLETE'); ST.enter('IDLE'); }
+                maybeAutoNext();
+              });
+            } else {
+              spinBtn.disabled = false;
+              if (ST) { ST.enter('COMPLETE'); ST.enter('IDLE'); }
+              maybeAutoNext();
+            }
           }
           return;
         }
 
         var t = result.tumbles[roundIdx];
+        if (ST) ST.enter('WINNING');
         markWins(t.hits, t.removed);
         (AN ? AN.after(500, function(){
+          if (ST) ST.enter('TUMBLING');
           removeAndDrop(t.removed, t.gridAfter, function(){
             roundIdx++;
             (AN ? AN.after(200, playRound) : setTimeout(playRound, 200));
