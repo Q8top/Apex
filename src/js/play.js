@@ -223,7 +223,25 @@
     toast(soundOn ? '音效已开启' : '音效已关闭');
   });
 
+  /* ---------- 真实模式：拉取后端余额 ---------- */
+  function loadRealBalance() {
+    if (mode !== 'real') return;
+    fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (!res.ok || !res.d || !res.d.success) {
+          toast('未登录，请先登录');
+          return;
+        }
+        var wb = res.d.user && res.d.user.walletBalance;
+        balance = (typeof wb === 'number') ? wb : 0;
+        refreshUI();
+      })
+      .catch(function () { toast('余额获取失败'); });
+  }
+
   /* ---------- 初始化 ---------- */
   renderBoard();
   refreshUI();
+  loadRealBalance();
 })();
