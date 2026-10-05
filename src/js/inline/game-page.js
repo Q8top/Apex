@@ -306,6 +306,7 @@ function init(){
     var spinBtn   = document.getElementById('og-spin');
 
     var E = window.ApexOlympus;
+    var A = window.ApexAudio;
     if (!E) { console.error('[Apex] 引擎未加载'); return; }
 
     var state = {
@@ -316,7 +317,10 @@ function init(){
       spinning: false,
       sound: true,
       grid: null,
-      inFreeSpins: false
+      inFreeSpins: false,
+      auto: false,
+      autoTimer: null,
+      autoCount: 0
     };
 
     // -------- 渲染网格 --------
@@ -343,6 +347,11 @@ function init(){
         var key = el.getAttribute('data-r') + ',' + el.getAttribute('data-c');
         if (removed.indexOf(key) >= 0) el.classList.add('winning');
       });
+      if (A && hits && hits.length > 0) {
+        var maxTier = 0;
+        hits.forEach(function(h){ if (h.tier > maxTier) maxTier = h.tier; });
+        A.sWin(maxTier);
+      }
     }
 
     // -------- 移除并掉落 --------
@@ -353,6 +362,7 @@ function init(){
         if (removed.indexOf(key) >= 0) el.classList.add('removing');
       });
       setTimeout(function(){
+        if (A) A.sTumble();
         renderGrid(newGrid, true);
         setTimeout(nextCb, 500);
       }, 380);
@@ -392,6 +402,7 @@ function init(){
       state.balance = (mode === 'demo') ? 1000 : 0;
       state.bet = 10;
       state.win = 0;
+      stopAuto();
       if (modeEl) modeEl.textContent = (mode === 'demo') ? '试玩模式' : '真实模式';
       overlay.setAttribute('data-mode', mode);
       updateBalanceAction();
@@ -420,11 +431,11 @@ function init(){
     var BET_STEPS = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
     if (betDec) betDec.addEventListener('click', function(){
       var i = BET_STEPS.indexOf(state.bet);
-      if (i > 0) { state.bet = BET_STEPS[i-1]; updateHud(); }
+      if (i > 0) { state.bet = BET_STEPS[i-1]; updateHud(); if (A) A.sClick(); }
     });
     if (betInc) betInc.addEventListener('click', function(){
       var i = BET_STEPS.indexOf(state.bet);
-      if (i >= 0 && i < BET_STEPS.length - 1) { state.bet = BET_STEPS[i+1]; updateHud(); }
+      if (i >= 0 && i < BET_STEPS.length - 1) { state.bet = BET_STEPS[i+1]; updateHud(); if (A) A.sClick(); }
     });
 
     // 声音开关
@@ -437,6 +448,7 @@ function init(){
     if (soundBtn) soundBtn.addEventListener('click', function(){
       state.sound = !state.sound;
       updateSoundIcon();
+      if (A) A.setEnabled(state.sound);
     });
 
     // 重置/充值余额
@@ -447,6 +459,7 @@ function init(){
           state.balance = 1000;
           state.win = 0;
           updateHud();
+          if (A) A.sClick();
         } else {
           if (window.__apexCharge) window.__apexCharge();
           else alert('充值功能开发中');
@@ -460,7 +473,101 @@ function init(){
       winAmt.textContent = '+' + money(amount);
       winBanner.classList.add('show');
       setTimeout(function(){ winBanner.classList.remove('show'); }, 1600);
+      // 大赢音效（赢 > 50 倍下注）
+      if (A && amount > state.bet * 50) A.sBigWin();
     }
+
+    // ============ 弹层控制 ============
+    function openModal(id){
+      var m = document.getElementById(id);
+      if (!m) return;
+      m.classList.add('show');
+      m.setAttribute('aria-hidden', 'false');
+      if (A) A.sClick();
+    }
+    function closeModal(m){
+      m.classList.remove('show');
+      m.setAttribute('aria-hidden', 'true');
+      if (A) A.sClick();
+    }
+    document.querySelectorAll('.og-modal').forEach(function(m){
+      m.addEventListener('click', function(e){
+        if (e.target.closest && e.target.closest('[data-close]')) closeModal(m);
+      });
+    });
+
+    // ============ 赔付表 ============
+    function renderPaytable(){
+      var box = document.getElementById('og-paytable-body');
+      if (!box) return;
+      var SYM_LIB = window.ApexOlympusSymbols;
+      var html = '<div class="og-paytable-head"><span>符号</span><span>8 连</span><span>10 连</span><span>12+ 连</span></div>';
+      for (var i = 0; i <= 7; i++) {
+        var def = E.SYMBOLS[i];
+        var svg = SYM_LIB ? SYM_LIB.byIndex(i) : '';
+        var v = def.pay;
+        var maxCls = (i === 0) ? ' og-paytable-val--max' : '';
+        html += '<div class="og-paytable-row">' +
+          '<span class="og-paytable-sym">' + svg + '</span>' +
+          '<span class="og-paytable-name">' + def.name + '</span>' +
+          '<span class="og-paytable-val">' + v[0] + 'x</span>' +
+          '<span class="og-paytable-val">' + v[1] + 'x</span>' +
+          '<span class="og-paytable-val' + maxCls + '">' + v[2] + 'x</span>' +
+          '</div>';
+      }
+      var wildSvg = SYM_LIB ? SYM_LIB.byIndex(8) : '';
+      var scatSvg = SYM_LIB ? SYM_LIB.byIndex(9) : '';
+      html += '<div class="og-paytable-row">' +
+        '<span class="og-paytable-sym">' + wildSvg + '</span>' +
+        '<span class="og-paytable-name">WILD</span>' +
+        '<span class="og-paytable-val" style="grid-column: span 3; text-align:right; color:#8a8a8e; font-size:11px; font-weight:500;">代替除 SCATTER 外任意符号</span>' +
+        '</div>';
+      html += '<div class="og-paytable-row">' +
+        '<span class="og-paytable-sym">' + scatSvg + '</span>' +
+        '<span class="og-paytable-name">SCATTER</span>' +
+        '<span class="og-paytable-val" style="grid-column: span 3; text-align:right; color:#8a8a8e; font-size:11px; font-weight:500;">4/5/6 个触发 15/20/25 次免费旋转</span>' +
+        '</div>';
+      box.innerHTML = html;
+    }
+
+    // ============ 记录 ============
+    var history = [];
+    function pushHistory(bet, win, mode){
+      var now = new Date();
+      var t = ('0'+now.getHours()).slice(-2) + ':' + ('0'+now.getMinutes()).slice(-2) + ':' + ('0'+now.getSeconds()).slice(-2);
+      history.unshift({ time: t, bet: bet, win: win, mode: mode });
+      if (history.length > 100) history.pop();
+      renderHistory();
+    }
+    function renderHistory(){
+      var box = document.getElementById('og-history-list');
+      if (!box) return;
+      if (history.length === 0) {
+        box.innerHTML = '<div class="og-history-empty">暂无记录</div>';
+        return;
+      }
+      box.innerHTML = history.map(function(h){
+        var net = h.win - h.bet;
+        var cls = net > 0 ? ' og-history-amount--win' : (net < 0 ? ' og-history-amount--lose' : '');
+        var sign = net > 0 ? '+' : '';
+        return '<div class="og-history-item">' +
+          '<span class="og-history-time">' + h.time + ' · 注 ¥' + h.bet.toFixed(2) + '</span>' +
+          '<span class="og-history-amount' + cls + '">' + sign + '¥' + net.toFixed(2) + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    // ============ 绑定弹层按钮 ============
+    var paytableBtn = document.getElementById('og-paytable');
+    if (paytableBtn) paytableBtn.addEventListener('click', function(){
+      renderPaytable();
+      openModal('og-paytable-modal');
+    });
+    var historyBtn = document.getElementById('og-history');
+    if (historyBtn) historyBtn.addEventListener('click', function(){
+      renderHistory();
+      openModal('og-history-modal');
+    });
 
     // -------- FS 徽章控制 --------
     var fsBadge = document.getElementById('og-fs-badge');
@@ -470,10 +577,15 @@ function init(){
 
     function showFsBadge(cur, max, mult){
       if (!fsBadge) return;
+      var wasShown = fsBadge.classList.contains('show');
       fsBadge.classList.add('show');
       if (fsCur) fsCur.textContent = cur;
       if (fsMax) fsMax.textContent = max;
       if (fsMult) fsMult.textContent = '×' + mult;
+      if (A) {
+        if (!wasShown && cur === 1) A.sScatter();
+        else if (cur > 1) A.sFsTick(cur);
+      }
     }
     function updateFsMult(mult){
       if (!fsMult) return;
@@ -542,23 +654,68 @@ function init(){
         state.balance += totalWin;
         updateHud();
         if (totalWin > 0) showWin(totalWin);
+        if (A) A.sFsEnd();
+        pushHistory(0, totalWin, state.mode + '+fs');
         state.spinning = false;
         state.inFreeSpins = false;
         spinBtn.disabled = false;
+        maybeAutoNext();
       }
 
       state.inFreeSpins = true;
       nextSpin();
     }
 
+    // ============ 自动旋转 ============
+    var autoBtn = document.getElementById('og-auto');
+    var AUTO_INTERVAL = 700;   // 每轮间隔（ms）
+    var AUTO_MAX = 50;         // 最大轮数
+
+    function stopAuto(){
+      state.auto = false;
+      state.autoCount = 0;
+      if (state.autoTimer) { clearTimeout(state.autoTimer); state.autoTimer = null; }
+      if (autoBtn) autoBtn.classList.remove('active');
+    }
+    function maybeAutoNext(){
+      if (!state.auto) return;
+      if (state.autoCount >= AUTO_MAX) { stopAuto(); return; }
+      if (state.mode === 'real' && state.balance < state.bet) { stopAuto(); alert('余额不足'); return; }
+      state.autoTimer = setTimeout(function(){
+        state.autoCount++;
+        spin();
+      }, AUTO_INTERVAL);
+    }
+    if (autoBtn) {
+      autoBtn.addEventListener('click', function(){
+        if (A) A.sClick();
+        if (state.auto) {
+          stopAuto();
+        } else {
+          state.auto = true;
+          state.autoCount = 0;
+          autoBtn.classList.add('active');
+          // 立即开始第一轮
+          if (!state.spinning) {
+            state.autoCount++;
+            spin();
+          }
+        }
+      });
+    }
+    // 关闭 overlay / 切换模式时停自动
+    if (closeBtn) closeBtn.addEventListener('click', stopAuto);
+
     function spin(){
       if (state.spinning) return;
       if (state.mode === 'real' && state.balance < state.bet) {
+        if (state.auto) stopAuto();
         alert('余额不足，请充值');
         return;
       }
       state.spinning = true;
       spinBtn.disabled = true;
+      if (A) A.sSpin();
 
       // 扣注
       if (state.mode === 'real') state.balance -= state.bet;
@@ -597,8 +754,10 @@ function init(){
             }, 300);
           } else {
             if (baseWin > 0) showWin(baseWin);
+            pushHistory(bet, baseWin, state.mode);
             state.spinning = false;
             spinBtn.disabled = false;
+            maybeAutoNext();
           }
           return;
         }
@@ -615,6 +774,7 @@ function init(){
 
       // 起手
       setTimeout(playRound, 400);
+      if (A) A.sDrop();
     }
     if (spinBtn) spinBtn.addEventListener('click', spin);
 

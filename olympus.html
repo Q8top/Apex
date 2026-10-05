@@ -238,6 +238,39 @@
   </section>
 </div>
 
+<!-- 赔付表弹层 -->
+<div class="og-modal" id="og-paytable-modal" aria-hidden="true">
+  <div class="og-modal-bg" data-close="1"></div>
+  <div class="og-modal-panel">
+    <header class="og-modal-head">
+      <h2>符号赔付</h2>
+      <button type="button" class="og-modal-close" data-close="1" aria-label="关闭">
+        <i class="ri-close-line" aria-hidden="true"></i>
+      </button>
+    </header>
+    <div class="og-paytable" id="og-paytable-body"></div>
+    <div class="og-modal-note">
+      <i class="ri-information-line" aria-hidden="true"></i>
+      <span>任意位置集齐 <strong>8 个以上</strong> 同种符号即可中奖，赔付按下注倍数计算</span>
+    </div>
+  </div>
+</div>
+
+<!-- 记录弹层 -->
+<div class="og-modal" id="og-history-modal" aria-hidden="true">
+  <div class="og-modal-bg" data-close="1"></div>
+  <div class="og-modal-panel">
+    <header class="og-modal-head">
+      <h2>游戏记录</h2>
+      <button type="button" class="og-modal-close" data-close="1" aria-label="关闭">
+        <i class="ri-close-line" aria-hidden="true"></i>
+      </button>
+    </header>
+    <div class="og-history-list" id="og-history-list"></div>
+  </div>
+</div>
+
+<script src="/src/js/inline/olympus-audio.js"></script>
 <script src="/src/js/inline/olympus-symbols.js"></script>
 <script src="/src/js/inline/olympus-engine.js"></script>
 <script src="/src/js/inline/game-page.js"></script>
