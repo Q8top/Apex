@@ -575,12 +575,19 @@
      ============================================================ */
   var flashEl       = document.getElementById('gpFlash');
   var comboEl       = document.getElementById('gpCombo');
-var bigwinEl      = document.getElementById('gpBigwin');
+  var settleEl      = document.getElementById('gpSettle');
+  var settleChainEl = document.getElementById('gpSettleChain');
+  var settleWinEl   = document.getElementById('gpSettleWin');
+  var settleMultEl  = document.getElementById('gpSettleMult');
+  var settleTimer   = null;
+  var bigwinEl      = document.getElementById('gpBigwin');
   var bigwinTitleEl = document.getElementById('gpBigwinTitle');
   var bigwinAmtEl   = document.getElementById('gpBigwinAmount');
   var bigwinSubEl   = document.getElementById('gpBigwinSub');
   var bigwinTimer   = null;
-/* ---------- 全屏金光 ---------- */
+  var shareBtnEl    = document.getElementById('gpSettleShare');
+
+  /* ---------- 全屏金光 ---------- */
   function triggerFlash(level) {
     if (!flashEl || lowPerf) return;
     flashEl.classList.remove('is-small', 'is-mid', 'is-big');
@@ -637,7 +644,37 @@ var bigwinEl      = document.getElementById('gpBigwin');
   }
 
   /* ---------- 结算面板 ---------- */
+  function showSettle(chain, win, mult, bet) {
+    return;   /* 已禁用 */
+    if (!settleEl || win <= 0) return;
+    var ratio = win / Math.max(1, bet);
+    settleEl.classList.toggle('is-jackpot', ratio >= 20);
+    settleChainEl.textContent = chain > 1 ? ('连锁 ' + chain + ' 次') : '';
+    settleWinEl.textContent = fmtMoney(win);
+    if (mult > 1) {
+      settleMultEl.textContent = '倍率 x' + mult;
+      settleMultEl.hidden = false;
+    } else {
+      settleMultEl.hidden = true;
+    }
+    if (shareBtnEl) shareBtnEl.hidden = false;
+    settleEl.hidden = false;
+    requestAnimationFrame(function () {
+      settleEl.classList.add('is-show');
+      settleEl.setAttribute('aria-hidden', 'false');
+    });
+    var dur = ratio >= 20 ? 3600 : (ratio >= 5 ? 2600 : 1800);
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(hideSettle, dur);
+  }
 
+  function hideSettle() {
+    if (!settleEl) return;
+    if (shareBtnEl) shareBtnEl.hidden = true;
+    settleEl.classList.remove('is-show');
+    settleEl.setAttribute('aria-hidden', 'true');
+    setTimeout(function () { settleEl.hidden = true; }, 260);
+  }
 
   if (settleEl) settleEl.addEventListener('click', hideSettle);
 
@@ -732,6 +769,22 @@ var bigwinEl      = document.getElementById('gpBigwin');
   });
 
   /* ---------- FS 结束总结 ---------- */
+  function showFsSummary(totalWin, bet, count) {
+    return;   /* 已禁用 */
+    if (!settleEl || totalWin <= 0) return;
+    var ratio = totalWin / Math.max(1, bet);
+    settleEl.classList.toggle('is-jackpot', ratio >= 20);
+    settleChainEl.textContent = 'FREE SPINS · ' + count + ' 次';
+    settleWinEl.textContent = fmtMoney(totalWin);
+    settleMultEl.hidden = true;
+    settleEl.hidden = false;
+    requestAnimationFrame(function () {
+      settleEl.classList.add('is-show');
+      settleEl.setAttribute('aria-hidden', 'false');
+    });
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(hideSettle, ratio >= 20 ? 3200 : 2400);
+  }
 
   /* ---------- 新手引导 ---------- */
   var TUT_KEY = 'apex.tut.' + gameId;
@@ -991,9 +1044,11 @@ var bigwinEl      = document.getElementById('gpBigwin');
       /* FS 内不弹（避免连转频繁打断），普通局弹结算 */
       announce('本局总赢 ' + fmtMoney(finalWin));
       if (!isFS) {
+        showSettle(chain, finalWin, mult, bet);
         /* 大奖时先放专属演出，结算面板稍微延后 */
         var ratio2 = finalWin / Math.max(1, bet);
         if (ratio2 >= 30) {
+          hideSettle();
           showBigwin(finalWin, bet, chain, mult);
         }
       }
@@ -1088,6 +1143,7 @@ var bigwinEl      = document.getElementById('gpBigwin');
         sfx('fsEnd');
         if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('idle');
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
+        showFsSummary(lastWin, bet, fsTotal);
         fsTotal = 0;
       }
 
@@ -1204,6 +1260,7 @@ var bigwinEl      = document.getElementById('gpBigwin');
       if (lastWin > 0) {
         sfx('fsEnd');
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
+        showFsSummary(lastWin, bet, fsTotal);
       }
       fsTotal = 0;
       recordHistory({
