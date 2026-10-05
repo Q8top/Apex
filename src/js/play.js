@@ -75,6 +75,8 @@
   var betPlus    = document.getElementById('gpBetPlus');
   var spinBtn    = document.getElementById('gpSpin');
   var rechargeEl = document.getElementById('gpRecharge');
+  var buyFsBtn   = document.getElementById('gpBuyFs');
+  var buyFsText  = document.getElementById('gpBuyFsText');
   var autoBtn    = document.getElementById('gpAuto');
   var histBtn    = document.getElementById('gpHistory');
   var payBtn     = document.getElementById('gpPaytable');
@@ -473,6 +475,13 @@
     if (winEl)     winEl.textContent     = fmtMoney(lastWin);
     if (prizeEl)   prizeEl.textContent   = fmtMoney(lastWin);
     updateFsUI();
+    if (buyFsBtn) {
+      var real = (mode !== 'demo');
+      buyFsBtn.hidden = real || fsRemaining > 0;
+      if (!buyFsBtn.hidden && buyFsText) {
+        buyFsText.textContent = '购买免费旋转 · ' + fmtMoney(BET_STEPS[betIndex] * 100);
+      }
+    }
     if (betValueEl) {
       if (fsRemaining > 0) {
         betValueEl.textContent = '免费旋转 · 剩余 ' + fsRemaining + ' 次';
@@ -745,6 +754,67 @@
       rechargeEl.addEventListener('click', function () { toast('充值功能即将开放'); });
     }
   }
+
+  /* ---------- 购买免费旋转 ---------- */
+  if (buyFsBtn) buyFsBtn.addEventListener('click', async function () {
+    if (spinning || autoRunning || fsRemaining > 0) return;
+    var bet = BET_STEPS[betIndex];
+    var cost = bet * 100;
+    if (balance < cost) { sfx('error'); toast('余额不足，购买需要 ' + fmtMoney(cost)); return; }
+
+    /* 二次确认 */
+    if (!window.confirm('购买 15 次免费旋转，消耗 ' + fmtMoney(cost) + '？')) return;
+
+    balance -= cost;
+    lastWin = 0;
+    fsRemaining = 15;
+    fsTotal = 15;
+    bonusBalls = {};
+    refreshUI();
+    sfx('fsTrigger');
+    triggerFlash('big');
+    if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
+    setResult('⚡ 已购买 · 15 次免费旋转', true);
+    updateFsUI();
+    await sleep(1200);
+
+    /* 自动跑 FS */
+    spinning = true;
+    try {
+      while (fsRemaining > 0) {
+        fsRemaining--;
+        updateFsUI();
+        await sleep(300);
+        sfx('fsSpin');
+        var fr = await runSpin(bet, true);
+        if (fr.finalWin > 0) {
+          setResult('免费旋转 · +' + fmtMoney(fr.finalWin) + ' · 剩余 ' + fsRemaining + ' 次', true);
+        } else {
+          setResult('免费旋转 · 剩余 ' + fsRemaining + ' 次', false);
+        }
+        if (countScatters() >= 4) {
+          fsRemaining += 15;
+          fsTotal += 15;
+          updateFsUI();
+          setResult('⚡ 再次触发 +15 次免费旋转！', true);
+          await sleep(1200);
+        }
+      }
+      if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('idle');
+      if (lastWin > 0) {
+        sfx('fsEnd');
+        setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
+        showFsSummary(lastWin, bet, fsTotal);
+      }
+      fsTotal = 0;
+      recordHistory({
+        t: Date.now(), bet: cost, win: lastWin, chain: 0, mult: 0, fs: true
+      });
+      recordStats({ bet: cost, win: lastWin, chain: 0, mult: 0, fs: true });
+    } catch (e) { /* noop */ }
+    spinning = false;
+    refreshUI();
+  });
 
   /* ---------- 自动旋转 ---------- */
   var autoRunning = false;

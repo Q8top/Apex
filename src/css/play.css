@@ -1396,3 +1396,18 @@ body {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+
+/* ---------- 购买免费旋转 ---------- */
+.gp-btn-buyfs {
+  height: 40px;
+  background: linear-gradient(180deg, #FCF2DC 0%, #F8E4B0 100%);
+  border: 1px solid #E6C976;
+  color: #8A5A00;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.gp-btn-buyfs:hover  { background: linear-gradient(180deg, #F8E4B0 0%, #F5D880 100%); }
+.gp-btn-buyfs:active { transform: scale(.985); }
+.gp-btn-buyfs svg    { width: 16px; height: 16px; display: block; }
+.gp-btn-buyfs[hidden] { display: none; }
