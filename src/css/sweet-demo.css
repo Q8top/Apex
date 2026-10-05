@@ -290,3 +290,72 @@ button {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ══════════════ V4 · 中奖区独立 ══════════════ */
+.demo-win {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0 6px;
+  text-align: center;
+}
+.demo-win__label {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 1px;
+}
+.demo-win__amount {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -.01em;
+  line-height: 1.1;
+  background: linear-gradient(90deg, #ff7eb6 0%, #ffb547 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.demo-win__amount.is-pop { animation: demo-pop .5s cubic-bezier(.3,.7,.4,1.6); }
+
+/* ══════════════ V5 · board 收回高度 + 重置按钮拉长 ══════════════ */
+
+/* board 不再 flex:1 撑满，宽度撑满、高度按 reels 6/5 比例 */
+.demo-board {
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 8px;
+}
+.demo-reels {
+  width: 100%;
+  aspect-ratio: 6 / 5;
+  max-height: none;
+  height: auto;
+}
+
+/* shell 不再 justify 撑满，改成从上往下排列 */
+.demo-shell {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+/* 重置按钮：拉长到跟数据三栏同宽 */
+.demo-reset {
+  width: 100%;
+}
+.demo-reset__btn {
+  width: 100%;
+  justify-content: center;
+  padding: 11px 22px;
+  font-size: 14.5px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+}
+
+/* 中奖区高度也压缩一点，与整体紧凑 */
+.demo-win {
+  padding: 2px 0 4px;
+}
+.demo-win__amount { font-size: 24px; }
