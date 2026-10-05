@@ -26,6 +26,7 @@
 
   /* 符号池（权重越高出现越多） */
   var POOL = [
+    { id: 'scatter',   w: 4 },
     { id: 'zeus',      w: 1 },
     { id: 'crown',     w: 2 },
     { id: 'chalice',   w: 3 },
@@ -61,6 +62,7 @@
 
   /* 符号中文名（用于中奖提示） */
   var SYMBOL_NAMES = {
+    'scatter':    '闪电',
     'zeus':       '宙斯',
     'crown':      '金冠',
     'chalice':    '圣杯',
@@ -116,6 +118,7 @@
   document.title = gameName + ' · ' + modeText;
 
   /* ---------- 状态 ---------- */
+  var fsRemaining = 0;
   var balance   = DEFAULT_BALANCE[mode] || 0;
   var betIndex  = 3;   /* BET_STEPS[3] = 10 */
   var lastWin   = 0;
@@ -159,6 +162,14 @@
     return POOL_FLAT[Math.floor(rnd() * POOL_FLAT.length)];
   }
 
+  function countScatters() {
+    var n = 0;
+    for (var i = 0; i < grid.length; i++) {
+      if (bonusBalls[i] === undefined && grid[i] === 'scatter') n++;
+    }
+    return n;
+  }
+
   /* ---------- 盘面数据（symbol id 数组，长度 COLS*ROWS） ---------- */
   var grid = [];
 
@@ -180,9 +191,22 @@
   }
 
   function renderSym(symId) {
+    if (symId === 'scatter') return renderScatter();
     if (!window.ApexOlympusSymbols) return '';
     var camel = String(symId).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
     return window.ApexOlympusSymbols.render(camel);
+  }
+
+  function renderScatter() {
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+      + '<circle cx="50" cy="50" r="42" fill="#2A1B5E" stroke="#FFD84D" stroke-width="2.5"/>'
+      + '<circle cx="50" cy="50" r="36" fill="none" stroke="#C4A6FF" stroke-width="1" opacity=".5"/>'
+      + '<path d="M56 12 L28 54 L46 54 L36 88 L72 42 L54 42 L64 12 Z" '
+      +   'fill="#FFF4B0" stroke="#6A4600" stroke-width="1.8" stroke-linejoin="round"/>'
+      + '<path d="M56 12 L40 54 L48 54 L42 76" fill="none" stroke="#FFFCE8" '
+      +   'stroke-width="1.6" opacity=".9" stroke-linecap="round"/>'
+      + '<ellipse cx="32" cy="22" rx="8" ry="5" fill="#fff" opacity=".18"/>'
+      + '</svg>';
   }
 
   /* ---------- 倍率之球 ---------- */
@@ -242,6 +266,7 @@
       if (visited[start]) continue;
       if (bonusBalls[start] !== undefined) { visited[start] = true; continue; }
       var sym = grid[start];
+      if (sym === 'scatter') { visited[start] = true; continue; }
       var stack = [start];
       var group = [];
       visited[start] = true;
@@ -316,7 +341,15 @@
     if (betEl)      betEl.textContent      = fmtMoney(BET_STEPS[betIndex]);
     if (winEl)      winEl.textContent      = fmtMoney(lastWin);
     if (prizeEl)    prizeEl.textContent    = fmtMoney(lastWin);
-    if (betValueEl) betValueEl.textContent = '下注 ' + fmtMoney(BET_STEPS[betIndex]);
+    if (betValueEl) {
+      if (fsRemaining > 0) {
+        betValueEl.textContent = '免费旋转 · 剩余 ' + fsRemaining + ' 次';
+        betValueEl.style.color = '#C77800';
+      } else {
+        betValueEl.textContent = '下注 ' + fmtMoney(BET_STEPS[betIndex]);
+        betValueEl.style.color = '';
+      }
+    }
   }
 
   /* ---------- 重置 / 充值 ---------- */
@@ -434,18 +467,61 @@
     spinning = false;
   }
 
-  if (spinBtn) spinBtn.addEventListener('click', function () {
+  if (spinBtn) spinBtn.addEventListener('click', async function () {
     if (spinning) return;
     var bet = BET_STEPS[betIndex];
-    if (balance < bet) { toast('余额不足'); return; }
+
+    if (fsRemaining === 0 && balance < bet) { toast('余额不足'); return; }
 
     spinning = true;
-    balance -= bet;
     lastWin = 0;
     setResult('');
+
+    if (fsRemaining === 0) {
+      balance -= bet;
+      bonusBalls = {};
+    } else {
+      fsRemaining--;
+    }
     refreshUI();
 
-    runSpin(bet).catch(function () { spinning = false; });
+    try {
+      await runSpin(bet);
+
+      /* 触发 Free Spins */
+      var sc = countScatters();
+      if (fsRemaining === 0 && sc >= 4) {
+        fsRemaining = 15;
+        bonusBalls = {};
+        setResult('⚡ ' + sc + ' 个闪电 · 触发免费旋转 15 次！', true);
+        refreshUI();
+        await sleep(1400);
+      }
+
+      /* 自动连转免费旋转 */
+      while (fsRemaining > 0) {
+        fsRemaining--;
+        refreshUI();
+        await sleep(320);
+        await runSpin(bet);
+
+        var sc2 = countScatters();
+        if (sc2 >= 4) {
+          fsRemaining += 15;
+          setResult('⚡ 再次触发 +15 次免费旋转！', true);
+          refreshUI();
+          await sleep(1200);
+        }
+      }
+
+      /* Free Spins 结束 → 清空球 */
+      bonusBalls = {};
+      renderBoard();
+      setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), lastWin > 0);
+    } catch (e) {
+      /* noop */
+    }
+    spinning = false;
   });
 
   /* ---------- 工具按钮 ---------- */
