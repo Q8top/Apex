@@ -142,6 +142,12 @@
 /sweet.html
   Cache-Control: no-store
 
+/sweet-demo
+  Cache-Control: no-store
+
+/sweet-demo.html
+  Cache-Control: no-store
+
 /sweet
   Cache-Control: no-store
 
