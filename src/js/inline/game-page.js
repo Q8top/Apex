@@ -563,7 +563,7 @@ function init(){
       overlay.classList.add('show');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      if (A) A.bgmStart('base');
+      if (A) { A.unlock(); A.bgmStart('base'); }
       syncSettings();
     }
     function close(){
@@ -811,6 +811,54 @@ function init(){
       var m = state.mode === 'demo' ? 'demo' : 'real';
       history = history.filter(function(h){ return h.mode.indexOf(m) !== 0; });
       renderHistory();
+    });
+
+    // ============ 设置菜单（P1-11 补回） ============
+    var menuBtn = document.getElementById('og-menu');
+    var setSoundBtn = document.getElementById('og-set-sound');
+    var setSoundVal = document.getElementById('og-set-sound-val');
+    var setMusicBtn = document.getElementById('og-set-music');
+    var setMusicVal = document.getElementById('og-set-music-val');
+    var setShakeBtn = document.getElementById('og-set-shake');
+    var setShakeVal = document.getElementById('og-set-shake-val');
+    var setFastBtn = document.getElementById('og-set-fast');
+    var setFastVal = document.getElementById('og-set-fast-val');
+
+    function syncSettings(){
+      if (setSoundVal) setSoundVal.classList.toggle('on', state.sound);
+      if (setMusicVal) setMusicVal.classList.toggle('on', state.music);
+      if (setShakeVal) setShakeVal.classList.toggle('on', state.shake);
+      if (setFastVal)  setFastVal.classList.toggle('on', state.fast);
+    }
+
+    if (menuBtn) menuBtn.addEventListener('click', function(){
+      syncSettings();
+      openModal('og-menu-modal');
+    });
+    if (setSoundBtn) setSoundBtn.addEventListener('click', function(){
+      state.sound = !state.sound;
+      if (A) A.setEnabled(state.sound);
+      syncSettings();
+      if (A) A.sClick();
+    });
+    if (setMusicBtn) setMusicBtn.addEventListener('click', function(){
+      state.music = !state.music;
+      if (A) {
+        if (state.music) A.bgmStart('base');
+        else A.bgmStop();
+      }
+      syncSettings();
+      if (A && state.music) A.sClick();
+    });
+    if (setShakeBtn) setShakeBtn.addEventListener('click', function(){
+      state.shake = !state.shake;
+      syncSettings();
+      if (A) A.sClick();
+    });
+    if (setFastBtn) setFastBtn.addEventListener('click', function(){
+      state.fast = !state.fast;
+      syncSettings();
+      if (A) A.sClick();
     });
 
     // ============ 绑定弹层按钮 ============    // ============ 绑定弹层按钮 ============

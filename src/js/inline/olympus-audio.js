@@ -321,6 +321,21 @@ function bgmMute(v){
   }
 }
 
+/* ============ 页面恢复时恢复 AudioContext ============ */
+function ensureRunning(){
+  if (!ctx) return;
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(function(){ /* resumed */ }).catch(function(){});
+  }
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) ensureRunning();
+  });
+  window.addEventListener('pageshow', function(){ ensureRunning(); });
+  window.addEventListener('focus', function(){ ensureRunning(); });
+}
+
 /* ============ 导出 ============ */
 window.ApexAudio = {
   init: init,
@@ -337,7 +352,8 @@ window.ApexAudio = {
   sClick: sClick,
   bgmStart: bgmStart,
   bgmStop: bgmStop,
-  bgmSetMode: bgmSetMode
+  bgmSetMode: bgmSetMode,
+  ensureRunning: ensureRunning
 };
 
 })();
