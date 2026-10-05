@@ -396,8 +396,10 @@
   }
 
   /* Spin 按钮 */
-  if (spinBtn) spinBtn.addEventListener('click', async function () {
+  if (spinBtn) spinBtn.addEventListener('click', async function (ev) {
     if (spinning) return;
+    /* 用户手动点击 → 停止自动（自动触发不带 isTrusted） */
+    if (ev && ev.isTrusted && autoRunning) stopAuto();
     var bet = BET_STEPS[betIndex];
 
     if (fsRemaining === 0 && balance < bet) { toast('余额不足'); return; }
@@ -497,19 +499,28 @@
   var autoRunning = false;
   var autoCount = 0;
   function startAuto(n) {
-    if (autoRunning || spinning) return;
+    if (autoRunning) return;
     autoCount = n;
     autoRunning = true;
     closeSheet();
+    toast('自动旋转 · ' + n + ' 次');
     tickAuto();
   }
   function tickAuto() {
-    if (!autoRunning || autoCount <= 0) { autoRunning = false; return; }
+    if (!autoRunning) return;
+    if (autoCount <= 0) {
+      autoRunning = false;
+      toast('自动旋转完成');
+      return;
+    }
+    /* spin 未完成 → 等，不扣次数 */
+    if (spinning) {
+      setTimeout(tickAuto, 300);
+      return;
+    }
     autoCount--;
     if (spinBtn) spinBtn.click();
-    setTimeout(function () {
-      if (autoRunning) tickAuto();
-    }, 1200);
+    setTimeout(tickAuto, 600);
   }
   function stopAuto() { autoRunning = false; autoCount = 0; }
 
