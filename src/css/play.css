@@ -1483,3 +1483,35 @@ body {
   0%, 100% { box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 10px 28px -14px rgba(0,0,0,.55); }
   50%      { box-shadow: inset 0 0 0 1px rgba(255,255,255,.07), 0 10px 32px -14px rgba(255,200,80,.22); }
 }
+
+/* ---------- 中奖金币雨 ---------- */
+.gp-coinrain {
+  position: fixed; inset: 0; z-index: 74;
+  pointer-events: none; overflow: hidden;
+}
+.gp-coin {
+  position: absolute;
+  top: -40px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFF4B0 0%, #FFD84D 42%, #B8860B 100%);
+  box-shadow:
+    0 0 8px rgba(255,216,77,.9),
+    inset 0 -2px 0 rgba(80,40,0,.5);
+  animation: gp-coin-fall var(--dur, 2.2s) linear var(--delay, 0s) forwards;
+  will-change: transform;
+}
+.gp-coin::after {
+  content: '$';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900;
+  color: #8A5A00;
+  text-shadow: 0 1px 0 rgba(255,244,176,.7);
+}
+@keyframes gp-coin-fall {
+  0%   { transform: translateY(0)      rotateZ(0deg);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+}
