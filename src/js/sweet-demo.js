@@ -383,6 +383,190 @@
     document.body.style.overflow = '';
   }
 
+  /* ══════════════ 赔付表抽屉 ══════════════ */
+
+  var paytableTab = 'base';   // base / high / special
+
+  function renderPaytable() {
+    var body = document.getElementById('paytable-body');
+    if (!body) return;
+    body.innerHTML = '';
+
+    /* ── Tabs ── */
+    var tabs = document.createElement('div');
+    tabs.className = 'paytable-tabs';
+    var tabDefs = [
+      { key: 'base',    label: '基础符号' },
+      { key: 'high',    label: '高级符号' },
+      { key: 'special', label: '特殊符号' }
+    ];
+    for (var ti = 0; ti < tabDefs.length; ti++) {
+      var t = document.createElement('button');
+      t.type = 'button';
+      t.className = 'paytable-tab' + (paytableTab === tabDefs[ti].key ? ' is-active' : '');
+      t.textContent = tabDefs[ti].label;
+      t.setAttribute('data-key', tabDefs[ti].key);
+      t.addEventListener('click', (function (key) {
+        return function () { paytableTab = key; renderPaytable(); };
+      })(tabDefs[ti].key));
+      tabs.appendChild(t);
+    }
+    body.appendChild(tabs);
+
+    /* ── 从 symbolPool 拿数据 ── */
+    var all = window.ApexSweetSymbols ? window.ApexSweetSymbols.list : [];
+    var list = [];
+    for (var i = 0; i < all.length; i++) {
+      if (paytableTab === 'base' && all[i].type === 'base') list.push(all[i]);
+      else if (paytableTab === 'high' && all[i].type === 'high') list.push(all[i]);
+      else if (paytableTab === 'special' && (all[i].type === 'scatter' || all[i].type === 'wild')) list.push(all[i]);
+    }
+
+    /* ── 表头 ── */
+    var table = document.createElement('table');
+    table.className = 'paytable-table';
+
+    if (paytableTab === 'special') {
+      /* 特殊符号：2 列（符号 / 作用） */
+      var thead = document.createElement('thead');
+      var trh = document.createElement('tr');
+      var th1 = document.createElement('th'); th1.textContent = '符号';    trh.appendChild(th1);
+      var th2 = document.createElement('th'); th2.textContent = '作用';    trh.appendChild(th2);
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      var tb = document.createElement('tbody');
+      for (var si = 0; si < list.length; si++) {
+        var spec = list[si];
+        var tr = document.createElement('tr');
+
+        /* 符号列 */
+        var tdA = document.createElement('td');
+        var cell = document.createElement('div');
+        cell.className = 'paytable-sym';
+        var art = document.createElement('div');
+        art.className = 'paytable-sym__art';
+        var node = window.ApexSweetSymbols.build(spec.id, 30);
+        if (node) art.appendChild(node);
+        cell.appendChild(art);
+        var nm = document.createElement('span');
+        nm.className = 'paytable-sym__name';
+        nm.textContent = spec.name;
+        cell.appendChild(nm);
+        tdA.appendChild(cell);
+        tr.appendChild(tdA);
+
+        /* 作用列 */
+        var tdB = document.createElement('td');
+        var badge = document.createElement('span');
+        badge.className = 'paytable-mult paytable-mult--special';
+        if (spec.type === 'scatter') {
+          badge.textContent = '触发免费旋转';
+          badge.style.display = 'inline-block';
+        } else {
+          badge.textContent = '替代任意符号';
+        }
+        tdB.appendChild(badge);
+        tr.appendChild(tdB);
+
+        tb.appendChild(tr);
+      }
+      table.appendChild(tb);
+
+      /* 说明 */
+      var note = document.createElement('div');
+      note.className = 'paytable-note';
+      note.innerHTML =
+        '<strong>SCATTER（棒棒糖）</strong>：集齐 <strong>4 个</strong> 触发 <strong>10 次</strong>免费旋转；5 个触发 12 次；6 个触发 15 次。<br>' +
+        '<strong>WILD（彩虹糖）</strong>：可替代任意基础或高级符号参与结算，但不会替代 Scatter。<br>' +
+        '<strong>免费旋转期间</strong>：场上的糖果炸弹倍数会累加至本轮总奖金，单个炸弹倍数 ×2 ~ ×100。';
+      body.appendChild(table);
+      body.appendChild(note);
+      return;
+    }
+
+    /* ── 基础 / 高级：4 列（符号 / 8~9 / 10~11 / 12+） ── */
+    var thead2 = document.createElement('thead');
+    var trh2 = document.createElement('tr');
+    var thA = document.createElement('th'); thA.textContent = '符号';   trh2.appendChild(thA);
+    var thB = document.createElement('th'); thB.textContent = '8~9';     trh2.appendChild(thB);
+    var thC = document.createElement('th'); thC.textContent = '10~11';   trh2.appendChild(thC);
+    var thD = document.createElement('th'); thD.textContent = '12+';     trh2.appendChild(thD);
+    thead2.appendChild(trh2);
+    table.appendChild(thead2);
+
+    var tb2 = document.createElement('tbody');
+    for (var li = 0; li < list.length; li++) {
+      var sp = list[li];
+      var tr2 = document.createElement('tr');
+
+      /* 符号列 */
+      var td1 = document.createElement('td');
+      var cell2 = document.createElement('div');
+      cell2.className = 'paytable-sym';
+      var art2 = document.createElement('div');
+      art2.className = 'paytable-sym__art';
+      var node2 = window.ApexSweetSymbols.build(sp.id, 30);
+      if (node2) art2.appendChild(node2);
+      cell2.appendChild(art2);
+      var nm2 = document.createElement('span');
+      nm2.className = 'paytable-sym__name';
+      nm2.textContent = sp.name;
+      cell2.appendChild(nm2);
+      td1.appendChild(cell2);
+      tr2.appendChild(td1);
+
+      /* 三档倍率 */
+      var vals = [sp.m8, sp.m10, sp.m12];
+      for (var vi = 0; vi < vals.length; vi++) {
+        var td = document.createElement('td');
+        var badge2 = document.createElement('span');
+        badge2.className = 'paytable-mult';
+        badge2.textContent = vals[vi];
+        td.appendChild(badge2);
+        tr2.appendChild(td);
+      }
+
+      tb2.appendChild(tr2);
+    }
+    table.appendChild(tb2);
+    body.appendChild(table);
+
+    /* 规则说明 */
+    var note2 = document.createElement('div');
+    note2.className = 'paytable-note';
+    note2.innerHTML =
+      '同一种符号在网格任意位置出现 <strong>8 个及以上</strong>即中奖，不受行列连线限制。<br>' +
+      '倍率按 <strong>下注额</strong> 计算：例如 ×5 表示赢得 <strong>下注 × 5</strong>。<br>' +
+      '多个符号组合同一局可同时结算，赔付独立叠加。';
+    body.appendChild(note2);
+  }
+
+  function openPaytable() {
+    var mask = document.getElementById('paytable-mask');
+    var drawer = document.getElementById('paytable-drawer');
+    if (!mask || !drawer) return;
+    renderPaytable();
+    state.paytableOpen = true;
+    mask.classList.add('is-open');
+    drawer.classList.add('is-open');
+    mask.setAttribute('aria-hidden', 'false');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePaytable() {
+    var mask = document.getElementById('paytable-mask');
+    var drawer = document.getElementById('paytable-drawer');
+    if (!mask || !drawer) return;
+    state.paytableOpen = false;
+    mask.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    mask.setAttribute('aria-hidden', 'true');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
   /* ── 事件绑定 ── */
   function bindEvents() {
     var back = document.getElementById('demo-back');
@@ -454,13 +638,19 @@
     if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && state.drawerOpen) closeDrawer();
+      if (e.key !== 'Escape') return;
+      if (state.drawerOpen) closeDrawer();
+      if (state.paytableOpen) closePaytable();
     });
 
     var pay = document.getElementById('demo-paytable');
-    if (pay) pay.addEventListener('click', function () {
-      window.location.href = 'sweet#symbols';
-    });
+    if (pay) pay.addEventListener('click', function () { openPaytable(); });
+
+    var payMask = document.getElementById('paytable-mask');
+    if (payMask) payMask.addEventListener('click', closePaytable);
+
+    var payClose = document.getElementById('paytable-close');
+    if (payClose) payClose.addEventListener('click', closePaytable);
   }
 
   /* ── URL 参数：?mode=demo / ?mode=play ── */
