@@ -34,7 +34,7 @@ function ensureDefs(){
       + '<feGaussianBlur in="rim" stdDeviation="0.45" result="rb"/>'
       + '<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="nc"/><feMergeNode in="rb"/></feMerge>'
     + '</filter>'
-    + '</defs>';
+    + '<radialGradient id="oly-glow-purple"><stop offset="0" stop-color="#C4A6FF" stop-opacity=".65"/><stop offset=".55" stop-color="#8B50D8" stop-opacity=".25"/><stop offset="1" stop-color="#8B50D8" stop-opacity="0"/></radialGradient>'</defs>';
   document.body.appendChild(svg);
 }
 
@@ -83,6 +83,7 @@ function zeus(){
     s += '<line x1="43" y1="'+(y+1.4)+'" x2="57" y2="'+(y+1.4)+'" stroke="#FFFCE8" stroke-width=".7" opacity=".95"/>';
   }
   /* 杖顶雷球（多切面宝石质感） */
+  s += '<circle cx="50" cy="14" r="16" fill="url(#oly-glow-purple)"/>';
   s += '<circle cx="50" cy="14" r="9" fill="#7A50C8" stroke="#3D0A70" stroke-width="1.4"/>';
   s += '<circle cx="50" cy="14" r="9" fill="none" stroke="url(#oly-gold)" stroke-width="1.4"/>';
   s += '<circle cx="46.5" cy="10.5" r="3" fill="#fff" opacity=".55"/>';
@@ -92,6 +93,7 @@ function zeus(){
   /* 杖底金座（梯形） */
   s += '<path d="M38 86 L62 86 L58 94 L42 94 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1" stroke-linejoin="round"/>';
   s += '<line x1="40" y1="88" x2="60" y2="88" stroke="#FFFCE8" stroke-width=".7" opacity=".9"/>';
+  s += meander(41, 92, 18, 2, 3, '#7A5000');
   return s;
 }
 
@@ -126,6 +128,8 @@ function crown(){
   s += '<ellipse cx="49.2" cy="10.8" rx="1" ry=".7" fill="#fff" opacity=".95"/>';
   s += '<circle cx="22" cy="30" r="1.8" fill="#FFE888" stroke="#6A4600" stroke-width=".6"/>';
   s += '<circle cx="78" cy="30" r="1.8" fill="#FFE888" stroke="#6A4600" stroke-width=".6"/>';
+  s += '<circle cx="38" cy="46" r="1.3" fill="#FFFCE8" opacity=".9"/>';
+  s += '<circle cx="62" cy="46" r="1.3" fill="#FFFCE8" opacity=".9"/>';
   return s;
 }
 
@@ -178,7 +182,10 @@ function ring(){
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx-3.6)+'" ry="'+(ry-3.6)+'" fill="none" stroke="#6A4600" stroke-width=".5" opacity=".65"/>';
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx+3.6)+'" ry="'+(ry+3.6)+'" fill="none" stroke="#6A4600" stroke-width=".5" opacity=".65"/>';
   s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx-6)+'" ry="'+(ry-6)+'" fill="none" stroke="#7A5000" stroke-width=".8" stroke-dasharray="2 2.5" opacity=".65"/>';
-  s += arc('M22 62 Q22 44 34 42','#FFFCE8',2,.9);
+  s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx-1)+'" ry="'+(ry-1)+'" fill="none" stroke="#8B6508" stroke-width=".4" opacity=".55"/>';
+  s += arc('M22 62 Q22 44 34 42','#FFFCE8',2.2,.95);
+  s += arc('M24 62 Q24 47 34 45','#fff',1.2,.7);
+  s += arc('M25 58 Q26 50 32 47','#fff',.7,.45);
   s += arc('M24 62 Q24 48 34 46','#fff',1,.6);
   s += arc('M78 62 Q78 80 66 82','#5A3A00',2,.55);
   s += '<path d="M33 40 L40 27 L60 27 L67 40 L60 46 L40 46 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.2" stroke-linejoin="round"/>';
