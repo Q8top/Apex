@@ -136,11 +136,11 @@
     var root = svgRoot('0 0 100 100', { width: size, height: size, 'class': cls });
     var defs = svg('defs');
 
-    /* 主体线性渐变（果冻感：亮—主—主—暗） */
-    var gBody = svg('linearGradient', { id: 'gb_' + uid, x1: '0.28', y1: '0.05', x2: '0.72', y2: '1' });
+    /* 主体径向渐变（球面感，不依赖 filter） */
+    var gBody = svg('radialGradient', { id: 'gb_' + uid, cx: '0.35', cy: '0.30', r: '0.9' });
     gBody.appendChild(svg('stop', { offset: '0',    'stop-color': t.light }));
-    gBody.appendChild(svg('stop', { offset: '0.28', 'stop-color': t.main }));
-    gBody.appendChild(svg('stop', { offset: '0.68', 'stop-color': t.main }));
+    gBody.appendChild(svg('stop', { offset: '0.30', 'stop-color': t.main }));
+    gBody.appendChild(svg('stop', { offset: '0.70', 'stop-color': t.main }));
     gBody.appendChild(svg('stop', { offset: '1',    'stop-color': t.dark }));
     defs.appendChild(gBody);
 
@@ -157,17 +157,6 @@
     gBot.appendChild(svg('stop', { offset: '1', 'stop-color': t.light, 'stop-opacity': '0' }));
     defs.appendChild(gBot);
 
-    /* 外发光/阴影 filter */
-    var fShadow = svg('filter', { id: 'fs_' + uid, x: '-40%', y: '-40%', width: '180%', height: '185%' });
-    fShadow.appendChild(svg('feGaussianBlur', { in: 'SourceAlpha', stdDeviation: '1.6', result: 'b1' }));
-    fShadow.appendChild(svg('feOffset', { in: 'b1', dx: '0', dy: '2.4', result: 'b2' }));
-    var fec = svg('feComponentTransfer', { in: 'b2', result: 'b3' });
-    fShadow.appendChild(fec);
-    var fm = svg('feMerge');
-    fm.appendChild(svg('feMergeNode', { in: 'b3' }));
-    fm.appendChild(svg('feMergeNode', { in: 'SourceGraphic' }));
-    fShadow.appendChild(fm);
-    defs.appendChild(fShadow);
 
     /* clipPath */
     var cpId = 'cl_' + uid;
@@ -194,12 +183,18 @@
     }));
     root.appendChild(gShadow);
 
-    /* ② 主体层（渐变 + 外阴影 filter） */
+    /* ② 阴影层：深色 path 偏移 1.8px */
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: t.dark, opacity: '0.32',
+      transform: 'translate(0 1.8)'
+    }));
+
+    /* ③ 主体层：径向渐变 */
     var gBase = svg('g', { 'class': 'sd-sym-body' });
     gBase.appendChild(svg('path', {
       d: d, 'fill-rule': fillRule,
-      fill: 'url(#gb_' + uid + ')',
-      filter: 'url(#fs_' + uid + ')'
+      fill: 'url(#gb_' + uid + ')'
     }));
     root.appendChild(gBase);
 
@@ -222,6 +217,24 @@
       d: d, 'fill-rule': fillRule, fill: 'none',
       stroke: '#ffffff', 'stroke-width': '1.1', 'stroke-linejoin': 'round',
       opacity: '0.75', transform: 'translate(0 -0.5)',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    /* 左上大高光椭球 */
+    gHi.appendChild(svg('ellipse', {
+      cx: n2(cx - r * 0.28), cy: n2(cy - r * 0.36),
+      rx: n2(r * 0.42), ry: n2(r * 0.24),
+      fill: '#ffffff', opacity: '0.82',
+      transform: 'rotate(-28 ' + n2(cx - r * 0.28) + ' ' + n2(cy - r * 0.36) + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    /* 右下反光椭球 */
+    gHi.appendChild(svg('ellipse', {
+      cx: n2(cx + r * 0.42), cy: n2(cy + r * 0.5),
+      rx: n2(r * 0.34), ry: n2(r * 0.16),
+      fill: '#ffffff', opacity: '0.32',
+      transform: 'rotate(20 ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.5) + ')',
       'clip-path': 'url(#' + cpId + ')'
     }));
 
@@ -412,10 +425,10 @@
     ph.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:10px;position:absolute;inset:0;box-sizing:border-box;margin:0;padding:0;';
     var icon = document.createElement('div');
     icon.className = 'sd-carousel__ph-icon';
-    var ic = svgRoot('0 0 48 48', { width: 56, height: 56 });
-    ic.appendChild(svg('rect', { x: '4', y: '8', width: '40', height: '32', rx: '3', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }));
-    ic.appendChild(svg('circle', { cx: '15', cy: '19', r: '3', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }));
-    ic.appendChild(svg('path', { d: 'M 6 34 L 18 22 L 28 32 L 34 26 L 42 34', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    var ic = svgRoot('0 0 48 48', { width: 64, height: 64 });
+    ic.appendChild(svg('rect', { x: '5', y: '9', width: '38', height: '30', rx: '4', fill: 'none', stroke: '#8a8a96', 'stroke-width': '2.6', 'stroke-linejoin': 'round' }));
+    ic.appendChild(svg('circle', { cx: '16', cy: '19', r: '3.2', fill: 'none', stroke: '#8a8a96', 'stroke-width': '2.6' }));
+    ic.appendChild(svg('path', { d: 'M 7 34 L 18 23 L 28 32 L 34 26 L 41 33', fill: 'none', stroke: '#8a8a96', 'stroke-width': '2.6', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
     icon.appendChild(ic);
     ph.appendChild(icon);
     var lbl = document.createElement('div');
