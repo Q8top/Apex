@@ -115,6 +115,10 @@
     return '¥' + Number(n).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  function sfx(name) {
+    if (window.ApexAudio) window.ApexAudio.play.apply(null, arguments);
+  }
+
   function toast(msg) {
     if (!toastEl) return;
     toastEl.textContent = msg;
@@ -338,6 +342,7 @@
 
     newGrid();
     renderBoard();
+    sfx('land');
     await sleep(200);
 
     var totalWin = 0, chain = 0;
@@ -346,6 +351,7 @@
         var dv = dropBall();
         if (dv) {
           renderBoard();
+          sfx('ball');
           setResult('倍率之球 x' + dv + '！', true);
           await sleep(500);
         }
@@ -362,6 +368,8 @@
       for (var wi = 0; wi < wins.length; wi++) positions = positions.concat(wins[wi].positions);
 
       renderBoard(positions);
+      sfx('chain', chain);
+      sfx('win', winAmount, bet);
       setResult('第 ' + chain + ' 连 · +' + fmtMoney(winAmount), true);
       lastWin = totalWin;
       refreshUI();
@@ -373,6 +381,7 @@
         if (el) el.classList.add('is-clearing');
       }
       await sleep(320);
+      sfx('drop');
 
       for (var di = 0; di < positions.length; di++) grid[positions[di]] = null;
       dropDown();
@@ -402,10 +411,11 @@
     if (ev && ev.isTrusted && autoRunning) stopAuto();
     var bet = BET_STEPS[betIndex];
 
-    if (fsRemaining === 0 && balance < bet) { toast('余额不足'); return; }
+    if (fsRemaining === 0 && balance < bet) { sfx('error'); toast('余额不足'); return; }
 
     spinning = true;
     setResult('');
+    sfx('spin');
 
     var isFS = false;
     if (fsRemaining > 0) {
@@ -434,6 +444,7 @@
         if (sc >= 4) {
           fsRemaining = 15;
           bonusBalls = {};
+          sfx('fsTrigger');
           setResult('⚡ ' + sc + ' 个闪电 · 触发免费旋转 15 次！', true);
           refreshUI();
           await sleep(1400);
@@ -448,6 +459,7 @@
         fsRemaining--;
         refreshUI();
         await sleep(300);
+        sfx('fsSpin');
         var fr = await runSpin(bet, true);
         if (fr.finalWin > 0) {
           setResult('免费旋转 · +' + fmtMoney(fr.finalWin) + ' · 剩余 ' + fsRemaining + ' 次', true);
@@ -464,6 +476,7 @@
       }
 
       if (fsRemaining === 0 && lastWin > 0) {
+        sfx('fsEnd');
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
       }
 
@@ -652,9 +665,12 @@
 
   /* ---------- 音效开关（图标切换） ---------- */
   var soundOn = true;
+  if (window.ApexAudio) window.ApexAudio.setEnabled(true);
   if (soundBtn) soundBtn.addEventListener('click', function () {
     soundOn = !soundOn;
     soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    if (window.ApexAudio) window.ApexAudio.setEnabled(soundOn);
+    if (soundOn) sfx('click');
   });
 
   /* 真实模式：读后端余额 */
