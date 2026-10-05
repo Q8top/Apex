@@ -1263,3 +1263,31 @@ body {
   60%  { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
+
+/* ---------- 中奖连线 ---------- */
+.gp-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+.gp-link {
+  fill: none;
+  stroke: #FFD84D;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(255,216,77,.9));
+  stroke-dasharray: 10 8;
+  animation: gp-link-flow .7s linear infinite;
+}
+@keyframes gp-link-flow {
+  to { stroke-dashoffset: -18; }
+}
+.gp-link-dot {
+  fill: #FFE888;
+  filter: drop-shadow(0 0 6px rgba(255,220,100,.95));
+}

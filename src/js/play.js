@@ -249,6 +249,53 @@
       html += '<div class="' + cls + '">' + (isBall ? renderBall(bonusBalls[i]) : renderSym(grid[i])) + '</div>';
     }
     boardEl.innerHTML = html;
+    /* 重建 / 清空连线层 */
+    var svg = document.getElementById('gpLinks');
+    if (!svg) {
+      svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('class', 'gp-links');
+      svg.setAttribute('id', 'gpLinks');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      boardEl.appendChild(svg);
+    } else {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+    }
+    if (hasWin) drawWinLinks(hl);
+  }
+
+  /* ---------- 中奖连线（相邻对连金线） ---------- */
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  function drawWinLinks(positions) {
+    var svg = document.getElementById('gpLinks');
+    if (!svg || !positions || positions.length < 2) return;
+    var boardRect = boardEl.getBoundingClientRect();
+    svg.setAttribute('viewBox', '0 0 ' + boardRect.width + ' ' + boardRect.height);
+    var cells = boardEl.querySelectorAll('.gp-cell');
+    var centers = {};
+    for (var i = 0; i < positions.length; i++) {
+      var el = cells[positions[i]];
+      if (!el) continue;
+      var r = el.getBoundingClientRect();
+      centers[positions[i]] = {
+        x: r.left + r.width / 2 - boardRect.left,
+        y: r.top + r.height / 2 - boardRect.top
+      };
+    }
+    for (var a = 0; a < positions.length; a++) {
+      for (var b = a + 1; b < positions.length; b++) {
+        var pa = positions[a], pb = positions[b];
+        var ar = (pa / COLS) | 0, ac = pa % COLS;
+        var br = (pb / COLS) | 0, bc = pb % COLS;
+        if (Math.abs(ar - br) + Math.abs(ac - bc) !== 1) continue;
+        var ca = centers[pa], cb = centers[pb];
+        if (!ca || !cb) continue;
+        var line = document.createElementNS(SVG_NS, 'line');
+        line.setAttribute('x1', ca.x.toFixed(1)); line.setAttribute('y1', ca.y.toFixed(1));
+        line.setAttribute('x2', cb.x.toFixed(1)); line.setAttribute('y2', cb.y.toFixed(1));
+        line.setAttribute('class', 'gp-link');
+        svg.appendChild(line);
+      }
+    }
   }
 
   /* 判定：4 方向相邻连通 */
