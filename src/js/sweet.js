@@ -409,6 +409,7 @@
   function buildPlaceholder() {
     var ph = document.createElement('div');
     ph.className = 'sd-carousel__ph';
+    ph.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:10px;position:absolute;inset:0;box-sizing:border-box;margin:0;padding:0;';
     var icon = document.createElement('div');
     icon.className = 'sd-carousel__ph-icon';
     var ic = svgRoot('0 0 48 48', { width: 56, height: 56 });
