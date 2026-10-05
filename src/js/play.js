@@ -105,6 +105,7 @@
   var histBtn    = document.getElementById('gpHistory');
   var payBtn     = document.getElementById('gpPaytable');
   var toastEl    = document.getElementById('gpToast');
+  var resultEl   = document.getElementById('gpResult');
 
   if (!page || !boardEl) return;
 
@@ -129,6 +130,14 @@
     toastTimer = window.setTimeout(function () {
       toastEl.classList.remove('is-show');
     }, 2600);
+  }
+
+  /* ---------- 结果栏 ---------- */
+  function setResult(text, isWin) {
+    if (!resultEl) return;
+    resultEl.textContent = text || '';
+    resultEl.classList.toggle('is-win', !!isWin);
+    resultEl.classList.toggle('is-empty', !text);
   }
 
   /* ---------- 金额格式化 ---------- */
@@ -250,6 +259,7 @@
         balance = DEFAULT_BALANCE.demo;
         lastWin = 0;
         refreshUI();
+        setResult('');
         toast('余额已重置');
       });
     } else {
@@ -307,12 +317,12 @@
         refreshUI();
 
         if (wins.length === 0) {
-          toast('未中奖');
+          setResult('未中奖', false);
         } else if (wins.length === 1) {
           var w = wins[0];
-          toast(SYMBOL_NAMES[w.symbol] + ' ' + w.count + ' 连 → 赢得 ' + fmtMoney(totalWin));
+          setResult(SYMBOL_NAMES[w.symbol] + ' ' + w.count + ' 连 · 赢得 ' + fmtMoney(totalWin), true);
         } else {
-          toast(wins.length + ' 组中奖 → 赢得 ' + fmtMoney(totalWin));
+          setResult(wins.length + ' 组中奖 · 赢得 ' + fmtMoney(totalWin), true);
         }
 
         spinning = false;

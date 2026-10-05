@@ -7,8 +7,8 @@
   --gp-accent:    #111114;
   --gp-mode:      #d97706;
   --gp-mode-bg:   #fef3c7;
-  --gp-board-bg:  #131728;
-  --gp-board-cell:rgba(255,255,255,.05);
+  --gp-board-bg:  #F7F4EE;
+  --gp-board-cell:#FFFFFF;
 }
 
 * { box-sizing: border-box; }
@@ -126,11 +126,11 @@ body {
   padding: 6px;
   border-radius: 14px;
   background: var(--gp-board-bg);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 10px 28px -14px rgba(0,0,0,.55);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), 0 8px 22px -12px rgba(160,120,40,.28);
   width: 100%;
   max-width: 100%;
   aspect-ratio: 6 / 5;
-  border: 1px solid rgba(255,200,80,.18);
+  border: 1px solid rgba(212,160,23,.22);
 }
 
 .gp-cell {
@@ -329,13 +329,33 @@ body {
 .gp-tool:hover { background: #f7f7f9; color: var(--gp-text); }
 .gp-tool svg   { width: 15px; height: 15px; display: block; }
 
+/* 中奖结果栏（盘面下方固定一行） */
+.gp-result {
+  flex: 0 0 auto;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  color: var(--gp-text-muted);
+  padding: 2px 12px 0;
+  transition: color .2s ease;
+}
+.gp-result.is-win {
+  color: #C77800;
+}
+.gp-result.is-empty {
+  opacity: 0;
+}
+
 /* Toast */
 .gp-toast {
   position: fixed;
   left: 50%;
-  top: calc(14% + env(safe-area-inset-top, 0));
-  bottom: auto;
-  transform: translate(-50%, -12px);
+  bottom: calc(24px + env(safe-area-inset-bottom, 0));
+  transform: translate(-50%, 12px);
   max-width: 80vw;
   padding: 10px 16px;
   border-radius: 10px;
