@@ -172,13 +172,13 @@ function init(){
   var trialBtn = document.getElementById('game-trial');
   if (trialBtn) {
     trialBtn.addEventListener('click', function(){
-      location.href = "/play.html?mode=demo";
+      /* 免费试用入口占位 */
     });
   }
   var startBtn = document.getElementById('game-start');
   if (startBtn) {
     startBtn.addEventListener('click', function(){
-      location.href = "/play.html?mode=real";
+      /* 开始游戏入口占位 */
     });
   }
 
