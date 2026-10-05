@@ -11,6 +11,8 @@
   var SPIN_DELAY = 900;
   var AUTO_INTERVAL = 1400;
 
+  var STORAGE_KEY = 'apex.sweet.history.v1';
+
   var state = {
     balance: INIT_BALANCE,
     betIndex: 6,
@@ -19,8 +21,26 @@
     auto: false,
     autoTimer: 0,
     history: [],
-    seed: 0
+    seed: 0,
+    round: 0,
+    drawerOpen: false
   };
+
+  /* ── 持久化：加载 / 保存 ── */
+  function loadHistory() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr.slice(-100);
+    } catch (e) { return []; }
+  }
+  function saveHistory() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.history.slice(-100)));
+    } catch (e) {}
+  }
 
   var symbolPool = [];
   var grid = [];
@@ -208,12 +228,25 @@
       updateAll();
       if (win.total > 0) popWinAmount();
 
+      state.round += 1;
+      var winDetails = [];
+      for (var wi = 0; wi < win.winIds.length; wi++) {
+        var wid = win.winIds[wi];
+        var ws = findSpec(wid);
+        var wc = 0;
+        for (var cc = 0; cc < grid.length; cc++) if (grid[cc].id === wid) wc++;
+        if (ws) winDetails.push({ id: wid, name: ws.name, count: wc });
+      }
       state.history.push({
+        round: state.round,
         bet: BETS[state.betIndex],
         won: win.total,
-        time: Date.now()
+        time: Date.now(),
+        details: winDetails
       });
-      if (state.history.length > 50) state.history.shift();
+      if (state.history.length > 100) state.history.shift();
+      saveHistory();
+      if (state.drawerOpen) renderHistory();
 
       state.spinning = false;
       if (btn) btn.disabled = false;
@@ -223,6 +256,131 @@
         state.autoTimer = setTimeout(spin, AUTO_INTERVAL);
       }
     }, SPIN_DELAY);
+  }
+
+  /* ══════════════ 记录抽屉 ══════════════ */
+
+  function fmtTime(ts) {
+    var d = new Date(ts);
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    return pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' +
+           pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+
+  function renderHistory() {
+    var body = document.getElementById('demo-drawer-body');
+    if (!body) return;
+    body.innerHTML = '';
+
+    if (!state.history.length) {
+      var empty = document.createElement('div');
+      empty.className = 'demo-drawer__empty';
+      empty.innerHTML =
+        '<div class="demo-drawer__empty-icon">' +
+        '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' +
+        '</div>' +
+        '<div>暂无对局记录</div>' +
+        '<div style="margin-top:6px;font-size:12px;opacity:.6">旋转一次后即可查看</div>';
+      body.appendChild(empty);
+      return;
+    }
+
+    /* 统计摘要 */
+    var totalBet = 0, totalWon = 0;
+    for (var i = 0; i < state.history.length; i++) {
+      totalBet += state.history[i].bet;
+      totalWon += state.history[i].won;
+    }
+    var net = totalWon - totalBet;
+
+    var summary = document.createElement('div');
+    summary.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;';
+    summary.innerHTML =
+      '<div style="padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);">' +
+        '<div style="font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:700;">总局数</div>' +
+        '<div style="font-size:16px;font-weight:800;margin-top:2px;">' + state.history.length + '</div>' +
+      '</div>' +
+      '<div style="padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);">' +
+        '<div style="font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:700;">累计下注</div>' +
+        '<div style="font-size:16px;font-weight:800;margin-top:2px;">' + fmtMoney(totalBet) + '</div>' +
+      '</div>' +
+      '<div style="padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);">' +
+        '<div style="font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:700;">累计赢得</div>' +
+        '<div style="font-size:16px;font-weight:800;margin-top:2px;color:#ffce6b;">' + fmtMoney(totalWon) + '</div>' +
+      '</div>' +
+      '<div style="padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);">' +
+        '<div style="font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:700;">净收益</div>' +
+        '<div style="font-size:16px;font-weight:800;margin-top:2px;color:' + (net >= 0 ? '#7ee0a0' : '#ff8c8c') + ';">' +
+          (net >= 0 ? '+' : '') + fmtMoney(net) +
+        '</div>' +
+      '</div>';
+    body.appendChild(summary);
+
+    /* 倒序渲染对局 */
+    for (var k = state.history.length - 1; k >= 0; k--) {
+      var r = state.history[k];
+      var item = document.createElement('div');
+      item.className = 'demo-record' + (r.won > 0 ? ' is-win' : '');
+
+      var idx = document.createElement('div');
+      idx.className = 'demo-record__idx';
+      idx.textContent = '#' + (r.round || (k + 1));
+
+      var meta = document.createElement('div');
+      meta.className = 'demo-record__meta';
+
+      var timeEl = document.createElement('div');
+      timeEl.className = 'demo-record__time';
+      timeEl.textContent = fmtTime(r.time);
+      meta.appendChild(timeEl);
+
+      var betEl = document.createElement('div');
+      betEl.className = 'demo-record__bet';
+      var betText = '下注 ' + fmtMoney(r.bet);
+      if (r.details && r.details.length) {
+        var names = [];
+        for (var di = 0; di < r.details.length; di++) {
+          names.push(r.details[di].name + ' ×' + r.details[di].count);
+        }
+        betText += ' · ' + names.join(' / ');
+      }
+      betEl.textContent = betText;
+      meta.appendChild(betEl);
+
+      var wonEl = document.createElement('div');
+      wonEl.className = 'demo-record__won' + (r.won > 0 ? ' is-win' : '');
+      wonEl.textContent = (r.won > 0 ? '+' : '') + fmtMoney(r.won);
+
+      item.appendChild(idx);
+      item.appendChild(meta);
+      item.appendChild(wonEl);
+      body.appendChild(item);
+    }
+  }
+
+  function openDrawer() {
+    var mask = document.getElementById('demo-drawer-mask');
+    var drawer = document.getElementById('demo-drawer');
+    if (!mask || !drawer) return;
+    renderHistory();
+    state.drawerOpen = true;
+    mask.classList.add('is-open');
+    drawer.classList.add('is-open');
+    mask.setAttribute('aria-hidden', 'false');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    var mask = document.getElementById('demo-drawer-mask');
+    var drawer = document.getElementById('demo-drawer');
+    if (!mask || !drawer) return;
+    state.drawerOpen = false;
+    mask.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    mask.setAttribute('aria-hidden', 'true');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
 
   /* ── 事件绑定 ── */
@@ -287,10 +445,16 @@
     });
 
     var hist = document.getElementById('demo-history');
-    if (hist) hist.addEventListener('click', function () {
-      if (!state.history.length) { toast('暂无记录'); return; }
-      var last = state.history[state.history.length - 1];
-      toast('最近一局：下注 ' + fmtMoney(last.bet) + ' / 赢得 ' + fmtMoney(last.won));
+    if (hist) hist.addEventListener('click', function () { openDrawer(); });
+
+    var mask = document.getElementById('demo-drawer-mask');
+    if (mask) mask.addEventListener('click', closeDrawer);
+
+    var closeBtn = document.getElementById('demo-drawer-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && state.drawerOpen) closeDrawer();
     });
 
     var pay = document.getElementById('demo-paytable');
@@ -342,6 +506,8 @@
       return s.type === 'base' || s.type === 'high';
     });
     state.mode = getMode();
+    state.history = loadHistory();
+    state.round = state.history.length;
     applyMode();
     buildReels();
 
