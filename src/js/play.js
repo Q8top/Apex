@@ -162,6 +162,23 @@
   /* ---------- 盘面数据（symbol id 数组，长度 COLS*ROWS） ---------- */
   var grid = [];
 
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  /* 列内下落 + 顶部补新符号 */
+  function dropDown() {
+    for (var col = 0; col < COLS; col++) {
+      var stack = [];
+      for (var r = ROWS - 1; r >= 0; r--) {
+        var idx = r * COLS + col;
+        if (grid[idx]) stack.push(grid[idx]);
+      }
+      for (var r2 = ROWS - 1; r2 >= 0; r2--) {
+        var i2 = r2 * COLS + col;
+        grid[i2] = stack.length > 0 ? stack.shift() : pick();
+      }
+    }
+  }
+
   function renderSym(symId) {
     if (!window.ApexOlympusSymbols) return '';
     var camel = String(symId).replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
@@ -282,8 +299,81 @@
     if (betIndex < BET_STEPS.length - 1) { betIndex++; refreshUI(); }
   });
 
-  /* ---------- 旋转 ---------- */
+  /* ---------- 旋转（含连锁掉落） ---------- */
   var spinning = false;
+
+  async function runSpin(bet) {
+    /* 1) 开始闪烁 */
+    var cellEls = boardEl.querySelectorAll('.gp-cell');
+    var tick = 0;
+    var flashTimer = window.setInterval(function () {
+      for (var i = 0; i < cellEls.length; i++) {
+        if (rnd() < 0.4) {
+          cellEls[i].innerHTML = renderSym(pick());
+        }
+      }
+      tick++;
+      if (tick >= 8) window.clearInterval(flashTimer);
+    }, 80);
+    await sleep(700);
+
+    /* 2) 新盘面 */
+    newGrid();
+    renderBoard();
+    await sleep(200);
+
+    /* 3) 连锁掉落 */
+    var totalWin = 0;
+    var chain = 0;
+
+    while (true) {
+      var wins = findWins();
+      if (wins.length === 0) break;
+
+      chain++;
+      var winAmount = calcTotalWin(wins, bet);
+      totalWin += winAmount;
+
+      var positions = [];
+      for (var wi = 0; wi < wins.length; wi++) {
+        positions = positions.concat(wins[wi].positions);
+      }
+
+      /* 高亮 + 结果栏显示本连锁 */
+      renderBoard(positions);
+      setResult('第 ' + chain + ' 连 · +' + fmtMoney(winAmount), true);
+      lastWin = totalWin;
+      refreshUI();
+      await sleep(900);
+
+      /* 消除：加 .is-clearing 让中奖格缩放消失 */
+      var cellsNow = boardEl.querySelectorAll('.gp-cell');
+      for (var pi = 0; pi < positions.length; pi++) {
+        var el = cellsNow[positions[pi]];
+        if (el) el.classList.add('is-clearing');
+      }
+      await sleep(320);
+
+      /* 数据层面消除 + 补位 */
+      for (var di = 0; di < positions.length; di++) grid[positions[di]] = null;
+      dropDown();
+      renderBoard();
+      await sleep(280);
+    }
+
+    /* 4) 结算 */
+    if (chain === 0) {
+      setResult('未中奖', false);
+    } else {
+      balance += totalWin;
+      lastWin = totalWin;
+      refreshUI();
+      setResult(chain + ' 连锁 · 总赢 ' + fmtMoney(totalWin), true);
+    }
+
+    spinning = false;
+  }
+
   if (spinBtn) spinBtn.addEventListener('click', function () {
     if (spinning) return;
     var bet = BET_STEPS[betIndex];
@@ -292,46 +382,10 @@
     spinning = true;
     balance -= bet;
     lastWin = 0;
+    setResult('');
     refreshUI();
 
-    var cellEls = boardEl.querySelectorAll('.gp-cell');
-    var tick = 0;
-    var timer = window.setInterval(function () {
-      for (var i = 0; i < cellEls.length; i++) {
-        if (rnd() < 0.4) {
-          cellEls[i].innerHTML = renderSym(pick());
-        }
-      }
-      tick++;
-      if (tick >= 8) {
-        window.clearInterval(timer);
-
-        /* 结算 */
-        newGrid();
-        var wins = findWins();
-        var totalWin = calcTotalWin(wins, bet);
-        lastWin = totalWin;
-        balance += totalWin;
-
-        var winPositions = [];
-        for (var wi = 0; wi < wins.length; wi++) {
-          winPositions = winPositions.concat(wins[wi].positions);
-        }
-        renderBoard(winPositions);
-        refreshUI();
-
-        if (wins.length === 0) {
-          setResult('未中奖', false);
-        } else if (wins.length === 1) {
-          var w = wins[0];
-          setResult(SYMBOL_NAMES[w.symbol] + ' ' + w.count + ' 连 · 赢得 ' + fmtMoney(totalWin), true);
-        } else {
-          setResult(wins.length + ' 组中奖 · 赢得 ' + fmtMoney(totalWin), true);
-        }
-
-        spinning = false;
-      }
-    }, 80);
+    runSpin(bet).catch(function () { spinning = false; });
   });
 
   /* ---------- 工具按钮 ---------- */

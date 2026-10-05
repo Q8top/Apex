@@ -142,6 +142,19 @@ body {
   justify-content: center;
   overflow: hidden;
 }
+.gp-cell.is-clearing {
+  transform: scale(.2);
+  opacity: 0;
+  transition: transform .28s cubic-bezier(.4, 0, .6, 1), opacity .28s ease;
+}
+.gp-cell.is-drop {
+  animation: gp-drop-in .32s cubic-bezier(.22, 1.2, .4, 1);
+}
+@keyframes gp-drop-in {
+  0%   { transform: translateY(-60%); opacity: .4; }
+  60%  { transform: translateY(4%);   opacity: 1;  }
+  100% { transform: translateY(0);    opacity: 1;  }
+}
 .gp-cell.is-dim {
   opacity: .28;
   filter: saturate(.4);
