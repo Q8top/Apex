@@ -123,6 +123,40 @@
     toast._t = setTimeout(function () { toastEl.classList.remove('is-show'); }, 2600);
   }
 
+  /* ---------- Sheet 弹层 ---------- */
+  var sheetEl     = document.getElementById('gpSheet');
+  var sheetBd     = document.getElementById('gpSheetBackdrop');
+  var sheetTitle  = document.getElementById('gpSheetTitle');
+  var sheetBody   = document.getElementById('gpSheetBody');
+
+  function openSheet(title, html) {
+    if (!sheetEl) return;
+    sheetTitle.textContent = title;
+    sheetBody.innerHTML = html;
+    sheetEl.hidden = false;
+    requestAnimationFrame(function () {
+      sheetEl.classList.add('is-open');
+      sheetEl.setAttribute('aria-hidden', 'false');
+    });
+  }
+  function closeSheet() {
+    if (!sheetEl) return;
+    sheetEl.classList.remove('is-open');
+    sheetEl.setAttribute('aria-hidden', 'true');
+    setTimeout(function () { sheetEl.hidden = true; }, 300);
+  }
+  if (sheetBd) sheetBd.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSheet();
+  });
+
+  /* ---------- 游戏记录 ---------- */
+  var history = [];   /* [{bet, win, chain, fs, t}] */
+  function recordHistory(bet, win, chain, fs) {
+    history.unshift({ bet: bet, win: win, chain: chain, fs: fs, t: Date.now() });
+    if (history.length > 50) history.length = 50;
+  }
+
   function setResult(text, isWin) {
     if (!resultEl) return;
     resultEl.textContent = text || '';
@@ -430,6 +464,9 @@
       if (fsRemaining === 0 && lastWin > 0) {
         setResult('免费旋转结束 · 总赢 ' + fmtMoney(lastWin), true);
       }
+
+      /* 记录到历史 */
+      recordHistory(bet, lastWin, r.chain || 0, false);
     } catch (e) { /* noop */ }
 
     spinning = false;
@@ -456,22 +493,116 @@
     }
   }
 
-  /* 工具 */
-  if (autoBtn) autoBtn.addEventListener('click', function () { toast('自动旋转即将开放'); });
-  if (histBtn) histBtn.addEventListener('click', function () { toast('游戏记录即将开放'); });
-  if (payBtn)  payBtn.addEventListener('click',  function () { toast('赔付表即将开放'); });
+  /* ---------- 自动旋转 ---------- */
+  var autoRunning = false;
+  var autoCount = 0;
+  function startAuto(n) {
+    if (autoRunning || spinning) return;
+    autoCount = n;
+    autoRunning = true;
+    closeSheet();
+    tickAuto();
+  }
+  function tickAuto() {
+    if (!autoRunning || autoCount <= 0) { autoRunning = false; return; }
+    autoCount--;
+    if (spinBtn) spinBtn.click();
+    setTimeout(function () {
+      if (autoRunning) tickAuto();
+    }, 1200);
+  }
+  function stopAuto() { autoRunning = false; autoCount = 0; }
 
-  /* 顶栏 */
+  if (autoBtn) autoBtn.addEventListener('click', function () {
+    var html = '<div class="gp-sheet-opts">';
+    [5, 10, 25, 50, 100].forEach(function (n) {
+      html += '<button type="button" class="gp-sheet-opt" data-n="' + n + '">' + n + ' 次</button>';
+    });
+    html += '</div>';
+    if (autoRunning) {
+      html = '<button type="button" class="gp-sheet-opt gp-sheet-stop" id="gpAutoStop">停止自动（剩余 ' + autoCount + '）</button>' + html;
+    }
+    openSheet('自动旋转', html);
+    sheetBody.querySelectorAll('.gp-sheet-opt[data-n]').forEach(function (b) {
+      b.addEventListener('click', function () { startAuto(Number(b.getAttribute('data-n'))); });
+    });
+    var st = document.getElementById('gpAutoStop');
+    if (st) st.addEventListener('click', function () { stopAuto(); closeSheet(); toast('已停止自动'); });
+  });
+
+  /* ---------- 记录 ---------- */
+  if (histBtn) histBtn.addEventListener('click', function () {
+    if (!history.length) {
+      openSheet('游戏记录', '<p class="gp-sheet-empty">暂无记录</p>');
+      return;
+    }
+    var html = '<div class="gp-hist">';
+    for (var i = 0; i < history.length && i < 30; i++) {
+      var h = history[i];
+      var cls = h.win > 0 ? 'is-win' : '';
+      html += '<div class="gp-hist-row ' + cls + '">' +
+                '<span class="gp-hist-bet">注 ' + fmtMoney(h.bet) + '</span>' +
+                '<span class="gp-hist-chain">' + (h.fs ? '⚡ ' : '') + h.chain + ' 连</span>' +
+                '<span class="gp-hist-win">' + (h.win > 0 ? '+' + fmtMoney(h.win) : '—') + '</span>' +
+              '</div>';
+    }
+    html += '</div>';
+    openSheet('游戏记录（最近 30 局）', html);
+  });
+
+  /* ---------- 赔付表 ---------- */
+  if (payBtn) payBtn.addEventListener('click', function () {
+    var rows = [
+      ['zeus', '宙斯'], ['crown', '金冠'], ['chalice', '圣杯'], ['ring', '神戒'], ['hourglass', '沙漏'],
+      ['gem-red', '红宝石'], ['gem-purple', '紫宝石'], ['gem-blue', '蓝宝石'], ['gem-green', '绿宝石'], ['gem-yellow', '黄宝石']
+    ];
+    var html = '<div class="gp-paytable">';
+    html += '<div class="gp-payhead"><span>符号</span><span>3</span><span>4</span><span>5</span><span>6+</span></div>';
+    for (var i = 0; i < rows.length; i++) {
+      var id = rows[i][0], name = rows[i][1];
+      var pay = PAYTABLE[id] || [];
+      var high = HIGH_SYMBOLS[id];
+      html += '<div class="gp-payrow">' +
+                '<span class="gp-payname">' + name + '</span>' +
+                '<span>' + (high ? (pay[0] || '—') : '—') + '</span>' +
+                '<span>' + (high ? (pay[1] || '—') : '—') + '</span>' +
+                '<span>' + (pay[2] || '—') + '</span>' +
+                '<span>' + (pay[7] || pay[5] || '—') + '</span>' +
+              '</div>';
+    }
+    html += '</div>';
+    html += '<p class="gp-paynote">数值为注额倍数。高值符号 3+ 连线，低值符号 5+ 连线（真实模式 6+）。</p>';
+    openSheet('赔付表', html);
+  });
+
+  /* ---------- 菜单 ---------- */
+  if (menuBtn) menuBtn.addEventListener('click', function () {
+    var html = '<div class="gp-menu">' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>赔付表</button>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuHist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>游戏记录</button>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>退出游戏</button>' +
+               '</div>';
+    openSheet('菜单', html);
+    document.getElementById('gpMenuPay').addEventListener('click', function () { closeSheet(); payBtn && payBtn.click(); });
+    document.getElementById('gpMenuHist').addEventListener('click', function () { closeSheet(); histBtn && histBtn.click(); });
+    document.getElementById('gpMenuExit').addEventListener('click', function () {
+      closeSheet();
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = '/game-detail.html?game=' + encodeURIComponent(gameId);
+    });
+  });
+
+  /* ---------- 顶栏 ---------- */
   if (backBtn) backBtn.addEventListener('click', function () {
     if (window.history.length > 1) window.history.back();
     else window.location.href = '/game-detail.html?game=' + encodeURIComponent(gameId);
   });
-  if (menuBtn) menuBtn.addEventListener('click', function () { toast('菜单即将开放'); });
 
+  /* ---------- 音效开关（图标切换） ---------- */
   var soundOn = true;
   if (soundBtn) soundBtn.addEventListener('click', function () {
     soundOn = !soundOn;
-    toast(soundOn ? '音效已开启' : '音效已关闭');
+    soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
   });
 
   /* 真实模式：读后端余额 */

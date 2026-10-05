@@ -23,11 +23,16 @@
     </div>
 
     <div class="gp-actions">
-      <button class="gp-icon-btn" id="gpSound" type="button" aria-label="音效">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="gp-icon-btn" id="gpSound" type="button" aria-label="音效" aria-pressed="true">
+        <svg class="gp-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M11 5 L6 9 L2 9 L2 15 L6 15 L11 19 Z"/>
           <path d="M15.5 8.5 Q18 12 15.5 15.5"/>
           <path d="M18.5 5.5 Q23 12 18.5 18.5"/>
+        </svg>
+        <svg class="gp-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 5 L6 9 L2 9 L2 15 L6 15 L11 19 Z"/>
+          <line x1="16" y1="9" x2="22" y2="15"/>
+          <line x1="22" y1="9" x2="16" y2="15"/>
         </svg>
       </button>
       <button class="gp-icon-btn" id="gpMenu" type="button" aria-label="菜单">
@@ -94,6 +99,16 @@
     </div>
   </section>
 </main>
+
+<div class="gp-sheet" id="gpSheet" hidden aria-hidden="true">
+  <div class="gp-sheet-backdrop" id="gpSheetBackdrop"></div>
+  <div class="gp-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="gpSheetTitle">
+    <div class="gp-sheet-handle" aria-hidden="true"></div>
+    <h2 class="gp-sheet-title" id="gpSheetTitle"></h2>
+    <div class="gp-sheet-body" id="gpSheetBody"></div>
+  </div>
+</div>
+
 
 <div class="gp-toast" id="gpToast" role="status" aria-live="polite"></div>
 
