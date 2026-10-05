@@ -167,7 +167,7 @@ function renderCatContent(content, catKey){
     var html='<div class="apex-game-grid">';
     GAMES.forEach(function(g){
       var svg=(window.ApexGameIcons&&window.ApexGameIcons.render)?window.ApexGameIcons.render(g.k):'';
-      html+='<a class="apex-game-card" aria-label="'+g.n+'">'
+      html+='<a class="apex-game-card" data-game-id="'+g.id+'" href="/game-detail.html?game='+g.id+'" aria-label="'+g.n+'">'
         +'<span class="apex-game-card-icon">'+svg+'</span>'
         +'<span class="apex-game-card-name">'+g.n+'</span>'
         +'</a>';
@@ -178,6 +178,7 @@ function renderCatContent(content, catKey){
     content.querySelectorAll('.apex-game-card').forEach(function(a){
       a.addEventListener('contextmenu',function(e){e.preventDefault();});
       a.addEventListener('dragstart',function(e){e.preventDefault();});
+        a.addEventListener('click',function(e){var id=a.getAttribute('data-game-id');if(id){e.preventDefault();window.location.href='/game-detail.html?game='+encodeURIComponent(id);}});
     });
   }else{
     content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
