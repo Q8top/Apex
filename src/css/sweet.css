@@ -694,169 +694,65 @@ old="""  function pGrape(cx, cy, r) {
     for (var i = 0; i < grid.length; i++) d += pCircle(cx + grid[i][0] * r * 0.62, cy + grid[i][1] * r * 0.62, r * 0.42) + ' ';
     return d.trim();
   }"""
-new="""  function pGrape(cx, cy, r) {
-    var grid = [[0,-1],[-0.7,-0.4],[0.7,-0.4],[-0.35,0.25],[0.35,0.25],[0,0.85],[0,-0.35],[0,0.25]];
-    var d = '', sparks = [];
-    for (var i = 0; i < grid.length; i++) {
-      var gx = cx + grid[i][0] * r * 0.62;
-      var gy = cy + grid[i][1] * r * 0.62;
-      var gr = r * 0.42;
-      d += pCircle(gx, gy, gr) + ' ';
-      sparks.push({ cx: gx - gr * 0.34, cy: gy - gr * 0.40, r: gr * 0.34, opacity: 0.82 });
-      sparks.push({ cx: gx + gr * 0.42, cy: gy + gr * 0.48, r: gr * 0.16, opacity: 0.42 });
-    }
-    return { d: d.trim(), sparks: sparks };
-  }"""
-assert old in s, 'pGrape 未匹配'
-s=s.replace(old,new)
-open(p,'w',encoding='utf-8').write(s)
-print('[OK] pGrape sparks')
-PY
 
-# ── 4) buildSymbolArt：解析 sparks + 香蕉/西瓜/樱桃 装饰 ──
-python3 - << 'PY'
-p='src/js/sweet.js'; s=open(p,encoding='utf-8').read()
+/* ══════════════ V3.2 修复 ══════════════ */
 
-old="""    var sd = SHAPES[spec.shape](cx, cy, r);
-    var d = (typeof sd === 'string') ? sd : sd.d;
-    var fillRule = (typeof sd === 'object' && sd.fillRule) || 'nonzero';
-    cp.setAttribute('d', d);
-    if (fillRule === 'evenodd') cp.setAttribute('clip-rule', 'evenodd');"""
-new="""    var sd = SHAPES[spec.shape](cx, cy, r);
-    var d, fillRule = 'nonzero', sparks = [];
-    if (typeof sd === 'string') { d = sd; }
-    else { d = sd.d; fillRule = sd.fillRule || 'nonzero'; sparks = sd.sparks || []; }
-    cp.setAttribute('d', d);
-    if (fillRule === 'evenodd') cp.setAttribute('clip-rule', 'evenodd');"""
-assert old in s, '解析块未匹配'
-s=s.replace(old,new)
+/* ① 符号放大：让细节（反光带/高光点/籽）看得见 */
+.sd-sym-cell { gap: 12px; }
+.sd-sym-cell__art {
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.98) 0%, rgba(250,250,253,.85) 55%, rgba(240,240,248,.6) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.95),
+    inset 0 -1px 2px rgba(180,180,200,.35),
+    0 1px 3px rgba(10,10,10,.06);
+}
+.sd-sym-cell__art svg { width: 40px; height: 40px; }
+.sd-sym-cell__name { font-size: clamp(12px, 3.4vw, 14px); }
 
-old2="    /* 装饰斑点 */"
-new2="""    /* ── 独立 sparks（葡萄等） ── */
-    if (sparks.length) {
-      var gSp = svg('g', { 'class': 'sd-sym-specks', 'clip-path': 'url(#' + cpId + ')' });
-      for (var si = 0; si < sparks.length; si++) {
-        var sp = sparks[si];
-        gSp.appendChild(svg('circle', {
-          cx: n2(sp.cx), cy: n2(sp.cy), r: n2(sp.r),
-          fill: '#ffffff', opacity: n2(sp.opacity != null ? sp.opacity : 0.7)
-        }));
-      }
-      gHi.appendChild(gSp);
-    }
+.sd-table--symbols tbody td { padding: 10px 6px; }
+.sd-table--symbols tbody td:first-child { padding: 10px 12px; }
+.sd-table--symbols thead th { padding: 10px 4px; }
 
-    /* 装饰斑点 */"""
-assert old2 in s, '装饰斑点锚点未找到'
-s=s.replace(old2,new2,1)
+.sd-table--symbols .sd-mult {
+  padding: 3px 9px;
+  font-size: clamp(11px, 3.1vw, 13px);
+}
 
-old3="    if (spec.shape === 'wild') {"
-new3="""    if (spec.shape === 'banana') {
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.45) + ' ' + n2(cy + r * 0.28) +
-           ' Q ' + n2(cx - r * 0.02) + ' ' + n2(cy + r * 0.78) + ' ' + n2(cx + r * 0.55) + ' ' + n2(cy + r * 0.32),
-        fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
-        'stroke-linecap': 'round', opacity: '0.85',
-        'clip-path': 'url(#' + cpId + ')'
-      }));
-      gHi.appendChild(svg('ellipse', {
-        cx: n2(cx - r * 0.28), cy: n2(cy + r * 0.18),
-        rx: n2(r * 0.16), ry: n2(r * 0.07),
-        fill: '#ffffff', opacity: '0.9',
-        'clip-path': 'url(#' + cpId + ')'
-      }));
-    }
-    if (spec.shape === 'watermelon') {
-      var seeds = [[-0.4,0.05],[-0.15,0.25],[0.15,0.25],[0.4,0.05],[-0.28,-0.15],[0.28,-0.15]];
-      for (var wi = 0; wi < seeds.length; wi++) {
-        gHi.appendChild(svg('ellipse', {
-          cx: n2(cx + seeds[wi][0] * r), cy: n2(cy + seeds[wi][1] * r),
-          rx: '1.6', ry: '2.4', fill: t.dark, opacity: '0.55',
-          'clip-path': 'url(#' + cpId + ')'
-        }));
-      }
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.75) + ' ' + n2(cy - r * 0.1) +
-           ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.75) + ' ' + n2(cx + r * 0.75) + ' ' + n2(cy - r * 0.1),
-        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.6',
-        'stroke-linecap': 'round', opacity: '0.7',
-        'clip-path': 'url(#' + cpId + ')'
-      }));
-    }
-    if (spec.shape === 'cherry') {
-      var balls = [[-0.5, 0.35, 0.62], [0.5, 0.35, 0.62]];
-      for (var ci = 0; ci < balls.length; ci++) {
-        var bx = cx + balls[ci][0] * r, by = cy + balls[ci][1] * r, br = balls[ci][2] * r;
-        gHi.appendChild(svg('circle', { cx: n2(bx - br * 0.32), cy: n2(by - br * 0.38), r: n2(br * 0.32), fill: '#ffffff', opacity: '0.85' }));
-        gHi.appendChild(svg('circle', { cx: n2(bx + br * 0.36), cy: n2(by + br * 0.42), r: n2(br * 0.16), fill: '#ffffff', opacity: '0.45' }));
-      }
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy - r * 0.2) +
-           ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.1) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.2),
-        fill: 'none', stroke: '#22c55e', 'stroke-width': '2.4', 'stroke-linecap': 'round'
-      }));
-    }
-    if (spec.shape === 'wild') {"""
-assert old3 in s, 'wild 锚点未找到'
-s=s.replace(old3,new3,1)
-open(p,'w',encoding='utf-8').write(s)
-print('[OK] 香蕉/西瓜/樱桃 + sparks 渲染')
-PY
-
-# ── 5) 棒棒糖：旋转霓虹光晕 ──
-python3 - << 'PY'
-p='src/js/sweet.js'; s=open(p,encoding='utf-8').read()
-old="""    if (spec.shape === 'lollipop') {
-      var sparkle = svg('g', { 'class': 'sd-sym-spark', opacity: '0.9' });
-      for (var k = 1; k <= 3; k++) {
-        sparkle.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(k * 2.1) * r * 0.6),
-          cy: n2(cy + Math.sin(k * 2.1) * r * 0.6),
-          r: n2(1.4 + k * 0.3), fill: t.accent, opacity: '0.85'
-        }));
-      }
-      gHi.appendChild(sparkle);
-    }"""
-new="""    if (spec.shape === 'lollipop') {
-      var halo = svg('g', { 'class': 'sd-sym-halo' });
-      var neon = [t.accent, '#ff3d7f', '#06b6d4', '#22c55e', '#7c5cff', '#facc15'];
-      for (var hi = 0; hi < 6; hi++) {
-        var ang = hi * Math.PI / 3;
-        halo.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(ang) * r * 1.05),
-          cy: n2(cy + Math.sin(ang) * r * 1.05),
-          r: '2.2', fill: neon[hi], opacity: '0.9'
-        }));
-      }
-      gHi.appendChild(halo);
-      var sparkle = svg('g', { 'class': 'sd-sym-spark', opacity: '0.9' });
-      for (var k = 1; k <= 3; k++) {
-        sparkle.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(k * 2.1) * r * 0.55),
-          cy: n2(cy - r * 0.22 + Math.sin(k * 2.1) * r * 0.55),
-          r: n2(1.4 + k * 0.3), fill: '#ffffff', opacity: '0.85'
-        }));
-      }
-      gHi.appendChild(sparkle);
-    }"""
-if old in s:
-    s=s.replace(old,new); print('[OK] 棒棒糖旋转霓虹光晕')
-else:
-    print('[WARN] lollipop 分支未匹配')
-open(p,'w',encoding='utf-8').write(s)
-PY
-
-# ── 6) 校验 ──
-node --check src/js/sweet.js && echo "[OK] JS 语法"
-O=$(grep -c '{' src/css/sweet.css); C=$(grep -c '}' src/css/sweet.css)
-echo "[CSS] { = $O , } = $C"
-HITS=$(grep -nE "Math\.random|eval\(|new Function" src/js/sweet.js | grep -vE "^[[:space:]]*[0-9]+:[[:space:]]*(/\*|//|\*)" || true)
-[ -z "$HITS" ] && echo "[OK] 无违规" || { echo "$HITS"; exit 1; }
-
-# ── 7) 更新版本号 ──
-VER=$(date +%s)
-sed -i -E "s|src/css/sweet\.css\?v=[0-9]+|src/css/sweet.css?v=$VER|" sweet.html
-sed -i -E "s|src/js/sweet\.js\?v=[0-9]+|src/js/sweet.js?v=$VER|" sweet.html
-grep -nE "<link[^>]*sweet\.css|<script[^>]*sweet\.js" sweet.html
-
-echo "SIZE_JS=$(wc -c < src/js/sweet.js)"
-echo "==DONE=="
+/* ② 轮播占位图：强制 flex 居中 */
+.sd-carousel .sd-carousel__slide .sd-carousel__ph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f6f6f8;
+  color: #b8b8c0;
+  position: static;
+  inset: auto;
+  padding: 0;
+}
+.sd-carousel__ph-icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  color: #c0c0c8;
+  flex: 0 0 auto;
+}
+.sd-carousel__ph-icon svg { display: block; width: 100%; height: 100%; }
+.sd-carousel__ph-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a8a8b0;
+  letter-spacing: .04em;
+  text-align: center;
+}
