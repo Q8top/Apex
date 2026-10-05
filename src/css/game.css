@@ -1847,3 +1847,99 @@ body {
 .og-scenery {
   display: none;
 }
+
+/* ================================================================
+   FINAL LAYOUT FIX — 覆盖所有历史规则，优先级最高
+   ================================================================ */
+
+/* 1. overlay：严格 flex 列 + 100vh */
+.og-overlay {
+  display: none;
+  flex-direction: column !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+.og-overlay.show { display: flex !important; }
+
+/* 2. 顶栏固定高度 */
+.og-topbar { flex: 0 0 auto !important; }
+
+/* 3. 舞台：flex 1 撑满剩余 */
+.og-stage {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 14px !important;
+  overflow: hidden !important;
+}
+
+/* 4. grid-wrap：由高度决定宽度 + 强制 6:5 */
+.og-grid-wrap {
+  height: 100% !important;
+  width: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 6 / 5 !important;
+  margin: 0 auto !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+}
+
+/* 5. grid：填满 wrap，cell 尺寸由 grid 决定 */
+.og-grid {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  grid-template-rows: repeat(5, 1fr) !important;
+  gap: 4px !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* 6. cell：去掉 min-height（避免撑破） */
+.og-cell {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  padding: 2px !important;
+  border-radius: 8px !important;
+}
+
+/* 7. HUD + 控制区固定高度 */
+.og-hud { flex: 0 0 auto !important; }
+.og-controls { flex: 0 0 auto !important; }
+
+/* 8. 中奖横幅：绝对定位相对 grid-wrap */
+.og-win-banner {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 8% !important;
+  transform: translateX(-50%) translateY(12px) !important;
+}
+.og-win-banner.show {
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+/* 9. FS 徽章（在 stage 里，绝对定位到顶部） */
+.og-fs-badge {
+  position: absolute !important;
+  top: 8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* 10. 响应式：矮屏收紧 */
+@media (max-height: 700px) {
+  .og-stage { padding: 6px 10px !important; }
+  .og-hud { padding: 0 10px 6px !important; }
+  .og-controls { padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px)) !important; gap: 6px !important; }
+  .og-spin { padding: 12px !important; font-size: 14px !important; }
+  .og-bet-btn, .og-bet-display { height: 40px !important; }
+  .og-quick { padding: 8px 4px !important; }
+}
