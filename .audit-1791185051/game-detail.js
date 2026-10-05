@@ -357,30 +357,108 @@
     '</svg>';
   }
 
-  function polar(cx,cy,r,d){var a=(d-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
-  function fmt(p){return p[0].toFixed(2)+','+p[1].toFixed(2);}
-  function svgGem(c){var cx=32,cy=32,ro=26,rt=12,o=[],t=[];for(var i=0;i<8;i++){o.push(polar(cx,cy,ro,i*45));t.push(polar(cx,cy,rt,i*45));}
-    var s='<svg viewBox="0 0 64 64" aria-hidden="true">';for(var i=0;i<8;i++){var j=(i+1)%8;s+='<polygon points="'+fmt(t[i])+' '+fmt(t[j])+' '+fmt(o[j])+' '+fmt(o[i])+'" fill="'+c.f[i]+'" stroke="'+c.e+'" stroke-width=".3" stroke-linejoin="round"/>';}
-    var tp='';for(var k=0;k<8;k++)tp+=fmt(t[k])+' ';s+='<polygon points="'+tp.trim()+'" fill="'+c.t+'"/>';
-    s+='<polygon points="'+fmt(t[5])+' '+fmt(t[6])+' '+fmt(t[7])+' 32,32" fill="#fff" opacity=".28"/><polygon points="'+fmt(t[1])+' '+fmt(t[2])+' '+fmt(t[3])+' 32,32" fill="#000" opacity=".12"/>';
-    var op='';for(var m=0;m<8;m++)op+=fmt(o[m])+' ';s+='<polygon points="'+op.trim()+'" fill="none" stroke="'+c.e+'" stroke-width="1.1" stroke-linejoin="round"/><polyline points="'+fmt(o[6])+' '+fmt(o[7])+'" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6" stroke-linecap="round"/></svg>';return s;}
-  var G={red:{t:'#FFC4CD',f:['#FF6B7A','#E63950','#C11030','#8B0A22','#5A0616','#8B0A22','#C11030','#E63950'],e:'#3A0008'},purple:{t:'#DCC8FF',f:['#C098FF','#9B5DE5','#7A3FD1','#5B2BA8','#3D1B6E','#5B2BA8','#7A3FD1','#9B5DE5'],e:'#1A0A3D'},blue:{t:'#B8DEFF',f:['#6BC0FF','#2196F3','#0D6FD1','#0D47A1','#062A66','#0D47A1','#0D6FD1','#2196F3'],e:'#031843'},green:{t:'#C8F0C0',f:['#7CD17E','#43A047','#2E8B33','#1B5E20','#0A3310','#1B5E20','#2E8B33','#43A047'],e:'#052008'},yellow:{t:'#FFEDB0',f:['#FFD84D','#FFC107','#D9A000','#B8860B','#8A6600','#B8860B','#D9A000','#FFC107'],e:'#3D2900'}};
   var SYMBOL_SVG = {
-    zeus:'<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="url(#gdg-disc-purple)"/><circle cx="32" cy="32" r="29" fill="none" stroke="url(#gdg-metal-gold)" stroke-width="1.8"/><circle cx="32" cy="32" r="26" fill="none" stroke="#FFF4C8" stroke-width=".5" opacity=".45"/><g fill="url(#gdg-metal-gold)"><path d="M19 24 Q18 15 24 12 Q28 10 32 12 Q36 10 40 12 Q46 15 45 24 Q42 20 38 19 Q35 18 32 19 Q29 18 26 19 Q22 20 19 24 Z"/><path d="M21 24 Q20 34 24 42 Q27 47 32 48 Q37 47 40 42 Q44 34 43 24 Q40 27 36 27 Q34 27 32 26 Q30 27 28 27 Q24 27 21 24 Z"/></g><circle cx="28" cy="29" r="1" fill="#3A2200"/><circle cx="36" cy="29" r="1" fill="#3A2200"/><path d="M23 37 Q26 43 32 45 Q38 43 41 37" fill="none" stroke="#8B6508" stroke-width=".6" opacity=".55"/><path d="M27 40 Q32 42 37 40" fill="none" stroke="#8B6508" stroke-width=".5" opacity=".45"/><g transform="translate(42,7)"><path d="M0 0 L-5 7 L-1 7 L-3 14 L5 5 L1 5 L3 0 Z" fill="#FFF4C8" stroke="#6B4A00" stroke-width=".5" stroke-linejoin="round"/></g><ellipse cx="24" cy="17" rx="4.5" ry="2.2" fill="#fff" opacity=".18"/></svg>',
-    crown:'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 28 Q14 22 18 22 L46 22 Q50 22 50 28 L50 34 L14 34 Z" fill="#8B1538"/><path d="M14 28 Q14 22 18 22 L46 22 Q50 22 50 28" fill="none" stroke="#6E0F2A" stroke-width=".6"/><path d="M18 24 L46 24 M18 28 L46 28 M18 32 L46 32" stroke="#6E0F2A" stroke-width=".4" opacity=".7"/><path d="M9 48 L13 26 L22 36 L32 16 L42 36 L51 26 L55 48 Z" fill="url(#gdg-metal-gold-diag)" stroke="#6B4A00" stroke-width="1.1" stroke-linejoin="round"/><path d="M13 26 L22 36 L32 16 L42 36 L51 26 L49 22 L42 32 L32 12 L22 32 L15 22 Z" fill="#FFF4C8" opacity=".5"/><rect x="8" y="46" width="48" height="8" rx="2.5" fill="url(#gdg-metal-gold)" stroke="#6B4A00" stroke-width="1"/><line x1="10" y1="50" x2="54" y2="50" stroke="#8B6508" stroke-width=".5" opacity=".55"/><circle cx="32" cy="50" r="2.6" fill="#D91E36" stroke="#5A0010" stroke-width=".5"/><circle cx="32" cy="49.4" r="1.2" fill="#FFB0BD" opacity=".6"/><circle cx="19" cy="50" r="2" fill="#6A3FBF" stroke="#3D1F7A" stroke-width=".5"/><circle cx="45" cy="50" r="2" fill="#6A3FBF" stroke="#3D1F7A" stroke-width=".5"/><circle cx="32" cy="16" r="2.4" fill="#FFE580" stroke="#6B4A00" stroke-width=".5"/><circle cx="31.2" cy="15.2" r="1" fill="#fff" opacity=".7"/><path d="M18 28 L19 40" stroke="#fff" stroke-width="1.6" opacity=".35" stroke-linecap="round"/></svg>',
-    chalice:'<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="14" rx="17" ry="2.6" fill="#3A2200" stroke="#6B4A00" stroke-width=".6"/><ellipse cx="32" cy="14" rx="15" ry="1.8" fill="#6B4A00" opacity=".85"/><path d="M15 14 L49 14 Q47 35 32 37 Q17 35 15 14 Z" fill="url(#gdg-metal-gold-diag)" stroke="#6B4A00" stroke-width="1.1" stroke-linejoin="round"/><ellipse cx="32" cy="14" rx="17" ry="2.6" fill="none" stroke="url(#gdg-metal-gold)" stroke-width="1.4"/><path d="M20 16 Q20 30 30 34" fill="none" stroke="#FFF4C8" stroke-width="1.8" opacity=".7" stroke-linecap="round"/><path d="M24 19 Q26 24 24 29" fill="none" stroke="#8B6508" stroke-width=".7" opacity=".8"/><path d="M32 19 L32 33" fill="none" stroke="#8B6508" stroke-width=".6" opacity=".6"/><path d="M40 19 Q38 24 40 29" fill="none" stroke="#8B6508" stroke-width=".7" opacity=".8"/><path d="M27 22 Q32 24 37 22" fill="none" stroke="#8B6508" stroke-width=".6" opacity=".7"/><rect x="30" y="37" width="4" height="9" fill="url(#gdg-metal-gold)" stroke="#6B4A00" stroke-width=".6"/><circle cx="32" cy="41" r="1.4" fill="#FFF4C8" opacity=".6"/><ellipse cx="32" cy="49" rx="14" ry="3.4" fill="url(#gdg-metal-gold)" stroke="#6B4A00" stroke-width="1"/><ellipse cx="32" cy="47.4" rx="11.5" ry="2" fill="#FFF4C8" opacity=".45"/><circle cx="32" cy="11" r="2.2" fill="#6A3FBF" stroke="#3D1F7A" stroke-width=".5"/><circle cx="31.3" cy="10.3" r=".9" fill="#fff" opacity=".7"/></svg>',
-    ring:'<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="42" rx="18" ry="15" fill="none" stroke="url(#gdg-metal-gold-diag)" stroke-width="6"/><ellipse cx="32" cy="42" rx="18" ry="15" fill="none" stroke="#6B4A00" stroke-width="1"/><ellipse cx="32" cy="42" rx="14.5" ry="11.6" fill="none" stroke="#8B6508" stroke-width=".5" opacity=".55"/><ellipse cx="32" cy="42" rx="21.5" ry="18.4" fill="none" stroke="#8B6508" stroke-width=".5" opacity=".55"/><path d="M14 42 Q13 28 21 27" fill="none" stroke="#FFF4C8" stroke-width="1.4" opacity=".75" stroke-linecap="round"/><path d="M50 42 Q51 56 43 57" fill="none" stroke="#6B4A00" stroke-width="1.2" opacity=".5" stroke-linecap="round"/><path d="M23 20 L28 11 L36 11 L41 20 L37 25 L27 25 Z" fill="url(#gdg-metal-gold)" stroke="#6B4A00" stroke-width=".9" stroke-linejoin="round"/><polygon points="32,5 41,14 32,24 23,14" fill="url(#gdg-ruby)" stroke="#3A0008" stroke-width="1" stroke-linejoin="round"/><polygon points="32,5 36,14 32,19 28,14" fill="#fff" opacity=".3"/><polygon points="32,5 41,14 36,14 32,10" fill="#FFB0BD" opacity=".55"/><polygon points="23,14 28,14 32,24 27,19" fill="#5A0616" opacity=".35"/></svg>',
-    hourglass:'<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="13" y="5" width="38" height="6" rx="2" fill="url(#gdg-metal-gold-diag)" stroke="#6B4A00" stroke-width=".8"/><rect x="13" y="53" width="38" height="6" rx="2" fill="url(#gdg-metal-gold-diag)" stroke="#6B4A00" stroke-width=".8"/><line x1="15" y1="8" x2="49" y2="8" stroke="#FFF4C8" stroke-width=".5" opacity=".7"/><line x1="15" y1="56" x2="49" y2="56" stroke="#FFF4C8" stroke-width=".5" opacity=".7"/><path d="M19 11 Q19 27 32 32 Q45 27 45 11 Z" fill="#CDE8FF" opacity=".9" stroke="#6B4A00" stroke-width=".8"/><path d="M19 53 Q19 37 32 32 Q45 37 45 53 Z" fill="#CDE8FF" opacity=".9" stroke="#6B4A00" stroke-width=".8"/><path d="M22 13 Q22 26 32 31 Q42 26 42 13 Z" fill="url(#gdg-metal-gold)" opacity=".95"/><path d="M25 13 Q25 23 32 29 Q39 23 39 13 Z" fill="#FFF4C8" opacity=".7"/><path d="M22 51 Q22 41 32 34 Q42 41 42 51 Z" fill="url(#gdg-metal-gold)" opacity=".95"/><path d="M26 51 Q26 44 32 38 Q38 44 38 51 Z" fill="#FFF4C8" opacity=".55"/><line x1="32" y1="31" x2="32" y2="38" stroke="#F5D77B" stroke-width="1.6" stroke-linecap="round"/><circle cx="32" cy="35" r=".8" fill="#FFF4C8"/><path d="M23 15 Q23 24 27 29" fill="none" stroke="#fff" stroke-width="1.2" opacity=".85" stroke-linecap="round"/><path d="M23 49 Q23 42 27 37" fill="none" stroke="#fff" stroke-width="1" opacity=".6" stroke-linecap="round"/></svg>',
-    'gem-red':svgGem(G.red),'gem-purple':svgGem(G.purple),'gem-blue':svgGem(G.blue),'gem-green':svgGem(G.green),'gem-yellow':svgGem(G.yellow)
+    zeus:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M10 60 Q14 46 32 44 Q50 46 54 60 Z" fill="#ffffff" stroke="#c8c8ce" stroke-width="1"/>' +
+        '<path d="M16 32 Q14 52 32 56 Q50 52 48 32 Q44 42 32 44 Q20 42 16 32 Z" ' +
+          'fill="#f6f6f8" stroke="#c8c8ce" stroke-width="1"/>' +
+        '<path d="M22 36 Q26 46 32 48 Q38 46 42 36" fill="none" stroke="#dedee4" stroke-width="1"/>' +
+        '<ellipse cx="32" cy="30" rx="14" ry="16" fill="#f5d6b8" stroke="#d4a57d" stroke-width=".8"/>' +
+        '<circle cx="26" cy="28" r="1.6" fill="#222"/>' +
+        '<circle cx="38" cy="28" r="1.6" fill="#222"/>' +
+        '<path d="M22 24 L28 25" stroke="#8b6508" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<path d="M42 24 L36 25" stroke="#8b6508" stroke-width="1.4" stroke-linecap="round"/>' +
+        '<path d="M32 30 L31 34 L33 34" fill="none" stroke="#d4a57d" stroke-width=".8"/>' +
+        '<path d="M18 18 L20 10 L26 15 L32 6 L38 15 L44 10 L46 18 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1" stroke-linejoin="round"/>' +
+        '<circle cx="32" cy="14" r="1.6" fill="#e74c3c"/>' +
+      '</svg>',
+
+    crown:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M10 46 L14 20 L24 32 L32 14 L40 32 L50 20 L54 46 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1.2" stroke-linejoin="round"/>' +
+        '<path d="M14 20 L24 32 L18 32 Z" fill="#fff" opacity=".35"/>' +
+        '<rect x="10" y="46" width="44" height="6" rx="2" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<circle cx="32" cy="43" r="2.6" fill="#e74c3c"/>' +
+        '<circle cx="20" cy="43" r="2" fill="#6c5ce7"/>' +
+        '<circle cx="44" cy="43" r="2" fill="#6c5ce7"/>' +
+      '</svg>',
+
+    chalice:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<path d="M16 12 L48 12 Q46 32 32 34 Q18 32 16 12 Z" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1.2" stroke-linejoin="round"/>' +
+        '<path d="M22 12 L42 12 Q41 26 32 28 Q23 26 22 12 Z" fill="#fff" opacity=".25"/>' +
+        '<rect x="29" y="34" width="6" height="12" fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<rect x="20" y="46" width="24" height="6" rx="3" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<ellipse cx="32" cy="12" rx="16" ry="2.5" fill="#fff4c8" stroke="#8b6508" stroke-width="1"/>' +
+      '</svg>',
+
+    ring:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<circle cx="32" cy="38" r="17" fill="none" stroke="url(#gdg-gold)" stroke-width="6"/>' +
+        '<circle cx="32" cy="38" r="17" fill="none" stroke="#8b6508" stroke-width="1"/>' +
+        '<circle cx="32" cy="38" r="14" fill="none" stroke="#8b6508" stroke-width=".6"/>' +
+        '<polygon points="32,6 40,16 32,26 24,16" ' +
+          'fill="url(#gdg-purple)" stroke="#4a3f9e" stroke-width="1"/>' +
+        '<polygon points="32,8 37,16 32,22 27,16" fill="#fff" opacity=".42"/>' +
+      '</svg>',
+
+    hourglass:
+      '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+        '<rect x="18" y="8" width="28" height="5" rx="1.5" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<rect x="18" y="51" width="28" height="5" rx="1.5" ' +
+          'fill="url(#gdg-gold)" stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M22 13 Q22 28 32 32 Q42 28 42 13 Z" fill="#f5c542" opacity=".9" ' +
+          'stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M22 51 Q22 36 32 32 Q42 36 42 51 Z" fill="#f5c542" opacity=".9" ' +
+          'stroke="#8b6508" stroke-width="1"/>' +
+        '<path d="M26 13 Q26 24 32 28 Q38 24 38 13 Z" fill="#ffe9a6" opacity=".7"/>' +
+        '<line x1="32" y1="13" x2="32" y2="32" stroke="#8b6508" stroke-width=".8"/>' +
+        '<line x1="32" y1="32" x2="32" y2="51" stroke="#8b6508" stroke-width=".8"/>' +
+      '</svg>',
+
+    'gem-red':    svgGem('gdg-red'),
+    'gem-purple': svgGem('gdg-purple'),
+    'gem-blue':   svgGem('gdg-blue'),
+    'gem-green':  svgGem('gdg-green'),
+    'gem-yellow': svgGem('gdg-yellow')
   };
 
   var GAME_DETAILS = {
     olympus: {
-      about: ['奥林匹斯之门以希腊神话为蓝本，把玩家带到众神居住的奥林匹斯山巅。万神之王宙斯手握雷霆，俯瞰每一轮旋转——他的怒火随时会化作闪电劈落，把一次普通的旋转变成连锁不断的奖励风暴。','游戏采用 6 列 5 行的盘面，符号自上方掉落，只要相邻出现 3 个或以上相同图案即可组成中奖组合。中奖后符号原地消失，新的符号填补空位，若再次形成组合，将自动进入下一轮结算——连锁可以反复触发，一次旋转可能连续结算十几轮。','宙斯会在任意时刻投下倍率之球，数值从 ×2 起步逐级递增，多个倍率可叠加计算。当连锁累积到一定次数，将触发神迹奖励环节，进入高密度的连续掉落状态。'],
-      symbols: [{id:'zeus',name:'宙斯'},{id:'crown',name:'金冠'},{id:'chalice',name:'圣杯'},{id:'ring',name:'神戒'},{id:'hourglass',name:'沙漏'},{id:'gem-red',name:'红宝石'},{id:'gem-purple',name:'紫宝石'},{id:'gem-blue',name:'蓝宝石'},{id:'gem-green',name:'绿宝石'},{id:'gem-yellow',name:'黄宝石'}],
-      rules: [{t:'盘面结构',b:'游戏盘面为 6 列 × 5 行，共 30 个符号位。每次旋转时，所有符号自盘面上方掉落，填满全部位置后才开始结算。'},{t:'中奖判定',b:'盘面中相邻位置出现 3 个或以上相同符号，即可组成中奖组合。同一轮旋转中可同时存在多个组合，奖励逐一结算，互不影响。'},{t:'连锁掉落',b:'中奖符号结算后从盘面消失，上方符号下落补位，新的符号从顶部补充。若新盘面再次形成中奖组合，将自动进入下一轮结算，直至盘面不再出现新的中奖组合为止。'},{t:'倍率机制',b:'每轮结算时，万神之王宙斯可能随机投下倍率之球，数值从 ×2 起逐级递增。若盘面同时存在多个倍率之球，其数值将叠加后一并结算。'},{t:'神迹奖励',b:'连续连锁达到指定次数后，将触发神迹奖励环节。在此环节中，连锁掉落频率进一步提高，倍率之球的出现更为密集，可连续触发多轮奖励结算。'},{t:'特殊符号',b:'宙斯符号为最高倍率符号。金冠、圣杯、神戒、沙漏为高倍率符号。五色宝石（红、紫、蓝、绿、黄）为普通符号。所有符号均可参与连锁掉落与倍率结算。'}],
-      features: [{title:'连锁掉落',desc:'中奖符号结算后从盘面消失，新符号自上方掉落补位，一次旋转可连续触发多次中奖。'},{title:'倍率之球',desc:'万神之王宙斯随机投下倍率之球，数值从 ×2 起逐级递增，多个倍率可叠加计算。'},{title:'天降神迹',desc:'连续中奖累积能量，触发神迹奖励环节，获得额外的连续旋转机会。'},{title:'直达模式',desc:'可跳过等待，直接进入神迹奖励环节，体验高密度的连锁掉落。'}],
-      meta: [{k:'开发商',v:'Apex Studio'},{k:'发行商',v:'Apex Global Entertainment'},{k:'类型',v:'电子游戏'},{k:'主题',v:'希腊神话'},{k:'布局',v:'6 × 5'},{k:'中奖连线',v:'20 条'},{k:'上线',v:'2020 年'},{k:'语言',v:'简中 / English'},{k:'平台',v:'iOS / Android / Web'},{k:'操作',v:'单击旋转'}]
+      about: '奥林匹斯之门是一款以希腊神话为背景的电子游戏。玩家将置身于众神居住的奥林匹斯山巅，见证万神之王宙斯挥动雷霆之力，召唤连锁掉落与倍率奖励。每一次旋转都可能触发新的中奖组合，神王随机投下的倍率之球，让奖励层层叠加。',
+      symbols: [
+        { id: 'zeus',       name: '宙斯' },
+        { id: 'crown',      name: '金冠' },
+        { id: 'chalice',    name: '圣杯' },
+        { id: 'ring',       name: '神戒' },
+        { id: 'hourglass',  name: '沙漏' },
+        { id: 'gem-red',    name: '红宝石' },
+        { id: 'gem-purple', name: '紫宝石' },
+        { id: 'gem-blue',   name: '蓝宝石' },
+        { id: 'gem-green',  name: '绿宝石' },
+        { id: 'gem-yellow', name: '黄宝石' }
+      ],
+      features: [
+        { title: '连锁掉落', desc: '中奖符号结算后从盘面消失，新符号自上方掉落补位，一次旋转可连续触发多次中奖。' },
+        { title: '倍率之球', desc: '万神之王宙斯随机投下倍率之球，数值从 ×2 起逐级递增，多个倍率可叠加计算。' },
+        { title: '天降神迹', desc: '连续中奖累积能量，触发神迹奖励环节，获得额外的连续旋转机会。' },
+        { title: '直达模式', desc: '可跳过等待，直接进入神迹奖励环节，体验高密度的连锁掉落。' }
+      ],
+      meta: [
+        { k: '开发商', v: 'Pragmatic Play' },
+        { k: '类型',   v: '电子游戏' },
+        { k: '主题',   v: '希腊神话' },
+        { k: '布局',   v: '6 × 5' },
+        { k: '支付线', v: '20 条' },
+        { k: '上线',   v: '2020 年' }
+      ]
     }
   };
 
@@ -391,9 +469,8 @@
     var aboutSec = document.getElementById('gdSecAbout');
     var aboutTxt = document.getElementById('gdAboutText');
     if (data.about && aboutSec && aboutTxt) {
-      var ps = Array.isArray(data.about) ? data.about : [data.about], ah = '';
-      for (var ai = 0; ai < ps.length; ai++) ah += '<p class="gd-about-p">' + ps[ai] + '</p>';
-      aboutTxt.innerHTML = ah; aboutSec.hidden = false;
+      aboutTxt.textContent = data.about;
+      aboutSec.hidden = false;
     }
 
     var symSec   = document.getElementById('gdSecSymbols');

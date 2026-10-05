@@ -325,8 +325,12 @@ body {
   letter-spacing: .3px;
 }
 
-.gd-about-p { margin: 0 0 10px; font-size: 14px; line-height: 1.75; color: var(--gd-text-muted); }
-.gd-about-p:last-child { margin-bottom: 0; }
+.gd-about {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gd-text-muted);
+}
 
 /* ---------- 符号网格 ---------- */
 .gd-symbol-grid {
@@ -340,7 +344,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 12px 4px 10px;
+  padding: 10px 4px 8px;
   background: linear-gradient(180deg, #ffffff 0%, #fafafb 100%);
   border: 1px solid var(--gd-border);
   border-radius: 14px;
@@ -352,8 +356,8 @@ body {
   box-shadow: 0 8px 18px -10px rgba(17, 17, 20, .22);
 }
 .gd-symbol-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -454,9 +458,3 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gd-symbol { transition: none; }
 }
-
-.gd-rule-list { counter-reset: gdrule; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.gd-rule { position: relative; counter-increment: gdrule; padding: 15px 16px 15px 48px; background: #fafafb; border: 1px solid var(--gd-border); border-radius: 14px; }
-.gd-rule::before { content: counter(gdrule, decimal-leading-zero); position: absolute; left: 16px; top: 15px; width: 22px; height: 22px; border-radius: 50%; background: var(--gd-accent); color: #fff; font-size: 10px; font-weight: 700; line-height: 22px; text-align: center; }
-.gd-rule-title { margin: 0 0 5px; font-size: 14px; font-weight: 600; color: var(--gd-text); }
-.gd-rule-body { margin: 0; font-size: 13px; line-height: 1.7; color: var(--gd-text-muted); }
