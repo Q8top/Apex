@@ -314,6 +314,24 @@
     document.title = '糖果连连爆 · ' + (state.mode === 'play' ? '正式' : '试玩') + ' · Apex';
   }
 
+  /* ── 精确计算 reels 尺寸，保证一屏显示 ── */
+  function fitReels() {
+    var board = document.querySelector('.demo-board');
+    var reels = document.querySelector('.demo-reels');
+    if (!board || !reels) return;
+    var cs = getComputedStyle(board);
+    var padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    var padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    var availW = board.clientWidth - padX;
+    var availH = board.clientHeight - padY;
+    if (availW <= 0 || availH <= 0) return;
+    var ratio = 6 / 5;
+    var w = Math.min(availW, availH * ratio);
+    var h = w / ratio;
+    reels.style.width = w.toFixed(1) + 'px';
+    reels.style.height = h.toFixed(1) + 'px';
+  }
+
   /* ── 初始化 ── */
   function init() {
     if (!window.ApexSweetSymbols || !window.ApexSweetSymbols.list) {
@@ -333,6 +351,13 @@
 
     bindEvents();
     updateAll();
+
+    fitReels();
+    requestAnimationFrame(fitReels);
+    window.addEventListener('resize', fitReels);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(fitReels, 100);
+    });
   }
 
   if (document.readyState === 'loading') {
