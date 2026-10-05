@@ -183,6 +183,48 @@
     if (e.key === 'Escape') closeSheet();
   });
 
+  /* ---------- 全局统计（localStorage 持久化） ---------- */
+  var STATS_KEY = 'apex.stats.' + gameId;
+  function loadStats() {
+    try {
+      var raw = localStorage.getItem(STATS_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return { rounds: 0, totalBet: 0, totalWin: 0, bestWin: 0, bestMult: 0, bestChain: 0, fsCount: 0 };
+  }
+  function saveStats(st) {
+    try { localStorage.setItem(STATS_KEY, JSON.stringify(st)); } catch (e) {}
+  }
+  var stats = loadStats();
+  function recordStats(entry) {
+    stats.rounds++;
+    stats.totalBet += entry.bet || 0;
+    stats.totalWin += entry.win || 0;
+    if ((entry.win || 0) > stats.bestWin) stats.bestWin = entry.win || 0;
+    if ((entry.mult || 0) > stats.bestMult) stats.bestMult = entry.mult || 0;
+    if ((entry.chain || 0) > stats.bestChain) stats.bestChain = entry.chain || 0;
+    if (entry.fs) stats.fsCount++;
+    saveStats(stats);
+  }
+  function renderStatsHTML() {
+    var net = stats.totalWin - stats.totalBet;
+    function row(k, v, cls) {
+      return '<div class="gp-stat-cell"><span>' + k + '</span><strong class="' + (cls || '') + '">' + v + '</strong></div>';
+    }
+    var h = '<div class="gp-stats-grid">';
+    h += row('总局数',     stats.rounds);
+    h += row('总下注',     fmtMoney(stats.totalBet));
+    h += row('总赢',       fmtMoney(stats.totalWin));
+    h += row('净收益',     (net >= 0 ? '+' : '') + fmtMoney(net), net >= 0 ? 'is-win' : 'is-lose');
+    h += row('最高单局赢', stats.bestWin > 0 ? fmtMoney(stats.bestWin) : '—', stats.bestWin > 0 ? 'is-win' : '');
+    h += row('最高倍率',   stats.bestMult > 0 ? 'x' + stats.bestMult : '—');
+    h += row('最高连锁',   stats.bestChain > 0 ? stats.bestChain + ' 连' : '—');
+    h += row('免费旋转',   stats.fsCount + ' 次');
+    h += '</div>';
+    h += '<button type="button" class="gp-hist-clear" id="gpStatsReset">清空统计</button>';
+    return h;
+  }
+
   /* ---------- 游戏记录 ---------- */
   var history = [];
   function recordHistory(entry) {
@@ -648,6 +690,13 @@
         mult: r.mult || 0,
         fs: !!isFS
       });
+      recordStats({
+        bet: bet,
+        win: lastWin,
+        chain: r.chain || 0,
+        mult: r.mult || 0,
+        fs: !!isFS
+      });
     } catch (e) { /* noop */ }
 
     spinning = false;
@@ -806,6 +855,7 @@
     var html = '<div class="gp-menu">' +
                  '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><span>赔付表</span></button>' +
                  '<button type="button" class="gp-menu-item" id="gpMenuHist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>游戏记录</span></button>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>统计</span></button>' +
                  '<div class="gp-menu-row">' +
                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 L6 9 L2 9 L2 15 L6 15 L11 19 Z"/><path d="M15.5 8.5 Q18 12 15.5 15.5"/><path d="M18.5 5.5 Q23 12 18.5 18.5"/></svg>' +
                    '<span>音效</span>' +
@@ -831,6 +881,17 @@
     openSheet('菜单', html);
     document.getElementById('gpMenuPay').addEventListener('click', function () { closeSheet(); payBtn && payBtn.click(); });
     document.getElementById('gpMenuHist').addEventListener('click', function () { closeSheet(); histBtn && histBtn.click(); });
+    document.getElementById('gpMenuStats').addEventListener('click', function () {
+      closeSheet();
+      openSheet('统计', renderStatsHTML());
+      var rst = document.getElementById('gpStatsReset');
+      if (rst) rst.addEventListener('click', function () {
+        stats = { rounds: 0, totalBet: 0, totalWin: 0, bestWin: 0, bestMult: 0, bestChain: 0, fsCount: 0 };
+        saveStats(stats);
+        closeSheet();
+        toast('统计已清空');
+      });
+    });
     document.getElementById('gpMenuExit').addEventListener('click', function () {
       closeSheet();
       if (window.history.length > 1) window.history.back();

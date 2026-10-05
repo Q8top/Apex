@@ -1299,3 +1299,37 @@ body {
 @keyframes gp-turbo-spin {
   to { transform: rotate(360deg); }
 }
+
+/* ---------- 全局统计 ---------- */
+.gp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.gp-stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: #FAFAFB;
+  border: 1px solid var(--gp-border);
+  border-radius: 12px;
+  min-width: 0;
+}
+.gp-stat-cell span {
+  font-size: 11px;
+  color: var(--gp-text-muted);
+  letter-spacing: .3px;
+}
+.gp-stat-cell strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gp-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gp-stat-cell strong.is-win  { color: #2E8B33; }
+.gp-stat-cell strong.is-lose { color: #C77800; }
