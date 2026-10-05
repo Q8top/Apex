@@ -186,8 +186,15 @@
     /* ② 阴影层：深色 path 偏移 1.8px */
     root.appendChild(svg('path', {
       d: d, 'fill-rule': fillRule,
-      fill: t.dark, opacity: '0.32',
-      transform: 'translate(0 1.8)'
+      fill: t.dark, opacity: '0.48',
+      transform: 'translate(0 2.2)'
+    }));
+
+    /* ②.5 白色外描边 */
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '2.4',
+      'stroke-linejoin': 'round'
     }));
 
     /* ③ 主体层：径向渐变 */
@@ -210,7 +217,7 @@
     /* 外描边 */
     gHi.appendChild(svg('path', {
       d: d, 'fill-rule': fillRule, fill: 'none',
-      stroke: t.dark, 'stroke-width': '1.6', 'stroke-linejoin': 'round', opacity: '0.45'
+      stroke: t.dark, 'stroke-width': '2.2', 'stroke-linejoin': 'round', opacity: '0.85'
     }));
     /* 内亮线（偏移 -0.5 模拟玻璃边缘） */
     gHi.appendChild(svg('path', {
@@ -220,12 +227,20 @@
       'clip-path': 'url(#' + cpId + ')'
     }));
 
-    /* 左上大高光椭球 */
+    /* 左上大高光椭球（超高亮） */
     gHi.appendChild(svg('ellipse', {
-      cx: n2(cx - r * 0.28), cy: n2(cy - r * 0.36),
-      rx: n2(r * 0.42), ry: n2(r * 0.24),
-      fill: '#ffffff', opacity: '0.82',
-      transform: 'rotate(-28 ' + n2(cx - r * 0.28) + ' ' + n2(cy - r * 0.36) + ')',
+      cx: n2(cx - r * 0.30), cy: n2(cy - r * 0.40),
+      rx: n2(r * 0.46), ry: n2(r * 0.26),
+      fill: '#ffffff', opacity: '0.95',
+      transform: 'rotate(-30 ' + n2(cx - r * 0.30) + ' ' + n2(cy - r * 0.40) + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+    /* 左上高光核心亮点 */
+    gHi.appendChild(svg('ellipse', {
+      cx: n2(cx - r * 0.36), cy: n2(cy - r * 0.46),
+      rx: n2(r * 0.16), ry: n2(r * 0.10),
+      fill: '#ffffff', opacity: '1',
+      transform: 'rotate(-30 ' + n2(cx - r * 0.36) + ' ' + n2(cy - r * 0.46) + ')',
       'clip-path': 'url(#' + cpId + ')'
     }));
 
