@@ -495,8 +495,11 @@ function init(){
         winEls.slice(0, 8).forEach(function(el){
           burstFromCell(el, big);
         });
-        shake(big);
-        if (big) flash();
+        // 只有大赢才震屏（普通中奖不震，避免影响体验）
+        if (big) {
+          shake(true);
+          flash();
+        }
       }
     }
 
