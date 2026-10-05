@@ -1,3 +1,96 @@
+/* === APEX DESIGN TOKENS === */
+/* 建立于 Phase 1 · 后续所有样式优先引用 token */
+:root {
+  /* ===== 颜色 · 网站层（白）===== */
+  --apex-bg:           #ffffff;
+  --apex-bg-2:         #f7f7f8;
+  --apex-bg-3:         #f2f2f4;
+  --apex-border:       #eaeaea;
+  --apex-border-2:     #e4e4e7;
+  --apex-text:         #111111;
+  --apex-text-2:       #27272a;
+  --apex-text-muted:   #71717a;
+  --apex-text-dim:     #a1a1aa;
+
+  /* ===== 颜色 · 游戏层（黑）===== */
+  --game-bg:           #0d0f14;
+  --game-stage:        #111318;
+  --game-cell:         #151820;
+  --game-cell-inset:   #0a0c10;
+  --game-border:       rgba(255, 255, 255, 0.08);
+  --game-text:         #ffffff;
+  --game-text-2:       rgba(255, 255, 255, 0.72);
+  --game-text-muted:   rgba(255, 255, 255, 0.5);
+
+  /* ===== 强调色（只用于 Win/CTA/Special）===== */
+  --accent-gold:       #d4af37;
+  --accent-gold-2:     #fde68a;
+  --accent-gold-deep:  #8a6d1a;
+  --accent-violet:     #7c4dff;
+  --accent-violet-2:   #5a2dcc;
+  --accent-cyan:       #06b6d4;
+  --accent-emerald:    #10b981;
+  --accent-ruby:       #dc2626;
+  --accent-rose:       #d94880;
+
+  /* ===== 间距（8px 基准）===== */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  /* ===== 圆角 ===== */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-2xl: 24px;
+  --r-pill: 999px;
+
+  /* ===== 阴影 ===== */
+  --sh-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --sh-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --sh-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --sh-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --sh-game: 0 12px 40px rgba(0, 0, 0, 0.3);
+
+  /* ===== 字体族 ===== */
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  /* ===== 字号 ===== */
+  --fs-xs:  10px;
+  --fs-sm:  11px;
+  --fs-md:  13px;
+  --fs-lg:  15px;
+  --fs-xl:  17px;
+  --fs-2xl: 22px;
+  --fs-3xl: 26px;
+  --fs-4xl: 32px;
+
+  /* ===== 字重 ===== */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+  --fw-heavy:   800;
+
+  /* ===== 动画时长 ===== */
+  --t-fast:    150ms;
+  --t-base:    240ms;
+  --t-slow:    380ms;
+  --t-slower:  550ms;
+  --ease-out:  cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.42, 0.5, 1);
+
+  /* ===== 触摸目标最小值 ===== */
+  --touch-min: 44px;
+}
+
 /* Apex 游戏详情页样式 */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
