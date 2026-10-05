@@ -1105,3 +1105,138 @@ body {
   pointer-events: none;
   transition: all .3s cubic-bezier(.22,1,.36,1);
 }
+
+/* ---------- 大奖专属演出 ---------- */
+.gp-bigwin {
+  position: fixed; inset: 0; z-index: 75;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.gp-bigwin.is-show { opacity: 1; pointer-events: auto; }
+.gp-bigwin[hidden] { display: none; }
+
+.gp-bigwin-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,240,180,.92) 0%, rgba(255,200,60,.55) 32%, rgba(50,20,80,.95) 78%);
+  animation: gp-big-bg 2.4s ease-out;
+}
+.gp-bigwin.is-mega .gp-bigwin-bg {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,220,.98) 0%, rgba(255,210,80,.7) 30%, rgba(180, 40, 120,.95) 78%);
+  animation: gp-big-bg 2.4s ease-out, gp-big-hue 2.4s linear;
+}
+.gp-bigwin.is-super .gp-bigwin-bg {
+  background:
+    radial-gradient(circle at 50% 45%, #ffffff 0%, rgba(255,230,120,.85) 20%, rgba(255,80,180,.9) 55%, rgba(80,20,160,.95) 88%);
+  animation: gp-big-bg 2.4s ease-out, gp-big-hue 2.4s linear infinite;
+}
+@keyframes gp-big-bg {
+  0%   { transform: scale(.4); opacity: 0; }
+  30%  { transform: scale(1);  opacity: 1; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+@keyframes gp-big-hue {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* 放射光线 */
+.gp-bigwin-ray {
+  position: absolute; left: 50%; top: 50%;
+  width: 200vmax; height: 200vmax;
+  margin: -100vmax 0 0 -100vmax;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255,255,220,.85) 0deg,  transparent 6deg,
+    rgba(255,255,220,.85) 12deg, transparent 18deg,
+    rgba(255,255,220,.85) 24deg, transparent 30deg,
+    rgba(255,255,220,.85) 36deg, transparent 42deg,
+    rgba(255,255,220,.85) 48deg, transparent 54deg,
+    rgba(255,255,220,.85) 60deg, transparent 66deg,
+    rgba(255,255,220,.85) 72deg, transparent 78deg,
+    rgba(255,255,220,.85) 84deg, transparent 90deg
+  );
+  opacity: 0;
+  animation: gp-big-ray 3s ease-out;
+}
+.gp-bigwin.is-show .gp-bigwin-ray { opacity: .35; }
+@keyframes gp-big-ray {
+  0%   { transform: rotate(0deg)   scale(.2); opacity: 0; }
+  30%  { transform: rotate(30deg)  scale(1);  opacity: .55; }
+  100% { transform: rotate(90deg)  scale(1.4); opacity: 0; }
+}
+
+.gp-bigwin-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: gp-big-pop .55s cubic-bezier(.22,1.4,.4,1);
+}
+@keyframes gp-big-pop {
+  0%   { opacity: 0; transform: scale(.5) translateY(30px); }
+  60%  { opacity: 1; transform: scale(1.08) translateY(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.gp-bigwin-title {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFE888 35%, #FFAE00 70%, #B06000 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 0 18px rgba(255,220,100,.95))
+    drop-shadow(0 0 40px rgba(255,180,60,.7))
+    drop-shadow(0 3px 0 rgba(80,40,0,.55));
+  margin-bottom: 12px;
+  animation: gp-big-pulse 1.2s ease-in-out infinite;
+}
+.gp-bigwin.is-mega  .gp-bigwin-title { font-size: 56px; }
+.gp-bigwin.is-super .gp-bigwin-title {
+  font-size: 68px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFB0D0 35%, #FF3090 70%, #A01060 100%);
+  -webkit-background-clip: text; background-clip: text;
+  filter:
+    drop-shadow(0 0 22px rgba(255,150,220,.95))
+    drop-shadow(0 0 50px rgba(255,80,160,.75))
+    drop-shadow(0 3px 0 rgba(80,0,40,.55));
+}
+@keyframes gp-big-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+.gp-bigwin-amount {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -.5px;
+  color: #FFFFFF;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 0 22px rgba(255,220,100,.95),
+    0 0 8px rgba(255,180,60,.9),
+    0 2px 0 rgba(80,40,0,.55);
+  margin-bottom: 6px;
+  animation: gp-big-count .45s cubic-bezier(.22,1.4,.4,1);
+}
+@keyframes gp-big-count {
+  0%   { opacity: 0; transform: scale(.55); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.gp-bigwin-sub {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
+}

@@ -468,7 +468,15 @@
       animateNumber(prizeEl, prevTotal, finalWin, 450);
       animateNumber(balanceEl, balance - finalWin, balance, 450);
       /* FS 内不弹（避免连转频繁打断），普通局弹结算 */
-      if (!isFS) showSettle(chain, finalWin, mult, bet);
+      if (!isFS) {
+        showSettle(chain, finalWin, mult, bet);
+        /* 大奖时先放专属演出，结算面板稍微延后 */
+        var ratio2 = finalWin / Math.max(1, bet);
+        if (ratio2 >= 30) {
+          hideSettle();
+          showBigwin(finalWin, bet, chain, mult);
+        }
+      }
     } else {
       lastWin = 0;
     }
