@@ -137,7 +137,7 @@
 
   function sfx(name) {
     if (window.ApexAudio) window.ApexAudio.play.apply(null, arguments);
-    if (!navigator.vibrate) return;
+    if (!vibeOn || !navigator.vibrate) return;
     var v = VIB[name];
     if (typeof v === 'function') v = v(arguments[1], arguments[2]);
     if (v) { try { navigator.vibrate(v); } catch (e) {} }
@@ -686,11 +686,22 @@
   });
 
   /* ---------- 菜单 ---------- */
+  var vibeOn = true;
   if (menuBtn) menuBtn.addEventListener('click', function () {
     var html = '<div class="gp-menu">' +
-                 '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>赔付表</button>' +
-                 '<button type="button" class="gp-menu-item" id="gpMenuHist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>游戏记录</button>' +
-                 '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>退出游戏</button>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><span>赔付表</span></button>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuHist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>游戏记录</span></button>' +
+                 '<div class="gp-menu-row">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 L6 9 L2 9 L2 15 L6 15 L11 19 Z"/><path d="M15.5 8.5 Q18 12 15.5 15.5"/><path d="M18.5 5.5 Q23 12 18.5 18.5"/></svg>' +
+                   '<span>音效</span>' +
+                   '<button type="button" class="gp-switch" id="gpSwitchSound" role="switch" aria-checked="' + (soundOn ? 'true' : 'false') + '"><span></span></button>' +
+                 '</div>' +
+                 '<div class="gp-menu-row">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L22 20 L2 20 Z"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>' +
+                   '<span>震动</span>' +
+                   '<button type="button" class="gp-switch" id="gpSwitchVibe" role="switch" aria-checked="' + (vibeOn ? 'true' : 'false') + '"><span></span></button>' +
+                 '</div>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>退出游戏</span></button>' +
                '</div>';
     openSheet('菜单', html);
     document.getElementById('gpMenuPay').addEventListener('click', function () { closeSheet(); payBtn && payBtn.click(); });
@@ -699,6 +710,24 @@
       closeSheet();
       if (window.history.length > 1) window.history.back();
       else window.location.href = '/game-detail.html?game=' + encodeURIComponent(gameId);
+    });
+
+    /* 音效开关 */
+    var swSound = document.getElementById('gpSwitchSound');
+    if (swSound) swSound.addEventListener('click', function () {
+      soundOn = !soundOn;
+      swSound.setAttribute('aria-checked', soundOn ? 'true' : 'false');
+      if (soundBtn) soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+      if (window.ApexAudio) window.ApexAudio.setEnabled(soundOn);
+      if (soundOn && window.ApexAudio) window.ApexAudio.play('click');
+    });
+
+    /* 震动开关 */
+    var swVibe = document.getElementById('gpSwitchVibe');
+    if (swVibe) swVibe.addEventListener('click', function () {
+      vibeOn = !vibeOn;
+      swVibe.setAttribute('aria-checked', vibeOn ? 'true' : 'false');
+      if (vibeOn && navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
     });
   });
 
