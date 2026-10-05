@@ -1675,3 +1675,396 @@ body {
   .og-bet-value { font-size: 15px; }
   .og-cell { border-radius: 6px; padding: 2px; }
 }
+
+/* ============================================================
+   P0-1 · 深紫神殿背景 + 游戏世界氛围
+   ============================================================ */
+
+/* ===== 整体：深紫渐变神殿 ===== */
+.og-overlay {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(180, 120, 255, 0.35) 0%, rgba(80, 40, 140, 0.15) 35%, rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(255, 180, 60, 0.18) 0%, rgba(120, 60, 20, 0.08) 40%, rgba(0, 0, 0, 0) 75%),
+    linear-gradient(180deg, #1a0b3d 0%, #2a1252 25%, #150a2e 60%, #0a0618 100%);
+  color: #fff;
+}
+
+/* 顶部闪电光晕 */
+.og-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 15%, rgba(140, 180, 255, 0.15) 0%, transparent 30%),
+    radial-gradient(circle at 75% 20%, rgba(200, 120, 255, 0.12) 0%, transparent 28%);
+  pointer-events: none;
+  z-index: 0;
+}
+.og-overlay > * { position: relative; z-index: 1; }
+
+/* ===== 顶栏：半透明深色 + 金光边框 ===== */
+.og-topbar {
+  background: rgba(10, 4, 24, 0.55);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+}
+.og-topbtn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #f4d47a;
+}
+.og-topbtn:active {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+.og-title h1 {
+  color: #f4d47a;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.3);
+}
+.og-mode {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.55);
+  color: #f4d47a;
+}
+.og-overlay[data-mode="real"] .og-mode {
+  background: rgba(220, 38, 38, 0.18);
+  border-color: rgba(248, 113, 113, 0.55);
+  color: #fca5a5;
+}
+.og-overlay[data-mode="real"] .og-mode::before { background: #fca5a5; }
+
+/* ===== 网格容器：深紫神殿 + 金框 + 内部光晕 ===== */
+.og-grid-wrap {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 120, 255, 0.25) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(60, 25, 110, 0.85) 0%, rgba(30, 12, 60, 0.95) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.15) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.4) inset,
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(140, 80, 220, 0.35),
+    0 0 100px rgba(140, 80, 220, 0.15);
+}
+
+/* 符号格：深色底 + 微光 */
+.og-cell {
+  background: linear-gradient(180deg, rgba(50, 25, 90, 0.55) 0%, rgba(25, 12, 50, 0.75) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 2px rgba(0, 0, 0, 0.4) inset;
+}
+.og-cell::before {
+  background: radial-gradient(circle at 50% 15%, rgba(255, 220, 120, 0.12), transparent 60%);
+  opacity: 1;
+}
+.og-cell.sym-8 {
+  background: linear-gradient(180deg, rgba(80, 50, 150, 0.6) 0%, rgba(40, 20, 80, 0.8) 100%);
+}
+.og-cell.sym-9 {
+  background: linear-gradient(180deg, rgba(150, 60, 30, 0.6) 0%, rgba(80, 30, 15, 0.8) 100%);
+}
+.og-cell.winning {
+  background: linear-gradient(180deg, rgba(255, 220, 120, 0.35) 0%, rgba(180, 130, 40, 0.45) 100%);
+}
+
+/* ===== HUD：半透明深色 + 金光 ===== */
+.og-hud-card {
+  background: rgba(10, 4, 24, 0.55);
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.og-hud-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+.og-hud-value {
+  color: #f4d47a;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.35);
+}
+.og-hud-value--bet { color: #ffffff; }
+.og-hud-value--win { color: #ff8cb0; }
+
+/* ===== 重置/充值按钮 ===== */
+.og-balance-action {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+}
+.og-balance-action:active { background: rgba(255, 255, 255, 0.12); }
+.og-balance-action[data-action="recharge"] {
+  background: linear-gradient(180deg, #f4d47a 0%, #d4a017 100%);
+  color: #2a0e4a;
+  border-color: #d4a017;
+  box-shadow: 0 4px 16px rgba(244, 212, 122, 0.35);
+  font-weight: 800;
+}
+
+/* ===== 下注区 ===== */
+.og-bet-display {
+  background: rgba(10, 4, 24, 0.5);
+  border-color: rgba(212, 175, 55, 0.15);
+}
+.og-bet-label { color: rgba(255, 255, 255, 0.5); }
+.og-bet-value { color: #f4d47a; }
+.og-bet-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f4d47a;
+}
+.og-bet-btn:active {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* ===== 旋转大按钮：金色 + 深紫字 ===== */
+.og-spin {
+  background: linear-gradient(180deg, #fde68a 0%, #f4d47a 40%, #d4a017 100%);
+  color: #2a0e4a;
+  border: 1px solid #d4a017;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -2px 0 rgba(120, 80, 10, 0.3) inset,
+    0 8px 24px rgba(212, 175, 55, 0.4),
+    0 0 40px rgba(212, 175, 55, 0.2);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.og-spin:active {
+  background: linear-gradient(180deg, #f4d47a 0%, #e0b040 100%);
+  transform: scale(.98);
+}
+.og-spin:disabled {
+  opacity: 0.4;
+  filter: grayscale(0.5);
+}
+
+/* ===== 快捷按钮 ===== */
+.og-quick {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+}
+.og-quick > i { color: #f4d47a; }
+.og-quick:active { background: rgba(255, 255, 255, 0.12); }
+.og-quick.active {
+  background: linear-gradient(180deg, #f4d47a 0%, #d4a017 100%);
+  color: #2a0e4a;
+  border-color: #d4a017;
+}
+.og-quick.active > i { color: #2a0e4a; }
+
+/* ===== 中奖横幅：深紫底 + 金光 ===== */
+.og-win-banner {
+  background: rgba(10, 4, 24, 0.92);
+  border-color: rgba(244, 212, 122, 0.7);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(244, 212, 122, 0.4);
+}
+.og-win-label { color: #f4d47a; }
+.og-win-amount {
+  color: #ffffff;
+  text-shadow: 0 0 16px rgba(244, 212, 122, 0.9), 0 0 32px rgba(244, 212, 122, 0.5);
+}
+
+/* ===== FS 徽章：金色更深 ===== */
+.og-fs-badge {
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.25);
+}
+
+/* ============================================================
+   P0-2 · 粒子 + 屏幕震动 + 光晕 + 中奖数字
+   ============================================================ */
+.og-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  display: block;
+}
+
+/* 屏幕震动 */
+.og-overlay.shake-light { animation: og-shake-l .4s cubic-bezier(.36,.07,.19,.97) both; }
+.og-overlay.shake-heavy { animation: og-shake-h .55s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes og-shake-l {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+@keyframes og-shake-h {
+  10%, 90% { transform: translate(-2px, 1px) rotate(-0.3deg); }
+  20%, 80% { transform: translate(3px, -1px) rotate(0.3deg); }
+  30%, 50%, 70% { transform: translate(-5px, 2px) rotate(-0.5deg); }
+  40%, 60% { transform: translate(5px, -2px) rotate(0.5deg); }
+}
+
+/* 全屏金闪 */
+.og-flash {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255, 240, 180, 0.9) 0%, rgba(255, 200, 80, 0.5) 40%, rgba(255, 180, 60, 0) 75%);
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+}
+.og-flash.show {
+  animation: og-flash-in .5s ease-out forwards;
+}
+@keyframes og-flash-in {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 中奖数字滚动 */
+.og-win-amount {
+  font-variant-numeric: tabular-nums;
+  min-width: 4ch;
+  display: inline-block;
+}
+
+/* ============================================================
+   P0-4 · 场景装饰 + 菜单
+   ============================================================ */
+.og-scenery {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* 云朵（紫雾） */
+.og-cloud {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0.5;
+}
+.og-cloud-1 {
+  top: 8%;
+  left: -20%;
+  width: 60%;
+  height: 20%;
+  background: radial-gradient(ellipse, rgba(160, 100, 240, 0.55), transparent 70%);
+  animation: og-drift 18s ease-in-out infinite alternate;
+}
+.og-cloud-2 {
+  top: 25%;
+  right: -25%;
+  width: 70%;
+  height: 22%;
+  background: radial-gradient(ellipse, rgba(100, 60, 200, 0.45), transparent 70%);
+  animation: og-drift 24s ease-in-out infinite alternate-reverse;
+}
+@keyframes og-drift {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(30px) translateY(-10px); }
+}
+
+/* 闪电闪光 */
+.og-lightning {
+  position: absolute;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(200, 220, 255, 0.6), transparent);
+  filter: blur(2px);
+  width: 2px;
+  height: 30%;
+}
+.og-lightning-1 {
+  top: 0; left: 20%;
+  animation: og-flash-zap 6s ease-in-out infinite;
+}
+.og-lightning-2 {
+  top: 0; right: 25%;
+  animation: og-flash-zap 8s ease-in-out infinite 3s;
+}
+@keyframes og-flash-zap {
+  0%, 93%, 100% { opacity: 0; }
+  94%, 96% { opacity: 0.9; }
+  95% { opacity: 0.3; }
+}
+
+/* 神殿柱 */
+.og-pillar {
+  position: absolute;
+  bottom: 0;
+  width: 8%;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(120, 80, 200, 0.35) 0%, rgba(40, 20, 80, 0.6) 100%);
+  border-left: 1px solid rgba(180, 140, 240, 0.25);
+  border-right: 1px solid rgba(80, 40, 140, 0.4);
+  filter: blur(0.5px);
+}
+.og-pillar::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -20%;
+  right: -20%;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(180, 140, 240, 0.45), rgba(80, 40, 140, 0.3));
+  border-radius: 2px;
+}
+.og-pillar-l { left: 4%; opacity: 0.55; }
+.og-pillar-r { right: 4%; opacity: 0.55; }
+
+/* ============================================================
+   设置菜单
+   ============================================================ */
+.og-settings {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.og-setting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 20px;
+  border: 0;
+  background: transparent;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background .16s ease;
+  border-bottom: 1px solid #fafafa;
+}
+.og-setting:last-child { border-bottom: 0; }
+.og-setting:active { background: #f4f4f5; }
+.og-setting-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f4f4f5;
+  font-size: 18px;
+  color: #52525b;
+  flex-shrink: 0;
+}
+.og-setting-label { flex: 1; }
+.og-setting-toggle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #8a8a8e;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #f4f4f5;
+  min-width: 56px;
+  text-align: center;
+}
+.og-setting-toggle.on {
+  background: #0a0a0a;
+  color: #fff;
+}

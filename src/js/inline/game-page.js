@@ -286,6 +286,140 @@ function init(){
     var overlay = document.getElementById('og-overlay');
     if (!overlay) return;
 
+    /* ============================================================
+       粒子系统（canvas）
+       ============================================================ */
+    var PCanvas = document.getElementById('og-particles');
+    var Pctx = PCanvas ? PCanvas.getContext('2d') : null;
+    var particles = [];
+    var particlesRaf = 0;
+
+    function resizeParticles(){
+      if (!PCanvas) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var w = overlay.clientWidth, h = overlay.clientHeight;
+      PCanvas.width = w * dpr;
+      PCanvas.height = h * dpr;
+      if (Pctx) Pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function particleTick(){
+      if (!Pctx || !PCanvas) return;
+      var w = overlay.clientWidth, h = overlay.clientHeight;
+      Pctx.clearRect(0, 0, w, h);
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.vy += p.g;
+        p.vx *= 0.985;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+        p.rot += p.vr;
+        if (p.life <= 0 || p.y > h + 40) { particles.splice(i, 1); continue; }
+        Pctx.save();
+        Pctx.globalAlpha = Math.max(0, p.life);
+        Pctx.translate(p.x, p.y);
+        Pctx.rotate(p.rot);
+        Pctx.fillStyle = p.color;
+        if (p.shape === 'star') {
+          Pctx.shadowBlur = 12;
+          Pctx.shadowColor = p.color;
+          Pctx.beginPath();
+          for (var j = 0; j < 5; j++) {
+            var a = (j * 4 * Math.PI / 5) - Math.PI / 2;
+            var r = (j % 2 === 0) ? p.size : p.size * 0.45;
+            Pctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+          }
+          Pctx.closePath();
+          Pctx.fill();
+        } else {
+          Pctx.fillRect(-p.size * 0.5, -p.size * 0.5, p.size, p.size);
+        }
+        Pctx.restore();
+      }
+      if (particles.length > 0) {
+        particlesRaf = requestAnimationFrame(particleTick);
+      } else {
+        particlesRaf = 0;
+        Pctx.clearRect(0, 0, w, h);
+      }
+    }
+
+    function spawnParticles(x, y, count, colors, opts){
+      opts = opts || {};
+      for (var i = 0; i < count; i++) {
+        var angle = Math.random ? 0 : 0; // 用 crypto
+        var buf = new Uint32Array(2);
+        crypto.getRandomValues(buf);
+        var a = (buf[0] / 4294967296) * Math.PI * 2;
+        var sp = 3 + (buf[1] / 4294967296) * 6;
+        var col = colors[Math.floor((buf[0] / 4294967296) * colors.length)] || '#f4d47a';
+        particles.push({
+          x: x, y: y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp - 3,
+          g: opts.gravity !== undefined ? opts.gravity : 0.25,
+          size: opts.size || (3 + ((buf[1] / 4294967296) * 4)),
+          color: col,
+          life: 1.0,
+          decay: 0.012 + ((buf[0] / 4294967296) * 0.01),
+          rot: (buf[1] / 4294967296) * Math.PI,
+          vr: ((buf[0] / 4294967296) - 0.5) * 0.4,
+          shape: opts.shape || 'rect'
+        });
+      }
+      if (!particlesRaf) particlesRaf = requestAnimationFrame(particleTick);
+    }
+
+    /* 中奖时全屏爆发 */
+    function burstFromCell(cellEl, isBig){
+      if (!cellEl) return;
+      var rect = cellEl.getBoundingClientRect();
+      var ovRect = overlay.getBoundingClientRect();
+      var x = rect.left - ovRect.left + rect.width * 0.5;
+      var y = rect.top - ovRect.top + rect.height * 0.5;
+      var colors = ['#f4d47a', '#fde68a', '#fff8dc', '#fbbf24', '#d4a017'];
+      spawnParticles(x, y, isBig ? 24 : 12, colors, { shape: 'star', size: 6 + (isBig ? 3 : 0) });
+    }
+
+    /* 屏幕震动 */
+    function shake(heavy){
+      if (!overlay) return;
+      if (!state.shake) return;
+      var cls = heavy ? 'shake-heavy' : 'shake-light';
+      overlay.classList.remove('shake-light', 'shake-heavy');
+      void overlay.offsetWidth;
+      overlay.classList.add(cls);
+      setTimeout(function(){ overlay.classList.remove(cls); }, 600);
+    }
+
+    /* 全屏金闪 */
+    var flashEl = document.getElementById('og-flash');
+    function flash(){
+      if (!flashEl) return;
+      flashEl.classList.remove('show');
+      void flashEl.offsetWidth;
+      flashEl.classList.add('show');
+    }
+
+    /* 数字滚动 */
+    function animateNumber(el, from, to, duration){
+      if (!el) return;
+      var start = performance.now();
+      function tick(now){
+        var t = (now - start) / duration;
+        if (t > 1) t = 1;
+        var e = 1 - Math.pow(1 - t, 3);
+        var v = from + (to - from) * e;
+        el.textContent = (v < 0 ? '-' : '+') + '¥' + Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('resize', resizeParticles);
+    setTimeout(resizeParticles, 100);
+
     // 安全随机整数（项目硬约束：禁普通伪随机）
     function randInt(n){
       var buf = new Uint32Array(1);
@@ -320,7 +454,10 @@ function init(){
       inFreeSpins: false,
       auto: false,
       autoTimer: null,
-      autoCount: 0
+      autoCount: 0,
+      music: true,
+      shake: true,
+      fast: false
     };
 
     // -------- 渲染网格 --------
@@ -343,14 +480,23 @@ function init(){
     // -------- 标记中奖 --------
     function markWins(hits, removed){
       var cells = gridEl.querySelectorAll('.og-cell');
+      var winEls = [];
       cells.forEach(function(el){
         var key = el.getAttribute('data-r') + ',' + el.getAttribute('data-c');
-        if (removed.indexOf(key) >= 0) el.classList.add('winning');
+        if (removed.indexOf(key) >= 0) { el.classList.add('winning'); winEls.push(el); }
       });
       if (A && hits && hits.length > 0) {
         var maxTier = 0;
         hits.forEach(function(h){ if (h.tier > maxTier) maxTier = h.tier; });
         A.sWin(maxTier);
+      }
+      if (winEls.length > 0) {
+        var big = winEls.length >= 10;
+        winEls.slice(0, 8).forEach(function(el){
+          burstFromCell(el, big);
+        });
+        shake(big);
+        if (big) flash();
       }
     }
 
@@ -414,11 +560,15 @@ function init(){
       overlay.classList.add('show');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      if (A) A.bgmStart('base');
+      syncSettings();
     }
     function close(){
       overlay.classList.remove('show');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      if (A) A.bgmStop();
+      stopAuto();
     }
 
     if (closeBtn) closeBtn.addEventListener('click', close);
@@ -470,11 +620,15 @@ function init(){
     // -------- 旋转（核心） --------
     function showWin(amount){
       if (!winBanner || !winAmt) return;
-      winAmt.textContent = '+' + money(amount);
       winBanner.classList.add('show');
-      setTimeout(function(){ winBanner.classList.remove('show'); }, 1600);
-      // 大赢音效（赢 > 50 倍下注）
-      if (A && amount > state.bet * 50) A.sBigWin();
+      animateNumber(winAmt, 0, amount, 900);
+      setTimeout(function(){ winBanner.classList.remove('show'); }, 1800);
+      // 大赢音效 + 震屏
+      if (A && amount > state.bet * 50) {
+        A.sBigWin();
+        shake(true);
+        flash();
+      }
     }
 
     // ============ 弹层控制 ============
@@ -556,6 +710,66 @@ function init(){
           '</div>';
       }).join('');
     }
+
+    // ============ 设置菜单 ============
+    var menuBtn = document.getElementById('og-menu');
+    var setSoundBtn = document.getElementById('og-set-sound');
+    var setSoundVal = document.getElementById('og-set-sound-val');
+    var setMusicBtn = document.getElementById('og-set-music');
+    var setMusicVal = document.getElementById('og-set-music-val');
+    var setShakeBtn = document.getElementById('og-set-shake');
+    var setShakeVal = document.getElementById('og-set-shake-val');
+    var setFastBtn = document.getElementById('og-set-fast');
+    var setFastVal = document.getElementById('og-set-fast-val');
+
+    function syncSettings(){
+      if (setSoundVal) {
+        setSoundVal.textContent = state.sound ? '开启' : '关闭';
+        setSoundVal.classList.toggle('on', state.sound);
+      }
+      if (setMusicVal) {
+        setMusicVal.textContent = state.music ? '开启' : '关闭';
+        setMusicVal.classList.toggle('on', state.music);
+      }
+      if (setShakeVal) {
+        setShakeVal.textContent = state.shake ? '开启' : '关闭';
+        setShakeVal.classList.toggle('on', state.shake);
+      }
+      if (setFastVal) {
+        setFastVal.textContent = state.fast ? '开启' : '关闭';
+        setFastVal.classList.toggle('on', state.fast);
+      }
+    }
+
+    if (menuBtn) menuBtn.addEventListener('click', function(){
+      syncSettings();
+      openModal('og-menu-modal');
+    });
+    if (setSoundBtn) setSoundBtn.addEventListener('click', function(){
+      state.sound = !state.sound;
+      if (A) A.setEnabled(state.sound);
+      syncSettings();
+      if (A) A.sClick();
+    });
+    if (setMusicBtn) setMusicBtn.addEventListener('click', function(){
+      state.music = !state.music;
+      if (A) {
+        if (state.music) A.bgmStart('base');
+        else A.bgmStop();
+      }
+      syncSettings();
+      if (A && state.music) A.sClick();
+    });
+    if (setShakeBtn) setShakeBtn.addEventListener('click', function(){
+      state.shake = !state.shake;
+      syncSettings();
+      if (A) A.sClick();
+    });
+    if (setFastBtn) setFastBtn.addEventListener('click', function(){
+      state.fast = !state.fast;
+      syncSettings();
+      if (A) A.sClick();
+    });
 
     // ============ 绑定弹层按钮 ============
     var paytableBtn = document.getElementById('og-paytable');
@@ -655,6 +869,7 @@ function init(){
         updateHud();
         if (totalWin > 0) showWin(totalWin);
         if (A) A.sFsEnd();
+        if (A) A.bgmSetMode('base');
         pushHistory(0, totalWin, state.mode + '+fs');
         state.spinning = false;
         state.inFreeSpins = false;
@@ -663,6 +878,7 @@ function init(){
       }
 
       state.inFreeSpins = true;
+      if (A) A.bgmSetMode('fs');
       nextSpin();
     }
 

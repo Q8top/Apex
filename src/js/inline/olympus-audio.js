@@ -35,7 +35,12 @@ function unlock(){
   if (ctx && ctx.state === 'suspended') ctx.resume();
 }
 
-function setEnabled(v){ enabled = !!v; }
+function setEnabled(v){
+  enabled = !!v;
+  if (ctx && masterGain) {
+    masterGain.gain.setTargetAtTime(enabled ? 0.35 : 0, ctx.currentTime, 0.05);
+  }
+}
 
 /* ============ 基础音色 ============ */
 /* 单音：type / freq / duration / gain / decay */
@@ -162,6 +167,160 @@ function sClick(){
   tone('square', 1000, 0.04, 0.08);
 }
 
+/* ============ BGM 背景音乐（Web Audio 合成）============ */
+/* 架构：2 个 pad + 1 条旋律 + 打击乐循环 */
+var bgm = {
+  playing: false,
+  mode: 'idle',       // 'idle' | 'base' | 'fs'
+  timer: null,
+  step: 0,
+  nextTime: 0,
+  lookahead: 0.15,    // 提前 150ms 调度
+  bpm: 84
+};
+
+/* 主旋律音阶：D 小调五声音阶（神秘感） */
+var SCALE = [293.66, 329.63, 349.23, 440.00, 466.16, 587.33, 698.46, 880.00];
+/* FS 模式音阶（更激昂）：升一个八度 + 大调感 */
+var SCALE_FS = [587.33, 659.25, 698.46, 880.00, 932.33, 1174.66, 1396.91, 1760.00];
+
+/* 低音 pad 频率（D 小调和声：D - A - Bb） */
+var PAD_CHORDS = [
+  [73.42, 110.00, 146.83],   // D2 A2 D3
+  [82.41, 123.47, 164.81],   // E2 B2 E3
+  [87.31, 130.81, 174.61],   // F2 C3 F3
+  [73.42, 110.00, 146.83]    // D2 A2 D3
+];
+
+function pad(freqs, when, dur, gain){
+  if (!ctx || !enabled) return;
+  for (var i = 0; i < freqs.length; i++) {
+    var osc = ctx.createOscillator();
+    var g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freqs[i], when);
+    // 轻微 detune 制造丰富感
+    osc.detune.setValueAtTime((i - 1) * 4, when);
+    g.gain.setValueAtTime(0, when);
+    g.gain.linearRampToValueAtTime(gain, when + 0.8);
+    g.gain.linearRampToValueAtTime(0, when + dur);
+    osc.connect(g);
+    g.connect(masterGain);
+    osc.start(when);
+    osc.stop(when + dur + 0.1);
+  }
+}
+
+function pluck(freq, when, gain){
+  if (!ctx || !enabled) return;
+  var osc = ctx.createOscillator();
+  var g = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, when);
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(gain, when + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, when + 0.55);
+  osc.connect(g);
+  g.connect(masterGain);
+  osc.start(when);
+  osc.stop(when + 0.6);
+}
+
+function drum(when, isKick){
+  if (!ctx || !enabled) return;
+  var dur = isKick ? 0.18 : 0.12;
+  var bufSize = Math.floor(ctx.sampleRate * dur);
+  var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  var data = buf.getChannelData(0);
+  for (var i = 0; i < bufSize; i++) data[i] = (rnd() * 2 - 1);
+  var src = ctx.createBufferSource();
+  src.buffer = buf;
+  var filter = ctx.createBiquadFilter();
+  filter.type = isKick ? 'lowpass' : 'highpass';
+  filter.frequency.value = isKick ? 180 : 4000;
+  filter.Q.value = 1.2;
+  var g = ctx.createGain();
+  g.gain.setValueAtTime(isKick ? 0.14 : 0.05, when);
+  g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+  src.connect(filter);
+  filter.connect(g);
+  g.connect(masterGain);
+  src.start(when);
+  src.stop(when + dur + 0.02);
+}
+
+/* BGM 调度：每 16 分音符 tick 一次 */
+function bgmSchedule(){
+  if (!ctx || !bgm.playing) return;
+  var now = ctx.currentTime;
+  var lookahead = bgm.lookahead;
+
+  while (bgm.nextTime < now + lookahead) {
+    var step = bgm.step;
+    var isFS = (bgm.mode === 'fs');
+    var beat = 60 / bgm.bpm / 4;   // 16 分音符时长
+
+    // Pad 每 16 拍换一次和弦
+    if (step % 16 === 0) {
+      var chordIdx = Math.floor(step / 16) % PAD_CHORDS.length;
+      var chord = PAD_CHORDS[chordIdx];
+      pad(chord, bgm.nextTime, beat * 16, isFS ? 0.055 : 0.035);
+    }
+
+    // 旋律：每 2 拍一个音符
+    if (step % 2 === 0) {
+      var scale = isFS ? SCALE_FS : SCALE;
+      // 使用基于步进的确定性模式（无随机）
+      var pattern = [0, 2, 4, 6, 4, 2, 3, 5, 7, 5, 3, 2, 4, 6, 5, 3];
+      var noteIdx = pattern[Math.floor(step / 2) % pattern.length];
+      var freq = scale[noteIdx % scale.length];
+      var gain = isFS ? 0.06 : 0.035;
+      pluck(freq, bgm.nextTime, gain);
+    }
+
+    // 打击乐：每 4 拍一记 kick
+    if (step % 4 === 0) drum(bgm.nextTime, true);
+    // 每 8 拍一记 hi-hat
+    if (step % 8 === 4) drum(bgm.nextTime, false);
+
+    bgm.nextTime += beat;
+    bgm.step++;
+    if (bgm.step > 256) bgm.step = 0;   // 循环
+  }
+
+  bgm.timer = setTimeout(bgmSchedule, 60);
+}
+
+function bgmStart(mode){
+  init();
+  unlock();
+  if (!ctx) return;
+  if (bgm.playing && bgm.mode === mode) return;
+  bgm.mode = mode || 'base';
+  if (bgm.playing) return;   // 已在播，只切换 mode
+  bgm.playing = true;
+  bgm.step = 0;
+  bgm.nextTime = ctx.currentTime + 0.05;
+  bgmSchedule();
+}
+
+function bgmStop(){
+  bgm.playing = false;
+  if (bgm.timer) { clearTimeout(bgm.timer); bgm.timer = null; }
+}
+
+function bgmSetMode(mode){
+  if (bgm.mode === mode) return;
+  bgm.mode = mode;
+}
+
+/* 音量随 enabled 切换 */
+function bgmMute(v){
+  if (masterGain) {
+    masterGain.gain.setTargetAtTime(v ? 0 : 0.35, ctx.currentTime, 0.05);
+  }
+}
+
 /* ============ 导出 ============ */
 window.ApexAudio = {
   init: init,
@@ -175,7 +334,10 @@ window.ApexAudio = {
   sFsTick: sFsTick,
   sFsEnd: sFsEnd,
   sTumble: sTumble,
-  sClick: sClick
+  sClick: sClick,
+  bgmStart: bgmStart,
+  bgmStop: bgmStop,
+  bgmSetMode: bgmSetMode
 };
 
 })();
