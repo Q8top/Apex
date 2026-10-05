@@ -798,4 +798,5 @@
   refreshUI();
   updateFsUI();
   loadRealBalance();
+  setTimeout(startTutorial, 400);
 })();
