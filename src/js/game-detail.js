@@ -16,12 +16,14 @@
     megaways:  '大富翁'
   };
 
-  var PLACEHOLDER  = '/assets/games/placeholder-game-screen.svg';
-  var IMAGE_COUNT  = 5;
-  var AUTOPLAY_MS  = 3500;    /* 自动轮播间隔 */
-  var RESUME_DELAY = 5000;    /* 手动操作后 → 冷却 5 秒才恢复自动播放 */
-  var SWIPE_RATIO  = 0.18;    /* 松手翻页阈值 */
-  var AXIS_LOCK_PX = 8;       /* 轴向锁定像素 */
+  var PLACEHOLDER     = '/assets/games/placeholder-game-screen.svg';
+  var IMAGE_COUNT     = 5;
+  var AUTOPLAY_MS     = 3500;   /* 自动轮播间隔 */
+  var RESUME_DELAY    = 5000;   /* 手动操作后冷却时长 */
+  var SWIPE_RATIO     = 0.12;   /* 位移阈值：宽度的 12% */
+  var VELOCITY_PXMS   = 0.35;   /* 速度阈值：350 px/s */
+  var MIN_DIST_FOR_V  = 20;     /* 走速度判定时至少要移动这么多 px */
+  var AXIS_LOCK_PX    = 5;      /* 轴向锁定像素 */
 
   var page      = document.querySelector('.gd-page');
   var carousel  = document.getElementById('gdCarousel');
@@ -42,21 +44,22 @@
   if (titleEl) titleEl.textContent = gameName;
   document.title = gameName + ' · Apex';
 
-  var index        = 0;
-  var total        = IMAGE_COUNT;
-  var autoTimer    = null;   /* 自动播放 interval */
-  var resumeTimer  = null;   /* 冷却期 timer */
-  var dragging     = false;
-  var lockAxis     = null;
-  var startX       = 0;
-  var startY       = 0;
-  var deltaX       = 0;
-  var slideW       = 1;
-  var rafId        = null;
-  var pendingTx    = 0;
-  var activePid    = null;
+  var index       = 0;
+  var total       = IMAGE_COUNT;
+  var autoTimer   = null;
+  var resumeTimer = null;
 
-  /* ---------- 结构 ---------- */
+  var dragging    = false;
+  var lockAxis    = null;   /* null | 'x' | 'y' */
+  var startX      = 0;
+  var startY      = 0;
+  var deltaX      = 0;
+  var startT      = 0;
+  var slideW      = 1;
+  var rafId       = null;
+  var pendingTx   = 0;
+
+  /* ---------- 构建 ---------- */
   function buildSlides() {
     var frag = document.createDocumentFragment();
     for (var i = 0; i < total; i++) {
@@ -114,7 +117,6 @@
     }
     syncDots();
   }
-
   function goTo(i, animate) {
     index = ((i % total) + total) % total;
     setTransform(animate);
@@ -122,7 +124,7 @@
   function next() { goTo(index + 1, true); }
   function prev() { goTo(index - 1, true); }
 
-  /* ---------- 自动播放 + 冷却 ---------- */
+  /* ---------- 自动播放 / 冷却 ---------- */
   function play() {
     stop();
     autoTimer = window.setInterval(next, AUTOPLAY_MS);
@@ -141,45 +143,37 @@
     if (resumeTimer) { window.clearTimeout(resumeTimer); resumeTimer = null; }
   }
 
-  /* ---------- 拖动 ---------- */
+  /* ---------- 拖动核心 ---------- */
   function flushMove() {
     rafId = null;
     track.style.transform = 'translate3d(' + pendingTx + '%, 0, 0)';
   }
 
-  function onDown(e) {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    if (activePid !== null) return;
+  function beginDrag(x, y) {
+    if (dragging) return;
+    dragging = true;
+    lockAxis = null;
+    deltaX   = 0;
+    startX   = x;
+    startY   = y;
+    startT   = Date.now();
+    slideW   = carousel.clientWidth || 1;
 
-    activePid = e.pointerId;
-    dragging  = true;
-    lockAxis  = null;
-    deltaX    = 0;
-    startX    = e.clientX;
-    startY    = e.clientY;
-    slideW    = carousel.clientWidth || 1;
-
-    stop();           /* 手动开始 → 停自动播放 */
-    cancelResume();   /* 手动开始 → 取消冷却计时 */
+    stop();
+    cancelResume();
     if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
-
-    track.classList.add('is-dragging');   /* 关闭过渡，走 GPU 层 */
-
-    if (carousel.setPointerCapture) {
-      try { carousel.setPointerCapture(e.pointerId); } catch (err) {}
-    }
+    track.classList.add('is-dragging');
   }
 
-  function onMove(e) {
-    if (!dragging || e.pointerId !== activePid) return;
-
-    var dx = e.clientX - startX;
-    var dy = e.clientY - startY;
+  function moveDrag(x, y, evt) {
+    if (!dragging) return;
+    var dx = x - startX;
+    var dy = y - startY;
 
     if (!lockAxis) {
       if (Math.abs(dx) < AXIS_LOCK_PX && Math.abs(dy) < AXIS_LOCK_PX) return;
       lockAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-      if (lockAxis === 'y') { cancelDrag(); return; }
+      if (lockAxis === 'y') { endDrag(); return; }
     }
     if (lockAxis !== 'x') return;
 
@@ -187,54 +181,68 @@
     pendingTx = (-index * 100) + (deltaX / slideW) * 100;
     if (rafId === null) rafId = window.requestAnimationFrame(flushMove);
 
-    if (e.cancelable) e.preventDefault();
+    if (evt && evt.cancelable) evt.preventDefault();
   }
 
-  function onUp(e) {
+  function endDrag() {
     if (!dragging) return;
-    if (e && e.pointerId !== undefined && e.pointerId !== activePid) return;
-
-    dragging  = false;
-    activePid = null;
+    dragging = false;
     if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
-
-    track.classList.remove('is-dragging');
-    void track.offsetWidth;   /* 让 transition 规则先落地 */
-
-    var threshold = slideW * SWIPE_RATIO;
-    if      (deltaX <= -threshold) next();
-    else if (deltaX >=  threshold) prev();
-    else                           setTransform(true);
-
-    deltaX   = 0;
-    lockAxis = null;
-
-    scheduleResume();   /* 松手 → 5 秒冷却，之后才恢复自动播放 */
-  }
-
-  function cancelDrag() {
-    if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
-    dragging  = false;
-    activePid = null;
-    deltaX    = 0;
-    lockAxis  = null;
 
     track.classList.remove('is-dragging');
     void track.offsetWidth;
-    setTransform(true);
+
+    var dt = Math.max(1, Date.now() - startT);
+    var vx = deltaX / dt;                            /* px / ms */
+    var threshold = slideW * SWIPE_RATIO;
+
+    var fastEnough   = Math.abs(deltaX) >= MIN_DIST_FOR_V &&
+                       Math.abs(vx)     >= VELOCITY_PXMS;
+    var farEnoughL   = deltaX <= -threshold;
+    var farEnoughR   = deltaX >=  threshold;
+
+    if (farEnoughL || (fastEnough && vx < 0))      next();
+    else if (farEnoughR || (fastEnough && vx > 0)) prev();
+    else                                           setTransform(true);
+
+    deltaX   = 0;
+    lockAxis = null;
     scheduleResume();
   }
 
-  /* ---------- 初始化 ---------- */
+  /* ---------- 事件绑定 ---------- */
   buildSlides();
   buildDots();
   setTransform(false);
 
-  carousel.addEventListener('pointerdown',   onDown);
-  carousel.addEventListener('pointermove',   onMove, { passive: false });
-  carousel.addEventListener('pointerup',     onUp);
-  carousel.addEventListener('pointercancel', onUp);
+  /* 触摸通道 */
+  carousel.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) return;
+    beginDrag(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
 
+  document.addEventListener('touchmove', function (e) {
+    if (!dragging) return;
+    if (e.touches.length !== 1) return;
+    moveDrag(e.touches[0].clientX, e.touches[0].clientY, e);
+  }, { passive: false });
+
+  document.addEventListener('touchend',    endDrag);
+  document.addEventListener('touchcancel', endDrag);
+
+  /* 鼠标通道（桌面） */
+  carousel.addEventListener('mousedown', function (e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    beginDrag(e.clientX, e.clientY);
+  });
+  document.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    moveDrag(e.clientX, e.clientY, null);
+  });
+  document.addEventListener('mouseup', endDrag);
+
+  /* 圆点 */
   dotsBox.addEventListener('click', function (e) {
     var t = e.target;
     while (t && t !== dotsBox && !t.classList.contains('gd-dot')) t = t.parentNode;
@@ -243,17 +251,19 @@
     scheduleResume();
   });
 
+  /* 键盘 */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft')  { prev(); scheduleResume(); }
     if (e.key === 'ArrowRight') { next(); scheduleResume(); }
   });
 
+  /* 页面可见性 */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { stop(); cancelResume(); }
     else                 { scheduleResume(); }
   });
 
-  /* ---------- 返回 ---------- */
+  /* 返回 */
   if (backBtn) {
     backBtn.addEventListener('click', function () {
       if (window.history.length > 1) window.history.back();
@@ -261,7 +271,7 @@
     });
   }
 
-  /* ---------- 分享 ---------- */
+  /* 分享 */
   if (shareBtn) {
     shareBtn.addEventListener('click', function () {
       var url  = window.location.href;
@@ -281,7 +291,7 @@
     });
   }
 
-  /* ---------- Toast ---------- */
+  /* Toast */
   var toastTimer = null;
   function toast(msg) {
     if (!toastEl) return;
