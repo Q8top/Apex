@@ -435,6 +435,7 @@ function init(){
     var betInc  = document.getElementById('og-bet-inc');
     var balanceEl = document.getElementById('og-balance');
     var winTotalEl= document.getElementById('og-win-total');
+    var curWinVal = document.getElementById('og-current-win-value');
     var winBanner = document.getElementById('og-win');
     var winAmt    = document.getElementById('og-win-amt');
     var spinBtn   = document.getElementById('og-spin');
@@ -622,6 +623,10 @@ function init(){
 
     // -------- 旋转（核心） --------
     function showWin(amount){
+      if (curWinVal) {
+        curWinVal.textContent = '¥' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        curWinVal.classList.add('win');
+      }
       if (!winBanner || !winAmt) return;
       winBanner.classList.add('show');
       animateNumber(winAmt, 0, amount, 900);
@@ -1035,6 +1040,7 @@ function init(){
       if (state.mode === 'real') state.balance -= state.bet;
       state.win = 0;
       updateHud();
+      if (curWinVal) { curWinVal.textContent = '¥0.00'; curWinVal.classList.remove('win'); }
 
       // 跑一局
       var cfg = E.CONFIG[state.mode];

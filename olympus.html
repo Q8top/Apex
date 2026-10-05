@@ -168,15 +168,8 @@
   </header>
 
   <div class="og-flash" id="og-flash" aria-hidden="true"></div>
-  <div class="og-scenery" aria-hidden="true">
-    <div class="og-cloud og-cloud-1"></div>
-    <div class="og-cloud og-cloud-2"></div>
-    <div class="og-lightning og-lightning-1"></div>
-    <div class="og-lightning og-lightning-2"></div>
-    <div class="og-pillar og-pillar-l"></div>
-    <div class="og-pillar og-pillar-r"></div>
-  </div>
   <canvas class="og-particles" id="og-particles" aria-hidden="true"></canvas>
+
   <section class="og-stage">
     <div class="og-fs-badge" id="og-fs-badge" aria-hidden="true">
       <i class="ri-flashlight-fill" aria-hidden="true"></i>
@@ -193,25 +186,30 @@
     </div>
   </section>
 
+  <section class="og-current-win" id="og-current-win">
+    <span class="og-current-win-label">本局中奖</span>
+    <span class="og-current-win-value" id="og-current-win-value">¥0.00</span>
+  </section>
+
   <section class="og-hud">
+    <button type="button" class="og-balance-action" id="og-balance-action" data-action="reset">
+      <i class="ri-refresh-line" aria-hidden="true"></i>
+      <span id="og-balance-action-label">重置余额</span>
+    </button>
     <div class="og-hud-card">
       <div class="og-hud-row">
         <span class="og-hud-label">余额</span>
         <span class="og-hud-value" id="og-balance">¥1,000.00</span>
       </div>
       <div class="og-hud-row og-hud-row--center">
-        <span class="og-hud-label">本局下注</span>
+        <span class="og-hud-label">下注</span>
         <span class="og-hud-value og-hud-value--bet" id="og-hud-bet">¥10.00</span>
       </div>
       <div class="og-hud-row og-hud-row--right">
-        <span class="og-hud-label">本局赢</span>
+        <span class="og-hud-label">赢得</span>
         <span class="og-hud-value og-hud-value--win" id="og-win-total">¥0.00</span>
       </div>
     </div>
-    <button type="button" class="og-balance-action" id="og-balance-action" data-action="reset">
-      <i class="ri-refresh-line" aria-hidden="true"></i>
-      <span id="og-balance-action-label">重置余额</span>
-    </button>
   </section>
 
   <section class="og-controls">
@@ -220,7 +218,7 @@
         <i class="ri-subtract-line" aria-hidden="true"></i>
       </button>
       <div class="og-bet-display">
-        <span class="og-bet-label">当前下注</span>
+        <span class="og-bet-label">下注</span>
         <span class="og-bet-value" id="og-bet-disp">¥10.00</span>
       </div>
       <button type="button" class="og-bet-btn" id="og-bet-inc" aria-label="增加下注">
@@ -246,41 +244,6 @@
       </button>
     </div>
   </section>
-</div>
-
-<!-- 菜单弹层 -->
-<div class="og-modal" id="og-menu-modal" aria-hidden="true">
-  <div class="og-modal-bg" data-close="1"></div>
-  <div class="og-modal-panel"><div class="og-modal-handle"></div>
-    <header class="og-modal-head">
-      <h2>设置</h2>
-      <button type="button" class="og-modal-close" data-close="1" aria-label="关闭">
-        <i class="ri-close-line" aria-hidden="true"></i>
-      </button>
-    </header>
-    <div class="og-settings">
-      <button type="button" class="og-setting" id="og-set-sound">
-        <span class="og-setting-icon"><i class="ri-volume-up-line" aria-hidden="true"></i></span>
-        <span class="og-setting-label">音效</span>
-        <span class="og-switch on" id="og-set-sound-val"></span>
-      </button>
-      <button type="button" class="og-setting" id="og-set-music">
-        <span class="og-setting-icon"><i class="ri-music-2-line" aria-hidden="true"></i></span>
-        <span class="og-setting-label">背景音乐</span>
-        <span class="og-switch on" id="og-set-music-val"></span>
-      </button>
-      <button type="button" class="og-setting" id="og-set-shake">
-        <span class="og-setting-icon"><i class="ri-vibration-line" aria-hidden="true"></i></span>
-        <span class="og-setting-label">屏幕震动</span>
-        <span class="og-switch on" id="og-set-shake-val"></span>
-      </button>
-      <button type="button" class="og-setting" id="og-set-fast">
-        <span class="og-setting-icon"><i class="ri-speed-up-line" aria-hidden="true"></i></span>
-        <span class="og-setting-label">极速模式</span>
-        <span class="og-switch" id="og-set-fast-val"></span>
-      </button>
-    </div>
-    </div>
 </div>
 
 <!-- 赔付表弹层 -->

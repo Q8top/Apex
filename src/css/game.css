@@ -2265,3 +2265,115 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .og-history-detail-row span:last-child { color: #0a0a0a; font-weight: 700; }
+
+/* ================================================================
+   P1-13 · 按参考图重排（白底 + 深紫网格）
+   ================================================================ */
+
+/* ===== 本局中奖独立行 ===== */
+.og-current-win {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px 4px;
+  background: #ffffff;
+}
+.og-current-win-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a8a8e;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.og-current-win-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0a0a0a;
+  letter-spacing: -.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition: color .3s ease;
+}
+.og-current-win-value.win {
+  color: #d4af37;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+/* ===== HUD：充值按钮在上 + 三列在下 ===== */
+.og-hud {
+  flex-shrink: 0;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 8px 12px 4px !important;
+}
+.og-balance-action {
+  order: -1;
+  width: 100%;
+  margin-top: 0 !important;
+  padding: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+.og-hud-card {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 4px !important;
+  padding: 12px 10px !important;
+}
+
+/* ===== 旋转按钮：紫色渐变 ===== */
+.og-spin {
+  background: linear-gradient(180deg, #7c4dff 0%, #5a2dcc 100%) !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.25) inset,
+    0 6px 20px rgba(120, 70, 220, 0.4) !important;
+  padding: 15px !important;
+  font-size: 16px !important;
+  border-radius: 14px !important;
+}
+.og-spin:active {
+  background: linear-gradient(180deg, #6a3ce0 0%, #4a1eb0 100%) !important;
+  transform: scale(.98) !important;
+}
+
+/* ===== 快捷按钮：白底灰边 ===== */
+.og-quick {
+  background: #ffffff !important;
+  border: 1px solid #ededee !important;
+  color: #0a0a0a !important;
+  padding: 10px 6px !important;
+  border-radius: 12px !important;
+}
+.og-quick > i { color: #52525b !important; }
+
+/* ===== 下注区：白底 ===== */
+.og-bet-display {
+  background: #fafafa !important;
+  border: 1px solid #ededee !important;
+}
+.og-bet-btn {
+  background: #ffffff !important;
+  border: 1px solid #ededee !important;
+  color: #0a0a0a !important;
+}
+
+/* ===== 中奖横幅：白底金字浮动 ===== */
+.og-win-banner {
+  background: #ffffff !important;
+  border: 1px solid rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.28), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+.og-win-label { color: #8a6d1a !important; }
+.og-win-amount {
+  color: #d4af37 !important;
+  text-shadow: none !important;
+}
+
+/* ===== 场景隐藏（白底不需要）===== */
+.og-scenery { display: none !important; }
