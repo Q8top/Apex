@@ -1,15 +1,26 @@
 (function () {
   'use strict';
 
-  /* 游戏名映射（后续接入其他游戏时在此补充） */
   var GAME_NAMES = {
-    olympus: '奥林匹斯之门'
+    olympus:   '奥林匹斯之门',
+    sweet:     '糖果连连爆',
+    sugar:     '甜蜜爆奖',
+    bass:      '巨型鲈鱼',
+    dog:       '狗狗之家',
+    book:      '死亡之书',
+    starburst: '星爆',
+    gonzo:     '刚果探险',
+    buffalo:   '水牛之王',
+    wolf:      '狼黄金',
+    fruit:     '水果派对',
+    megaways:  '大富翁'
   };
 
   var PLACEHOLDER  = '/assets/games/placeholder-game-screen.svg';
-  var IMAGE_COUNT  = 5;      /* 占位图数量，后期由管理员后台决定 */
-  var AUTOPLAY_MS  = 3500;   /* 自动轮播间隔 */
-  var SWIPE_RATIO  = 0.18;   /* 松手翻页阈值（占宽度比例） */
+  var IMAGE_COUNT  = 5;
+  var AUTOPLAY_MS  = 3500;
+  var SWIPE_RATIO  = 0.18;
+  var AXIS_LOCK_PX = 8;
 
   var page      = document.querySelector('.gd-page');
   var carousel  = document.getElementById('gdCarousel');
@@ -22,7 +33,6 @@
 
   if (!carousel || !track || !dotsBox) return;
 
-  /* ---------- URL 参数 ---------- */
   var params   = new URLSearchParams(window.location.search);
   var gameId   = params.get('game') || 'olympus';
   var gameName = GAME_NAMES[gameId] || GAME_NAMES.olympus;
@@ -31,18 +41,20 @@
   if (titleEl) titleEl.textContent = gameName;
   document.title = gameName + ' · Apex';
 
-  /* ---------- 状态 ---------- */
   var index     = 0;
   var total     = IMAGE_COUNT;
   var timer     = null;
   var dragging  = false;
-  var lockAxis  = null;   /* null | 'x' | 'y' */
+  var lockAxis  = null;
   var startX    = 0;
   var startY    = 0;
   var deltaX    = 0;
   var slideW    = 1;
+  var rafId     = null;
+  var pendingTx = 0;
+  var activePid = null;
 
-  /* ---------- 构建 slides ---------- */
+  /* ---------- 结构 ---------- */
   function buildSlides() {
     var frag = document.createDocumentFragment();
     for (var i = 0; i < total; i++) {
@@ -63,7 +75,6 @@
     track.appendChild(frag);
   }
 
-  /* ---------- 构建圆点 ---------- */
   function buildDots() {
     var frag = document.createDocumentFragment();
     for (var i = 0; i < total; i++) {
@@ -80,20 +91,6 @@
     dotsBox.appendChild(frag);
   }
 
-  /* ---------- 渲染 ---------- */
-  function render(animate) {
-    if (animate === false) track.style.transition = 'none';
-    else                   track.style.transition = '';
-
-    track.style.transform = 'translate3d(' + (-index * 100) + '%, 0, 0)';
-
-    if (animate === false) {
-      void track.offsetWidth;          /* 强制 reflow */
-      track.style.transition = '';
-    }
-    syncDots();
-  }
-
   function syncDots() {
     var dots = dotsBox.children;
     for (var i = 0; i < dots.length; i++) {
@@ -103,12 +100,26 @@
     }
   }
 
-  function goTo(i, animate) {
-    index = ((i % total) + total) % total;   /* 循环 */
-    render(animate);
+  /* ---------- 渲染 ---------- */
+  function setTransform(animate) {
+    if (animate === false) {
+      track.style.transition = 'none';
+      track.style.transform  = 'translate3d(' + (-index * 100) + '%, 0, 0)';
+      void track.offsetWidth;
+      track.style.transition = '';
+    } else {
+      track.style.transition = '';
+      track.style.transform  = 'translate3d(' + (-index * 100) + '%, 0, 0)';
+    }
+    syncDots();
   }
-  function next() { goTo(index + 1); }
-  function prev() { goTo(index - 1); }
+
+  function goTo(i, animate) {
+    index = ((i % total) + total) % total;
+    setTransform(animate);
+  }
+  function next() { goTo(index + 1, true); }
+  function prev() { goTo(index - 1, true); }
 
   /* ---------- 自动轮播 ---------- */
   function play() {
@@ -119,18 +130,29 @@
     if (timer) { window.clearInterval(timer); timer = null; }
   }
 
-  /* ---------- 手势（Pointer Events，触摸 / 鼠标通用） ---------- */
+  /* ---------- 拖动（rAF 节流） ---------- */
+  function flushMove() {
+    rafId = null;
+    track.style.transform = 'translate3d(' + pendingTx + '%, 0, 0)';
+  }
+
   function onDown(e) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    dragging = true;
-    lockAxis = null;
-    deltaX   = 0;
-    startX   = e.clientX;
-    startY   = e.clientY;
-    slideW   = carousel.clientWidth || 1;
+    if (activePid !== null) return;
 
-    stop();                                   /* 手动开始 → 暂停自动 */
+    activePid = e.pointerId;
+    dragging  = true;
+    lockAxis  = null;
+    deltaX    = 0;
+    startX    = e.clientX;
+    startY    = e.clientY;
+    slideW    = carousel.clientWidth || 1;
+
+    stop();                                        /* 手动开始 → 停自动 */
+    if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
+
     track.style.transition = 'none';
+    void track.offsetWidth;                        /* 强制 reflow，杜绝残留过渡 */
 
     if (carousel.setPointerCapture) {
       try { carousel.setPointerCapture(e.pointerId); } catch (err) {}
@@ -138,64 +160,69 @@
   }
 
   function onMove(e) {
-    if (!dragging) return;
+    if (!dragging || e.pointerId !== activePid) return;
 
     var dx = e.clientX - startX;
     var dy = e.clientY - startY;
 
     if (!lockAxis) {
-      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (Math.abs(dx) < AXIS_LOCK_PX && Math.abs(dy) < AXIS_LOCK_PX) return;
       lockAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-      if (lockAxis === 'y') { cancelDrag(); return; }   /* 纵向滚动，交还页面 */
+      if (lockAxis === 'y') { cancelDrag(); return; }   /* 纵向 → 交还页面滚动 */
     }
     if (lockAxis !== 'x') return;
 
-    deltaX = dx;
-    var pct = (deltaX / slideW) * 100;
-    track.style.transform = 'translate3d(' + (-index * 100 + pct) + '%, 0, 0)';
+    deltaX    = dx;
+    pendingTx = (-index * 100) + (deltaX / slideW) * 100;
+    if (rafId === null) rafId = window.requestAnimationFrame(flushMove);
 
     if (e.cancelable) e.preventDefault();
   }
 
-  function onUp() {
+  function onUp(e) {
     if (!dragging) return;
-    dragging = false;
+    if (e && e.pointerId !== undefined && e.pointerId !== activePid) return;
+
+    dragging  = false;
+    activePid = null;
+    if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
 
     var threshold = slideW * SWIPE_RATIO;
+    track.style.transition = '';
+
     if      (deltaX <= -threshold) next();
     else if (deltaX >=  threshold) prev();
-    else                           render();
+    else                           setTransform(true);
 
-    deltaX  = 0;
+    deltaX   = 0;
     lockAxis = null;
-    play();                                   /* 手动结束 → 恢复自动 */
+    play();                                        /* 手动结束 → 恢复自动 */
   }
 
   function cancelDrag() {
-    dragging = false;
-    deltaX   = 0;
-    lockAxis = null;
-    render();
+    if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
+    dragging  = false;
+    activePid = null;
+    deltaX    = 0;
+    lockAxis  = null;
+    setTransform(true);
   }
 
-  /* ---------- 绑定 ---------- */
+  /* ---------- 初始化 ---------- */
   buildSlides();
   buildDots();
-  render(false);
+  setTransform(false);
 
-  carousel.addEventListener('pointerdown',  onDown);
-  carousel.addEventListener('pointermove',  onMove, { passive: false });
-  carousel.addEventListener('pointerup',    onUp);
+  carousel.addEventListener('pointerdown',   onDown);
+  carousel.addEventListener('pointermove',   onMove, { passive: false });
+  carousel.addEventListener('pointerup',     onUp);
   carousel.addEventListener('pointercancel', onUp);
-  carousel.addEventListener('pointerleave', function (e) {
-    if (dragging && e.pointerType === 'mouse') onUp();
-  });
 
   dotsBox.addEventListener('click', function (e) {
     var t = e.target;
     while (t && t !== dotsBox && !t.classList.contains('gd-dot')) t = t.parentNode;
     if (!t || t === dotsBox) return;
-    goTo(Number(t.getAttribute('data-index')) || 0);
+    goTo(Number(t.getAttribute('data-index')) || 0, true);
     play();
   });
 

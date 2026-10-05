@@ -4,8 +4,8 @@
   --gd-text:      #111114;
   --gd-text-muted:#6b6b76;
   --gd-border:    #ececf0;
-  --gd-accent:    #6c5ce7;
-  --gd-dot:       #d8d8de;
+  --gd-accent:    #111114;   /* 强调色：黑（白为主 / 黑为辅） */
+  --gd-dot:       #d8d8de;   /* 未激活圆点：浅灰 */
 }
 
 * { box-sizing: border-box; }
@@ -105,6 +105,7 @@ body {
   will-change: transform;
   transition: transform .45s cubic-bezier(.22, .61, .36, 1);
 }
+.gd-track.is-dragging { transition: none; }
 
 .gd-slide {
   flex: 0 0 100%;
@@ -114,6 +115,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .gd-slide img {
@@ -123,9 +125,11 @@ body {
   display: block;
   pointer-events: none;
   -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* ---------- 圆点指示器（在图片下方，不遮挡画面） ---------- */
+/* ---------- 圆点（图片下方，不遮挡画面） ---------- */
 .gd-dots {
   display: flex;
   justify-content: center;
@@ -147,8 +151,8 @@ body {
 }
 .gd-dot:hover { background: #bcbcc4; }
 .gd-dot.is-active {
-  background: var(--gd-accent);
-  transform: scale(1.35);
+  background: var(--gd-accent);   /* 黑 */
+  transform: scale(1.4);
 }
 .gd-dot:focus-visible {
   outline: 2px solid var(--gd-accent);
