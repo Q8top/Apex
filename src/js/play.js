@@ -616,6 +616,7 @@
 
   /* Spin 按钮 */
   if (spinBtn) spinBtn.addEventListener('click', async function (ev) {
+    try {
     if (spinning) return;
     /* 用户手动点击 → 停止自动（自动触发不带 isTrusted） */
     if (ev && ev.isTrusted && autoRunning) stopAuto();
@@ -730,9 +731,18 @@
         mult: r.mult || 0,
         fs: !!isFS
       });
-    } catch (e) { /* noop */ }
+    } catch (e) {
+      console.warn('[apex] spin 异常:', e);
+      toast('旋转异常，已恢复');
+    }
 
     spinning = false;
+    } catch (outerErr) {
+      console.warn('[apex] spin 外层异常:', outerErr);
+      spinning = false;
+      autoRunning = false;
+      toast('操作异常，请重试');
+    }
   });
 
   /* 下注 */
@@ -1071,17 +1081,31 @@
   });
 
   /* 真实模式：读后端余额 */
-  function loadRealBalance() {
+  function loadRealBalance(attempt) {
+    attempt = attempt || 0;
     if (mode !== 'real') return;
+    if (!navigator.onLine) { toast('网络未连接，余额暂显示为 0'); return; }
+
     fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
-      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, status: r.status, d: d }; }); })
       .then(function (res) {
-        if (!res.ok || !res.d || !res.d.success) { toast('未登录，请先登录'); return; }
+        if (res.status === 401 || (res.d && res.d.code === 'unauthenticated')) {
+          toast('未登录，请先登录');
+          return;
+        }
+        if (!res.ok || !res.d || !res.d.success) {
+          if (attempt < 2) setTimeout(function () { loadRealBalance(attempt + 1); }, 1500);
+          else toast('余额获取失败，请稍后重试');
+          return;
+        }
         var wb = res.d.user && res.d.user.walletBalance;
         balance = (typeof wb === 'number') ? wb : 0;
         refreshUI();
       })
-      .catch(function () { toast('余额获取失败'); });
+      .catch(function () {
+        if (attempt < 2) setTimeout(function () { loadRealBalance(attempt + 1); }, 1500);
+        else toast('网络异常，余额未加载');
+      });
   }
 
   /* 初始化 */
