@@ -482,3 +482,188 @@ button { font-family: inherit; }
 /* ── 7) 玩法表格内文本对齐优化 ── */
 .sd-tabpanel .sd-table td { font-weight: 600; }
 .sd-tabpanel .sd-table thead th { white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════════════════════
+   V3 · 轮播：一次只显示一张，绝不露前后边缘
+   核心：slide 宽 = 100% viewport，内 padding 做留白，gap = 0
+   ══════════════════════════════════════════════════════════════════ */
+.sd-carousel { padding: 12px 0 4px; }
+.sd-carousel__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-padding: 0;
+}
+.sd-carousel__viewport::-webkit-scrollbar { display: none; }
+.sd-carousel__track {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  width: 100%;
+}
+.sd-carousel__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+.sd-carousel__slide img,
+.sd-carousel__slide .sd-carousel__ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f6f6f8;
+  box-shadow: 0 1px 2px rgba(10,10,10,.05), 0 2px 8px rgba(10,10,10,.04);
+  object-fit: cover;
+}
+.sd-carousel__ph {
+  position: static;
+  inset: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #b8b8c0;
+}
+.sd-carousel__ph-icon { width: 56px; height: 56px; display: grid; place-items: center; color: #c0c0c8; }
+.sd-carousel__ph-icon svg { display: block; width: 100%; height: 100%; }
+.sd-carousel__ph-label { font-size: 13.5px; font-weight: 600; color: #a8a8b0; letter-spacing: .04em; }
+.sd-carousel__ph-sub { display: none; }
+.sd-carousel__dots { padding: 10px 0 2px; }
+
+/* ══════════════════════════════════════════════════════════════════
+   V3 · 倍率表不横滑 + 果冻糖果符号 + 玻璃质感 + 微动效
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 倍率表：定宽，绝不横滑 ── */
+.sd-table-wrap { overflow: hidden; border-radius: var(--sd-r-m); }
+.sd-table--symbols {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: clamp(11px, 3.2vw, 13px);
+}
+.sd-table--symbols thead th:nth-child(1),
+.sd-table--symbols tbody td:nth-child(1) { width: 40%; }
+.sd-table--symbols thead th:nth-child(2),
+.sd-table--symbols tbody td:nth-child(2),
+.sd-table--symbols thead th:nth-child(3),
+.sd-table--symbols tbody td:nth-child(3),
+.sd-table--symbols thead th:nth-child(4),
+.sd-table--symbols tbody td:nth-child(4) { width: 20%; }
+
+.sd-table--symbols thead th {
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sd-muted);
+  letter-spacing: .03em;
+  background: var(--sd-bg-mute);
+  white-space: nowrap;
+}
+.sd-table--symbols thead th:first-child { text-align: left; padding-left: 12px; }
+
+.sd-table--symbols tbody td {
+  padding: 8px 4px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--sd-line-2);
+}
+.sd-table--symbols tbody td:first-child { text-align: left; padding: 8px 10px; }
+.sd-table--symbols tbody tr:last-child td { border-bottom: 0; }
+
+.sd-sym-cell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.sd-sym-cell__art {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.9) 0%, rgba(248,248,252,.7) 60%, rgba(240,240,248,.5) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.9),
+    inset 0 -1px 2px rgba(180,180,200,.35),
+    0 1px 2px rgba(10,10,10,.05);
+}
+.sd-sym-cell__art::after {
+  content: "";
+  position: absolute;
+  inset: 2px 4px 60% 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,0));
+  pointer-events: none;
+}
+.sd-sym-cell__art svg { width: 24px; height: 24px; display: block; position: relative; z-index: 1; }
+.sd-sym-cell__name {
+  font-size: clamp(11px, 3.1vw, 13px);
+  font-weight: 700;
+  color: var(--sd-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.sd-table--symbols .sd-mult {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #fff0f6;
+  color: var(--sd-accent);
+  font-size: clamp(10px, 2.9vw, 12px);
+  font-weight: 800;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.sd-table--symbols .sd-mult--scatter {
+  background: #eef7ff;
+  color: #0369a1;
+  padding: 1px 5px;
+}
+
+/* ── 果冻糖果通用：CSS 微动效 ── */
+@keyframes sd-heartbeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.1); }
+  30% { transform: scale(0.98); }
+  45% { transform: scale(1.06); }
+}
+@keyframes sd-twinkle {
+  0%, 100% { opacity: .55; transform: scale(.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+@keyframes sd-shine {
+  0% { transform: translateX(-30%); opacity: 0; }
+  20% { opacity: 1; }
+  60% { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+@keyframes sd-glow {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+.sd-sym-art { overflow: visible; }
+.sd-sym-art--heart .sd-sym-body { transform-origin: 50% 55%; animation: sd-heartbeat 1.8s ease-in-out infinite; }
+.sd-sym-art--star .sd-sym-spark { animation: sd-twinkle 2.2s ease-in-out infinite; transform-origin: center; }
+.sd-sym-art--diamond .sd-sym-shine { animation: sd-shine 2.6s ease-in-out infinite; }
+.sd-sym-art--lolli .sd-sym-glow { animation: sd-glow 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .sd-sym-art--heart .sd-sym-body,
+  .sd-sym-art--star .sd-sym-spark,
+  .sd-sym-art--diamond .sd-sym-shine,
+  .sd-sym-art--lolli .sd-sym-glow { animation: none !important; }
+}
