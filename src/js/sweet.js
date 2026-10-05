@@ -56,10 +56,12 @@
       ' L ' + (cx + r * 0.07) + ' ' + (cy + r * 1.5) + ' L ' + (cx - r * 0.07) + ' ' + (cy + r * 1.5) + ' Z';
   }
   function pBanana(cx, cy, r) {
-    return 'M ' + n2(cx + r * 0.68) + ' ' + n2(cy - r * 0.55) +
-      ' C ' + n2(cx + r * 1.05) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.52) + ' ' + n2(cy + r * 0.95) + ', ' + n2(cx - r * 0.52) + ' ' + n2(cy + r * 0.88) +
-      ' C ' + n2(cx - r * 1.0) + ' ' + n2(cy + r * 0.85) + ', ' + n2(cx - r * 1.1) + ' ' + n2(cy + r * 0.42) + ', ' + n2(cx - r * 0.7) + ' ' + n2(cy + r * 0.35) +
-      ' C ' + n2(cx - r * 0.05) + ' ' + n2(cy + r * 0.48) + ', ' + n2(cx + r * 0.4) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.5) +
+    return 'M ' + n2(cx + r * 0.73) + ' ' + n2(cy - r * 0.73) +
+      ' C ' + n2(cx + r * 1.07) + ' ' + n2(cy + r * 0.00) + ', ' + n2(cx + r * 0.67) + ' ' + n2(cy + r * 1.00) + ', ' + n2(cx - r * 0.33) + ' ' + n2(cy + r * 1.17) +
+      ' C ' + n2(cx - r * 0.73) + ' ' + n2(cy + r * 1.23) + ', ' + n2(cx - r * 0.93) + ' ' + n2(cy + r * 1.00) + ', ' + n2(cx - r * 0.83) + ' ' + n2(cy + r * 0.80) +
+      ' C ' + n2(cx - r * 0.67) + ' ' + n2(cy + r * 0.73) + ', ' + n2(cx - r * 0.40) + ' ' + n2(cy + r * 0.80) + ', ' + n2(cx - r * 0.17) + ' ' + n2(cy + r * 0.87) +
+      ' C ' + n2(cx + r * 0.27) + ' ' + n2(cy + r * 0.60) + ', ' + n2(cx + r * 0.50) + ' ' + n2(cy + r * 0.07) + ', ' + n2(cx + r * 0.43) + ' ' + n2(cy - r * 0.40) +
+      ' C ' + n2(cx + r * 0.40) + ' ' + n2(cy - r * 0.60) + ', ' + n2(cx + r * 0.53) + ' ' + n2(cy - r * 0.73) + ', ' + n2(cx + r * 0.73) + ' ' + n2(cy - r * 0.73) +
       ' Z';
   }
   function pGrape(cx, cy, r) {
@@ -272,6 +274,26 @@
       'clip-path': 'url(#' + cpId + ')'
     }));
 
+    /* 葡萄：每颗球加深色描边（颗颗分明） */
+    if (spec.shape === 'grape') {
+      var gGrid = [
+        [-0.55, -0.45], [0.0, -0.55], [0.55, -0.45],
+        [-0.30, 0.05], [0.30, 0.05],
+        [-0.15, 0.55], [0.15, 0.55],
+        [0.0, 0.95]
+      ];
+      var gStroke = svg('g', { 'class': 'sd-sym-grape-stroke' });
+      for (var gsi = 0; gsi < gGrid.length; gsi++) {
+        var gsx = cx + gGrid[gsi][0] * r * 0.62;
+        var gsy = cy + gGrid[gsi][1] * r * 0.62;
+        gStroke.appendChild(svg('circle', {
+          cx: n2(gsx), cy: n2(gsy), r: n2(r * 0.36),
+          fill: 'none', stroke: t.dark, 'stroke-width': '0.9', opacity: '0.55'
+        }));
+      }
+      gHi.appendChild(gStroke);
+    }
+
     /* ── sparks（葡萄等） ── */
     if (sparks.length) {
       var gSp = svg('g', { 'class': 'sd-sym-specks', 'clip-path': 'url(#' + cpId + ')' });
@@ -396,13 +418,18 @@
            ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.55) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.12),
         fill: 'none', stroke: '#fecaca', 'stroke-width': '1.6', 'stroke-linecap': 'round', opacity: '0.7'
       }));
-      /* 黑籽 3 颗 */
-      var wseeds = [[-0.32,-0.05],[0.32,-0.05],[0.0,0.28]];
+      /* 黑籽 5 颗，呈 V 字排列 */
+      var wseeds = [[-0.42,0.02],[-0.18,0.22],[0.18,0.22],[0.42,0.02],[0.0,0.42]];
       for (var wi = 0; wi < wseeds.length; wi++) {
         gHi.appendChild(svg('ellipse', {
           cx: n2(cx + wseeds[wi][0] * r), cy: n2(cy + wseeds[wi][1] * r),
-          rx: '2', ry: '2.8',
+          rx: '2.4', ry: '3.4',
           fill: '#0a0a0a', opacity: '1'
+        }));
+        gHi.appendChild(svg('ellipse', {
+          cx: n2(cx + wseeds[wi][0] * r - 0.8), cy: n2(cy + wseeds[wi][1] * r - 1.2),
+          rx: '0.7', ry: '1.1',
+          fill: '#ffffff', opacity: '0.55'
         }));
       }
       /* 顶部白色反光 */
