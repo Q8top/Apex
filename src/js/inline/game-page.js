@@ -726,22 +726,10 @@ function init(){
     var setFastVal = document.getElementById('og-set-fast-val');
 
     function syncSettings(){
-      if (setSoundVal) {
-        setSoundVal.textContent = state.sound ? '开启' : '关闭';
-        setSoundVal.classList.toggle('on', state.sound);
-      }
-      if (setMusicVal) {
-        setMusicVal.textContent = state.music ? '开启' : '关闭';
-        setMusicVal.classList.toggle('on', state.music);
-      }
-      if (setShakeVal) {
-        setShakeVal.textContent = state.shake ? '开启' : '关闭';
-        setShakeVal.classList.toggle('on', state.shake);
-      }
-      if (setFastVal) {
-        setFastVal.textContent = state.fast ? '开启' : '关闭';
-        setFastVal.classList.toggle('on', state.fast);
-      }
+      if (setSoundVal) setSoundVal.classList.toggle('on', state.sound);
+      if (setMusicVal) setMusicVal.classList.toggle('on', state.music);
+      if (setShakeVal) setShakeVal.classList.toggle('on', state.shake);
+      if (setFastVal)  setFastVal.classList.toggle('on', state.fast);
     }
 
     if (menuBtn) menuBtn.addEventListener('click', function(){

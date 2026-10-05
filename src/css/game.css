@@ -1943,3 +1943,110 @@ body {
   .og-bet-btn, .og-bet-display { height: 40px !important; }
   .og-quick { padding: 8px 4px !important; }
 }
+
+/* ================================================================
+   设置菜单重做：抽屉 + 胶囊开关
+   ================================================================ */
+
+/* 抽屉 handle */
+.og-modal-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d4d4d8;
+  margin: 8px auto 4px;
+  flex-shrink: 0;
+}
+
+/* 设置列表：强制纵向堆叠 */
+.og-settings {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 4px 0 !important;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 单个设置项：左右两端对齐 */
+.og-setting {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: 100% !important;
+  padding: 16px 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #f4f4f5 !important;
+  background: #ffffff !important;
+  color: #0a0a0a !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: background .16s ease !important;
+  box-sizing: border-box !important;
+}
+.og-setting:last-child { border-bottom: 0 !important; }
+.og-setting:active { background: #fafafa !important; }
+
+/* 图标 */
+.og-setting-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #f4f4f5;
+  font-size: 18px;
+  color: #52525b;
+  flex-shrink: 0;
+}
+.og-setting-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============ 胶囊开关 ============ */
+.og-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: #e4e4e7;
+  flex-shrink: 0;
+  transition: background .24s cubic-bezier(.4, 0, .2, 1);
+  cursor: pointer;
+  pointer-events: none; /* 让父按钮接收点击 */
+}
+.og-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: transform .24s cubic-bezier(.4, 0, .2, 1);
+}
+.og-switch.on {
+  background: #0a0a0a;
+}
+.og-switch.on::after {
+  transform: translateX(18px);
+}
+
+/* 弹层抽屉：顶部圆角更大 + handle */
+.og-modal-panel {
+  padding-top: 0 !important;
+}
+.og-modal-head {
+  border-top: 0;
+}
