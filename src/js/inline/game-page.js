@@ -442,6 +442,7 @@ function init(){
 
     var E = window.ApexOlympus;
     var A = window.ApexAudio;
+    var AN = window.ApexAnim;
     if (!E) { console.error('[Apex] 引擎未加载'); return; }
 
     var state = {
@@ -511,11 +512,15 @@ function init(){
         var key = el.getAttribute('data-r') + ',' + el.getAttribute('data-c');
         if (removed.indexOf(key) >= 0) el.classList.add('removing');
       });
-      setTimeout(function(){
+      (AN ? AN.after(380, function(){
+        if (A) A.sTumble();
+        renderGrid(newGrid, true);
+        (AN ? AN.after(500, nextCb) : setTimeout(nextCb, 500));
+      }) : setTimeout(function(){
         if (A) A.sTumble();
         renderGrid(newGrid, true);
         setTimeout(nextCb, 500);
-      }, 380);
+      }, 380));
     }
 
     // -------- 格式化金额 --------
@@ -862,6 +867,7 @@ function init(){
     });
     if (setFastBtn) setFastBtn.addEventListener('click', function(){
       state.fast = !state.fast;
+      if (AN) AN.setSpeed(state.fast ? 'fast' : 'normal');
       syncSettings();
       if (A) A.sClick();
     });
@@ -916,12 +922,17 @@ function init(){
         if (idx >= tumbles.length) { onDone(); return; }
         var t = tumbles[idx];
         markWins(t.hits, t.removed);
-        setTimeout(function(){
+        (AN ? AN.after(450, function(){
+          removeAndDrop(t.removed, t.gridAfter, function(){
+            idx++;
+            (AN ? AN.after(180, next) : setTimeout(next, 180));
+          });
+        }) : setTimeout(function(){
           removeAndDrop(t.removed, t.gridAfter, function(){
             idx++;
             setTimeout(next, 180);
           });
-        }, 450);
+        }, 450));
       }
       next();
     }
@@ -945,16 +956,22 @@ function init(){
         if (sp.tumbles.length > 0) {
           var firstGrid = sp.tumbles[0].gridBefore;
           renderGrid(firstGrid, true);
-          setTimeout(function(){
+          (AN ? AN.after(500, function(){
+            playTumbles(sp.tumbles, function(){
+              totalFsWin += sp.baseWin * (sp.mult > 0 ? sp.mult : 1);
+              idx++;
+              (AN ? AN.after(300, nextSpin) : setTimeout(nextSpin, 300));
+            });
+          }) : setTimeout(function(){
             playTumbles(sp.tumbles, function(){
               totalFsWin += sp.baseWin * (sp.mult > 0 ? sp.mult : 1);
               idx++;
               setTimeout(nextSpin, 300);
             });
-          }, 500);
+          }, 500));
         } else {
           idx++;
-          setTimeout(nextSpin, 300);
+          (AN ? AN.after(300, nextSpin) : setTimeout(nextSpin, 300));
         }
       }
 
@@ -1099,16 +1116,21 @@ function init(){
 
         var t = result.tumbles[roundIdx];
         markWins(t.hits, t.removed);
-        setTimeout(function(){
+        (AN ? AN.after(500, function(){
+          removeAndDrop(t.removed, t.gridAfter, function(){
+            roundIdx++;
+            (AN ? AN.after(200, playRound) : setTimeout(playRound, 200));
+          });
+        }) : setTimeout(function(){
           removeAndDrop(t.removed, t.gridAfter, function(){
             roundIdx++;
             setTimeout(playRound, 200);
           });
-        }, 500);
+        }, 500));
       }
 
       // 起手
-      setTimeout(playRound, 400);
+      (AN ? AN.after(400, playRound) : setTimeout(playRound, 400));
       if (A) A.sDrop();
     }
     if (spinBtn) spinBtn.addEventListener('click', spin);
