@@ -819,3 +819,91 @@ body {
   background: #FFFCE8;
   box-shadow: 0 0 5px rgba(255, 252, 232, .9);
 }
+
+/* ---------- 结算面板 ---------- */
+.gp-settle {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(17,17,20,.35);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity .22s ease;
+  pointer-events: none;
+}
+.gp-settle.is-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.gp-settle[hidden] { display: none; }
+
+.gp-settle-card {
+  min-width: 240px;
+  max-width: 84vw;
+  padding: 26px 30px 24px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFCF3 100%);
+  border-radius: 22px;
+  border: 1px solid rgba(212,160,23,.25);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,.45),
+              inset 0 1px 0 rgba(255,255,255,.9);
+  text-align: center;
+  transform: scale(.86);
+  transition: transform .32s cubic-bezier(.22,1.4,.4,1);
+}
+.gp-settle.is-show .gp-settle-card { transform: scale(1); }
+
+.gp-settle-chain {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  color: #C77800;
+  margin-bottom: 12px;
+  min-height: 16px;
+}
+.gp-settle-chain:empty { display: none; }
+
+.gp-settle-label {
+  font-size: 12px;
+  color: #6b6b76;
+  letter-spacing: .4px;
+  margin-bottom: 4px;
+}
+
+.gp-settle-win {
+  font-size: 38px;
+  font-weight: 800;
+  color: #C77800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  letter-spacing: -.5px;
+  margin-bottom: 8px;
+}
+
+.gp-settle-mult {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6A3FBF;
+  letter-spacing: .3px;
+  padding: 3px 10px;
+  display: inline-block;
+  background: #EDE3FF;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+/* 大奖：更大更闪 */
+.gp-settle.is-jackpot .gp-settle-win {
+  font-size: 46px;
+  background: linear-gradient(180deg, #FFE888 0%, #D9A000 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(255,200,80,.6));
+}
+.gp-settle.is-jackpot .gp-settle-card {
+  border-color: rgba(255,200,80,.55);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,.45),
+              0 0 40px rgba(255,200,80,.35),
+              inset 0 1px 0 rgba(255,255,255,.9);
+}

@@ -461,6 +461,8 @@
       refreshUI();
       animateNumber(prizeEl, prevTotal, finalWin, 450);
       animateNumber(balanceEl, balance - finalWin, balance, 450);
+      /* FS 内不弹（避免连转频繁打断），普通局弹结算 */
+      if (!isFS) showSettle(chain, finalWin, mult, bet);
     } else {
       lastWin = 0;
     }
