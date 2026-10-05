@@ -645,6 +645,7 @@
 
   /* ---------- 结算面板 ---------- */
   function showSettle(chain, win, mult, bet) {
+    return;   /* 已禁用 */
     if (!settleEl || win <= 0) return;
     var ratio = win / Math.max(1, bet);
     settleEl.classList.toggle('is-jackpot', ratio >= 20);
@@ -769,6 +770,7 @@
 
   /* ---------- FS 结束总结 ---------- */
   function showFsSummary(totalWin, bet, count) {
+    return;   /* 已禁用 */
     if (!settleEl || totalWin <= 0) return;
     var ratio = totalWin / Math.max(1, bet);
     settleEl.classList.toggle('is-jackpot', ratio >= 20);
