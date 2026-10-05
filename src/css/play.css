@@ -28,6 +28,7 @@ body {
                "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .gp-page {
@@ -54,6 +55,7 @@ body {
 }
 
 .gp-icon-btn {
+  touch-action: manipulation;
   width: 36px;
   height: 36px;
   padding: 0;
@@ -171,6 +173,7 @@ body {
 }
 
 .gp-btn {
+  touch-action: manipulation;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -241,6 +244,7 @@ body {
   gap: 6px;
 }
 .gp-bet-btn {
+  touch-action: manipulation;
   width: 40px;
   height: 40px;
   padding: 0;
@@ -280,6 +284,7 @@ body {
   gap: 6px;
 }
 .gp-tool {
+  touch-action: manipulation;
   display: inline-flex;
   align-items: center;
   justify-content: center;
