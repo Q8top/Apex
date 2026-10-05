@@ -153,6 +153,27 @@
     if (v) { try { navigator.vibrate(v); } catch (e) {} }
   }
 
+  function openAchSheet() {
+    var unlockedCount = 0;
+    for (var k in achUnlocked) if (achUnlocked.hasOwnProperty(k)) unlockedCount++;
+    var html = '<div class="gp-ach-head"><span>已解锁</span><strong>' + unlockedCount + ' / ' + ACHIEVEMENTS.length + '</strong></div>';
+    html += '<div class="gp-ach-list">';
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+      var a = ACHIEVEMENTS[i];
+      var on = !!achUnlocked[a.id];
+      html += '<div class="gp-ach-item' + (on ? ' is-on' : '') + '">' +
+                '<span class="gp-ach-icon">' + a.icon + '</span>' +
+                '<div class="gp-ach-body">' +
+                  '<div class="gp-ach-name">' + a.name + '</div>' +
+                  '<div class="gp-ach-desc">' + a.desc + '</div>' +
+                '</div>' +
+                '<span class="gp-ach-badge">' + (on ? '已解锁' : '未解锁') + '</span>' +
+              '</div>';
+    }
+    html += '</div>';
+    openSheet('成就', html);
+  }
+
   function openThemeSheet() {
     var themes = [
       { id: 'light',  name: '浅色',  sw: 'sw-light'  },
@@ -247,6 +268,52 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeSheet();
   });
+
+  /* ---------- 成就系统 ---------- */
+  var ACH_KEY = 'apex.ach.' + gameId;
+  var ACHIEVEMENTS = [
+    { id: 'first_win',   icon: '🏆', name: '首次中奖',     desc: '第一次赢得任何金额' },
+    { id: 'first_fs',    icon: '⚡', name: '神迹降临',     desc: '首次触发免费旋转' },
+    { id: 'chain3',      icon: '🔥', name: '三连击',       desc: '单局达成 3 次连锁' },
+    { id: 'chain5',      icon: '💫', name: '五连击',       desc: '单局达成 5 次连锁' },
+    { id: 'win10',       icon: '⭐', name: '小有所得',     desc: '单局中奖达到 10 倍注额' },
+    { id: 'win30',       icon: '🌟', name: 'BIG WIN',      desc: '单局中奖达到 30 倍注额' },
+    { id: 'win100',      icon: '👑', name: 'MEGA WIN',     desc: '单局中奖达到 100 倍注额' },
+    { id: 'buy_fs',      icon: '🎁', name: '大方买下',     desc: '购买过 1 次免费旋转' },
+    { id: 'hype_5',      icon: '💜', name: '幸运收集',     desc: '触发 5 次幸运一击' },
+    { id: 'chain10',     icon: '🚀', name: '十连传奇',     desc: '单局达成 10 次连锁' }
+  ];
+  var achProgress = {};
+  var achUnlocked = {};
+  function loadAch() {
+    try {
+      var raw = localStorage.getItem(ACH_KEY);
+      if (raw) {
+        var j = JSON.parse(raw);
+        achProgress = j.progress || {};
+        achUnlocked = j.unlocked || {};
+      }
+    } catch (e) {}
+  }
+  function saveAch() {
+    try { localStorage.setItem(ACH_KEY, JSON.stringify({ progress: achProgress, unlocked: achUnlocked })); } catch (e) {}
+  }
+  function unlockAch(id) {
+    if (achUnlocked[id]) return;
+    achUnlocked[id] = Date.now();
+    saveAch();
+    var ach = null;
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) if (ACHIEVEMENTS[i].id === id) { ach = ACHIEVEMENTS[i]; break; }
+    if (ach) {
+      toast('🏆 解锁成就 · ' + ach.name);
+      if (window.ApexAudio) window.ApexAudio.play('fsTrigger');
+      if (navigator.vibrate) { try { navigator.vibrate([40, 30, 80]); } catch (e) {} }
+    }
+  }
+  function tickAch(id, value, threshold) {
+    if (achUnlocked[id]) return;
+    if (value >= threshold) unlockAch(id);
+  }
 
   /* ---------- 用户偏好本地化 ---------- */
   var PREF_KEY = 'apex.pref';
@@ -654,6 +721,14 @@
       if (ratio >= 20) triggerFlash('big');
       else if (ratio >= 5) triggerFlash('mid');
       else triggerFlash('small');
+      /* 成就检查 */
+      if (chain === 1) unlockAch('first_win');
+      tickAch('chain3',  chain, 3);
+      tickAch('chain5',  chain, 5);
+      tickAch('chain10', chain, 10);
+      tickAch('win10',   ratio, 10);
+      tickAch('win30',   ratio, 30);
+      tickAch('win100',  ratio, 100);
       await sleep(900);
 
       var now = boardEl.querySelectorAll('.gp-cell');
@@ -743,6 +818,7 @@
           bonusBalls = {};
           updateFsUI();
           if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
+          unlockAch('first_fs');
           sfx('fsTrigger');
           triggerFlash('big');
           announce('触发免费旋转 15 次');
@@ -875,6 +951,7 @@
     if (bgmOn && window.ApexAudio) window.ApexAudio.setBgmMode('fs');
     setResult('⚡ 已购买 · 15 次免费旋转', true);
     updateFsUI();
+    unlockAch('buy_fs');
     await sleep(1200);
 
     /* 自动跑 FS */
@@ -1075,6 +1152,10 @@
                    '<span>低性能模式</span>' +
                    '<button type="button" class="gp-switch" id="gpSwitchLowperf" role="switch" aria-checked="' + (lowPerf ? 'true' : 'false') + '"><span></span></button>' +
                  '</div>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuAch">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M6 14 L4 22 L12 18 L20 22 L18 14"/></svg>' +
+                   '<span>成就</span>' +
+                 '</button>' +
                  '<button type="button" class="gp-menu-item" id="gpMenuTheme">' +
                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 a10 10 0 0 0 0 20 V2 z" fill="currentColor" stroke="none"/></svg>' +
                    '<span>主题</span>' +
@@ -1084,6 +1165,10 @@
     openSheet('菜单', html);
     document.getElementById('gpMenuPay').addEventListener('click', function () { closeSheet(); payBtn && payBtn.click(); });
     document.getElementById('gpMenuHist').addEventListener('click', function () { closeSheet(); histBtn && histBtn.click(); });
+    document.getElementById('gpMenuAch').addEventListener('click', function () {
+      closeSheet();
+      setTimeout(openAchSheet, 320);
+    });
     document.getElementById('gpMenuTheme').addEventListener('click', function () {
       closeSheet();
       setTimeout(openThemeSheet, 320);
@@ -1209,6 +1294,8 @@
   }
 
   /* 初始化 */
+  loadAch();
+
   /* 恢复偏好（一次性） */
   (function restorePref() {
     var pref = loadPref();

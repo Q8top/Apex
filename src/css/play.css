@@ -1838,3 +1838,123 @@ button:focus:not(:focus-visible) { outline: none; }
 .gp-theme-swatch.sw-light { background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F4 100%); }
 .gp-theme-swatch.sw-dark  { background: linear-gradient(180deg, #1A1A22 0%, #060608 100%); }
 .gp-theme-swatch.sw-royal { background: linear-gradient(180deg, #F5C542 0%, #1A0A2E 100%); }
+
+/* ---------- 成就列表 ---------- */
+.gp-ach-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #FCF2DC 0%, #F8E4B0 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(212,160,23,.28);
+}
+.gp-ach-head span {
+  font-size: 12px;
+  color: #8A5A00;
+  letter-spacing: .3px;
+  font-weight: 600;
+}
+.gp-ach-head strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: #8A5A00;
+  font-variant-numeric: tabular-nums;
+}
+
+.gp-ach-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gp-ach-item {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--gp-border);
+  background: #FAFAFB;
+  transition: transform .16s ease, border-color .16s ease;
+}
+.gp-ach-item.is-on {
+  background: linear-gradient(180deg, #FFFDF4 0%, #FFF7E0 100%);
+  border-color: rgba(212,160,23,.45);
+  box-shadow: 0 2px 10px -6px rgba(212,160,23,.35);
+}
+
+.gp-ach-icon {
+  font-size: 26px;
+  line-height: 1;
+  text-align: center;
+  filter: grayscale(1) opacity(.4);
+  transition: filter .3s ease;
+}
+.gp-ach-item.is-on .gp-ach-icon {
+  filter: grayscale(0) opacity(1);
+  animation: gp-ach-pop .5s cubic-bezier(.22,1.4,.4,1);
+}
+@keyframes gp-ach-pop {
+  0%   { transform: scale(.6); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.gp-ach-body { min-width: 0; }
+.gp-ach-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gp-text);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gp-ach-item.is-on .gp-ach-name { color: #8A5A00; }
+.gp-ach-desc {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--gp-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gp-ach-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #F0F0F4;
+  color: #9A9AA8;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  white-space: nowrap;
+}
+.gp-ach-item.is-on .gp-ach-badge {
+  background: #C77800;
+  color: #ffffff;
+}
+
+/* 深色主题适配 */
+.gp-page[data-theme="dark"] .gp-ach-item,
+.gp-page[data-theme="royal"] .gp-ach-item {
+  background: rgba(255,255,255,.03);
+  border-color: rgba(255,255,255,.08);
+}
+.gp-page[data-theme="dark"] .gp-ach-item.is-on,
+.gp-page[data-theme="royal"] .gp-ach-item.is-on {
+  background: rgba(245,197,66,.08);
+  border-color: rgba(245,197,66,.35);
+}
+.gp-page[data-theme="dark"] .gp-ach-badge,
+.gp-page[data-theme="royal"] .gp-ach-badge {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.6);
+}
