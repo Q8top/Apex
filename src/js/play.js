@@ -558,6 +558,7 @@
       sfx('chain', chain);
       sfx('win', winAmount, bet);
       popupWin(positions, winAmount);
+      showCombo(chain);
       setResult('第 ' + chain + ' 连 · +' + fmtMoney(winAmount), true);
       var prevWin = lastWin;
       lastWin = totalWin;
