@@ -505,47 +505,30 @@
   /* ---------- 自动旋转 ---------- */
   var autoRunning = false;
   var autoCount = 0;
-  function startAuto(n) {
+  function startAuto() {
     if (autoRunning) return;
-    autoCount = n;
     autoRunning = true;
-    closeSheet();
-    toast('自动旋转 · ' + n + ' 次');
+    if (autoBtn) autoBtn.classList.add('is-running');
+    toast('自动旋转已开启');
     tickAuto();
   }
   function tickAuto() {
     if (!autoRunning) return;
-    if (autoCount <= 0) {
-      autoRunning = false;
-      toast('自动旋转完成');
-      return;
-    }
-    /* spin 未完成 → 等，不扣次数 */
-    if (spinning) {
-      setTimeout(tickAuto, 300);
-      return;
-    }
-    autoCount--;
+    if (spinning) { setTimeout(tickAuto, 300); return; }
     if (spinBtn) spinBtn.click();
     setTimeout(tickAuto, 600);
   }
-  function stopAuto() { autoRunning = false; autoCount = 0; }
+  function stopAuto() {
+    if (!autoRunning) return;
+    autoRunning = false;
+    autoCount = 0;
+    if (autoBtn) autoBtn.classList.remove('is-running');
+    toast('自动旋转已停止');
+  }
 
   if (autoBtn) autoBtn.addEventListener('click', function () {
-    var html = '<div class="gp-sheet-opts">';
-    [5, 10, 25, 50, 100].forEach(function (n) {
-      html += '<button type="button" class="gp-sheet-opt" data-n="' + n + '">' + n + ' 次</button>';
-    });
-    html += '</div>';
-    if (autoRunning) {
-      html = '<button type="button" class="gp-sheet-opt gp-sheet-stop" id="gpAutoStop">停止自动（剩余 ' + autoCount + '）</button>' + html;
-    }
-    openSheet('自动旋转', html);
-    sheetBody.querySelectorAll('.gp-sheet-opt[data-n]').forEach(function (b) {
-      b.addEventListener('click', function () { startAuto(Number(b.getAttribute('data-n'))); });
-    });
-    var st = document.getElementById('gpAutoStop');
-    if (st) st.addEventListener('click', function () { stopAuto(); closeSheet(); toast('已停止自动'); });
+    if (autoRunning) stopAuto();
+    else startAuto();
   });
 
   /* ---------- 记录 ---------- */

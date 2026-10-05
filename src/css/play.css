@@ -724,3 +724,14 @@ body {
   line-height: 1.6;
   color: var(--gp-text-muted);
 }
+
+/* 自动按钮运行中 */
+.gp-tool.is-running {
+  background: #FCF2DC;
+  border-color: #F0D080;
+  color: #C77800;
+}
+.gp-tool.is-running svg { animation: gp-auto-spin 1.6s linear infinite; }
+@keyframes gp-auto-spin {
+  to { transform: rotate(360deg); }
+}
