@@ -303,5 +303,42 @@
     }, 1800);
   }
 
+  /* ---------- 底部导航（gd-actionbar-wired） ---------- */
+  var favBtn     = document.getElementById('gdFav');
+  var serviceBtn = document.getElementById('gdService');
+  var demoBtn    = document.getElementById('gdDemo');
+  var playBtn    = document.getElementById('gdPlay');
+
+  var FAV_KEY = 'apex.fav.' + gameId;
+  var favOn = false;
+  try { favOn = window.localStorage.getItem(FAV_KEY) === '1'; } catch (err) {}
+
+  function renderFav() {
+    if (!favBtn) return;
+    favBtn.classList.toggle('is-fav', favOn);
+    favBtn.setAttribute('aria-pressed', favOn ? 'true' : 'false');
+    var lbl = favBtn.querySelector('.gd-action-label');
+    if (lbl) lbl.textContent = favOn ? '已收藏' : '收藏';
+  }
+  renderFav();
+
+  if (favBtn) {
+    favBtn.addEventListener('click', function () {
+      favOn = !favOn;
+      try { window.localStorage.setItem(FAV_KEY, favOn ? '1' : '0'); } catch (err) {}
+      renderFav();
+      toast(favOn ? '已收藏' : '已取消收藏');
+    });
+  }
+  if (serviceBtn) {
+    serviceBtn.addEventListener('click', function () { toast('客服功能即将开放'); });
+  }
+  if (demoBtn) {
+    demoBtn.addEventListener('click', function () { toast('免费试玩即将开放'); });
+  }
+  if (playBtn) {
+    playBtn.addEventListener('click', function () { toast('开始游戏即将开放'); });
+  }
+
   play();
 })();

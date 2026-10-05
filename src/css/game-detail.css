@@ -31,7 +31,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   background: var(--gd-bg);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
 }
 
 /* ---------- 顶栏 ---------- */
@@ -191,4 +191,83 @@ body {
 
 @media (min-width: 720px) {
   .gd-carousel { margin-left: 24px; margin-right: 24px; }
+}
+
+
+/* ============ 底部导航 ============ */
+.gd-actionbar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-top: 1px solid var(--gd-border);
+  z-index: 20;
+}
+
+.gd-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--gd-border);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--gd-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .16s ease, color .16s ease,
+              border-color .16s ease, transform .16s ease;
+}
+.gd-action:hover  { background: #f7f7f9; }
+.gd-action:active { transform: scale(.97); }
+.gd-action:focus-visible {
+  outline: 2px solid var(--gd-accent);
+  outline-offset: 2px;
+}
+.gd-action svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.gd-action-icon { flex: 0 0 auto; }
+
+.gd-action-demo,
+.gd-action-play { flex: 1 1 0; min-width: 0; }
+
+.gd-action-play {
+  background: var(--gd-accent);
+  color: #ffffff;
+  border-color: var(--gd-accent);
+}
+.gd-action-play:hover  { background: #000000; border-color: #000000; }
+.gd-action-play:active { background: #000000; border-color: #000000; }
+
+/* 收藏激活态：心形填充黑、外框变黑 */
+.gd-action.is-fav svg path { fill: currentColor; }
+.gd-action.is-fav {
+  color: var(--gd-accent);
+  border-color: var(--gd-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gd-action { transition: none; }
 }

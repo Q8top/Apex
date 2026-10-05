@@ -40,6 +40,29 @@
   </section>
 
   <div class="gd-dots" id="gdDots" role="tablist" aria-label="选择游戏画面"></div>
+  <nav class="gd-actionbar" aria-label="游戏操作">
+    <button type="button" class="gd-action gd-action-icon" id="gdFav" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20.5s-7.5-4.6-7.5-10.5a4.5 4.5 0 0 1 8-2.83A4.5 4.5 0 0 1 20 10c0 5.9-8 10.5-8 10.5z"/>
+      </svg>
+      <span class="gd-action-label">收藏</span>
+    </button>
+
+    <button type="button" class="gd-action gd-action-icon" id="gdService">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 13v-1a8 8 0 0 1 16 0v1"/>
+        <rect x="3" y="13" width="4" height="7" rx="1.5"/>
+        <rect x="17" y="13" width="4" height="7" rx="1.5"/>
+      </svg>
+      <span class="gd-action-label">客服</span>
+    </button>
+
+    <button type="button" class="gd-action gd-action-demo" id="gdDemo">免费试玩</button>
+    <button type="button" class="gd-action gd-action-play" id="gdPlay">开始游戏</button>
+  </nav>
+
 </main>
 
 <div class="gd-toast" id="gdToast" role="status" aria-live="polite"></div>
