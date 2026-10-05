@@ -1657,3 +1657,184 @@ button:focus:not(:focus-visible) { outline: none; }
     transition-duration: .001ms !important;
   }
 }
+
+/* ============================================================
+   主题：浅色（默认） / 深色 / 紫金
+   ============================================================ */
+
+/* ---------- 深色 ---------- */
+.gp-page[data-theme="dark"] {
+  --gp-bg:        #0E0E12;
+  --gp-bg-soft:   #1A1A22;
+  --gp-text:      #F2F2F5;
+  --gp-text-muted:#9A9AA8;
+  --gp-border:    #2A2A34;
+  --gp-accent:    #F2F2F5;
+  --gp-mode:      #F5C542;
+  --gp-mode-bg:   rgba(245,197,66,.15);
+  --gp-board-bg:  #060608;
+  --gp-board-cell:#14141A;
+}
+.gp-page[data-theme="dark"] body,
+.gp-page[data-theme="dark"] {
+  background: var(--gp-bg);
+  color: var(--gp-text);
+}
+.gp-page[data-theme="dark"] .gp-topbar {
+  background: rgba(14,14,18,.94);
+  border-bottom-color: var(--gp-border);
+}
+.gp-page[data-theme="dark"] .gp-icon-btn,
+.gp-page[data-theme="dark"] .gp-btn,
+.gp-page[data-theme="dark"] .gp-bet-btn,
+.gp-page[data-theme="dark"] .gp-bet-value,
+.gp-page[data-theme="dark"] .gp-tool,
+.gp-page[data-theme="dark"] .gp-stat,
+.gp-page[data-theme="dark"] .gp-sheet-panel,
+.gp-page[data-theme="dark"] .gp-faq,
+.gp-page[data-theme="dark"] .gp-menu-item,
+.gp-page[data-theme="dark"] .gp-menu-row,
+.gp-page[data-theme="dark"] .gp-sheet-opt,
+.gp-page[data-theme="dark"] .gp-hist-row,
+.gp-page[data-theme="dark"] .gp-stat-cell,
+.gp-page[data-theme="dark"] .gp-hist-stats,
+.gp-page[data-theme="dark"] .gp-paytable,
+.gp-page[data-theme="dark"] .gp-similar-cover,
+.gp-page[data-theme="dark"] .gp-share-btn {
+  background: #1A1A22;
+  color: var(--gp-text);
+  border-color: var(--gp-border);
+}
+.gp-page[data-theme="dark"] .gp-btn:hover,
+.gp-page[data-theme="dark"] .gp-icon-btn:hover,
+.gp-page[data-theme="dark"] .gp-bet-btn:hover,
+.gp-page[data-theme="dark"] .gp-tool:hover,
+.gp-page[data-theme="dark"] .gp-menu-item:hover,
+.gp-page[data-theme="dark"] .gp-menu-row:hover,
+.gp-page[data-theme="dark"] .gp-sheet-opt:hover,
+.gp-page[data-theme="dark"] .gp-share-btn:hover {
+  background: #24242E;
+}
+.gp-page[data-theme="dark"] .gp-btn-primary {
+  background: #F2F2F5;
+  color: #111114;
+  border-color: #F2F2F5;
+}
+.gp-page[data-theme="dark"] .gp-btn-primary:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+.gp-page[data-theme="dark"] .gp-settle-card {
+  background: linear-gradient(180deg, #1A1A22 0%, #24242E 100%);
+  border-color: rgba(212,160,23,.4);
+}
+.gp-page[data-theme="dark"] .gp-hype-track { background: #2A2A34; }
+.gp-page[data-theme="dark"] .gp-tut-card { background: #1A1A22; }
+.gp-page[data-theme="dark"] .gp-tut-title { color: var(--gp-text); }
+
+/* ---------- 紫金 ---------- */
+.gp-page[data-theme="royal"] {
+  --gp-bg:        #1A0A2E;
+  --gp-bg-soft:   #26123E;
+  --gp-text:      #F5EBFF;
+  --gp-text-muted:#B8A0D8;
+  --gp-border:    #3A2058;
+  --gp-accent:    #F5C542;
+  --gp-mode:      #FFD84D;
+  --gp-mode-bg:   rgba(255,216,77,.18);
+  --gp-board-bg:  #0E0518;
+  --gp-board-cell:#1C0F2E;
+}
+.gp-page[data-theme="royal"] body,
+.gp-page[data-theme="royal"] {
+  background: var(--gp-bg);
+  color: var(--gp-text);
+}
+.gp-page[data-theme="royal"] .gp-topbar {
+  background: rgba(26,10,46,.94);
+  border-bottom-color: var(--gp-border);
+}
+.gp-page[data-theme="royal"] .gp-icon-btn,
+.gp-page[data-theme="royal"] .gp-btn,
+.gp-page[data-theme="royal"] .gp-bet-btn,
+.gp-page[data-theme="royal"] .gp-bet-value,
+.gp-page[data-theme="royal"] .gp-tool,
+.gp-page[data-theme="royal"] .gp-stat,
+.gp-page[data-theme="royal"] .gp-sheet-panel,
+.gp-page[data-theme="royal"] .gp-faq,
+.gp-page[data-theme="royal"] .gp-menu-item,
+.gp-page[data-theme="royal"] .gp-menu-row,
+.gp-page[data-theme="royal"] .gp-sheet-opt,
+.gp-page[data-theme="royal"] .gp-hist-row,
+.gp-page[data-theme="royal"] .gp-stat-cell,
+.gp-page[data-theme="royal"] .gp-hist-stats,
+.gp-page[data-theme="royal"] .gp-paytable,
+.gp-page[data-theme="royal"] .gp-similar-cover,
+.gp-page[data-theme="royal"] .gp-share-btn {
+  background: #26123E;
+  color: var(--gp-text);
+  border-color: var(--gp-border);
+}
+.gp-page[data-theme="royal"] .gp-btn:hover,
+.gp-page[data-theme="royal"] .gp-icon-btn:hover,
+.gp-page[data-theme="royal"] .gp-bet-btn:hover,
+.gp-page[data-theme="royal"] .gp-tool:hover,
+.gp-page[data-theme="royal"] .gp-menu-item:hover,
+.gp-page[data-theme="royal"] .gp-menu-row:hover,
+.gp-page[data-theme="royal"] .gp-sheet-opt:hover,
+.gp-page[data-theme="royal"] .gp-share-btn:hover {
+  background: #321A4E;
+}
+.gp-page[data-theme="royal"] .gp-btn-primary {
+  background: linear-gradient(180deg, #F5C542 0%, #B8860B 100%);
+  color: #1A0A2E;
+  border-color: #F5C542;
+  font-weight: 700;
+}
+.gp-page[data-theme="royal"] .gp-btn-primary:hover {
+  background: linear-gradient(180deg, #FFD84D 0%, #D4A017 100%);
+}
+.gp-page[data-theme="royal"] .gp-settle-card {
+  background: linear-gradient(180deg, #26123E 0%, #321A4E 100%);
+  border-color: rgba(245,197,66,.5);
+}
+.gp-page[data-theme="royal"] .gp-hype-track { background: #321A4E; }
+.gp-page[data-theme="royal"] .gp-tut-card { background: #26123E; }
+
+/* ---------- 主题选择器 ---------- */
+.gp-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 6px 0;
+}
+.gp-theme-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border: 1px solid var(--gp-border);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--gp-text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease;
+}
+.gp-theme-opt:hover  { transform: translateY(-2px); }
+.gp-theme-opt.is-active {
+  border-color: #C77800;
+  box-shadow: 0 0 0 2px rgba(199,120,0,.28);
+}
+.gp-theme-swatch {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,.18);
+}
+.gp-theme-swatch.sw-light { background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F4 100%); }
+.gp-theme-swatch.sw-dark  { background: linear-gradient(180deg, #1A1A22 0%, #060608 100%); }
+.gp-theme-swatch.sw-royal { background: linear-gradient(180deg, #F5C542 0%, #1A0A2E 100%); }

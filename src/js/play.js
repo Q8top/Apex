@@ -153,6 +153,47 @@
     if (v) { try { navigator.vibrate(v); } catch (e) {} }
   }
 
+  function openThemeSheet() {
+    var themes = [
+      { id: 'light',  name: '浅色',  sw: 'sw-light'  },
+      { id: 'dark',   name: '深色',  sw: 'sw-dark'   },
+      { id: 'royal',  name: '紫金',  sw: 'sw-royal'  }
+    ];
+    var html = '<div class="gp-theme-grid">';
+    for (var i = 0; i < themes.length; i++) {
+      var t = themes[i];
+      var cls = 'gp-theme-opt' + (themeName === t.id ? ' is-active' : '');
+      html += '<button type="button" class="' + cls + '" data-theme-id="' + t.id + '">' +
+                '<span class="gp-theme-swatch ' + t.sw + '"></span>' +
+                '<span>' + t.name + '</span>' +
+              '</button>';
+    }
+    html += '</div>';
+    html += '<p class="gp-paynote" style="margin-top:12px">主题仅影响本机显示，不会改变游戏数值。</p>';
+    openSheet('主题', html);
+
+    sheetBody.querySelectorAll('.gp-theme-opt').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-theme-id');
+        applyTheme(id);
+        savePref();
+        /* 更新选中状态 */
+        sheetBody.querySelectorAll('.gp-theme-opt').forEach(function (x) {
+          x.classList.toggle('is-active', x === b);
+        });
+        toast('主题已切换为「' + (id === 'light' ? '浅色' : id === 'dark' ? '深色' : '紫金') + '」');
+      });
+    });
+  }
+
+  function applyTheme(name) {
+    if (!page) return;
+    if (name !== 'light' && name !== 'dark' && name !== 'royal') name = 'light';
+    themeName = name;
+    if (name === 'light') page.removeAttribute('data-theme');
+    else page.setAttribute('data-theme', name);
+  }
+
   var srEl = document.getElementById('gpSrOnly');
   var _lastAnnounce = '';
   function announce(msg) {
@@ -224,7 +265,8 @@
         vibe:     vibeOn,
         turbo:    turboOn,
         bgm:      bgmOn,
-        lowperf:  lowPerf
+        lowperf:  lowPerf,
+        theme:    themeName
       }));
     } catch (e) {}
   }
@@ -1002,6 +1044,7 @@
   var vibeOn = true;
   var bgmOn = false;
   var lowPerf = false;
+  var themeName = 'light';
   if (menuBtn) menuBtn.addEventListener('click', function () {
     var html = '<div class="gp-menu">' +
                  '<button type="button" class="gp-menu-item" id="gpMenuPay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><span>赔付表</span></button>' +
@@ -1032,11 +1075,19 @@
                    '<span>低性能模式</span>' +
                    '<button type="button" class="gp-switch" id="gpSwitchLowperf" role="switch" aria-checked="' + (lowPerf ? 'true' : 'false') + '"><span></span></button>' +
                  '</div>' +
+                 '<button type="button" class="gp-menu-item" id="gpMenuTheme">' +
+                   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 a10 10 0 0 0 0 20 V2 z" fill="currentColor" stroke="none"/></svg>' +
+                   '<span>主题</span>' +
+                 '</button>' +
                  '<button type="button" class="gp-menu-item" id="gpMenuExit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21 H5 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>退出游戏</span></button>' +
                '</div>';
     openSheet('菜单', html);
     document.getElementById('gpMenuPay').addEventListener('click', function () { closeSheet(); payBtn && payBtn.click(); });
     document.getElementById('gpMenuHist').addEventListener('click', function () { closeSheet(); histBtn && histBtn.click(); });
+    document.getElementById('gpMenuTheme').addEventListener('click', function () {
+      closeSheet();
+      setTimeout(openThemeSheet, 320);
+    });
     document.getElementById('gpMenuStats').addEventListener('click', function () {
       closeSheet();
       openSheet('统计', renderStatsHTML());
@@ -1174,6 +1225,7 @@
     if (soundBtn) soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
     if (spinBtn) spinBtn.classList.toggle('is-turbo', turboOn);
     if (page && lowPerf) page.classList.add('is-lowperf');
+    if (typeof pref.theme === 'string') applyTheme(pref.theme);
   })();
 
   renderBoard();
