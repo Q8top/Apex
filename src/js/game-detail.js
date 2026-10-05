@@ -18,9 +18,10 @@
 
   var PLACEHOLDER  = '/assets/games/placeholder-game-screen.svg';
   var IMAGE_COUNT  = 5;
-  var AUTOPLAY_MS  = 3500;
-  var SWIPE_RATIO  = 0.18;
-  var AXIS_LOCK_PX = 8;
+  var AUTOPLAY_MS  = 3500;    /* 自动轮播间隔 */
+  var RESUME_DELAY = 5000;    /* 手动操作后 → 冷却 5 秒才恢复自动播放 */
+  var SWIPE_RATIO  = 0.18;    /* 松手翻页阈值 */
+  var AXIS_LOCK_PX = 8;       /* 轴向锁定像素 */
 
   var page      = document.querySelector('.gd-page');
   var carousel  = document.getElementById('gdCarousel');
@@ -41,18 +42,19 @@
   if (titleEl) titleEl.textContent = gameName;
   document.title = gameName + ' · Apex';
 
-  var index     = 0;
-  var total     = IMAGE_COUNT;
-  var timer     = null;
-  var dragging  = false;
-  var lockAxis  = null;
-  var startX    = 0;
-  var startY    = 0;
-  var deltaX    = 0;
-  var slideW    = 1;
-  var rafId     = null;
-  var pendingTx = 0;
-  var activePid = null;
+  var index        = 0;
+  var total        = IMAGE_COUNT;
+  var autoTimer    = null;   /* 自动播放 interval */
+  var resumeTimer  = null;   /* 冷却期 timer */
+  var dragging     = false;
+  var lockAxis     = null;
+  var startX       = 0;
+  var startY       = 0;
+  var deltaX       = 0;
+  var slideW       = 1;
+  var rafId        = null;
+  var pendingTx    = 0;
+  var activePid    = null;
 
   /* ---------- 结构 ---------- */
   function buildSlides() {
@@ -103,13 +105,12 @@
   /* ---------- 渲染 ---------- */
   function setTransform(animate) {
     if (animate === false) {
-      track.style.transition = 'none';
-      track.style.transform  = 'translate3d(' + (-index * 100) + '%, 0, 0)';
+      track.classList.add('is-dragging');
+      track.style.transform = 'translate3d(' + (-index * 100) + '%, 0, 0)';
       void track.offsetWidth;
-      track.style.transition = '';
+      track.classList.remove('is-dragging');
     } else {
-      track.style.transition = '';
-      track.style.transform  = 'translate3d(' + (-index * 100) + '%, 0, 0)';
+      track.style.transform = 'translate3d(' + (-index * 100) + '%, 0, 0)';
     }
     syncDots();
   }
@@ -121,16 +122,26 @@
   function next() { goTo(index + 1, true); }
   function prev() { goTo(index - 1, true); }
 
-  /* ---------- 自动轮播 ---------- */
+  /* ---------- 自动播放 + 冷却 ---------- */
   function play() {
     stop();
-    timer = window.setInterval(next, AUTOPLAY_MS);
+    autoTimer = window.setInterval(next, AUTOPLAY_MS);
   }
   function stop() {
-    if (timer) { window.clearInterval(timer); timer = null; }
+    if (autoTimer) { window.clearInterval(autoTimer); autoTimer = null; }
+  }
+  function scheduleResume() {
+    cancelResume();
+    resumeTimer = window.setTimeout(function () {
+      resumeTimer = null;
+      play();
+    }, RESUME_DELAY);
+  }
+  function cancelResume() {
+    if (resumeTimer) { window.clearTimeout(resumeTimer); resumeTimer = null; }
   }
 
-  /* ---------- 拖动（rAF 节流） ---------- */
+  /* ---------- 拖动 ---------- */
   function flushMove() {
     rafId = null;
     track.style.transform = 'translate3d(' + pendingTx + '%, 0, 0)';
@@ -148,11 +159,11 @@
     startY    = e.clientY;
     slideW    = carousel.clientWidth || 1;
 
-    stop();                                        /* 手动开始 → 停自动 */
+    stop();           /* 手动开始 → 停自动播放 */
+    cancelResume();   /* 手动开始 → 取消冷却计时 */
     if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
 
-    track.style.transition = 'none';
-    void track.offsetWidth;                        /* 强制 reflow，杜绝残留过渡 */
+    track.classList.add('is-dragging');   /* 关闭过渡，走 GPU 层 */
 
     if (carousel.setPointerCapture) {
       try { carousel.setPointerCapture(e.pointerId); } catch (err) {}
@@ -168,7 +179,7 @@
     if (!lockAxis) {
       if (Math.abs(dx) < AXIS_LOCK_PX && Math.abs(dy) < AXIS_LOCK_PX) return;
       lockAxis = (Math.abs(dx) > Math.abs(dy)) ? 'x' : 'y';
-      if (lockAxis === 'y') { cancelDrag(); return; }   /* 纵向 → 交还页面滚动 */
+      if (lockAxis === 'y') { cancelDrag(); return; }
     }
     if (lockAxis !== 'x') return;
 
@@ -187,16 +198,18 @@
     activePid = null;
     if (rafId !== null) { window.cancelAnimationFrame(rafId); rafId = null; }
 
-    var threshold = slideW * SWIPE_RATIO;
-    track.style.transition = '';
+    track.classList.remove('is-dragging');
+    void track.offsetWidth;   /* 让 transition 规则先落地 */
 
+    var threshold = slideW * SWIPE_RATIO;
     if      (deltaX <= -threshold) next();
     else if (deltaX >=  threshold) prev();
     else                           setTransform(true);
 
     deltaX   = 0;
     lockAxis = null;
-    play();                                        /* 手动结束 → 恢复自动 */
+
+    scheduleResume();   /* 松手 → 5 秒冷却，之后才恢复自动播放 */
   }
 
   function cancelDrag() {
@@ -205,7 +218,11 @@
     activePid = null;
     deltaX    = 0;
     lockAxis  = null;
+
+    track.classList.remove('is-dragging');
+    void track.offsetWidth;
     setTransform(true);
+    scheduleResume();
   }
 
   /* ---------- 初始化 ---------- */
@@ -223,16 +240,17 @@
     while (t && t !== dotsBox && !t.classList.contains('gd-dot')) t = t.parentNode;
     if (!t || t === dotsBox) return;
     goTo(Number(t.getAttribute('data-index')) || 0, true);
-    play();
+    scheduleResume();
   });
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft')  { prev(); play(); }
-    if (e.key === 'ArrowRight') { next(); play(); }
+    if (e.key === 'ArrowLeft')  { prev(); scheduleResume(); }
+    if (e.key === 'ArrowRight') { next(); scheduleResume(); }
   });
 
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) stop(); else play();
+    if (document.hidden) { stop(); cancelResume(); }
+    else                 { scheduleResume(); }
   });
 
   /* ---------- 返回 ---------- */
