@@ -380,6 +380,7 @@
   };
 
   (function renderGameDetails() {
+    if (window.ApexOlympusSymbols) window.ApexOlympusSymbols.ensureDefs();
     var data = GAME_DETAILS[gameId];
     if (!data) return;
 
@@ -399,7 +400,7 @@
       for (var si = 0; si < data.symbols.length; si++) {
         var sym = data.symbols[si];
         sh += '<div class="gd-symbol" role="img" aria-label="' + sym.name + '">' +
-                '<div class="gd-symbol-icon"><img src="/assets/games/olympus/symbols/' + sym.id + '.png" alt="' + sym.name + '" loading="lazy"></div>' +
+                '<div class="gd-symbol-icon">' + renderSymbol(sym.id) + '</div>' +
                 '<div class="gd-symbol-name">' + sym.name + '</div>' +
               '</div>';
       }
