@@ -161,6 +161,21 @@
     fm.appendChild(svg('feMergeNode', { in: 'SourceGraphic' }));
     fs.appendChild(fm);
     defs.appendChild(fs);
+
+    /* 左上高光渐变 */
+    var gl = svg('radialGradient', { id: 'gl_' + uid, cx: '0.35', cy: '0.30', r: '0.75' });
+    gl.appendChild(svg('stop', { offset: '0', 'stop-color': '#ffffff', 'stop-opacity': '0.60' }));
+    gl.appendChild(svg('stop', { offset: '0.6', 'stop-color': '#ffffff', 'stop-opacity': '0.15' }));
+    gl.appendChild(svg('stop', { offset: '1', 'stop-color': '#ffffff', 'stop-opacity': '0' }));
+    defs.appendChild(gl);
+
+    /* 右下暗影渐变 */
+    var gd = svg('radialGradient', { id: 'gd_' + uid, cx: '0.68', cy: '0.72', r: '0.72' });
+    gd.appendChild(svg('stop', { offset: '0', 'stop-color': '#000000', 'stop-opacity': '0.32' }));
+    gd.appendChild(svg('stop', { offset: '0.6', 'stop-color': '#000000', 'stop-opacity': '0.08' }));
+    gd.appendChild(svg('stop', { offset: '1', 'stop-color': '#000000', 'stop-opacity': '0' }));
+    defs.appendChild(gd);
+
     root.appendChild(defs);
     root.appendChild(svg('ellipse', { cx: '50', cy: '84', rx: '17', ry: '2.4', fill: '#000000', opacity: '0.20' }));
     var gg = svg('g', { transform: transform, filter: 'url(#sh_' + uid + ')' });
@@ -169,6 +184,20 @@
     var kids = doc.documentElement.children;
     while (kids.length > 0) gg.appendChild(kids[0]);
     root.appendChild(gg);
+
+    /* 左上白色高光（叠加在 Twemoji 之上） */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '50', r: '40',
+      fill: 'url(#gl_' + uid + ')',
+      'pointer-events': 'none'
+    }));
+    /* 右下暗影 */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '50', r: '40',
+      fill: 'url(#gd_' + uid + ')',
+      'pointer-events': 'none'
+    }));
+
     return root;
   }
 
