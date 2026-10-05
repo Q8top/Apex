@@ -8,7 +8,8 @@ function ensureDefs(){
   var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.id = DEFS_ID; svg.setAttribute('aria-hidden','true');
   svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
-  svg.innerHTML = '<defs>'
+  svg.innerHTML =
+    '<defs>'
     + '<radialGradient id="oly-disk" cx=".38" cy=".32" r=".78">'
       + '<stop offset="0" stop-color="#9A78E0"/><stop offset=".45" stop-color="#5A3AA0"/><stop offset="1" stop-color="#200A50"/></radialGradient>'
     + '<linearGradient id="oly-gold" x1=".3" y1="0" x2=".7" y2="1">'
@@ -24,11 +25,27 @@ function ensureDefs(){
       + '<stop offset="0" stop-color="#B02858"/><stop offset=".5" stop-color="#801C40"/><stop offset="1" stop-color="#4A0820"/></linearGradient>'
     + '<linearGradient id="oly-glass" x1=".3" y1="0" x2=".7" y2="1">'
       + '<stop offset="0" stop-color="#E8F4FF"/><stop offset=".5" stop-color="#A8D0F0"/><stop offset="1" stop-color="#5A88C0"/></linearGradient>'
-  + '</defs>';
+    + '<filter id="oly-grain" x="-8%" y="-8%" width="116%" height="116%">'
+      + '<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>'
+      + '<feColorMatrix in="n" type="matrix" values="0 0 0 0 0.62  0 0 0 0 0.62  0 0 0 0 0.62  0 0 0 0.09 0" result="na"/>'
+      + '<feComposite in="na" in2="SourceGraphic" operator="in" result="nc"/>'
+      + '<feMorphology in="SourceAlpha" operator="erode" radius="0.7" result="er"/>'
+      + '<feComposite in="SourceGraphic" in2="er" operator="out" result="rim"/>'
+      + '<feGaussianBlur in="rim" stdDeviation="0.45" result="rb"/>'
+      + '<feMerge>'
+        + '<feMergeNode in="SourceGraphic"/>'
+        + '<feMergeNode in="nc"/>'
+        + '<feMergeNode in="rb"/>'
+      + '</feMerge>'
+    + '</filter>'
+    + '</defs>';
   document.body.appendChild(svg);
 }
 
-function wrap(i,t){ return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-tier="'+(t||'common')+'">'+i+'</svg>'; }
+function wrap(i,t){
+  return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-tier="'+(t||'common')+'">'
+       + '<g filter="url(#oly-grain)">'+i+'</g></svg>';
+}
 function hl(cx,cy,rx,ry,op){ return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fff" opacity="'+(op==null?.6:op)+'"/>'; }
 function sh(cx,cy,rx,ry,op){ return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#000" opacity="'+(op==null?.14:op)+'"/>'; }
 function arc(d,c,w,op){ return '<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="'+(w||.8)+'" opacity="'+(op==null?.65:op)+'" stroke-linecap="round"/>'; }
@@ -52,7 +69,7 @@ function zeus(){
   s += '<circle cx="50" cy="50" r="39" fill="none" stroke="url(#oly-gold)" stroke-width="2.6"/>';
   s += '<circle cx="50" cy="50" r="36.5" fill="none" stroke="#FFF8C8" stroke-width=".5" opacity=".7"/>';
   var bolt = 'M50 24 L41 50 L48 50 L41 78 L61 44 L53 44 L61 24 Z';
-  s += '<path d="'+bolt+'" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.5" stroke-linejoin="round"><animate attributeName="opacity" values="1;0.72;1" dur="2.4s" repeatCount="indefinite"/></path>';
+  s += '<path d="'+bolt+'" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width="1.5" stroke-linejoin="round"/>';
   s += '<path d="M50 24 L43 50 L47 50 L45 68" fill="none" stroke="#FFFCE8" stroke-width="1.3" opacity=".9" stroke-linecap="round" stroke-linejoin="round"/>';
   s += '<path d="M61 24 L53 44 L58 44 L56 54" fill="none" stroke="#7A5000" stroke-width="1" opacity=".55" stroke-linecap="round"/>';
   s += hl(30,26,12,8,.34);
@@ -83,7 +100,7 @@ function crown(){
   s += '<ellipse cx="21.2" cy="66" rx=".9" ry=".6" fill="#fff" opacity=".9"/>';
   s += '<circle cx="78" cy="67" r="2.6" fill="#6A3FBF" stroke="#3D0A70" stroke-width=".6"/>';
   s += '<ellipse cx="77.2" cy="66" rx=".9" ry=".6" fill="#fff" opacity=".9"/>';
-  s += '<circle cx="47" cy="14" r="3" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".8"><animate attributeName="r" values="3;3.5;3" dur="2s" repeatCount="indefinite"/></circle>';
+  s += '<circle cx="47" cy="14" r="3" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".8"/>';
   s += '<ellipse cx="46" cy="12.8" rx="1" ry=".7" fill="#fff" opacity=".95"/>';
   return s;
 }
@@ -124,7 +141,7 @@ function ring(){
   s += arc('M78 62 Q78 80 66 82','#5A3A00',2,.55);
   s += '<path d="M33 40 L40 27 L60 27 L67 40 L60 46 L40 46 Z" fill="url(#oly-gold)" stroke="#6A4600" stroke-width="1.2" stroke-linejoin="round"/>';
   s += arc('M36 38 Q42 30 50 29','#FFFCE8',1.4,.9);
-  s += '<polygon points="50,10 62,26 50,42 38,26" fill="#E63950" stroke="#3A0008" stroke-width="1.2" stroke-linejoin="round"><animate attributeName="opacity" values="1;0.72;1" dur="2.6s" repeatCount="indefinite"/></polygon>';
+  s += '<polygon points="50,10 62,26 50,42 38,26" fill="#E63950" stroke="#3A0008" stroke-width="1.2" stroke-linejoin="round"/>';
   s += '<polygon points="50,10 62,26 50,30 38,26" fill="#FF8898" opacity=".88"/>';
   s += '<polygon points="50,10 56,20 50,26 44,20" fill="#FFE0E8" opacity=".75"/>';
   s += '<polygon points="50,10 62,26 56,26 50,14" fill="#fff" opacity=".38"/>';
@@ -149,7 +166,7 @@ function hourglass(){
   s += '<path d="M32 79 Q32 60 50 54 Q68 60 68 79 Z" fill="url(#oly-gold)" opacity=".95"/>';
   s += '<path d="M36 79 Q36 64 50 58 Q64 64 64 79 Z" fill="#FFE888" opacity=".75"/>';
   s += '<line x1="50" y1="46" x2="50" y2="56" stroke="#FFE888" stroke-width="1.6" stroke-linecap="round"/>';
-  s += '<circle cx="50" cy="46" r="1.1" fill="#FFFCE8"><animate attributeName="cy" values="46;56" dur="1.1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.1s" repeatCount="indefinite"/></circle><circle cx="50" cy="46" r=".9" fill="#FFFCE8" opacity=".85"><animate attributeName="cy" values="46;56" dur="1.1s" begin=".55s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="1.1s" begin=".55s" repeatCount="indefinite"/></circle>';
+  s += '<circle cx="50" cy="50" r="1" fill="#FFFCE8"/><circle cx="50" cy="54" r=".8" fill="#FFFCE8" opacity=".85"/>';
   s += arc('M32 23 Q32 36 42 44','#fff',1.5,.95);
   s += arc('M32 77 Q32 64 42 56','#fff',1.2,.75);
   s += '<circle cx="50" cy="14" r="1.8" fill="url(#oly-gold-lt)" stroke="#6A4600" stroke-width=".5"/>';
@@ -189,6 +206,7 @@ var GEMS = {
   gemGreen:  {table:'#C8F8D0', shades:['#A8F0B0','#70D880','#40B050','#208030','#0A5018','#208030','#40B050','#70D880'], edge:'#052008', rim:'#90F0A0'},
   gemYellow: {table:'#FFF0B0', shades:['#FFE878','#FFD040','#F0B020','#C08810','#885A00','#C08810','#F0B020','#FFD040'], edge:'#3D2900', rim:'#FFE090'}
 };
+
 var R = {
   zeus:{t:'premier',f:zeus}, crown:{t:'high',f:crown}, chalice:{t:'high',f:chalice},
   ring:{t:'high',f:ring}, hourglass:{t:'high',f:hourglass},
