@@ -301,6 +301,8 @@
       html += '<div class="' + cls + '">' + (isBall ? renderBall(bonusBalls[i]) : renderSym(grid[i])) + '</div>';
     }
     boardEl.innerHTML = html;
+    exitIdle();
+    resetIdleTimer();
     /* 重建 / 清空连线层 */
     var svg = document.getElementById('gpLinks');
     if (!svg) {
@@ -1071,5 +1073,6 @@
   updateFsUI();
   updateHypeUI();
   loadRealBalance();
+  resetIdleTimer();
   setTimeout(startTutorial, 400);
 })();
