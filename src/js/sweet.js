@@ -56,29 +56,42 @@
       ' L ' + (cx + r * 0.07) + ' ' + (cy + r * 1.5) + ' L ' + (cx - r * 0.07) + ' ' + (cy + r * 1.5) + ' Z';
   }
   function pBanana(cx, cy, r) {
-    return 'M ' + (cx - r * 0.9) + ' ' + (cy - r * 0.4) +
-      ' C ' + (cx - r * 0.5) + ' ' + (cy + r * 0.9) + ', ' + (cx + r * 0.7) + ' ' + (cy + r * 0.9) + ', ' + (cx + r * 0.95) + ' ' + (cy - r * 0.3) +
-      ' L ' + (cx + r * 0.7) + ' ' + (cy - r * 0.4) +
-      ' C ' + (cx + r * 0.5) + ' ' + (cy + r * 0.55) + ', ' + (cx - r * 0.3) + ' ' + (cy + r * 0.55) + ', ' + (cx - r * 0.62) + ' ' + (cy - r * 0.42) + ' Z';
+    return 'M ' + n2(cx + r * 0.68) + ' ' + n2(cy - r * 0.55) +
+      ' C ' + n2(cx + r * 1.05) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.52) + ' ' + n2(cy + r * 0.95) + ', ' + n2(cx - r * 0.52) + ' ' + n2(cy + r * 0.88) +
+      ' C ' + n2(cx - r * 1.0) + ' ' + n2(cy + r * 0.85) + ', ' + n2(cx - r * 1.1) + ' ' + n2(cy + r * 0.42) + ', ' + n2(cx - r * 0.7) + ' ' + n2(cy + r * 0.35) +
+      ' C ' + n2(cx - r * 0.05) + ' ' + n2(cy + r * 0.48) + ', ' + n2(cx + r * 0.4) + ' ' + n2(cy - r * 0.05) + ', ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.5) +
+      ' Z';
   }
   function pGrape(cx, cy, r) {
-    var grid = [[0,-1],[-0.7,-0.4],[0.7,-0.4],[-0.35,0.25],[0.35,0.25],[0,0.85],[0,-0.35],[0,0.25]];
+    var grid = [
+      [-0.5, -0.55], [0.0, -0.62], [0.5, -0.55],
+      [-0.82, -0.1], [-0.28, -0.18], [0.28, -0.18], [0.82, -0.1],
+      [-0.55, 0.35], [-0.18, 0.3], [0.18, 0.3], [0.55, 0.35],
+      [-0.28, 0.78], [0.28, 0.78]
+    ];
     var d = '', sparks = [];
     for (var i = 0; i < grid.length; i++) {
-      var gx = cx + grid[i][0] * r * 0.62;
-      var gy = cy + grid[i][1] * r * 0.62;
-      var gr = r * 0.42;
+      var gx = cx + grid[i][0] * r * 0.55;
+      var gy = cy + grid[i][1] * r * 0.55 + r * 0.08;
+      var gr = r * 0.30;
       d += pCircle(gx, gy, gr) + ' ';
-      sparks.push({ cx: gx - gr * 0.34, cy: gy - gr * 0.40, r: gr * 0.34, opacity: 0.82 });
-      sparks.push({ cx: gx + gr * 0.42, cy: gy + gr * 0.48, r: gr * 0.16, opacity: 0.42 });
+      sparks.push({ cx: gx - gr * 0.34, cy: gy - gr * 0.40, r: gr * 0.34, opacity: 0.85 });
+      sparks.push({ cx: gx + gr * 0.42, cy: gy + gr * 0.46, r: gr * 0.14, opacity: 0.42 });
     }
+    /* 梗：从中心顶部伸出 */
+    d += ' M ' + n2(cx - r * 0.04) + ' ' + n2(cy - r * 0.78) +
+         ' Q ' + n2(cx + r * 0.02) + ' ' + n2(cy - r * 1.0) + ' ' + n2(cx + r * 0.05) + ' ' + n2(cy - r * 1.12) +
+         ' L ' + n2(cx + r * 0.12) + ' ' + n2(cy - r * 1.08) +
+         ' Q ' + n2(cx + r * 0.10) + ' ' + n2(cy - r * 0.92) + ' ' + n2(cx + r * 0.05) + ' ' + n2(cy - r * 0.72) +
+         ' Z';
     return { d: d.trim(), sparks: sparks };
   }
   function pWatermelon(cx, cy, r) {
-    return 'M ' + (cx - r) + ' ' + (cy - r * 0.3) +
-      ' A ' + r + ' ' + r + ' 0 0 0 ' + (cx + r) + ' ' + (cy - r * 0.3) +
-      ' L ' + (cx + r * 0.9) + ' ' + (cy - r * 0.15) +
-      ' A ' + (r * 0.9) + ' ' + (r * 0.9) + ' 0 0 1 ' + (cx - r * 0.9) + ' ' + (cy - r * 0.15) + ' Z';
+    return 'M ' + n2(cx - r * 0.9) + ' ' + n2(cy - r * 0.35) +
+      ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.05) + ' ' + n2(cx + r * 0.9) + ' ' + n2(cy - r * 0.35) +
+      ' Q ' + n2(cx + r * 0.4) + ' ' + n2(cy + r * 0.35) + ' ' + n2(cx) + ' ' + n2(cy + r * 0.85) +
+      ' Q ' + n2(cx - r * 0.4) + ' ' + n2(cy + r * 0.35) + ' ' + n2(cx - r * 0.9) + ' ' + n2(cy - r * 0.35) +
+      ' Z';
   }
   function pCherry(cx, cy, r) {
     return pCircle(cx - r * 0.5, cy + r * 0.35, r * 0.62) +
@@ -340,18 +353,83 @@
         'class': 'sd-sym-shine', 'clip-path': 'url(#' + cpId + ')'
       }));
     }
-    if (spec.shape === 'banana') {
+    if (spec.shape === 'grape') {
+      /* 紫色梗 */
       gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.45) + ' ' + n2(cy + r * 0.28) +
-           ' Q ' + n2(cx - r * 0.02) + ' ' + n2(cy + r * 0.78) + ' ' + n2(cx + r * 0.55) + ' ' + n2(cy + r * 0.32),
+        d: 'M ' + n2(cx - r * 0.04) + ' ' + n2(cy - r * 0.78) +
+           ' Q ' + n2(cx + r * 0.02) + ' ' + n2(cy - r * 1.0) + ' ' + n2(cx + r * 0.05) + ' ' + n2(cy - r * 1.12) +
+           ' L ' + n2(cx + r * 0.12) + ' ' + n2(cy - r * 1.08) +
+           ' Q ' + n2(cx + r * 0.10) + ' ' + n2(cy - r * 0.92) + ' ' + n2(cx + r * 0.05) + ' ' + n2(cy - r * 0.72) +
+           ' Z',
+        fill: '#4c1d95', stroke: '#2e1065', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
+      }));
+      /* 左侧大叶 */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.98) +
+           ' Q ' + n2(cx - r * 0.62) + ' ' + n2(cy - r * 1.18) + ' ' + n2(cx - r * 0.78) + ' ' + n2(cy - r * 0.72) +
+           ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy - r * 0.66) + ' ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.98) + ' Z',
+        fill: '#4ade80', stroke: '#166534', 'stroke-width': '1.4', 'stroke-linejoin': 'round'
+      }));
+      /* 叶脉 */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.04) + ' ' + n2(cy - r * 0.94) + ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy - r * 1.02) + ' ' + n2(cx - r * 0.68) + ' ' + n2(cy - r * 0.76),
+        fill: 'none', stroke: '#166534', 'stroke-width': '1', 'stroke-linecap': 'round', opacity: '0.75'
+      }));
+      /* 右侧小叶 */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx + r * 0.06) + ' ' + n2(cy - r * 0.98) +
+           ' Q ' + n2(cx + r * 0.58) + ' ' + n2(cy - r * 1.14) + ' ' + n2(cx + r * 0.76) + ' ' + n2(cy - r * 0.72) +
+           ' Q ' + n2(cx + r * 0.42) + ' ' + n2(cy - r * 0.66) + ' ' + n2(cx + r * 0.06) + ' ' + n2(cy - r * 0.98) + ' Z',
+        fill: '#22c55e', stroke: '#166534', 'stroke-width': '1.4', 'stroke-linejoin': 'round'
+      }));
+    }
+    if (spec.shape === 'watermelon') {
+      /* 绿色外皮边（内缩三角形） */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.9) + ' ' + n2(cy - r * 0.35) +
+           ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.05) + ' ' + n2(cx + r * 0.9) + ' ' + n2(cy - r * 0.35),
+        fill: 'none', stroke: '#15803d', 'stroke-width': '4', 'stroke-linecap': 'round'
+      }));
+      /* 黑籽 5 颗 */
+      var wseeds = [[-0.4,0.1],[-0.15,0.35],[0.15,0.35],[0.4,0.1],[0,-0.1]];
+      for (var wi = 0; wi < wseeds.length; wi++) {
+        gHi.appendChild(svg('ellipse', {
+          cx: n2(cx + wseeds[wi][0] * r), cy: n2(cy + wseeds[wi][1] * r),
+          rx: '2', ry: '2.6',
+          fill: '#1e293b', opacity: '0.9',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+      }
+      /* 顶部白色反光 */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.55) + ' ' + n2(cy - r * 0.42) +
+           ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.85) + ' ' + n2(cx + r * 0.55) + ' ' + n2(cy - r * 0.42),
+        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.4', 'stroke-linecap': 'round', opacity: '0.7',
+        'clip-path': 'url(#' + cpId + ')'
+      }));
+    }
+    if (spec.shape === 'banana') {
+      /* 香蕉本体上的高光条 */
+      gHi.appendChild(svg('path', {
+        d: 'M ' + n2(cx - r * 0.45) + ' ' + n2(cy + r * 0.62) +
+           ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.72) + ' ' + n2(cx + r * 0.4) + ' ' + n2(cy + r * 0.52),
         fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
         'stroke-linecap': 'round', opacity: '0.85',
         'clip-path': 'url(#' + cpId + ')'
       }));
+      /* 两端深色头（蒂部/尾） */
       gHi.appendChild(svg('ellipse', {
-        cx: n2(cx - r * 0.28), cy: n2(cy + r * 0.18),
-        rx: n2(r * 0.16), ry: n2(r * 0.07),
-        fill: '#ffffff', opacity: '0.9',
+        cx: n2(cx + r * 0.55), cy: n2(cy - r * 0.48),
+        rx: n2(r * 0.14), ry: n2(r * 0.10),
+        fill: '#78350f', opacity: '0.85',
+        transform: 'rotate(-30 ' + n2(cx + r * 0.55) + ' ' + n2(cy - r * 0.48) + ')',
+        'clip-path': 'url(#' + cpId + ')'
+      }));
+      gHi.appendChild(svg('ellipse', {
+        cx: n2(cx - r * 0.72), cy: n2(cy + r * 0.42),
+        rx: n2(r * 0.12), ry: n2(r * 0.09),
+        fill: '#78350f', opacity: '0.75',
+        transform: 'rotate(30 ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 0.42) + ')',
         'clip-path': 'url(#' + cpId + ')'
       }));
     }
