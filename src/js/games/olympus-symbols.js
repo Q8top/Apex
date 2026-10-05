@@ -34,7 +34,7 @@ function ensureDefs(){
       + '<feGaussianBlur in="rim" stdDeviation="0.45" result="rb"/>'
       + '<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="nc"/><feMergeNode in="rb"/></feMerge>'
     + '</filter>'
-    + '<radialGradient id="oly-glow-purple"><stop offset="0" stop-color="#C4A6FF" stop-opacity=".65"/><stop offset=".55" stop-color="#8B50D8" stop-opacity=".25"/><stop offset="1" stop-color="#8B50D8" stop-opacity="0"/></radialGradient>'</defs>';
+    + '<radialGradient id="oly-glow-purple"><stop offset="0" stop-color="#C4A6FF" stop-opacity=".65"/><stop offset=".55" stop-color="#8B50D8" stop-opacity=".25"/><stop offset="1" stop-color="#8B50D8" stop-opacity="0"/></radialGradient>' + '</defs>';
   document.body.appendChild(svg);
 }
 
