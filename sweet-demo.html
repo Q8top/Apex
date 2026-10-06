@@ -7,6 +7,9 @@
 <meta name="format-detection" content="telephone=no">
 <title>糖果连连爆 · 试玩 · Apex</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/src/css/ui/tokens.css">
+<link rel="stylesheet" href="/src/css/ui/layout.css">
+<link rel="stylesheet" href="/src/css/ui/components.css">
 <link rel="stylesheet" href="/src/css/sweet.css">
 <link rel="stylesheet" href="/src/css/sweet-demo.css?v=1791243571">
 </head>
@@ -29,6 +32,7 @@
   <section class="demo-board" aria-label="游戏盘面">
     <div class="demo-freespins" id="demo-freespins" aria-live="polite"></div>
     <div class="demo-reels" id="demo-reels"></div>
+    <canvas class="demo-particles" id="demo-particles" aria-hidden="true"></canvas>
   </section>
 
   <section class="demo-win" id="demo-win" aria-label="本局中奖">
@@ -94,6 +98,9 @@
   </section>
 
 </main>
+
+<!-- 全屏闪光层 (P7 使用) -->
+<div class="demo-flash" id="demo-flash" aria-hidden="true"></div>
 
 <!-- 大额中奖弹层 -->
 <div class="demo-bigwin" id="demo-bigwin" aria-live="assertive"></div>
