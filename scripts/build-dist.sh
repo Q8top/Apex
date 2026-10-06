@@ -55,6 +55,14 @@ if [ -d "$ROOT/assets" ]; then
   echo "  [COPY] assets/"
 fi
 
+# 6.95 config/ 目录（运行时数学配置, UI 通过 fetch 加载）
+# 说明: config/game.json 是数学唯一真源, UI (MathEngine) 运行时需要它
+#       不进入 dist/ 会导致生产环境 UI 无法初始化
+if [ -d "$ROOT/config" ]; then
+  cp -r "$ROOT/config" "$DIST/config"
+  echo "  [COPY] config/"
+fi
+
 # 7. i18n/ 目录（浏览器 fetch 加载的语言包）
 if [ -d "$ROOT/i18n" ]; then
   cp -r "$ROOT/i18n" "$DIST/i18n"
