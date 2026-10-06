@@ -653,9 +653,9 @@ button {
 /* ══════════════ 免费旋转徽章 ══════════════ */
 .demo-freespins {
   position: absolute;
-  top: -10px;
+  top: 10px;
   left: 50%;
-  transform: translate(-50%, -8px);
+  transform: translate(-50%, 0);
   padding: 6px 18px;
   border-radius: 999px;
   font-size: 13px;
@@ -673,6 +673,9 @@ button {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+/* 徽章在 board 内, z-index 高于 cell */
+.demo-freespins { z-index: 20; }
 .demo-board { position: relative; }
 
 /* ══════════════ 大额中奖弹层 ══════════════ */

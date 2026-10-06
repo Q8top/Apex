@@ -206,10 +206,13 @@ import { createEngineAdapter } from './ui/engine-adapter.js';
 
       playSpinFeedback(view);
 
-      if (view.freeSpinsAwarded > 0) {
+      // 免费旋转: MathEngine 内部已跑完, UI 播放 history
+      var fsPromise = Promise.resolve();
+      if (view.freeSpinsAwarded > 0 && view.freeSpins && view.freeSpins.history.length) {
         state.freeSpins = view.freeSpinsAwarded;
         updateFreeSpinUI();
         toast('触发 ' + view.freeSpinsAwarded + ' 次免费旋转');
+        fsPromise = playFreeSpinsSequence(view);
       }
 
       state.round += 1;
@@ -232,13 +235,68 @@ import { createEngineAdapter } from './ui/engine-adapter.js';
       saveHistory();
       if (state.drawerOpen) renderHistory();
 
-      state.spinning = false;
-      if (btn) btn.disabled = false;
+      fsPromise.then(function () {
+        state.spinning = false;
+        if (btn) btn.disabled = false;
 
-      if (state.auto && state.freeSpins <= 0) {
-        state.autoTimer = setTimeout(spin, AUTO_INTERVAL);
-      }
+        if (state.auto && state.freeSpins <= 0) {
+          state.autoTimer = setTimeout(spin, AUTO_INTERVAL);
+        }
+      });
     }, SPIN_DELAY);
+  }
+
+  // 播放免费旋转序列 (消费 view.freeSpins.history)
+  function playFreeSpinsSequence(view) {
+    return new Promise(function (resolve) {
+      var fs = view.freeSpins;
+      var history = fs.history || [];
+      var total = history.length;
+      var baseBalance = state.balance; // FS 的赢已包含在 view.totalWin 里, 不重复加
+      var idx = 0;
+      var STEP_DELAY = 600;
+
+      function playOne() {
+        if (idx >= total) {
+          // 恢复最终盘面 (base 部分)
+          state.freeSpins = 0;
+          updateFreeSpinUI();
+          resolve();
+          return;
+        }
+        var step = history[idx];
+        idx += 1;
+
+        // 更新徽章: 已玩 / 剩余
+        state.freeSpins = fs.spinsPlayed - idx;
+        if (state.freeSpins < 0) state.freeSpins = 0;
+        updateFreeSpinUI();
+
+        // 渲染这一步的 grid
+        if (step.grid) {
+          var flat = [];
+          for (var r = 0; r < step.grid.length; r++) {
+            for (var c = 0; c < step.grid[r].length; c++) {
+              flat.push(step.grid[r][c]);
+            }
+          }
+          for (var i = 0; i < flat.length; i++) paintCell(i, flat[i]);
+        }
+
+        // 更新赢得显示为 FS 内累计 (简化: 用整局最终总赢)
+        // 更精确: 累加 history[0..idx].spinWin
+        var acc = 0;
+        for (var k = 0; k <= idx - 1; k++) {
+          acc += (history[k].spinWin || 0);
+        }
+        var wonEl = document.getElementById('demo-won');
+        if (wonEl) wonEl.textContent = fmtMoney(view.freeSpinsWin ? (view.freeSpinsWin * acc / Math.max(1, fs.totalWin || view.freeSpinsWin)) : 0);
+
+        setTimeout(playOne, STEP_DELAY);
+      }
+
+      playOne();
+    });
   }
 
   /* ── 音频上下文：必须在用户手势中创建 ── */
