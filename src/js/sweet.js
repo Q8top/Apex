@@ -27,15 +27,7 @@
     return 'M ' + cx + ' ' + (cy - r * 1.3) +
       ' C ' + (cx + r * 0.85) + ' ' + (cy - r * 0.4) + ', ' + (cx + r) + ' ' + (cy + r * 0.42) + ', ' + cx + ' ' + (cy + r * 1.0) +
       ' C ' + (cx - r) + ' ' + (cy + r * 0.42) + ', ' + (cx - r * 0.85) + ' ' + (cy - r * 0.4) + ', ' + cx + ' ' + (cy - r * 1.3) + ' Z';
-  }
-  function pDiamond(cx, cy, r) {
-    return 'M ' + cx + ' ' + (cy - r) +
-      ' L ' + (cx + r * 0.82) + ' ' + (cy - r * 0.18) +
-      ' L ' + (cx + r * 0.5) + ' ' + (cy + r) +
-      ' L ' + (cx - r * 0.5) + ' ' + (cy + r) +
-      ' L ' + (cx - r * 0.82) + ' ' + (cy - r * 0.18) + ' Z';
-  }
-  function pFlower(cx, cy, r, petals) {
+  }  function pFlower(cx, cy, r, petals) {
     var inner = r * 0.44, step = Math.PI * 2 / petals, d = '';
     for (var i = 0; i < petals; i++) {
       var a1 = i * step - Math.PI / 2, a2 = a1 + step / 2, a3 = a1 + step;
@@ -46,80 +38,7 @@
       d += ' Q ' + n2(x2) + ' ' + n2(y2) + ' ' + n2(x3) + ' ' + n2(y3);
     }
     return d + 'Z';
-  }
-  function pRing(cx, cy, r) {
-    return { d: pCircle(cx, cy, r) + ' ' + pCircle(cx, cy, r * 0.42), fillRule: 'evenodd' };
-  }
-  function pLolli(cx, cy, r) {
-    return pCircle(cx, cy - r * 0.22, r * 0.86) +
-      ' M ' + (cx - r * 0.07) + ' ' + (cy + r * 0.6) + ' L ' + (cx + r * 0.07) + ' ' + (cy + r * 0.6) +
-      ' L ' + (cx + r * 0.07) + ' ' + (cy + r * 1.5) + ' L ' + (cx - r * 0.07) + ' ' + (cy + r * 1.5) + ' Z';
-  }
-  function pBanana(cx, cy, r) {
-    return 'M ' + n2(cx + r * 0.73) + ' ' + n2(cy - r * 0.73) +
-      ' C ' + n2(cx + r * 1.07) + ' ' + n2(cy + r * 0.00) + ', ' + n2(cx + r * 0.67) + ' ' + n2(cy + r * 1.00) + ', ' + n2(cx - r * 0.33) + ' ' + n2(cy + r * 1.17) +
-      ' C ' + n2(cx - r * 0.73) + ' ' + n2(cy + r * 1.23) + ', ' + n2(cx - r * 0.93) + ' ' + n2(cy + r * 1.00) + ', ' + n2(cx - r * 0.83) + ' ' + n2(cy + r * 0.80) +
-      ' C ' + n2(cx - r * 0.67) + ' ' + n2(cy + r * 0.73) + ', ' + n2(cx - r * 0.40) + ' ' + n2(cy + r * 0.80) + ', ' + n2(cx - r * 0.17) + ' ' + n2(cy + r * 0.87) +
-      ' C ' + n2(cx + r * 0.27) + ' ' + n2(cy + r * 0.60) + ', ' + n2(cx + r * 0.50) + ' ' + n2(cy + r * 0.07) + ', ' + n2(cx + r * 0.43) + ' ' + n2(cy - r * 0.40) +
-      ' C ' + n2(cx + r * 0.40) + ' ' + n2(cy - r * 0.60) + ', ' + n2(cx + r * 0.53) + ' ' + n2(cy - r * 0.73) + ', ' + n2(cx + r * 0.73) + ' ' + n2(cy - r * 0.73) +
-      ' Z';
-  }
-  function pGrape(cx, cy, r) {
-    /* 8 颗球，倒三角排列（像真葡萄串）*/
-    var grid = [
-      [-0.55, -0.45], [0.0, -0.55], [0.55, -0.45],
-      [-0.30, 0.05], [0.30, 0.05],
-      [-0.15, 0.55], [0.15, 0.55],
-      [0.0, 0.95]
-    ];
-    var d = '', sparks = [];
-    for (var i = 0; i < grid.length; i++) {
-      var gx = cx + grid[i][0] * r * 0.62;
-      var gy = cy + grid[i][1] * r * 0.62;
-      var gr = r * 0.36;
-      d += pCircle(gx, gy, gr) + ' ';
-      /* 每颗球：左上大高光 + 右下小反光 */
-      sparks.push({ cx: gx - gr * 0.38, cy: gy - gr * 0.42, r: gr * 0.32, opacity: 0.88 });
-      sparks.push({ cx: gx + gr * 0.44, cy: gy + gr * 0.42, r: gr * 0.14, opacity: 0.40 });
-    }
-    return { d: d.trim(), sparks: sparks };
-  }
-  function pWatermelon(cx, cy, r) {
-    /* 外层绿皮（较大的楔形） */
-    return 'M ' + n2(cx - r * 0.95) + ' ' + n2(cy - r * 0.30) +
-      ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.15) + ' ' + n2(cx + r * 0.95) + ' ' + n2(cy - r * 0.30) +
-      ' Q ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.42) + ' ' + n2(cx) + ' ' + n2(cy + r * 0.95) +
-      ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy + r * 0.42) + ' ' + n2(cx - r * 0.95) + ' ' + n2(cy - r * 0.30) +
-      ' Z';
-  }
-  function pCherry(cx, cy, r) {
-    return pCircle(cx - r * 0.5, cy + r * 0.35, r * 0.62) +
-      ' ' + pCircle(cx + r * 0.5, cy + r * 0.35, r * 0.62) +
-      ' M ' + (cx - r * 0.5) + ' ' + (cy - r * 0.2) +
-      ' Q ' + (cx) + ' ' + (cy - r * 1.1) + ' ' + (cx + r * 0.5) + ' ' + (cy - r * 0.2);
-  }
-  function pWild(cx, cy, r) {
-    return pCircle(cx, cy, r);
-  }
-
-  var SHAPES = {
-    heart: pHeart,
-    star5: function (x, y, r) { return pStar(x, y, r, 5, 0.44); },
-    star6: function (x, y, r) { return pStar(x, y, r, 6, 0.5); },
-    circle: pCircle,
-    drop: pDrop,
-    diamond: pDiamond,
-    flower: function (x, y, r) { return pFlower(x, y, r, 6); },
-    ring: pRing,
-    lollipop: pLolli,
-    banana: pBanana,
-    grape: pGrape,
-    watermelon: pWatermelon,
-    cherry: pCherry,
-    wild: pWild
-  };
-
-  /* ── Symbol Definition · 13 种（12 基础 + 1 Wild） ── */
+  }  /* ── Symbol Definition · 13 种（12 基础 + 1 Wild） ── */
   var SYMBOLS = [
     { id: 'banana',     name: '香蕉',   type: 'base',    shape: 'banana',     m8: '×0.2',  m10: '×0.5',  m12: '×2',      theme: { main: '#facc15', dark: '#7a5c00', light: '#fef3a0', accent: '#ff9b00' } },
     { id: 'grape',      name: '葡萄',   type: 'base',    shape: 'grape',      m8: '×0.2',  m10: '×0.5',  m12: '×2',      theme: { main: '#a855f7', dark: '#4c1d95', light: '#e2ccff', accent: '#7c5cff' } },
@@ -146,199 +65,242 @@
      ══════════════════════════════════════════════════════ */
 
   /* ─── 香蕉：细长弯月 + 蒂尾 + 主反光 ─── */
-  function renderBanana(spec, size) {
+  /* ══════════════════════════════════════════════════════════
+     buildGummy · 商业级 8 层果冻渲染
+       1. Ground shadow
+       2. Base (dark underlay)
+       3. Main radial gradient
+       4. Ambient occlusion (bottom, clip)
+       5. Specular highlight (top-left, clip)
+       6. Rim light (top arc, clip)
+       7. Stroke (dark outer + light inner)
+       8. Custom decoration
+     ══════════════════════════════════════════════════════════ */
+  function buildGummy(spec, size, opts) {
+    opts = opts || {};
+    var uid = spec.id + '_g_' + hash(spec.theme.main);
     var t = spec.theme;
-    var uid = 'ban_' + hash(t.main);
-    var root = svgRoot('0 0 100 100', { width: size, height: size, 'class': 'sd-sym-art sd-sym-art--banana' });
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--' + spec.id
+    });
     var defs = svg('defs');
 
-    var gBody = svg('linearGradient', { id: 'bgb_' + uid, x1: '0.2', y1: '0.1', x2: '0.7', y2: '1' });
-    gBody.appendChild(svg('stop', { offset: '0', 'stop-color': '#fff5b0' }));
-    gBody.appendChild(svg('stop', { offset: '0.35', 'stop-color': '#fbbf24' }));
-    gBody.appendChild(svg('stop', { offset: '0.75', 'stop-color': '#eab308' }));
-    gBody.appendChild(svg('stop', { offset: '1', 'stop-color': '#854d0e' }));
-    defs.appendChild(gBody);
+    var gMain = svg('radialGradient', { id: 'gm_' + uid, cx: '0.35', cy: '0.28', r: '0.85' });
+    gMain.appendChild(svg('stop', { offset: '0',    'stop-color': t.light }));
+    gMain.appendChild(svg('stop', { offset: '0.35', 'stop-color': t.main }));
+    gMain.appendChild(svg('stop', { offset: '0.75', 'stop-color': t.main }));
+    gMain.appendChild(svg('stop', { offset: '1',    'stop-color': t.dark }));
+    defs.appendChild(gMain);
 
-    var gSkin = svg('linearGradient', { id: 'bgs_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
-    gSkin.appendChild(svg('stop', { offset: '0', 'stop-color': '#ffffff', 'stop-opacity': '0.7' }));
-    gSkin.appendChild(svg('stop', { offset: '1', 'stop-color': '#ffffff', 'stop-opacity': '0' }));
-    defs.appendChild(gSkin);
+    var gAO = svg('radialGradient', { id: 'ao_' + uid, cx: '0.6', cy: '0.9', r: '0.7' });
+    gAO.appendChild(svg('stop', { offset: '0', 'stop-color': t.dark, 'stop-opacity': '0.7' }));
+    gAO.appendChild(svg('stop', { offset: '1', 'stop-color': t.dark, 'stop-opacity': '0' }));
+    defs.appendChild(gAO);
 
-    var cpId = 'bcp_' + uid;
+    var gSpec = svg('radialGradient', { id: 'sp_' + uid, cx: '0.35', cy: '0.25', r: '0.6' });
+    gSpec.appendChild(svg('stop', { offset: '0',   'stop-color': '#ffffff', 'stop-opacity': '0.95' }));
+    gSpec.appendChild(svg('stop', { offset: '0.5', 'stop-color': '#ffffff', 'stop-opacity': '0.3' }));
+    gSpec.appendChild(svg('stop', { offset: '1',   'stop-color': '#ffffff', 'stop-opacity': '0' }));
+    defs.appendChild(gSpec);
+
+    var gRim = svg('linearGradient', { id: 'rm_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
+    gRim.appendChild(svg('stop', { offset: '0',   'stop-color': '#ffffff', 'stop-opacity': '0.9' }));
+    gRim.appendChild(svg('stop', { offset: '0.5', 'stop-color': '#ffffff', 'stop-opacity': '0.1' }));
+    gRim.appendChild(svg('stop', { offset: '1',   'stop-color': '#ffffff', 'stop-opacity': '0' }));
+    defs.appendChild(gRim);
+
+    var cpId = 'cp_' + uid;
     var clip = svg('clipPath', { id: cpId });
-    var cp = svg('path', { d: '' });
-    clip.appendChild(cp);
+    var cpPath = svg('path', { d: opts.d || '' });
+    clip.appendChild(cpPath);
     defs.appendChild(clip);
+
     root.appendChild(defs);
 
-    var cx = 50, cy = 50, r = 30;
-    /* 香蕉本体：emoji 🍌 斜弯月（柄右上 → 尾左下，凸面向右下） */
-    var d = 'M ' + n2(cx + r * 0.83) + ' ' + n2(cy - r * 1.13) +
-      /* 外弧：从柄端沿右下凸出到尾部 */
-      ' C ' + n2(cx + r * 1.20) + ' ' + n2(cy - r * 0.75) + ', ' + n2(cx + r * 1.38) + ' ' + n2(cy + r * 0.05) + ', ' + n2(cx + r * 0.78) + ' ' + n2(cy + r * 0.65) +
-      ' C ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 1.22) + ', ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 1.32) + ', ' + n2(cx - r * 1.17) + ' ' + n2(cy + r * 0.80) +
-      /* 内弧：从尾部沿左上凹回收 */
-      ' C ' + n2(cx - r * 0.85) + ' ' + n2(cy + r * 0.90) + ', ' + n2(cx - r * 0.18) + ' ' + n2(cy + r * 0.82) + ', ' + n2(cx + r * 0.28) + ' ' + n2(cy + r * 0.35) +
-      ' C ' + n2(cx + r * 0.72) + ' ' + n2(cy - r * 0.12) + ', ' + n2(cx + r * 0.92) + ' ' + n2(cy - r * 0.65) + ', ' + n2(cx + r * 0.83) + ' ' + n2(cy - r * 1.13) + ' Z';
-    cp.setAttribute('d', d);
+    var d = opts.d;
+    var fillRule = opts.fillRule || 'nonzero';
 
-    /* ① 底部阴影 */
-    root.appendChild(svg('ellipse', {
-      cx: n2(cx + r * 0.05), cy: n2(cy + r * 1.35),
-      rx: n2(r * 0.75), ry: n2(r * 0.10),
-      fill: '#78350f', opacity: '0.22'
-    }));
-    /* ② 主体 */
-    root.appendChild(svg('path', { d: d, fill: 'url(#bgb_' + uid + ')' }));
-    /* ③ 内亮线（顶部反射） */
-    root.appendChild(svg('path', {
-      d: d, fill: 'none', stroke: '#ffffff', 'stroke-width': '2.4', 'stroke-linejoin': 'round',
-      transform: 'translate(0 -0.6)', opacity: '0.7',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-    /* ④ 主高光（沿外弧偏内） */
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 1.02) +
-         ' Q ' + n2(cx + r * 0.30) + ' ' + n2(cy + r * 1.18) + ' ' + n2(cx + r * 0.85) + ' ' + n2(cy + r * 0.30),
-      fill: 'none', stroke: '#ffffff', 'stroke-width': '3.2', 'stroke-linecap': 'round',
-      opacity: '0.82', 'clip-path': 'url(#' + cpId + ')'
-    }));
-    /* ⑤ 反光（下部） */
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.55) + ' ' + n2(cy + r * 1.05) +
-         ' Q ' + n2(cx) + ' ' + n2(cy + r * 1.25) + ' ' + n2(cx + r * 0.55) + ' ' + n2(cy + r * 1.0),
-      fill: 'none', stroke: '#fef3c7', 'stroke-width': '2.0', 'stroke-linecap': 'round',
-      opacity: '0.65', 'clip-path': 'url(#' + cpId + ')'
-    }));
-    /* ⑥ 两端蒂部暗色 */
-    root.appendChild(svg('ellipse', {
-      cx: n2(cx + r * 0.82), cy: n2(cy - r * 1.10),
-      rx: n2(r * 0.14), ry: n2(r * 0.10),
-      fill: '#4a2206', opacity: '0.9',
-      transform: 'rotate(-40 ' + n2(cx + r * 0.82) + ' ' + n2(cy - r * 1.10) + ')',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-    root.appendChild(svg('ellipse', {
-      cx: n2(cx - r * 1.13), cy: n2(cy + r * 0.80),
-      rx: n2(r * 0.12), ry: n2(r * 0.09),
-      fill: '#4a2206', opacity: '0.75',
-      transform: 'rotate(30 ' + n2(cx - r * 1.13) + ' ' + n2(cy + r * 0.80) + ')',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-    return root;
-  }
-
-  /* ─── 葡萄：8 颗球 × (径向渐变 + 描边 + 高光) + 梗叶 ─── */
-  function renderGrape(spec, size) {
-    var t = spec.theme;
-    var uid = 'grp_' + hash(t.main);
-    var root = svgRoot('0 0 100 100', { width: size, height: size, 'class': 'sd-sym-art sd-sym-art--grape' });
-    var defs = svg('defs');
-
-    /* 每颗球的径向渐变（左上光源） */
-    var gBall = svg('radialGradient', { id: 'grb_' + uid, cx: '0.35', cy: '0.30', r: '0.75' });
-    gBall.appendChild(svg('stop', { offset: '0', 'stop-color': '#f3e8ff' }));
-    gBall.appendChild(svg('stop', { offset: '0.35', 'stop-color': '#a855f7' }));
-    gBall.appendChild(svg('stop', { offset: '0.8', 'stop-color': '#7c3aed' }));
-    gBall.appendChild(svg('stop', { offset: '1', 'stop-color': '#4c1d95' }));
-    defs.appendChild(gBall);
-
-    var gLeaf = svg('linearGradient', { id: 'grl_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
-    gLeaf.appendChild(svg('stop', { offset: '0', 'stop-color': '#4ade80' }));
-    gLeaf.appendChild(svg('stop', { offset: '1', 'stop-color': '#15803d' }));
-    defs.appendChild(gLeaf);
-    root.appendChild(defs);
-
-    var cx = 50, cy = 50, r = 30;
-    var grid = [
-      [-0.55, -0.42], [0.0, -0.52], [0.55, -0.42],
-      [-0.30, 0.06], [0.30, 0.06],
-      [-0.15, 0.55], [0.15, 0.55],
-      [0.0, 0.98]
-    ];
-    var gr = r * 0.34;
-
-    /* ① 底部阴影 */
-    root.appendChild(svg('ellipse', {
-      cx: n2(cx), cy: n2(cy + r * 1.28),
-      rx: n2(r * 0.72), ry: n2(r * 0.10),
-      fill: '#3b0764', opacity: '0.25'
-    }));
-
-    /* ② 叶子（后层，在球体后面） */
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.92) +
-         ' Q ' + n2(cx - r * 0.7) + ' ' + n2(cy - r * 1.35) + ' ' + n2(cx - r * 1.0) + ' ' + n2(cy - r * 0.85) +
-         ' Q ' + n2(cx - r * 0.55) + ' ' + n2(cy - r * 0.72) + ' ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.92) + ' Z',
-      fill: 'url(#grl_' + uid + ')', stroke: '#14532d', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
-    }));
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx + r * 0.04) + ' ' + n2(cy - r * 0.92) +
-         ' Q ' + n2(cx + r * 0.65) + ' ' + n2(cy - r * 1.3) + ' ' + n2(cx + r * 0.98) + ' ' + n2(cy - r * 0.82) +
-         ' Q ' + n2(cx + r * 0.55) + ' ' + n2(cy - r * 0.7) + ' ' + n2(cx + r * 0.04) + ' ' + n2(cy - r * 0.92) + ' Z',
-      fill: 'url(#grl_' + uid + ')', stroke: '#14532d', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
-    }));
-
-    /* ③ 8 颗葡萄球 */
-    for (var i = 0; i < grid.length; i++) {
-      var gx = cx + grid[i][0] * r * 0.62;
-      var gy = cy + grid[i][1] * r * 0.62 + r * 0.06;
-      root.appendChild(svg('circle', {
-        cx: n2(gx), cy: n2(gy), r: n2(gr),
-        fill: 'url(#grb_' + uid + ')',
-        stroke: '#4c1d95', 'stroke-width': '0.9', 'stroke-opacity': '0.7'
-      }));
-      /* 每颗球：左上大高光 */
+    if (!opts.noShadow) {
       root.appendChild(svg('ellipse', {
-        cx: n2(gx - gr * 0.34), cy: n2(gy - gr * 0.40),
-        rx: n2(gr * 0.34), ry: n2(gr * 0.24),
-        fill: '#ffffff', opacity: '0.75',
-        transform: 'rotate(-30 ' + n2(gx - gr * 0.34) + ' ' + n2(gy - gr * 0.40) + ')'
-      }));
-      /* 每颗球：右下小反光 */
-      root.appendChild(svg('ellipse', {
-        cx: n2(gx + gr * 0.42), cy: n2(gy + gr * 0.48),
-        rx: n2(gr * 0.16), ry: n2(gr * 0.10),
-        fill: '#ffffff', opacity: '0.35'
+        cx: '50', cy: '88', rx: '26', ry: '4',
+        fill: '#000000', opacity: '0.28'
       }));
     }
 
-    /* ④ 顶部紫色梗（在球体之上） */
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.05) + ' ' + n2(cy - r * 0.65) +
-         ' Q ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.95) + ' ' + n2(cx + r * 0.02) + ' ' + n2(cy - r * 1.15) +
-         ' L ' + n2(cx + r * 0.10) + ' ' + n2(cy - r * 1.12) +
-         ' Q ' + n2(cx + r * 0.08) + ' ' + n2(cy - r * 0.92) + ' ' + n2(cx + r * 0.04) + ' ' + n2(cy - r * 0.62) + ' Z',
-      fill: '#5b21b6', stroke: '#2e1065', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
+      d: d, 'fill-rule': fillRule,
+      fill: t.dark, opacity: '0.85',
+      transform: 'translate(0 1.2)'
     }));
+
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'url(#gm_' + uid + ')'
+    }));
+
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'url(#ao_' + uid + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'url(#sp_' + uid + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    root.appendChild(svg('path', {
+      d: opts.rimPath || 'M 26 40 Q 50 12 74 40',
+      fill: 'none',
+      stroke: 'url(#rm_' + uid + ')',
+      'stroke-width': '3.5',
+      'stroke-linecap': 'round',
+      opacity: '0.85',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'none', stroke: t.dark, 'stroke-width': '1.5',
+      'stroke-linejoin': 'round', opacity: '0.9'
+    }));
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': fillRule,
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '0.8',
+      'stroke-linejoin': 'round', opacity: '0.55',
+      transform: 'translate(0 -0.5)',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    if (opts.decorate) opts.decorate(root, svg, uid, t, cpId);
 
     return root;
   }
 
-  /* ─── 西瓜：绿皮 + 浅绿内圈 + 红瓤 + 纤维 + 5 籽 ─── */
-  function renderWatermelon(spec, size) {
+  /* ─── 香蕉 · 斜弯月 ─── */
+  function renderBanana(spec, size) {
+    return buildGummy(spec, size, {
+      d: 'M 78 18 C 84 32, 74 52, 52 66 C 34 78, 18 74, 16 64 C 22 72, 38 72, 56 60 C 72 50, 78 32, 74 20 Z',
+      rimPath: 'M 22 60 Q 44 78 68 46',
+      decorate: function (root, svg, uid, t, cpId) {
+        root.appendChild(svg('ellipse', {
+          cx: '76', cy: '20', rx: '4', ry: '3',
+          fill: '#3b1f08', opacity: '0.95',
+          transform: 'rotate(-20 76 20)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        root.appendChild(svg('ellipse', {
+          cx: '17', cy: '63', rx: '4', ry: '3',
+          fill: '#3b1f08', opacity: '0.9',
+          transform: 'rotate(30 17 63)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        root.appendChild(svg('path', {
+          d: 'M 30 60 Q 52 74 72 44',
+          fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
+          'stroke-linecap': 'round', opacity: '0.95',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+      }
+    });
+  }
+
+  /* ─── 葡萄 · 8 颗球 + 梗叶 ─── */
+  function renderGrape(spec, size) {
+    var uid = spec.id + '_grape_' + hash(spec.theme.main);
     var t = spec.theme;
-    var uid = 'wml_' + hash(t.main);
-    var root = svgRoot('0 0 100 100', { width: size, height: size, 'class': 'sd-sym-art sd-sym-art--watermelon' });
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--grape'
+    });
     var defs = svg('defs');
+    var gBall = svg('radialGradient', { id: 'gb_' + uid, cx: '0.35', cy: '0.3', r: '0.8' });
+    gBall.appendChild(svg('stop', { offset: '0',   'stop-color': '#f3e8ff' }));
+    gBall.appendChild(svg('stop', { offset: '0.3', 'stop-color': t.main }));
+    gBall.appendChild(svg('stop', { offset: '0.8', 'stop-color': '#7c3aed' }));
+    gBall.appendChild(svg('stop', { offset: '1',   'stop-color': '#3b0764' }));
+    defs.appendChild(gBall);
+    var gLeaf = svg('linearGradient', { id: 'gl_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
+    gLeaf.appendChild(svg('stop', { offset: '0', 'stop-color': '#4ade80' }));
+    gLeaf.appendChild(svg('stop', { offset: '1', 'stop-color': '#166534' }));
+    defs.appendChild(gLeaf);
+    root.appendChild(defs);
 
-    var gRind = svg('linearGradient', { id: 'wmr_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
-    gRind.appendChild(svg('stop', { offset: '0', 'stop-color': '#22c55e' }));
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '90', rx: '26', ry: '3.5',
+      fill: '#000000', opacity: '0.3'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 50 30 Q 22 18 14 34 Q 26 40 50 30 Z',
+      fill: 'url(#gl_' + uid + ')',
+      stroke: '#14532d', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 50 30 Q 78 18 86 34 Q 74 40 50 30 Z',
+      fill: 'url(#gl_' + uid + ')',
+      stroke: '#14532d', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
+    }));
+
+    var balls = [
+      [-0.55, -0.42], [0.0, -0.5], [0.55, -0.42],
+      [-0.32, 0.05],  [0.32, 0.05],
+      [-0.16, 0.55],  [0.16, 0.55],
+      [0.0, 0.98]
+    ];
+    var cx = 50, cy = 50, r = 26;
+    for (var i = 0; i < balls.length; i++) {
+      var bx = cx + balls[i][0] * r;
+      var by = cy + balls[i][1] * r + 4;
+      var br = r * 0.34;
+      root.appendChild(svg('circle', {
+        cx: n2(bx), cy: n2(by), r: n2(br),
+        fill: 'url(#gb_' + uid + ')',
+        stroke: '#3b0764', 'stroke-width': '0.8', 'stroke-opacity': '0.7'
+      }));
+      root.appendChild(svg('ellipse', {
+        cx: n2(bx - br * 0.32), cy: n2(by - br * 0.38),
+        rx: n2(br * 0.32), ry: n2(br * 0.22),
+        fill: '#ffffff', opacity: '0.9',
+        transform: 'rotate(-30 ' + n2(bx - br * 0.32) + ' ' + n2(by - br * 0.38) + ')'
+      }));
+      root.appendChild(svg('ellipse', {
+        cx: n2(bx + br * 0.35), cy: n2(by + br * 0.45),
+        rx: n2(br * 0.22), ry: n2(br * 0.1),
+        fill: '#ffffff', opacity: '0.3'
+      }));
+    }
+    root.appendChild(svg('path', {
+      d: 'M 50 30 L 50 18',
+      fill: 'none', stroke: '#3b0764', 'stroke-width': '2.5',
+      'stroke-linecap': 'round'
+    }));
+    return root;
+  }
+
+  /* ─── 西瓜 · 扇形切片 ─── */
+  function renderWatermelon(spec, size) {
+    var uid = spec.id + '_wm_' + hash(spec.theme.main);
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--watermelon'
+    });
+    var defs = svg('defs');
+    var gRind = svg('radialGradient', { id: 'gr_' + uid, cx: '0.5', cy: '0.1', r: '1' });
+    gRind.appendChild(svg('stop', { offset: '0',   'stop-color': '#4ade80' }));
     gRind.appendChild(svg('stop', { offset: '0.5', 'stop-color': '#15803d' }));
-    gRind.appendChild(svg('stop', { offset: '1', 'stop-color': '#14532d' }));
+    gRind.appendChild(svg('stop', { offset: '1',   'stop-color': '#14532d' }));
     defs.appendChild(gRind);
-
-    var gRind2 = svg('linearGradient', { id: 'wmr2_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
-    gRind2.appendChild(svg('stop', { offset: '0', 'stop-color': '#dcfce7' }));
-    gRind2.appendChild(svg('stop', { offset: '1', 'stop-color': '#86efac' }));
-    defs.appendChild(gRind2);
-
-    var gPulp = svg('radialGradient', { id: 'wmp_' + uid, cx: '0.5', cy: '0.15', r: '0.9' });
-    gPulp.appendChild(svg('stop', { offset: '0', 'stop-color': '#fca5a5' }));
-    gPulp.appendChild(svg('stop', { offset: '0.4', 'stop-color': '#ef4444' }));
-    gPulp.appendChild(svg('stop', { offset: '1', 'stop-color': '#b91c1c' }));
+    var gPulp = svg('radialGradient', { id: 'gp_' + uid, cx: '0.5', cy: '0.2', r: '0.9' });
+    gPulp.appendChild(svg('stop', { offset: '0',   'stop-color': '#fca5a5' }));
+    gPulp.appendChild(svg('stop', { offset: '0.35','stop-color': '#ef4444' }));
+    gPulp.appendChild(svg('stop', { offset: '1',   'stop-color': '#b91c1c' }));
     defs.appendChild(gPulp);
-
+    var gWhite = svg('radialGradient', { id: 'gw_' + uid, cx: '0.5', cy: '0.1', r: '1' });
+    gWhite.appendChild(svg('stop', { offset: '0', 'stop-color': '#f0fdf4' }));
+    gWhite.appendChild(svg('stop', { offset: '1', 'stop-color': '#bbf7d0' }));
+    defs.appendChild(gWhite);
     var cpId = 'wcp_' + uid;
     var clip = svg('clipPath', { id: cpId });
     var cp = svg('path', { d: '' });
@@ -346,373 +308,575 @@
     defs.appendChild(clip);
     root.appendChild(defs);
 
-    var cx = 50, cy = 50, r = 30;
-
-    /* 外层绿皮楔形（尖朝上，圆弧在下） */
-    var dOuter = 'M ' + n2(cx) + ' ' + n2(cy - r * 1.05) +
-      ' Q ' + n2(cx + r * 0.55) + ' ' + n2(cy - r * 0.4) + ' ' + n2(cx + r * 0.98) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx) + ' ' + n2(cy + r * 1.05) + ' ' + n2(cx - r * 0.98) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx - r * 0.55) + ' ' + n2(cy - r * 0.4) + ' ' + n2(cx) + ' ' + n2(cy - r * 1.05) + ' Z';
-
-    /* 内层浅绿圈（翻转） */
-    var dMid = 'M ' + n2(cx) + ' ' + n2(cy - r * 0.88) +
-      ' Q ' + n2(cx + r * 0.48) + ' ' + n2(cy - r * 0.32) + ' ' + n2(cx + r * 0.86) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.92) + ' ' + n2(cx - r * 0.86) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx - r * 0.48) + ' ' + n2(cy - r * 0.32) + ' ' + n2(cx) + ' ' + n2(cy - r * 0.88) + ' Z';
-
-    /* 红瓤（翻转） */
-    var dPulp = 'M ' + n2(cx) + ' ' + n2(cy - r * 0.72) +
-      ' Q ' + n2(cx + r * 0.40) + ' ' + n2(cy - r * 0.25) + ' ' + n2(cx + r * 0.72) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.76) + ' ' + n2(cx - r * 0.72) + ' ' + n2(cy + r * 0.22) +
-      ' Q ' + n2(cx - r * 0.40) + ' ' + n2(cy - r * 0.25) + ' ' + n2(cx) + ' ' + n2(cy - r * 0.72) + ' Z';
+    var cx = 50, cy = 52, r = 38;
+    var dOuter = 'M ' + (cx - r) + ' ' + cy +
+      ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy +
+      ' L ' + (cx + r * 0.9) + ' ' + (cy + 4) +
+      ' A ' + (r * 0.9) + ' ' + (r * 0.9) + ' 0 0 0 ' + (cx - r * 0.9) + ' ' + (cy + 4) + ' Z';
+    var dWhite = 'M ' + (cx - r * 0.94) + ' ' + (cy + 1) +
+      ' A ' + (r * 0.94) + ' ' + (r * 0.94) + ' 0 0 1 ' + (cx + r * 0.94) + ' ' + (cy + 1) +
+      ' L ' + (cx + r * 0.82) + ' ' + (cy + 5) +
+      ' A ' + (r * 0.82) + ' ' + (r * 0.82) + ' 0 0 0 ' + (cx - r * 0.82) + ' ' + (cy + 5) + ' Z';
+    var dPulp = 'M ' + (cx - r * 0.86) + ' ' + (cy + 2) +
+      ' A ' + (r * 0.86) + ' ' + (r * 0.86) + ' 0 0 1 ' + (cx + r * 0.86) + ' ' + (cy + 2) +
+      ' L ' + (cx + r * 0.76) + ' ' + (cy + 6) +
+      ' A ' + (r * 0.76) + ' ' + (r * 0.76) + ' 0 0 0 ' + (cx - r * 0.76) + ' ' + (cy + 6) + ' Z';
     cp.setAttribute('d', dPulp);
 
-    /* ① 底部阴影 */
     root.appendChild(svg('ellipse', {
-      cx: n2(cx), cy: n2(cy + r * 1.05),
-      rx: n2(r * 0.62), ry: n2(r * 0.10),
-      fill: '#14532d', opacity: '0.28'
-    }));
-
-    /* ② 外层绿皮 */
-    root.appendChild(svg('path', { d: dOuter, fill: 'url(#wmr_' + uid + ')', stroke: '#14532d', 'stroke-width': '1.4', 'stroke-linejoin': 'round' }));
-    /* ③ 内层浅绿圈 */
-    root.appendChild(svg('path', { d: dMid, fill: 'url(#wmr2_' + uid + ')' }));
-    /* ④ 红瓤 */
-    root.appendChild(svg('path', { d: dPulp, fill: 'url(#wmp_' + uid + ')' }));
-
-    /* ⑤ 红瓤内纤维纹理（3 条白弧） */
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy + r * 0.1) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.55) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy + r * 0.1),
-      fill: 'none', stroke: '#fecaca', 'stroke-width': '1.4', 'stroke-linecap': 'round', opacity: '0.7',
-      'clip-path': 'url(#' + cpId + ')'
+      cx: '50', cy: '92', rx: '26', ry: '3',
+      fill: '#000000', opacity: '0.3'
     }));
     root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.35) + ' ' + n2(cy - 2) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.35) + ' ' + n2(cx + r * 0.35) + ' ' + n2(cy - 2),
-      fill: 'none', stroke: '#fecaca', 'stroke-width': '1.2', 'stroke-linecap': 'round', opacity: '0.55',
-      'clip-path': 'url(#' + cpId + ')'
+      d: dOuter, fill: 'url(#gr_' + uid + ')',
+      stroke: '#052e16', 'stroke-width': '1.4', 'stroke-linejoin': 'round'
+    }));
+    root.appendChild(svg('path', { d: dWhite, fill: 'url(#gw_' + uid + ')' }));
+    root.appendChild(svg('path', { d: dPulp, fill: 'url(#gp_' + uid + ')' }));
+
+    root.appendChild(svg('path', {
+      d: 'M ' + (cx - r * 0.6) + ' ' + (cy - r * 0.55) +
+         ' A ' + (r * 0.6) + ' ' + (r * 0.6) + ' 0 0 1 ' + (cx + r * 0.6) + ' ' + (cy - r * 0.55),
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
+      'stroke-linecap': 'round', opacity: '0.6'
     }));
 
-    /* ⑥ 黑籽 5 颗（每颗带高光） */
-    var seeds = [[-0.42, -0.05], [-0.18, -0.28], [0.18, -0.28], [0.42, -0.05], [0.0, -0.45]];
+    var seeds = [[-0.42, 0.42], [-0.18, 0.52], [0.18, 0.52], [0.42, 0.42], [-0.3, 0.7], [0.3, 0.7]];
     for (var i = 0; i < seeds.length; i++) {
       var sx = cx + seeds[i][0] * r;
       var sy = cy + seeds[i][1] * r;
       root.appendChild(svg('ellipse', {
-        cx: n2(sx), cy: n2(sy), rx: '2.4', ry: '3.4',
-        fill: '#0a0a0a', 'clip-path': 'url(#' + cpId + ')'
-      }));
-      root.appendChild(svg('ellipse', {
-        cx: n2(sx - 0.8), cy: n2(sy - 1.2), rx: '0.8', ry: '1.2',
-        fill: '#ffffff', opacity: '0.75', 'clip-path': 'url(#' + cpId + ')'
+        cx: n2(sx), cy: n2(sy),
+        rx: '1.8', ry: '2.6',
+        fill: '#1a1a1a',
+        'clip-path': 'url(#' + cpId + ')'
       }));
     }
-
-    /* ⑦ 反光弧（下方） */
-    root.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy + r * 0.4) + ' Q ' + n2(cx) + ' ' + n2(cy + r * 0.78) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy + r * 0.4),
-      fill: 'none', stroke: '#ffffff', 'stroke-width': '2.2', 'stroke-linecap': 'round', opacity: '0.7'
-    }));
-
     return root;
   }
 
-  /* ─── 通用渲染器（其他 10 个符号） ─── */
-  function buildSymbolArt(spec, size, opts) {
-    if (spec.shape === 'banana') return renderBanana(spec, size);
-    if (spec.shape === 'grape') return renderGrape(spec, size);
-    if (spec.shape === 'watermelon') return renderWatermelon(spec, size);
-    return buildGenericSymbolArt(spec, size, opts);
-  }
-  function buildGenericSymbolArt(spec, size, opts) {
-    opts = opts || {};
-    var uid = spec.id + '_' + hash(spec.theme.main);
-    var t = spec.theme;
-    var cls = 'sd-sym-art sd-sym-art--' + spec.id;
-    var root = svgRoot('0 0 100 100', { width: size, height: size, 'class': cls });
+  /* ─── 樱桃 · 双球 + 梗 ─── */
+  function renderCherry(spec, size) {
+    var uid = spec.id + '_ch_' + hash(spec.theme.main);
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--cherry'
+    });
     var defs = svg('defs');
-
-    /* 主体径向渐变（球面感，不依赖 filter） */
-    var gBody = svg('radialGradient', { id: 'gb_' + uid, cx: '0.35', cy: '0.30', r: '0.9' });
-    gBody.appendChild(svg('stop', { offset: '0',    'stop-color': t.light }));
-    gBody.appendChild(svg('stop', { offset: '0.30', 'stop-color': t.main }));
-    gBody.appendChild(svg('stop', { offset: '0.70', 'stop-color': t.main }));
-    gBody.appendChild(svg('stop', { offset: '1',    'stop-color': t.dark }));
-    defs.appendChild(gBody);
-
-    /* 顶部高光径向 */
-    var gTop = svg('radialGradient', { id: 'gt_' + uid, cx: '0.32', cy: '0.22', r: '0.65' });
-    gTop.appendChild(svg('stop', { offset: '0',   'stop-color': '#ffffff', 'stop-opacity': '0.95' }));
-    gTop.appendChild(svg('stop', { offset: '0.42', 'stop-color': '#ffffff', 'stop-opacity': '0.28' }));
-    gTop.appendChild(svg('stop', { offset: '1',   'stop-color': '#ffffff', 'stop-opacity': '0' }));
-    defs.appendChild(gTop);
-
-    /* 底部环境反光 */
-    var gBot = svg('radialGradient', { id: 'gbo_' + uid, cx: '0.68', cy: '0.86', r: '0.55' });
-    gBot.appendChild(svg('stop', { offset: '0', 'stop-color': t.light, 'stop-opacity': '0.6' }));
-    gBot.appendChild(svg('stop', { offset: '1', 'stop-color': t.light, 'stop-opacity': '0' }));
-    defs.appendChild(gBot);
-
-
-    /* clipPath */
-    var cpId = 'cl_' + uid;
-    var clip = svg('clipPath', { id: cpId });
-    var cp = svg('path', { d: '' });
-    clip.appendChild(cp);
-    defs.appendChild(clip);
+    var gBall = svg('radialGradient', { id: 'gbc_' + uid, cx: '0.35', cy: '0.3', r: '0.8' });
+    gBall.appendChild(svg('stop', { offset: '0',   'stop-color': '#fecaca' }));
+    gBall.appendChild(svg('stop', { offset: '0.3', 'stop-color': '#ef4444' }));
+    gBall.appendChild(svg('stop', { offset: '0.8', 'stop-color': '#b91c1c' }));
+    gBall.appendChild(svg('stop', { offset: '1',   'stop-color': '#7f1d1d' }));
+    defs.appendChild(gBall);
     root.appendChild(defs);
 
-    var cx = 50, cy = 50, r = 30;
-    var sd = SHAPES[spec.shape](cx, cy, r);
-    var d, fillRule = 'nonzero', sparks = [];
-    if (typeof sd === 'string') { d = sd; }
-    else { d = sd.d; fillRule = sd.fillRule || 'nonzero'; sparks = sd.sparks || []; }
-    cp.setAttribute('d', d);
-    if (fillRule === 'evenodd') cp.setAttribute('clip-rule', 'evenodd');
-
-    /* ① 阴影层（视觉底） */
-    var gShadow = svg('g', { 'class': 'sd-sym-shadow' });
-    gShadow.appendChild(svg('ellipse', {
-      cx: n2(cx), cy: n2(cy + r * 1.05),
-      rx: n2(r * 0.72), ry: n2(r * 0.12),
-      fill: t.dark, opacity: '0.18'
-    }));
-    root.appendChild(gShadow);
-
-    /* ② 阴影层：深色 path 偏移 1.8px */
-    root.appendChild(svg('path', {
-      d: d, 'fill-rule': fillRule,
-      fill: t.dark, opacity: '0.48',
-      transform: 'translate(0 2.2)'
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '90', rx: '24', ry: '3',
+      fill: '#000000', opacity: '0.32'
     }));
 
-    /* ②.5 白色外描边 */
+    var lx = 36, ly = 64, lr = 18;
+    var rx = 64, ry = 64, rr = 18;
+
     root.appendChild(svg('path', {
-      d: d, 'fill-rule': fillRule,
-      fill: 'none', stroke: '#ffffff', 'stroke-width': '2.4',
+      d: 'M ' + lx + ' ' + (ly - lr * 0.7) + ' Q 50 12 ' + rx + ' ' + (ry - rr * 0.7),
+      fill: 'none', stroke: '#166534', 'stroke-width': '2.4',
+      'stroke-linecap': 'round'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 50 20 Q 44 12 38 18 Q 44 24 50 20 Z',
+      fill: '#22c55e', stroke: '#14532d', 'stroke-width': '0.8'
+    }));
+
+    root.appendChild(svg('circle', {
+      cx: lx, cy: ly, r: lr,
+      fill: 'url(#gbc_' + uid + ')',
+      stroke: '#7f1d1d', 'stroke-width': '1'
+    }));
+    root.appendChild(svg('circle', {
+      cx: rx, cy: ry, r: rr,
+      fill: 'url(#gbc_' + uid + ')',
+      stroke: '#7f1d1d', 'stroke-width': '1'
+    }));
+
+    root.appendChild(svg('ellipse', {
+      cx: lx - lr * 0.35, cy: ly - lr * 0.42,
+      rx: lr * 0.36, ry: lr * 0.24,
+      fill: '#ffffff', opacity: '0.9',
+      transform: 'rotate(-30 ' + (lx - lr * 0.35) + ' ' + (ly - lr * 0.42) + ')'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: lx - lr * 0.45, cy: ly - lr * 0.5,
+      rx: lr * 0.14, ry: lr * 0.09,
+      fill: '#ffffff', opacity: '1'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: rx - rr * 0.35, cy: ry - rr * 0.42,
+      rx: rr * 0.36, ry: rr * 0.24,
+      fill: '#ffffff', opacity: '0.9',
+      transform: 'rotate(-30 ' + (rx - rr * 0.35) + ' ' + (ry - rr * 0.42) + ')'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: rx - rr * 0.45, cy: ry - rr * 0.5,
+      rx: rr * 0.14, ry: rr * 0.09,
+      fill: '#ffffff', opacity: '1'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: lx + lr * 0.4, cy: ly + lr * 0.42,
+      rx: lr * 0.24, ry: lr * 0.11,
+      fill: '#ffffff', opacity: '0.35'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: rx + rr * 0.4, cy: ry + rr * 0.42,
+      rx: rr * 0.24, ry: rr * 0.11,
+      fill: '#ffffff', opacity: '0.35'
+    }));
+    return root;
+  }
+
+  /* ─── 圆糖 · 蓝球 ─── */
+  function renderRoundCandy(spec, size) {
+    return buildGummy(spec, size, {
+      d: pCircle(50, 50, 36),
+      rimPath: 'M 22 40 Q 50 16 78 40',
+      decorate: function (root, svg, uid, t, cpId) {
+        root.appendChild(svg('ellipse', {
+          cx: '36', cy: '32', rx: '9', ry: '5',
+          fill: '#ffffff', opacity: '0.95',
+          transform: 'rotate(-30 36 32)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        root.appendChild(svg('ellipse', {
+          cx: '34', cy: '28', rx: '3.5', ry: '2',
+          fill: '#ffffff', opacity: '1',
+          transform: 'rotate(-30 34 28)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+      }
+    });
+  }
+
+  /* ─── 甜甜圈 ─── */
+  function renderDonut(spec, size) {
+    var uid = spec.id + '_dn_' + hash(spec.theme.main);
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--donut'
+    });
+    var defs = svg('defs');
+    var gDough = svg('radialGradient', { id: 'gd_' + uid, cx: '0.35', cy: '0.3', r: '0.8' });
+    gDough.appendChild(svg('stop', { offset: '0',   'stop-color': '#fde68a' }));
+    gDough.appendChild(svg('stop', { offset: '0.4', 'stop-color': '#d97706' }));
+    gDough.appendChild(svg('stop', { offset: '1',   'stop-color': '#78350f' }));
+    defs.appendChild(gDough);
+    var gGlaze = svg('radialGradient', { id: 'gg_' + uid, cx: '0.35', cy: '0.3', r: '0.9' });
+    gGlaze.appendChild(svg('stop', { offset: '0',   'stop-color': '#fda4af' }));
+    gGlaze.appendChild(svg('stop', { offset: '0.4', 'stop-color': '#f43f5e' }));
+    gGlaze.appendChild(svg('stop', { offset: '1',   'stop-color': '#9f1239' }));
+    defs.appendChild(gGlaze);
+    root.appendChild(defs);
+
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '90', rx: '24', ry: '3',
+      fill: '#000000', opacity: '0.3'
+    }));
+
+    var d = pCircle(50, 52, 36) + ' ' + pCircle(50, 52, 15);
+    var cpId = 'dcp_' + uid;
+    var clip = svg('clipPath', { id: cpId });
+    var cp = svg('path', { d: d, 'clip-rule': 'evenodd' });
+    clip.appendChild(cp);
+    defs.appendChild(clip);
+
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': 'evenodd',
+      fill: 'url(#gd_' + uid + ')'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 14 52 A 36 36 0 0 1 86 52 L 86 46 A 36 36 0 0 0 14 46 Z M 35 52 A 15 15 0 0 0 65 52 L 65 46 A 15 15 0 0 1 35 46 Z',
+      'fill-rule': 'evenodd',
+      fill: 'url(#gg_' + uid + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+    root.appendChild(svg('path', {
+      d: d, 'fill-rule': 'evenodd',
+      fill: 'none', stroke: '#4c0519', 'stroke-width': '1.6',
       'stroke-linejoin': 'round'
     }));
-
-    /* ③ 主体层：径向渐变 */
-    var gBase = svg('g', { 'class': 'sd-sym-body' });
-    gBase.appendChild(svg('path', {
-      d: d, 'fill-rule': fillRule,
-      fill: 'url(#gb_' + uid + ')'
-    }));
-    root.appendChild(gBase);
-
-    /* ③ 渐变高光层（clip 内） */
-    var gGrad = svg('g', { 'class': 'sd-sym-grad', 'clip-path': 'url(#' + cpId + ')' });
-    gGrad.appendChild(svg('rect', { x: '0', y: '0', width: '100', height: '100', fill: 'url(#gt_' + uid + ')' }));
-    gGrad.appendChild(svg('rect', { x: '0', y: '0', width: '100', height: '100', fill: 'url(#gbo_' + uid + ')' }));
-    root.appendChild(gGrad);
-
-    /* ④ 描边 + 装饰层 */
-    var gHi = svg('g', { 'class': 'sd-sym-hi' });
-
-    /* 外描边 */
-    gHi.appendChild(svg('path', {
-      d: d, 'fill-rule': fillRule, fill: 'none',
-      stroke: t.dark, 'stroke-width': '2.2', 'stroke-linejoin': 'round', opacity: '0.85'
-    }));
-    /* 内亮线（偏移 -0.5 模拟玻璃边缘） */
-    gHi.appendChild(svg('path', {
-      d: d, 'fill-rule': fillRule, fill: 'none',
-      stroke: '#ffffff', 'stroke-width': '1.1', 'stroke-linejoin': 'round',
-      opacity: '0.75', transform: 'translate(0 -0.5)',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-
-    /* 左上大高光椭球（超高亮） */
-    gHi.appendChild(svg('ellipse', {
-      cx: n2(cx - r * 0.30), cy: n2(cy - r * 0.40),
-      rx: n2(r * 0.46), ry: n2(r * 0.26),
-      fill: '#ffffff', opacity: '0.95',
-      transform: 'rotate(-30 ' + n2(cx - r * 0.30) + ' ' + n2(cy - r * 0.40) + ')',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-    /* 左上高光核心亮点 */
-    gHi.appendChild(svg('ellipse', {
-      cx: n2(cx - r * 0.36), cy: n2(cy - r * 0.46),
-      rx: n2(r * 0.16), ry: n2(r * 0.10),
-      fill: '#ffffff', opacity: '1',
-      transform: 'rotate(-30 ' + n2(cx - r * 0.36) + ' ' + n2(cy - r * 0.46) + ')',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-
-    /* 右下反光椭球 */
-    gHi.appendChild(svg('ellipse', {
-      cx: n2(cx + r * 0.42), cy: n2(cy + r * 0.5),
-      rx: n2(r * 0.34), ry: n2(r * 0.16),
-      fill: '#ffffff', opacity: '0.32',
-      transform: 'rotate(20 ' + n2(cx + r * 0.42) + ' ' + n2(cy + r * 0.5) + ')',
-      'clip-path': 'url(#' + cpId + ')'
-    }));
-
-    /* 顶部弧形反射带 */
-    gHi.appendChild(svg('path', {
-      d: 'M ' + n2(cx - r * 0.6) + ' ' + n2(cy - r * 0.55) +
-         ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.18) + ' ' + n2(cx + r * 0.6) + ' ' + n2(cy - r * 0.55),
-      fill: 'none', stroke: '#ffffff', 'stroke-width': '3.4',
+    root.appendChild(svg('path', {
+      d: 'M 22 42 Q 50 18 78 42',
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '3',
       'stroke-linecap': 'round', opacity: '0.6',
       'clip-path': 'url(#' + cpId + ')'
     }));
 
-    /* 葡萄：每颗球加深色描边（颗颗分明） */
+    var sprinkles = [
+      [30, 34, -20, '#facc15'], [46, 26, 40, '#60a5fa'], [62, 32, 20, '#a3e635'],
+      [24, 48, 30, '#f472b6'], [74, 44, -10, '#fb923c'], [42, 46, 60, '#c084fc'],
+      [58, 46, -40, '#22d3ee'], [50, 60, 10, '#fde047']
+    ];
+    for (var i = 0; i < sprinkles.length; i++) {
+      var sp = sprinkles[i];
+      root.appendChild(svg('rect', {
+        x: (sp[0] - 3), y: (sp[1] - 1),
+        width: '6', height: '2', rx: '1',
+        fill: sp[3],
+        transform: 'rotate(' + sp[2] + ' ' + sp[0] + ' ' + sp[1] + ')',
+        'clip-path': 'url(#' + cpId + ')',
+        opacity: '0.95'
+      }));
+    }
+    return root;
+  }
 
-    /* ── sparks（葡萄等） ── */
-    if (sparks.length) {
-      var gSp = svg('g', { 'class': 'sd-sym-specks', 'clip-path': 'url(#' + cpId + ')' });
-      for (var si = 0; si < sparks.length; si++) {
-        var sp = sparks[si];
-        gSp.appendChild(svg('circle', {
-          cx: n2(sp.cx), cy: n2(sp.cy), r: n2(sp.r),
-          fill: '#ffffff', opacity: n2(sp.opacity != null ? sp.opacity : 0.7)
+  /* ─── 花朵糖 · 六瓣花 ─── */
+  function renderFlower(spec, size) {
+    return buildGummy(spec, size, {
+      d: pFlower(50, 50, 38, 6),
+      rimPath: 'M 26 36 Q 50 10 74 36',
+      decorate: function (root, svg, uid, t, cpId) {
+        /* 中心圆 */
+        root.appendChild(svg('circle', {
+          cx: '50', cy: '50', r: '10',
+          fill: '#fbbf24', stroke: '#92400e', 'stroke-width': '1.2'
+        }));
+        root.appendChild(svg('circle', {
+          cx: '50', cy: '50', r: '5.5',
+          fill: '#fde68a', opacity: '0.9'
+        }));
+        root.appendChild(svg('ellipse', {
+          cx: '47', cy: '47', rx: '2.2', ry: '1.4',
+          fill: '#ffffff', opacity: '0.95'
         }));
       }
-      gHi.appendChild(gSp);
-    }
+    });
+  }
 
-    /* 装饰斑点 */
-    var cnt = 2 + Math.floor(seeded(spec.id.length + 5) * 3);
-    for (var i = 0; i < cnt; i++) {
-      var s1 = seeded(i * 7 + spec.id.length);
-      var s2 = seeded(i * 13 + spec.id.charCodeAt(0));
-      gHi.appendChild(svg('ellipse', {
-        cx: n2(cx + (s1 - 0.5) * r * 1.05),
-        cy: n2(cy + (s2 - 0.5) * r * 0.85 - r * 0.15),
-        rx: n2(1.2 + s1 * 1.1), ry: n2((1.2 + s1 * 1.1) * 0.62),
-        fill: '#ffffff', opacity: n2(0.5 + s2 * 0.35),
-        'clip-path': 'url(#' + cpId + ')'
-      }));
-    }
-
-    /* 形状专属装饰 */
-    if (spec.shape === 'ring') {
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.6) + ' ' + n2(cy - r * 0.45) +
-           ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.95) + ' ' + n2(cx + r * 0.6) + ' ' + n2(cy - r * 0.45),
-        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.2', 'stroke-linecap': 'round', opacity: '0.8'
-      }));
-    }
-    if (spec.shape === 'lollipop') {
-      var halo = svg('g', { 'class': 'sd-sym-halo' });
-      var neon = [t.accent, '#ff3d7f', '#06b6d4', '#22c55e', '#7c5cff', '#facc15'];
-      for (var hi = 0; hi < 6; hi++) {
-        var ang = hi * Math.PI / 3;
-        halo.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(ang) * r * 1.05),
-          cy: n2(cy + Math.sin(ang) * r * 1.05),
-          r: '2.2', fill: neon[hi], opacity: '0.9'
+  /* ─── 水滴糖 · 倒水滴 ─── */
+  function renderDrop(spec, size) {
+    return buildGummy(spec, size, {
+      d: pDrop(50, 50, 34),
+      rimPath: 'M 40 42 Q 50 28 60 42',
+      decorate: function (root, svg, uid, t, cpId) {
+        root.appendChild(svg('ellipse', {
+          cx: '40', cy: '42', rx: '6', ry: '3.5',
+          fill: '#ffffff', opacity: '0.95',
+          transform: 'rotate(-20 40 42)',
+          'clip-path': 'url(#' + cpId + ')'
         }));
-      }
-      gHi.appendChild(halo);
-      var sparkle = svg('g', { 'class': 'sd-sym-spark', opacity: '0.9' });
-      for (var k = 1; k <= 3; k++) {
-        sparkle.appendChild(svg('circle', {
-          cx: n2(cx + Math.cos(k * 2.1) * r * 0.55),
-          cy: n2(cy - r * 0.22 + Math.sin(k * 2.1) * r * 0.55),
-          r: n2(1.4 + k * 0.3), fill: '#ffffff', opacity: '0.85'
-        }));
-      }
-      gHi.appendChild(sparkle);
-    }
-    if (spec.shape === 'star5' || spec.shape === 'star6') {
-      gHi.appendChild(svg('path', {
-        d: pStar(cx, cy, r * 0.55, 5, 0.5),
-        fill: '#ffffff', opacity: '0.35', 'class': 'sd-sym-spark',
-        'clip-path': 'url(#' + cpId + ')'
-      }));
-    }
-    if (spec.shape === 'heart') {
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.35) + ' ' + n2(cy - r * 0.4) +
-           ' Q ' + n2(cx - r * 0.2) + ' ' + n2(cy - r * 0.7) + ' ' + n2(cx) + ' ' + n2(cy - r * 0.55),
-        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.4', 'stroke-linecap': 'round', opacity: '0.85'
-      }));
-    }
-    if (spec.shape === 'diamond') {
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.6) + ' ' + n2(cy - r * 0.55) + ' L ' + n2(cx + r * 0.1) + ' ' + n2(cy + r * 0.55),
-        stroke: '#ffffff', 'stroke-width': '1.6', 'stroke-linecap': 'round', opacity: '0.5',
-        'class': 'sd-sym-shine', 'clip-path': 'url(#' + cpId + ')'
-      }));
-    }
-    if (spec.shape === 'grape') {
-      /* 紫色梗 */
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.05) + ' ' + n2(cy - r * 0.65) +
-           ' Q ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.95) + ' ' + n2(cx + r * 0.02) + ' ' + n2(cy - r * 1.15) +
-           ' L ' + n2(cx + r * 0.10) + ' ' + n2(cy - r * 1.12) +
-           ' Q ' + n2(cx + r * 0.08) + ' ' + n2(cy - r * 0.92) + ' ' + n2(cx + r * 0.04) + ' ' + n2(cy - r * 0.62) +
-           ' Z',
-        fill: '#5b21b6', stroke: '#2e1065', 'stroke-width': '1.2', 'stroke-linejoin': 'round'
-      }));
-      /* 左侧大叶 */
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.98) +
-           ' Q ' + n2(cx - r * 0.62) + ' ' + n2(cy - r * 1.18) + ' ' + n2(cx - r * 0.78) + ' ' + n2(cy - r * 0.72) +
-           ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy - r * 0.66) + ' ' + n2(cx - r * 0.02) + ' ' + n2(cy - r * 0.98) + ' Z',
-        fill: '#4ade80', stroke: '#166534', 'stroke-width': '1.4', 'stroke-linejoin': 'round'
-      }));
-      /* 叶脉 */
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.04) + ' ' + n2(cy - r * 0.94) + ' Q ' + n2(cx - r * 0.42) + ' ' + n2(cy - r * 1.02) + ' ' + n2(cx - r * 0.68) + ' ' + n2(cy - r * 0.76),
-        fill: 'none', stroke: '#166534', 'stroke-width': '1', 'stroke-linecap': 'round', opacity: '0.75'
-      }));
-      /* 右侧小叶 */
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx + r * 0.06) + ' ' + n2(cy - r * 0.98) +
-           ' Q ' + n2(cx + r * 0.58) + ' ' + n2(cy - r * 1.14) + ' ' + n2(cx + r * 0.76) + ' ' + n2(cy - r * 0.72) +
-           ' Q ' + n2(cx + r * 0.42) + ' ' + n2(cy - r * 0.66) + ' ' + n2(cx + r * 0.06) + ' ' + n2(cy - r * 0.98) + ' Z',
-        fill: '#22c55e', stroke: '#166534', 'stroke-width': '1.4', 'stroke-linejoin': 'round'
-      }));
-    }
-    if (spec.shape === 'watermelon') {
-      var seeds = [[-0.4,0.05],[-0.15,0.25],[0.15,0.25],[0.4,0.05],[-0.28,-0.15],[0.28,-0.15]];
-      for (var wi = 0; wi < seeds.length; wi++) {
-        gHi.appendChild(svg('ellipse', {
-          cx: n2(cx + seeds[wi][0] * r), cy: n2(cy + seeds[wi][1] * r),
-          rx: '1.6', ry: '2.4', fill: t.dark, opacity: '0.55',
+        root.appendChild(svg('ellipse', {
+          cx: '42', cy: '36', rx: '2.4', ry: '1.4',
+          fill: '#ffffff', opacity: '1',
+          transform: 'rotate(-20 42 36)',
           'clip-path': 'url(#' + cpId + ')'
         }));
       }
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.75) + ' ' + n2(cy - r * 0.1) +
-           ' Q ' + n2(cx) + ' ' + n2(cy - r * 0.75) + ' ' + n2(cx + r * 0.75) + ' ' + n2(cy - r * 0.1),
-        fill: 'none', stroke: '#ffffff', 'stroke-width': '2.6',
-        'stroke-linecap': 'round', opacity: '0.7',
+    });
+  }
+
+  /* ─── 钻石糖 · 五边形宝石 ─── */
+  function renderDiamond(spec, size) {
+    var uid = spec.id + '_dm_' + hash(spec.theme.main);
+    var t = spec.theme;
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--diamond'
+    });
+    var defs = svg('defs');
+    var gTop = svg('linearGradient', { id: 'dt_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
+    gTop.appendChild(svg('stop', { offset: '0', 'stop-color': '#e0d5ff' }));
+    gTop.appendChild(svg('stop', { offset: '1', 'stop-color': t.main }));
+    defs.appendChild(gTop);
+    var gBot = svg('linearGradient', { id: 'db_' + uid, x1: '0', y1: '0', x2: '0', y2: '1' });
+    gBot.appendChild(svg('stop', { offset: '0', 'stop-color': t.main }));
+    gBot.appendChild(svg('stop', { offset: '1', 'stop-color': t.dark }));
+    defs.appendChild(gBot);
+    var gSpec = svg('radialGradient', { id: 'ds_' + uid, cx: '0.35', cy: '0.25', r: '0.6' });
+    gSpec.appendChild(svg('stop', { offset: '0', 'stop-color': '#ffffff', 'stop-opacity': '0.95' }));
+    gSpec.appendChild(svg('stop', { offset: '1', 'stop-color': '#ffffff', 'stop-opacity': '0' }));
+    defs.appendChild(gSpec);
+    root.appendChild(defs);
+
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '88', rx: '22', ry: '3',
+      fill: '#000000', opacity: '0.32'
+    }));
+
+    /* 外轮廓：五边形宝石 */
+    var outer = 'M 50 12 L 84 32 L 84 68 L 50 88 L 16 68 L 16 32 Z';
+    /* 上部（亮） */
+    var top = 'M 50 12 L 84 32 L 50 50 L 16 32 Z';
+    /* 下部（暗） */
+    var bot = 'M 50 50 L 84 32 L 84 68 L 50 88 L 16 68 L 16 32 Z';
+
+    root.appendChild(svg('path', {
+      d: outer, fill: 'url(#db_' + uid + ')',
+      stroke: t.dark, 'stroke-width': '1.5', 'stroke-linejoin': 'round'
+    }));
+    root.appendChild(svg('path', {
+      d: top, fill: 'url(#dt_' + uid + ')',
+      stroke: t.dark, 'stroke-width': '1.2', 'stroke-linejoin': 'round'
+    }));
+    /* 菱形切面 */
+    root.appendChild(svg('path', {
+      d: 'M 50 12 L 50 88',
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '0.8', opacity: '0.5'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 16 32 L 84 32',
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '0.8', opacity: '0.5'
+    }));
+    root.appendChild(svg('path', {
+      d: 'M 16 68 L 84 68',
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '0.8', opacity: '0.3'
+    }));
+    /* 左上高光 */
+    root.appendChild(svg('path', {
+      d: 'M 22 30 L 46 18 L 38 38 Z',
+      fill: '#ffffff', opacity: '0.85'
+    }));
+    /* 微星芒 */
+    root.appendChild(svg('path', {
+      d: 'M 60 24 L 62 28 L 66 30 L 62 32 L 60 36 L 58 32 L 54 30 L 58 28 Z',
+      fill: '#ffffff', opacity: '0.9'
+    }));
+    return root;
+  }
+
+  /* ─── 星星糖 · 五角星 ─── */
+  function renderStar(spec, size) {
+    return buildGummy(spec, size, {
+      d: pStar(50, 52, 38, 5, 0.45),
+      rimPath: 'M 30 34 Q 50 14 70 34',
+      decorate: function (root, svg, uid, t, cpId) {
+        /* 内星（小） */
+        root.appendChild(svg('path', {
+          d: pStar(50, 54, 18, 5, 0.45),
+          fill: '#ffffff', opacity: '0.4',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        /* 左上尖高光 */
+        root.appendChild(svg('ellipse', {
+          cx: '36', cy: '30', rx: '5', ry: '3',
+          fill: '#ffffff', opacity: '0.95',
+          transform: 'rotate(-40 36 30)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        /* 微闪 */
+        root.appendChild(svg('path', {
+          d: 'M 62 22 L 63.5 25 L 66.5 26.5 L 63.5 28 L 62 31 L 60.5 28 L 57.5 26.5 L 60.5 25 Z',
+          fill: '#ffffff', opacity: '0.9'
+        }));
+      }
+    });
+  }
+
+  /* ─── 红心糖 ─── */
+  function renderHeart(spec, size) {
+    return buildGummy(spec, size, {
+      d: pHeart(50, 48, 34),
+      rimPath: 'M 28 38 Q 36 20 50 30 Q 64 20 72 38',
+      decorate: function (root, svg, uid, t, cpId) {
+        /* 左上大高光 */
+        root.appendChild(svg('ellipse', {
+          cx: '34', cy: '34', rx: '7', ry: '4',
+          fill: '#ffffff', opacity: '0.95',
+          transform: 'rotate(-30 34 34)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+        root.appendChild(svg('ellipse', {
+          cx: '31', cy: '30', rx: '2.6', ry: '1.5',
+          fill: '#ffffff', opacity: '1',
+          transform: 'rotate(-30 31 30)',
+          'clip-path': 'url(#' + cpId + ')'
+        }));
+      }
+    });
+  }
+
+  /* ─── 棒棒糖 · 圆盘 + 棍 + 螺旋 ─── */
+  function renderLollipop(spec, size) {
+    var uid = spec.id + '_lp_' + hash(spec.theme.main);
+    var t = spec.theme;
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--lolli'
+    });
+    var defs = svg('defs');
+    var gMain = svg('radialGradient', { id: 'lp_' + uid, cx: '0.35', cy: '0.3', r: '0.8' });
+    gMain.appendChild(svg('stop', { offset: '0',   'stop-color': t.light }));
+    gMain.appendChild(svg('stop', { offset: '0.3', 'stop-color': t.main }));
+    gMain.appendChild(svg('stop', { offset: '0.85','stop-color': '#e11d48' }));
+    gMain.appendChild(svg('stop', { offset: '1',   'stop-color': '#7f1d1d' }));
+    defs.appendChild(gMain);
+    var cpId = 'lpc_' + uid;
+    var clip = svg('clipPath', { id: cpId });
+    var cp = svg('path', { d: pCircle(50, 38, 28) });
+    clip.appendChild(cp);
+    defs.appendChild(clip);
+    /* 霓虹 halo */
+    var gHalo = svg('radialGradient', { id: 'lh_' + uid, cx: '0.5', cy: '0.5', r: '0.5' });
+    gHalo.appendChild(svg('stop', { offset: '0.5', 'stop-color': '#facc15', 'stop-opacity': '0' }));
+    gHalo.appendChild(svg('stop', { offset: '1',   'stop-color': '#facc15', 'stop-opacity': '0.7' }));
+    defs.appendChild(gHalo);
+    root.appendChild(defs);
+
+    /* 棍 */
+    root.appendChild(svg('rect', {
+      x: '47', y: '62', width: '6', height: '28', rx: '3',
+      fill: '#fef3c7', stroke: '#a16207', 'stroke-width': '1'
+    }));
+    /* 地面阴影 */
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '92', rx: '8', ry: '2',
+      fill: '#000000', opacity: '0.3'
+    }));
+    /* 圆盘 */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '38', r: '28',
+      fill: 'url(#lp_' + uid + ')',
+      stroke: '#7f1d1d', 'stroke-width': '1.5'
+    }));
+    /* 螺旋（3 圈白线，旋转中） */
+    root.appendChild(svg('path', {
+      d: 'M 50 10 C 65 14, 78 26, 74 42 C 70 58, 50 62, 38 54 C 26 46, 28 30, 40 24 C 52 18, 62 26, 60 38',
+      fill: 'none', stroke: '#ffffff', 'stroke-width': '2.2',
+      'stroke-linecap': 'round', opacity: '0.85',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+    /* 左上高光 */
+    root.appendChild(svg('ellipse', {
+      cx: '38', cy: '26', rx: '8', ry: '5',
+      fill: '#ffffff', opacity: '0.9',
+      transform: 'rotate(-30 38 26)',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+    root.appendChild(svg('ellipse', {
+      cx: '34', cy: '22', rx: '3', ry: '1.8',
+      fill: '#ffffff', opacity: '1',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    /* 霓虹光晕 */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '38', r: '36',
+      fill: 'url(#lh_' + uid + ')',
+      opacity: '0.9'
+    }));
+
+    return root;
+  }
+
+  /* ─── 彩虹糖 · WILD 彩虹环 ─── */
+  function renderWild(spec, size) {
+    var uid = spec.id + '_wd_' + hash(spec.theme.main);
+    var t = spec.theme;
+    var root = svgRoot('0 0 100 100', {
+      width: size, height: size,
+      'class': 'sd-sym-art sd-sym-art--wild'
+    });
+    var defs = svg('defs');
+
+    var colors = ['#ff3d7f', '#ffb300', '#22c55e', '#06b6d4', '#7c5cff', '#ec4899'];
+    for (var i = 0; i < colors.length; i++) {
+      var gRing = svg('linearGradient', { id: 'wr_' + uid + '_' + i, x1: '0', y1: '0', x2: '1', y2: '1' });
+      gRing.appendChild(svg('stop', { offset: '0', 'stop-color': colors[i] }));
+      gRing.appendChild(svg('stop', { offset: '1', 'stop-color': colors[(i + 1) % colors.length] }));
+      defs.appendChild(gRing);
+    }
+
+    var cpId = 'wdc_' + uid;
+    var clip = svg('clipPath', { id: cpId });
+    var cp = svg('path', { d: pCircle(50, 50, 36) });
+    clip.appendChild(cp);
+    defs.appendChild(clip);
+
+    var gSpec = svg('radialGradient', { id: 'ws_' + uid, cx: '0.35', cy: '0.28', r: '0.7' });
+    gSpec.appendChild(svg('stop', { offset: '0', 'stop-color': '#ffffff', 'stop-opacity': '0.95' }));
+    gSpec.appendChild(svg('stop', { offset: '1', 'stop-color': '#ffffff', 'stop-opacity': '0' }));
+    defs.appendChild(gSpec);
+    root.appendChild(defs);
+
+    root.appendChild(svg('ellipse', {
+      cx: '50', cy: '88', rx: '24', ry: '3',
+      fill: '#000000', opacity: '0.3'
+    }));
+
+    /* 彩虹环（同心圆） */
+    var rings = [
+      { r: 34, i: 0, w: 8 },
+      { r: 26, i: 1, w: 7 },
+      { r: 18, i: 2, w: 6 },
+      { r: 10, i: 3, w: 5 },
+      { r: 4,  i: 4, w: 4 }
+    ];
+    for (var k = 0; k < rings.length; k++) {
+      root.appendChild(svg('circle', {
+        cx: '50', cy: '50', r: rings[k].r,
+        fill: 'none',
+        stroke: 'url(#wr_' + uid + '_' + rings[k].i + ')',
+        'stroke-width': rings[k].w,
         'clip-path': 'url(#' + cpId + ')'
       }));
     }
-    if (spec.shape === 'cherry') {
-      var balls = [[-0.5, 0.35, 0.62], [0.5, 0.35, 0.62]];
-      for (var ci = 0; ci < balls.length; ci++) {
-        var bx = cx + balls[ci][0] * r, by = cy + balls[ci][1] * r, br = balls[ci][2] * r;
-        gHi.appendChild(svg('circle', { cx: n2(bx - br * 0.32), cy: n2(by - br * 0.38), r: n2(br * 0.32), fill: '#ffffff', opacity: '0.85' }));
-        gHi.appendChild(svg('circle', { cx: n2(bx + br * 0.36), cy: n2(by + br * 0.42), r: n2(br * 0.16), fill: '#ffffff', opacity: '0.45' }));
-      }
-      gHi.appendChild(svg('path', {
-        d: 'M ' + n2(cx - r * 0.5) + ' ' + n2(cy - r * 0.2) +
-           ' Q ' + n2(cx) + ' ' + n2(cy - r * 1.1) + ' ' + n2(cx + r * 0.5) + ' ' + n2(cy - r * 0.2),
-        fill: 'none', stroke: '#22c55e', 'stroke-width': '2.4', 'stroke-linecap': 'round'
+
+    /* 白色高光 */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '50', r: '36',
+      fill: 'url(#ws_' + uid + ')',
+      'clip-path': 'url(#' + cpId + ')'
+    }));
+
+    /* 外描边 */
+    root.appendChild(svg('circle', {
+      cx: '50', cy: '50', r: '36',
+      fill: 'none', stroke: '#4c1d95',
+      'stroke-width': '1.5', opacity: '0.85'
+    }));
+
+    /* 外圈 sparkle */
+    for (var si = 0; si < 5; si++) {
+      var a = (si / 5) * Math.PI * 2 - Math.PI / 2;
+      var sx = 50 + Math.cos(a) * 42;
+      var sy = 50 + Math.sin(a) * 42;
+      root.appendChild(svg('path', {
+        d: 'M ' + n2(sx) + ' ' + n2(sy - 3) +
+           ' L ' + n2(sx + 1.2) + ' ' + n2(sy - 1.2) +
+           ' L ' + n2(sx + 3) + ' ' + n2(sy) +
+           ' L ' + n2(sx + 1.2) + ' ' + n2(sy + 1.2) +
+           ' L ' + n2(sx) + ' ' + n2(sy + 3) +
+           ' L ' + n2(sx - 1.2) + ' ' + n2(sy + 1.2) +
+           ' L ' + n2(sx - 3) + ' ' + n2(sy) +
+           ' L ' + n2(sx - 1.2) + ' ' + n2(sy - 1.2) + ' Z',
+        fill: '#ffffff', opacity: n2(0.55 + (si % 2) * 0.35)
       }));
     }
-    if (spec.shape === 'wild') {
-      /* 彩虹环 */
-      var rbow = svg('g', { 'class': 'sd-sym-glow', 'clip-path': 'url(#' + cpId + ')' });
-      var cols = ['#ff3d7f', '#ffb300', '#22c55e', '#06b6d4', '#7c5cff'];
-      for (var c = 0; c < cols.length; c++) {
-        rbow.appendChild(svg('circle', {
-          cx: n2(cx), cy: n2(cy), r: n2(r * (0.92 - c * 0.12)),
-          fill: 'none', stroke: cols[c], 'stroke-width': '3.4', opacity: '0.85'
-        }));
-      }
-      gHi.appendChild(rbow);
-    }
 
-    root.appendChild(gHi);
     return root;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     Dispatcher · 按 spec.shape 选择渲染器
+     ══════════════════════════════════════════════════════════ */
+  function buildSymbolArt(spec, size) {
+    switch (spec.shape) {
+      case 'banana':     return renderBanana(spec, size);
+      case 'grape':      return renderGrape(spec, size);
+      case 'watermelon': return renderWatermelon(spec, size);
+      case 'cherry':     return renderCherry(spec, size);
+      case 'circle':     return renderRoundCandy(spec, size);
+      case 'ring':       return renderDonut(spec, size);
+      case 'flower':     return renderFlower(spec, size);
+      case 'drop':       return renderDrop(spec, size);
+      case 'diamond':    return renderDiamond(spec, size);
+      case 'star5':      return renderStar(spec, size);
+      case 'star6':      return renderStar(spec, size);
+      case 'heart':      return renderHeart(spec, size);
+      case 'lollipop':   return renderLollipop(spec, size);
+      case 'wild':       return renderWild(spec, size);
+      default:           return renderRoundCandy(spec, size);
+    }
   }
 
   /* ── 数据 ── */
