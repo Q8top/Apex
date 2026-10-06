@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://apextop.cc.cd/config/schema.json",
+  "title": "Candy Tumble Config Schema",
+  "description": "Math/config schema for Candy Tumble game. Math values are authoritative; UI must never override.",
+
+  "type": "object",
+  "required": ["version", "mathVersion", "configVersion", "game", "modes", "symbols", "freeSpins", "tumble", "bigWinThresholds"],
+  "additionalProperties": false,
+
+  "properties": {
+    "version":       { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "mathVersion":   { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "configVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+
+    "game": {
+      "type": "object",
+      "required": ["id", "name", "grid", "winRule"],
+      "additionalProperties": false,
+      "properties": {
+        "id":   { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "grid": {
+          "type": "object",
+          "required": ["columns", "rows"],
+          "additionalProperties": false,
+          "properties": {
+            "columns": { "type": "integer", "minimum": 1, "maximum": 10 },
+            "rows":    { "type": "integer", "minimum": 1, "maximum": 10 }
+          }
+        },
+        "winRule": {
+          "type": "object",
+          "required": ["type", "minimumCount"],
+          "additionalProperties": false,
+          "properties": {
+            "type":         { "type": "string", "enum": ["pays-anywhere", "payline"] },
+            "minimumCount": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+
+    "modes": {
+      "type": "object",
+      "required": ["demo", "real"],
+      "additionalProperties": false,
+      "properties": {
+        "demo": { "$ref": "#/definitions/modeDemo" },
+        "real": { "$ref": "#/definitions/modeReal" }
+      }
+    },
+
+    "symbols": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/symbol" }
+    },
+
+    "freeSpins": {
+      "type": "object",
+      "required": ["trigger", "retrigger", "maxRetrigger", "safetyLimit", "bombMultipliers", "bombWeights"],
+      "additionalProperties": false,
+      "properties": {
+        "trigger":   { "$ref": "#/definitions/countToSpins" },
+        "retrigger": { "$ref": "#/definitions/countToSpins" },
+        "maxRetrigger": { "type": ["integer", "null"], "minimum": 0 },
+        "safetyLimit":  { "type": "integer", "minimum": 1 },
+        "bombMultipliers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "bombWeights": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+
+    "tumble": {
+      "type": "object",
+      "required": ["noUpperLimit", "safetyLimit", "comboThresholds"],
+      "additionalProperties": false,
+      "properties": {
+        "noUpperLimit": { "type": "boolean" },
+        "safetyLimit":  { "type": "integer", "minimum": 1 },
+        "comboThresholds": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "bigWinThresholds": {
+      "type": "object",
+      "required": ["big", "mega", "super", "epic"],
+      "additionalProperties": false,
+      "properties": {
+        "big":   { "type": "number", "minimum": 0 },
+        "mega":  { "type": "number", "minimum": 0 },
+        "super": { "type": "number", "minimum": 0 },
+        "epic":  { "type": "number", "minimum": 0 }
+      }
+    }
+  },
+
+  "definitions": {
+
+    "modeDemo": {
+      "type": "object",
+      "required": ["rtpTarget", "rtpRange", "hitRateTarget", "hitRateRange", "maxWinMultiplier", "scatterRate", "bombRate"],
+      "additionalProperties": false,
+      "properties": {
+        "rtpTarget":       { "type": "number", "minimum": 0 },
+        "rtpRange":        { "$ref": "#/definitions/rangePair" },
+        "hitRateTarget":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "hitRateRange":    { "$ref": "#/definitions/rangePair" },
+        "maxWinMultiplier": { "type": "number", "exclusiveMinimum": 0 },
+        "scatterRate":     { "type": "number", "minimum": 0, "maximum": 1 },
+        "bombRate":        { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+
+    "modeReal": {
+      "type": "object",
+      "required": ["rtpTarget", "rtpRange", "hardCeiling", "hitRateTarget", "hitRateRange", "maxWinMultiplier", "scatterRate", "bombRate"],
+      "additionalProperties": false,
+      "properties": {
+        "rtpTarget":        { "type": "number", "minimum": 0 },
+        "rtpRange":         { "$ref": "#/definitions/rangePair" },
+        "hardCeiling":      { "type": "number", "minimum": 0 },
+        "hitRateTarget":    { "type": "number", "minimum": 0, "maximum": 1 },
+        "hitRateRange":     { "$ref": "#/definitions/rangePair" },
+        "maxWinMultiplier": { "type": "number", "exclusiveMinimum": 0 },
+        "scatterRate":      { "type": "number", "minimum": 0, "maximum": 1 },
+        "bombRate":         { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+
+    "rangePair": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" }
+    },
+
+    "symbol": {
+      "type": "object",
+      "required": ["id", "name", "type", "weight"],
+      "additionalProperties": false,
+      "properties": {
+        "id":      { "type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9-]*$" },
+        "name":    { "type": "string", "minLength": 1 },
+        "type":    { "type": "string", "enum": ["base", "high", "scatter", "wild"] },
+        "weight":  { "type": "number", "minimum": 0 },
+        "payout":  { "oneOf": [ { "$ref": "#/definitions/payoutMap" }, { "type": "null" } ] },
+        "special": { "type": "string" }
+      }
+    },
+
+    "payoutMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[0-9]+$": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "countToSpins": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[0-9]+$": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

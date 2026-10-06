@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "mathVersion": "1.0.0",
+  "configVersion": "1.0.0",
+
+  "game": {
+    "id": "candy-tumble",
+    "name": "Candy Tumble",
+    "grid": {
+      "columns": 6,
+      "rows": 5
+    },
+    "winRule": {
+      "type": "pays-anywhere",
+      "minimumCount": 8
+    }
+  },
+
+  "modes": {
+    "demo": {
+      "rtpTarget": 2.00,
+      "rtpRange": [1.30, 2.50],
+      "hitRateTarget": 0.52,
+      "hitRateRange": [0.45, 0.60],
+      "maxWinMultiplier": 25000,
+      "scatterRate": 0.10,
+      "bombRate": 0.35
+    },
+    "real": {
+      "rtpTarget": 0.92,
+      "rtpRange": [0.88, 0.93],
+      "hardCeiling": 0.94,
+      "hitRateTarget": 0.28,
+      "hitRateRange": [0.20, 0.35],
+      "maxWinMultiplier": 21175,
+      "scatterRate": 0.05,
+      "bombRate": 0.26
+    }
+  },
+
+  "symbols": [
+    { "id": "banana",     "name": "香蕉",   "type": "base", "weight": 22,
+      "payout": { "8": 0.20, "10": 0.50, "12": 2.00 } },
+    { "id": "grape",      "name": "葡萄",   "type": "base", "weight": 22,
+      "payout": { "8": 0.20, "10": 0.50, "12": 2.00 } },
+    { "id": "watermelon", "name": "西瓜",   "type": "base", "weight": 20,
+      "payout": { "8": 0.20, "10": 0.40, "12": 1.50 } },
+    { "id": "cherry",     "name": "樱桃",   "type": "base", "weight": 20,
+      "payout": { "8": 0.15, "10": 0.40, "12": 1.50 } },
+    { "id": "circle",     "name": "圆糖",   "type": "base", "weight": 18,
+      "payout": { "8": 0.10, "10": 0.30, "12": 1.00 } },
+    { "id": "ring",       "name": "甜甜圈", "type": "base", "weight": 18,
+      "payout": { "8": 0.10, "10": 0.25, "12": 0.80 } },
+    { "id": "flower",     "name": "花朵糖", "type": "high", "weight": 12,
+      "payout": { "8": 0.20, "10": 0.50, "12": 2.00 } },
+    { "id": "drop",       "name": "水滴糖", "type": "high", "weight": 10,
+      "payout": { "8": 0.25, "10": 0.60, "12": 2.50 } },
+    { "id": "diamond",    "name": "钻石糖", "type": "high", "weight": 8,
+      "payout": { "8": 0.30, "10": 0.70, "12": 3.00 } },
+    { "id": "star",       "name": "星星糖", "type": "high", "weight": 6,
+      "payout": { "8": 0.40, "10": 0.80, "12": 4.00 } },
+    { "id": "heart",      "name": "红心糖", "type": "high", "weight": 5,
+      "payout": { "8": 0.50, "10": 1.00, "12": 5.00 } },
+    { "id": "lolli", "name": "棒棒糖", "type": "scatter", "weight": 0,
+      "payout": null, "special": "trigger_free_spins" },
+    { "id": "wild",  "name": "彩虹糖", "type": "wild", "weight": 0,
+      "payout": null, "special": "substitute_all" }
+  ],
+
+  "freeSpins": {
+    "trigger":   { "4": 10, "5": 12, "6": 15 },
+    "retrigger": { "3": 5 },
+    "maxRetrigger": null,
+    "safetyLimit": 100,
+    "bombMultipliers": [2, 3, 4, 5, 8, 10, 15, 25, 50, 100],
+    "bombWeights":     [30, 25, 18, 10, 6, 5, 3, 2, 0.8, 0.2]
+  },
+
+  "tumble": {
+    "noUpperLimit": true,
+    "safetyLimit": 50,
+    "comboThresholds": { "3": "COMBO", "5": "FEVER", "10": "SUPER_FEVER" }
+  },
+
+  "bigWinThresholds": {
+    "big": 10,
+    "mega": 30,
+    "super": 60,
+    "epic": 150
+  }
+}
