@@ -75,3 +75,7 @@ audit-backup-*/
 
 # Apex: 未使用的 LQIP 缩略图（生成工具副产物）
 login-hero-lqip.webp
+
+# Phase 1 Step 6: Replay records (local only)
+replays/*.jsonl
+replays/*.json
