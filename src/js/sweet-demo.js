@@ -237,11 +237,13 @@
     /* 中奖等级（用于触发大额中奖特效） */
     var ratio = bet > 0 ? (total / bet) : 0;
     var tier = 'none';
-    if (ratio > 0 && ratio < 10) tier = 'small';
-    else if (ratio < 30) tier = 'nice';
-    else if (ratio < 60) tier = 'big';
-    else if (ratio < 150) tier = 'mega';
-    else if (ratio >= 150) tier = 'epic';
+    if (total > 0) {
+      if (ratio < 10) tier = 'small';
+      else if (ratio < 30) tier = 'nice';
+      else if (ratio < 60) tier = 'big';
+      else if (ratio < 150) tier = 'mega';
+      else tier = 'epic';
+    }
 
     return {
       total: total,
@@ -402,6 +404,28 @@
     }, SPIN_DELAY);
   }
 
+  /* ── 音频上下文：必须在用户手势中创建 ── */
+  function ensureAudio() {
+    if (window.__apexCtx) {
+      if (window.__apexCtx.state === 'suspended') {
+        window.__apexCtx.resume().catch(function(){});
+      }
+      return window.__apexCtx;
+    }
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      window.__apexCtx = new AC();
+      /* 播放一个静音启动，解锁上下文 */
+      var buf = window.__apexCtx.createBuffer(1, 1, 22050);
+      var src = window.__apexCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(window.__apexCtx.destination);
+      if (src.start) src.start(0);
+    } catch (e) {}
+    return window.__apexCtx;
+  }
+
   /* ── 音效 + 震动 + 大额中奖 ── */
   function playSpinFeedback(win) {
     /* 震动 */
@@ -414,11 +438,9 @@
     }
     /* 音效（Web Audio 合成，无素材依赖） */
     try {
-      var AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      if (!window.__apexCtx) window.__apexCtx = new AC();
       var ctx = window.__apexCtx;
-      if (ctx.state === 'suspended') ctx.resume();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume().catch(function(){});
       var now = ctx.currentTime;
       if (win.total > 0) {
         var freqs = win.tier === 'epic' ? [523, 659, 784, 1047] : [660, 880];
@@ -818,6 +840,7 @@
 
     var spinBtn = document.getElementById('demo-spin');
     if (spinBtn) spinBtn.addEventListener('click', function () {
+      ensureAudio();
       if (state.auto) {
         state.auto = false;
         clearTimeout(state.autoTimer);
@@ -826,6 +849,12 @@
       }
       spin();
     });
+
+    /* 任意点击首次也解锁音频（兜底） */
+    document.addEventListener('pointerdown', function once() {
+      ensureAudio();
+      document.removeEventListener('pointerdown', once);
+    }, { once: true });
 
     var auto = document.getElementById('demo-auto');
     if (auto) auto.addEventListener('click', function () {
