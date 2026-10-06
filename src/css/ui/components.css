@@ -1,0 +1,715 @@
+/* ============================================================
+   Apex Candy Tumble · Components System
+   Phase 3B P2c · Part 1/3
+   依赖: tokens.css + layout.css
+   ============================================================ */
+
+/* ── 1. HEADER ── */
+.demo-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.demo-header__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  color: var(--c-text-1);
+  padding: 0;
+  cursor: pointer;
+  transition: background var(--d-fast) var(--ease-out),
+              transform  var(--d-fast) var(--ease-snap);
+}
+
+.demo-header__icon:active {
+  background: rgba(255, 255, 255, .16);
+  transform: scale(.92);
+}
+
+.demo-header__title {
+  text-align: center;
+  min-width: 0;
+}
+
+.demo-header__name {
+  display: block;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-heavy);
+  letter-spacing: .02em;
+  line-height: var(--lh-tight);
+  color: var(--c-text-1);
+}
+
+.demo-header__badge {
+  display: inline-block;
+  margin-top: var(--sp-1);
+  padding: 2px var(--sp-2);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  letter-spacing: .08em;
+  border-radius: var(--r-pill);
+  color: var(--c-accent-1);
+  background: rgba(255, 206, 107, .12);
+  border: 1px solid rgba(255, 206, 107, .35);
+}
+
+/* ── 2. BOARD ── */
+.demo-board {
+  position: relative;
+  padding: var(--sp-2);
+  border-radius: var(--r-l);
+  background: radial-gradient(120% 80% at 50% 0%,
+              #5c2a63 0%, #3e1c4b 55%, #2a1035 100%);
+  border: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: var(--sh-inset-top),
+              var(--sh-inset-deep),
+              0 10px 32px rgba(0, 0, 0, .55);
+}
+
+/* ── 3. CELL ── */
+.demo-cell {
+  position: relative;
+  border-radius: var(--r-s);
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: radial-gradient(80% 80% at 50% 30%,
+              rgba(255, 255, 255, .10) 0%,
+              rgba(255, 255, 255, 0) 65%),
+              linear-gradient(180deg, var(--c-bg-elev-1) 0%,
+              var(--c-bg-cell) 55%, #2a1035 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22),
+              inset 0 -2px 3px rgba(0, 0, 0, .4),
+              0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.demo-cell__sym {
+  width: 84%;
+  height: 84%;
+  display: grid;
+  place-items: center;
+}
+
+.demo-cell__sym svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-cell.is-win {
+  animation: demo-win-flash var(--d-slow) ease-in-out infinite alternate;
+}
+
+@keyframes demo-win-flash {
+  from {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22),
+                inset 0 -2px 3px rgba(0, 0, 0, .4),
+                0 0 12px rgba(255, 215, 120, .55);
+  }
+  to {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22),
+                inset 0 -2px 3px rgba(0, 0, 0, .4),
+                0 0 22px rgba(255, 215, 120, .95);
+  }
+}
+
+.demo-cell.is-spinning .demo-cell__sym {
+  animation: demo-spin-blur 0.28s linear infinite;
+}
+
+@keyframes demo-spin-blur {
+  0%   { transform: translateY(-30%); opacity: .3; }
+  50%  { transform: translateY(0);    opacity: 1; }
+  100% { transform: translateY(30%);  opacity: .3; }
+}
+
+/* ── 4. WIN AMOUNT ── */
+.demo-win__label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: .14em;
+  color: var(--c-text-3);
+  margin-bottom: var(--sp-1);
+}
+
+.demo-win__amount {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-black);
+  line-height: var(--lh-tight);
+  letter-spacing: -.01em;
+  color: var(--c-win);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--d-normal) var(--ease-out);
+}
+
+.demo-win__amount.is-pop {
+  animation: demo-pop var(--d-pop) var(--ease-elastic);
+}
+
+@keyframes demo-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ── 5. STATS ── */
+.demo-stats {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, .08);
+  border-radius: var(--r-m);
+  overflow: hidden;
+}
+
+.demo-stat {
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(20, 8, 26, .55);
+  text-align: left;
+}
+
+.demo-stat__k {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  letter-spacing: .1em;
+  color: var(--c-text-3);
+  margin-bottom: 2px;
+}
+
+.demo-stat__v {
+  font-size: calc(var(--fs-body) + 1px);
+  font-weight: var(--fw-heavy);
+  color: var(--c-text-1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.01em;
+}
+
+.demo-stat__v--win { color: var(--c-win); }
+
+/* ── 6. BET CONTROL ── */
+.demo-bet {
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.demo-bet__btn {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .10);
+  color: var(--c-text-1);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transition: background var(--d-fast) var(--ease-out),
+              transform  var(--d-fast) var(--ease-snap);
+}
+
+.demo-bet__btn:active {
+  background: rgba(255, 255, 255, .22);
+  transform: scale(.9);
+}
+
+.demo-bet__display {
+  height: 46px;
+  border-radius: var(--r-s);
+  background: rgba(255, 255, 255, .06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.demo-bet__k {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--c-text-3);
+  letter-spacing: .06em;
+}
+
+.demo-bet__v {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-black);
+  color: var(--c-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 7. SPIN BUTTON (视觉锚点) ── */
+.demo-spin__btn {
+  width: 100%;
+  height: 100%;
+  min-height: var(--h-spin);
+  border: 0;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  background: linear-gradient(180deg, #ffffff 0%, #f0e8f5 100%);
+  color: var(--c-bg-board);
+  font-size: calc(var(--fs-body) + 4px);
+  font-weight: var(--fw-black);
+  letter-spacing: .04em;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .5),
+              var(--sh-inset-top);
+  transition: transform  var(--d-fast) var(--ease-snap),
+              box-shadow var(--d-normal) var(--ease-out),
+              filter     var(--d-normal) var(--ease-out);
+}
+
+.demo-spin__btn:active {
+  transform: scale(.97);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .55),
+              var(--sh-inset-top);
+}
+
+.demo-spin__btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  background: linear-gradient(180deg, #d8c6e0 0%, #bca8cb 100%);
+}
+
+.demo-spin__btn.is-auto,
+.demo-spin__btn.is-fs {
+  filter: hue-rotate(-15deg) saturate(1.15);
+}
+
+/* ── 8. RESET ── */
+.demo-reset {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-1) 0;
+}
+
+.demo-reset__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  border: 1px solid var(--c-line-2);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .06);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background var(--d-fast) var(--ease-out),
+              transform  var(--d-fast) var(--ease-snap);
+}
+
+.demo-reset__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.demo-reset__btn:active {
+  background: rgba(255, 255, 255, .14);
+  transform: scale(.97);
+}
+
+/* ── 9. ACTIONS (次级导航) ── */
+.demo-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+}
+
+.demo-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  height: var(--h-bottom);
+  border: 1px solid var(--c-line-1);
+  border-radius: var(--r-s);
+  background: rgba(255, 255, 255, .04);
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background var(--d-fast) var(--ease-out),
+              color      var(--d-fast) var(--ease-out),
+              transform  var(--d-fast) var(--ease-snap);
+}
+
+.demo-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.demo-action:active {
+  background: rgba(255, 255, 255, .10);
+  color: var(--c-text-2);
+  transform: scale(.97);
+}
+
+.demo-action.is-on {
+  background: rgba(255, 126, 182, .18);
+  border-color: rgba(255, 126, 182, .5);
+  color: var(--c-accent-2);
+}
+
+/* ── 10. FREE SPINS BADGE ── */
+.demo-freespins {
+  padding: var(--sp-1) var(--sp-5);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-black);
+  letter-spacing: .04em;
+  color: var(--c-bg-board);
+  background: linear-gradient(90deg, var(--c-accent-1) 0%, var(--c-accent-2) 100%);
+  box-shadow: 0 4px 16px var(--c-glow-gold),
+              0 0 0 3px rgba(26, 11, 31, .9);
+  opacity: 0;
+  transition: opacity var(--d-normal) var(--ease-out);
+}
+
+.demo-freespins.is-show { opacity: 1; }
+
+/* ── 11. TOAST ── */
+.demo-toast {
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-pill);
+  background: var(--c-mask-2);
+  color: var(--c-text-1);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  box-shadow: var(--sh-2);
+}
+
+/* ── 12. DRAWER ── */
+.demo-drawer__handle {
+  width: 40px;
+  height: 4px;
+  margin: var(--sp-1) auto var(--sp-3);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .22);
+}
+
+.demo-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-5) var(--sp-3);
+  border-bottom: 1px solid var(--c-line-1);
+}
+
+.demo-drawer__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-heavy);
+  color: var(--c-text-1);
+  letter-spacing: .02em;
+}
+
+.demo-drawer__close {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  color: var(--c-text-1);
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--d-fast) var(--ease-out),
+              transform  var(--d-fast) var(--ease-snap);
+}
+
+.demo-drawer__close:active {
+  background: rgba(255, 255, 255, .2);
+  transform: scale(.9);
+}
+
+.demo-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: var(--sp-2) var(--sp-4);
+}
+
+/* ── 13. BIG WIN ── */
+.demo-bigwin__label {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-black);
+  letter-spacing: .08em;
+  margin-bottom: var(--sp-3);
+  background: linear-gradient(90deg, var(--c-accent-1) 0%, var(--c-accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px var(--c-glow-gold);
+  animation: bigwin-pop var(--d-bigwin) var(--ease-elastic);
+}
+
+.demo-bigwin__amount {
+  font-size: var(--fs-display-xl);
+  font-weight: var(--fw-black);
+  color: var(--c-accent-1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  text-shadow: 0 0 24px var(--c-glow-gold),
+               0 4px 12px rgba(0, 0, 0, .5);
+  animation: bigwin-pop var(--d-bigwin) calc(var(--d-slow) / 4) var(--ease-elastic) both;
+}
+
+.demo-bigwin--mega .demo-bigwin__label  { font-size: calc(var(--fs-display) + 4px); }
+.demo-bigwin--mega .demo-bigwin__amount { font-size: calc(var(--fs-display-xl) + 4px); }
+.demo-bigwin--epic .demo-bigwin__label  { font-size: calc(var(--fs-display) + 8px); }
+.demo-bigwin--epic .demo-bigwin__amount { font-size: calc(var(--fs-display-xl) + 10px); }
+
+@keyframes bigwin-pop {
+  0%   { transform: scale(.4);  opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ── 14. RECORD (drawer 内) ── */
+.demo-record {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-s);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--c-line-1);
+  margin-bottom: var(--sp-1);
+}
+
+.demo-record.is-win {
+  border-color: rgba(255, 206, 107, .25);
+  background: rgba(255, 206, 107, .06);
+}
+
+.demo-record__idx {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .08);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-heavy);
+  color: var(--c-text-2);
+}
+
+.demo-record__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.demo-record__time {
+  font-size: var(--fs-micro);
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-record__bet {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--c-text-2);
+}
+
+.demo-record__won {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-black);
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-record__won.is-win { color: var(--c-accent-1); }
+
+.demo-drawer__empty {
+  padding: var(--sp-8) var(--sp-5);
+  text-align: center;
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+}
+
+.demo-drawer__empty-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--sp-3);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, .22);
+}
+
+/* ── 15. PAYTABLE (drawer 内) ── */
+.paytable-tabs {
+  display: flex;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  background: rgba(255, 255, 255, .05);
+  border-radius: var(--r-s);
+  margin-bottom: var(--sp-3);
+}
+
+.paytable-tab {
+  flex: 1;
+  border: 0;
+  padding: var(--sp-2);
+  border-radius: var(--r-s);
+  background: transparent;
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background var(--d-fast) var(--ease-out),
+              color      var(--d-fast) var(--ease-out);
+}
+
+.paytable-tab.is-active {
+  background: rgba(255, 255, 255, .1);
+  color: var(--c-text-1);
+}
+
+.paytable-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: var(--fs-caption);
+  background: rgba(255, 255, 255, .03);
+  border-radius: var(--r-s);
+  overflow: hidden;
+}
+
+.paytable-table thead th {
+  padding: var(--sp-2) var(--sp-1);
+  text-align: center;
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  letter-spacing: .08em;
+  color: var(--c-text-3);
+  background: rgba(255, 255, 255, .05);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.paytable-table tbody td {
+  padding: var(--sp-2) var(--sp-1);
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--c-line-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.paytable-table tbody tr:last-child td { border-bottom: 0; }
+
+.paytable-sym {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.paytable-sym__art {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-s);
+  background: radial-gradient(circle at 50% 40%,
+              rgba(255, 255, 255, .12) 0%,
+              rgba(255, 255, 255, .02) 60%,
+              rgba(255, 255, 255, 0) 100%);
+}
+
+.paytable-sym__art svg { width: 30px; height: 30px; display: block; }
+
+.paytable-sym__name {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  color: var(--c-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.paytable-mult {
+  display: inline-block;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  background: rgba(255, 180, 80, .12);
+  color: var(--c-accent-1);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-heavy);
+  min-width: 42px;
+}
+
+.paytable-mult--special {
+  background: rgba(120, 160, 255, .15);
+  color: #a8c5ff;
+}
+
+.paytable-note {
+  margin-top: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-s);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--c-line-1);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-relaxed);
+  color: var(--c-text-2);
+}
+
+.paytable-note strong {
+  color: var(--c-accent-1);
+  font-weight: var(--fw-heavy);
+}
+
+/* ── 16. 小屏微调 ── */
+@media (max-height: 700px) {
+  .demo-win__amount  { font-size: calc(var(--fs-display) - 4px); }
+  .demo-stat__v      { font-size: var(--fs-body); }
+  .demo-bet__btn     { width: 42px; height: 42px; }
+  .demo-bet__display { height: 42px; }
+  .demo-spin__btn    { font-size: var(--fs-title); }
+  .demo-action       { height: 38px; font-size: var(--fs-micro); }
+}
+
+@media (max-height: 640px) {
+  .demo-win__amount { font-size: calc(var(--fs-display) - 6px); }
+  .demo-spin__btn   { font-size: calc(var(--fs-body) + 2px); }
+}
+
+/* ── 17. Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .demo-cell.is-win,
+  .demo-cell.is-spinning .demo-cell__sym,
+  .demo-win__amount.is-pop,
+  .demo-bigwin__label,
+  .demo-bigwin__amount {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   End of components.css
+   ============================================================ */
