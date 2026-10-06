@@ -1,0 +1,315 @@
+/* ============================================================
+   Apex Candy Tumble · Layout System
+   Phase 3B P2b · 2026-10-06
+   ============================================================
+   依赖: tokens.css
+   职责: 定义页面骨架 (纵向 flex 分区) + 断点 + Safe Area
+   约束: 只使用 tokens 变量, 不硬编码色/字/距
+   ============================================================ */
+
+/* ── Reset / Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body.sd-demo-body {
+  margin: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--c-bg-deep);
+  color: var(--c-text-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+button {
+  font-family: inherit;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+/* ── Shell (纵向分区) ── */
+.demo-shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  padding:
+    calc(var(--sp-1) + env(safe-area-inset-top, 0px))
+    calc(var(--sp-3) + env(safe-area-inset-right, 0px))
+    calc(var(--sp-2) + env(safe-area-inset-bottom, 0px))
+    calc(var(--sp-3) + env(safe-area-inset-left, 0px));
+  gap: var(--sp-2);
+  overflow: hidden;
+}
+
+/* ── 顶栏 (context, 非 gameplay focus) ── */
+.demo-header {
+  flex: 0 0 auto;
+  min-height: var(--h-header);
+}
+
+/* ── Board (绝对主角, 吃掉所有剩余空间) ── */
+.demo-board {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Reels: 6/5 比例, 尺寸由 JS (fitReels) 计算 */
+.demo-reels {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 6 / 5;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: var(--sp-1);
+}
+
+/* ── 中奖金额 (Tier 1) ── */
+.demo-win {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+/* ── 数据三栏 (Tier 3) ── */
+.demo-stats {
+  flex: 0 0 auto;
+  min-height: var(--h-stats);
+}
+
+/* ── 下注控制 (Tier 4) ── */
+.demo-bet {
+  flex: 0 0 auto;
+  min-height: var(--h-bet);
+}
+
+/* ── 旋转 (Tier 2, 视觉锚点) ── */
+.demo-spin {
+  flex: 0 0 auto;
+  min-height: var(--h-spin);
+}
+
+/* ── 底部导航 (Tier 5, 次级) ── */
+.demo-actions {
+  flex: 0 0 auto;
+  min-height: var(--h-bottom);
+}
+
+/* ── 重置余额 (独立行, 弱化) ── */
+.demo-reset {
+  flex: 0 0 auto;
+}
+
+/* ── 免费旋转徽章 (绝对定位在 board 内) ── */
+.demo-freespins {
+  position: absolute;
+  top: var(--sp-2);
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: var(--z-badge);
+  pointer-events: none;
+}
+
+/* ── 粒子 Canvas 覆盖层 (P8 使用) ── */
+.demo-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--z-particles);
+}
+
+/* ── 全屏闪光层 (P7 使用) ── */
+.demo-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-flash);
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 206, 107, .55) 0%,
+    rgba(255, 126, 182, .25) 40%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  transition: opacity var(--d-slow) var(--ease-out);
+}
+
+.demo-flash.is-show { opacity: 1; }
+
+/* ── 遮罩层 (drawer / bigwin 共用) ── */
+.demo-drawer-mask {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer-mask);
+  background: var(--c-mask-1);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-normal) var(--ease-out);
+}
+
+.demo-drawer-mask.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Drawer (从底部上滑) ── */
+.demo-drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-drawer);
+  max-width: 480px;
+  margin: 0 auto;
+  max-height: 78vh;
+  max-height: 78dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg-board);
+  border-top-left-radius: var(--r-l);
+  border-top-right-radius: var(--r-l);
+  padding: var(--sp-2) 0 calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform var(--d-slow) var(--ease-out);
+  will-change: transform;
+}
+
+.demo-drawer.is-open { transform: translateY(0); }
+
+/* ── Big Win 弹层 (全屏) ── */
+.demo-bigwin {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-bigwin);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 206, 107, .28) 0%,
+    rgba(26, 11, 31, .85) 60%,
+    rgba(0, 0, 0, .92) 100%
+  );
+  transition: opacity var(--d-normal) var(--ease-out);
+}
+
+.demo-bigwin.is-show { opacity: 1; }
+
+/* ── Toast (全局浮层) ── */
+.demo-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--h-spin) + var(--sp-6) + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, var(--sp-2));
+  z-index: var(--z-toast);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--d-normal) var(--ease-out),
+    transform var(--d-normal) var(--ease-out);
+}
+
+.demo-toast.is-show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ============================================================
+   响应式断点
+   ============================================================ */
+
+/* 小屏 (<= 360px): 压缩间距 */
+@media (max-width: 360px) {
+  .demo-shell {
+    padding-left: calc(var(--sp-2) + env(safe-area-inset-left, 0px));
+    padding-right: calc(var(--sp-2) + env(safe-area-inset-right, 0px));
+    gap: var(--sp-1);
+  }
+}
+
+/* 极矮屏 (<= 640px height): 进一步压缩 */
+@media (max-height: 640px) {
+  .demo-shell { gap: var(--sp-1); }
+  .demo-header { min-height: 48px; }
+  .demo-stats  { min-height: 48px; }
+  .demo-bet    { min-height: 48px; }
+  .demo-spin   { min-height: 60px; }
+  .demo-actions{ min-height: 38px; }
+}
+
+/* 矮屏 (<= 700px height) */
+@media (max-height: 700px) {
+  .demo-header { min-height: 52px; }
+}
+
+/* 平板 / 桌面: 居中容器 */
+@media (min-width: 560px) {
+  .demo-shell {
+    box-shadow: var(--sh-3);
+    border-radius: var(--r-l);
+    margin-top: env(safe-area-inset-top, 0px);
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+    height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* 横屏提示 (后续 P12 可加遮罩) */
+@media (orientation: landscape) and (max-height: 500px) {
+  .demo-shell {
+    max-width: 100%;
+    padding-left: calc(var(--sp-4) + env(safe-area-inset-left, 0px));
+    padding-right: calc(var(--sp-4) + env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Reduced Motion: 禁用过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .demo-drawer,
+  .demo-drawer-mask,
+  .demo-bigwin,
+  .demo-toast,
+  .demo-flash {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   End of layout.css
+   ============================================================ */
