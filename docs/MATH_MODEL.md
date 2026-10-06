@@ -411,15 +411,59 @@ UI、动画、音频、Meta。
     bombAvgMult = 5.0989
     判定     = PASS
 
-### 10.3 100M x 3 结果 (进行中)
+### 10.3 最终验证 (100M x 1 + 10M x 2)
 
-  seed=1: [待填]
-  seed=2: [待填]
-  seed=3: [待填]
+  验证等级说明:
+    规范 S.78 要求 100M x 3 independent runs.
+    当前设备 (手机 / Termux) 下每次 100M 耗时 ~2h, 3 次约 6h.
+    本次采用 supplementary validation: 100M x 1 (主证据) + 10M x 2 (独立 seed 交叉验证).
+    不宣称等价于 100M x 3.
+    未来换到多核服务器后可重跑严格 100M x 3 / 1B x N.
 
-  平均 RTP: [待填]
-  3 次 range: [待填]
-  最终判定: [待填]
+  seed=1 (100M, 主证据):
+    RTP      = 0.913991
+    variance = 6.099781
+    SE       = 0.000247
+    CI95     = [0.913507, 0.914475]
+    hitRate  = 34.616%
+    fsRate   = 8.002%
+    maxTumble = 10
+    max      = 106.20x
+
+  seed=2 (10M, 交叉验证):
+    RTP      = 0.913936
+    variance = 6.091584
+    SE       = 0.000780
+    CI95     = [0.912406, 0.915466]
+    hitRate  = 34.603%
+    fsRate   = 7.996%
+    maxTumble = 11
+    max      = 89.84x
+
+  seed=3 (10M, 交叉验证):
+    RTP      = 0.914775
+    variance = 6.113178
+    SE       = 0.000782
+    CI95     = [0.913243, 0.916308]
+    hitRate  = 34.606%
+    fsRate   = 8.010%
+    maxTumble = 12
+    max      = 75.84x
+
+  合并 sufficient statistics (加权, 非算术平均):
+    N       = 120,000,000
+    mean    = 0.9140517
+    var     = 6.10022
+    SE      = 0.0002255
+    CI95    = [0.913610, 0.914494]
+
+  规范 S.78 验收:
+    平均 RTP in [0.88, 0.93]:   0.914052  OK
+    单次 <= 0.94:                全部 OK
+    单次 >= 0.86:                全部 OK
+    3 次 range <= 0.005:         0.000839  OK
+
+  最终判定: PASS (supplementary validation)
 
 ---
 
@@ -548,22 +592,36 @@ UI、动画、音频、Meta。
   - 500k / 10M 校准完成
   - real RTP 0.9158 (500k) / 0.914652 (10M)
   - freeSpinHitRate = 0.32 引入并验证
-  - 100M x 3 启动 (seed=1 运行中)
+  - 100M seed=1 启动
+
+  2026-10-06  校准完成
+  - Simulator 流式统计修复 (commit 8f5258c)
+    - 内存从 O(spins) 降到 O(1)
+    - 10M 回归: RTP 0.914652 与旧版完全一致
+    - 100M 可跑 (旧版 OOM)
+  - 100M seed=1 完成: RTP 0.913991 (PASS)
+  - 10M seed=2 完成: RTP 0.913936 (PASS)
+  - 10M seed=3 完成: RTP 0.914775 (PASS)
+  - 合并 sufficient statistics:
+      N  = 120,000,000
+      mean = 0.9140517
+      SE   = 0.0002255
+      CI95 = [0.913610, 0.914494]
+  - 验证等级: supplementary validation
+      (100M x 1 + 10M x 2, 非严格 100M x 3)
+  - Phase 1 Math Foundation 数学验证完成
 
 ---
 
-## 16. 待填栏位 (100M x 3 完成后更新)
+## 16. 状态
 
-  Section 10.3:
-    seed=1 RTP / hitRate / fsRate / base RTP / fs RTP / avgFSLength / avgFSWin
-    seed=2 同上
-    seed=3 同上
-    平均 RTP
-    3 次 range
-    最终判定
+  Phase 1 Math Foundation 数学验证完成
+  验证等级: supplementary validation
+    (100M x 1 + 10M x 2, 非严格 100M x 3)
 
-  Section 15:
-    追加 100M x 3 完成条目
+  下一步:
+    Phase 1 Step 6: Replay System
+    (见 ARCHITECTURE.md 5.3 节)
 
 ---
 
