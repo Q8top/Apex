@@ -1,6 +1,8 @@
-/* Sweet Bonanza · 试玩 / 正式游戏页
-   架构：复用 sweet.js 的 window.ApexSweetSymbols
-   纯原生 JS · 无框架 · 无 Math.random（用 seeded PRNG） */
+/* Sweet Bonanza - Demo game page
+   Architecture: EngineAdapter (Phase 1 MathEngine) + sweet.js visuals
+   Native ES Module. Math comes only from engine. */
+
+import { createEngineAdapter } from './ui/engine-adapter.js';
 
 (function () {
   'use strict';
@@ -21,10 +23,10 @@
     auto: false,
     autoTimer: 0,
     history: [],
-    seed: 0,
     round: 0,
     drawerOpen: false,
-    freeSpins: 0
+    freeSpins: 0,
+    adapter: null
   };
 
   /* ── 持久化：加载 / 保存 ── */
@@ -43,19 +45,9 @@
     } catch (e) {}
   }
 
-  var symbolPool = [];
   var grid = [];
 
   /* ── seeded PRNG ── */
-  function prng(n) {
-    var x = Math.sin(n * 12.9898 + 78.233) * 43758.5453;
-    return x - Math.floor(x);
-  }
-  function nextRand() {
-    state.seed += 1;
-    return prng(state.seed);
-  }
-
   /* ── 工具 ── */
   function fmtMoney(n) {
     return '¥' + Number(n).toFixed(2);
@@ -104,12 +96,13 @@
   }
 
   /* ── 渲染一个符号到 cell ── */
-  function paintCell(idx, spec) {
+  function paintCell(idx, symbolId) {
     var cell = document.querySelector('.demo-cell[data-idx="' + idx + '"]');
     if (!cell) return;
     var holder = cell.querySelector('.demo-cell__sym');
     holder.innerHTML = '';
-    var node = window.ApexSweetSymbols.build(spec.id, 40);
+    if (!symbolId) return;
+    var node = window.ApexSweetSymbols.build(symbolId, 40);
     if (node) holder.appendChild(node);
   }
 
@@ -119,143 +112,6 @@
      保证 rollGrid 结果与 calcWin 一致：
        isWin=true → 一定有符号组 ≥8
        isWin=false → 所有符号组 ≤7 */
-  function rollGrid() {
-    var pool = symbolPool;
-    var basePool = [], highPool = [], i;
-    for (i = 0; i < pool.length; i++) {
-      if (pool[i].type === 'base') basePool.push(pool[i]);
-      else if (pool[i].type === 'high') highPool.push(pool[i]);
-    }
-
-    var rtp = window.ApexSweetRTP;
-    var decision = rtp ? rtp.decide(state.mode) : { isWin: nextRand() < 0.6, level: null, hasScatter: false };
-
-    var result = new Array(TOTAL);
-    var used = 0;
-
-    /* ── 决定主符号组 ── */
-    var mainSpec = null;
-    var mainCount = 0;
-
-    if (decision.isWin && decision.level) {
-      var lv = decision.level;
-      var sourcePool = (lv.tier === 'high') ? highPool : basePool;
-      if (sourcePool.length === 0) sourcePool = pool;
-      mainSpec = sourcePool[Math.floor(nextRand() * sourcePool.length)];
-      mainCount = lv.count[0] + Math.floor(nextRand() * (lv.count[1] - lv.count[0] + 1));
-      if (mainCount > TOTAL) mainCount = TOTAL;
-    } else {
-      /* 未中奖：挑一个符号最多放 7 个（不触线），剩下随机 */
-      mainSpec = pool[Math.floor(nextRand() * pool.length)];
-      mainCount = 0;
-    }
-
-    /* ── 铺主符号 ── */
-    for (i = 0; i < mainCount; i++) { result[i] = mainSpec; used++; }
-
-    /* ── 未中奖模式：再铺一些同符号，但不超过 7 ── */
-    if (!decision.isWin) {
-      var fillerCount = 4 + Math.floor(nextRand() * 4); /* 4~7 */
-      for (i = 0; i < fillerCount && used < TOTAL; i++) {
-        result[used++] = mainSpec;
-      }
-    }
-
-    /* ── 剩余格子：随机填，避开让任何符号 ≥8 ── */
-    var counts = {};
-    for (i = 0; i < used; i++) {
-      counts[result[i].id] = (counts[result[i].id] || 0) + 1;
-    }
-    var safety = 0;
-    while (used < TOTAL && safety < 500) {
-      safety++;
-      var cand = pool[Math.floor(nextRand() * pool.length)];
-      if (!decision.isWin && (counts[cand.id] || 0) >= 7) continue;
-      result[used++] = cand;
-      counts[cand.id] = (counts[cand.id] || 0) + 1;
-    }
-    /* 兜底：万一还有剩余，强填 */
-    while (used < TOTAL) {
-      result[used++] = pool[Math.floor(nextRand() * pool.length)];
-    }
-
-    /* ── 洗牌 ── */
-    for (var k = result.length - 1; k > 0; k--) {
-      var j = Math.floor(nextRand() * (k + 1));
-      var t = result[k]; result[k] = result[j]; result[j] = t;
-    }
-
-    /* ── Scatter 处理（免费旋转触发） ── */
-    if (decision.hasScatter) {
-      var scatterSpec = findSpec('lolli');
-      if (scatterSpec) {
-        var scCount = 4 + Math.floor(nextRand() * 3); /* 4~6 */
-        var placed = 0, tries = 0;
-        while (placed < scCount && tries < 60) {
-          tries++;
-          var pos = Math.floor(nextRand() * TOTAL);
-          if (result[pos].id !== 'lolli') {
-            result[pos] = scatterSpec;
-            placed++;
-          }
-        }
-      }
-    }
-
-    return { grid: result, decision: decision };
-  }
-
-  /* ── 中奖判定（同种 ≥8） ──
-     返回 { total, winIds, tier, maxCount, scatterCount } */
-  function calcWin(symbols, bet) {
-    var counts = {};
-    for (var i = 0; i < symbols.length; i++) {
-      var id = symbols[i].id;
-      counts[id] = (counts[id] || 0) + 1;
-    }
-    var total = 0;
-    var winIds = [];
-    var maxCount = 0;
-    var scatterCount = counts['lolli'] || 0;
-
-    for (var id2 in counts) {
-      if (!Object.prototype.hasOwnProperty.call(counts, id2)) continue;
-      var c = counts[id2];
-      if (id2 === 'lolli' || id2 === 'wild') continue;
-      if (c < 8) continue;
-      var spec = findSpec(id2);
-      if (!spec) continue;
-      var multStr = (c <= 9) ? spec.m8 : (c <= 11 ? spec.m10 : spec.m12);
-      var mult = parseMult(multStr);
-      if (mult > 0) {
-        total += mult * bet;
-        winIds.push(id2);
-        if (c > maxCount) maxCount = c;
-      }
-    }
-
-    /* 中奖等级（用于触发大额中奖特效） */
-    var ratio = bet > 0 ? (total / bet) : 0;
-    var tier = 'none';
-    if (total > 0) {
-      if (ratio < 10) tier = 'small';
-      else if (ratio < 30) tier = 'nice';
-      else if (ratio < 60) tier = 'big';
-      else if (ratio < 150) tier = 'mega';
-      else tier = 'epic';
-    }
-
-    return {
-      total: total,
-      winIds: winIds,
-      tier: tier,
-      ratio: ratio,
-      maxCount: maxCount,
-      scatterCount: scatterCount
-    };
-  }
-
-  /* ── 更新 UI ── */
   function updateAll() {
     var bal = document.getElementById('demo-balance');
     var bet = document.getElementById('demo-bet');
@@ -285,9 +141,14 @@
   }
 
   /* ── 旋转 ── */
-  function spin(isFree) {
+  function spin() {
     if (state.spinning) return;
-    if (!isFree && state.balance < BETS[state.betIndex]) {
+    if (!state.adapter) {
+      toast('引擎未就绪');
+      return;
+    }
+    var betAmount = BETS[state.betIndex];
+    if (state.balance < betAmount) {
       toast('余额不足，请重置或降低下注');
       return;
     }
@@ -295,9 +156,7 @@
     var btn = document.getElementById('demo-spin');
     if (btn) btn.disabled = true;
 
-    if (!isFree) {
-      state.balance -= BETS[state.betIndex];
-    }
+    state.balance -= betAmount;
     state.won = 0;
     updateAll();
 
@@ -305,73 +164,68 @@
     for (var i = 0; i < cells.length; i++) cells[i].classList.add('is-spinning');
     for (var j = 0; j < cells.length; j++) cells[j].classList.remove('is-win');
 
-    var rolled = rollGrid();
-    var newGrid = rolled.grid;
-    var decision = rolled.decision;
+    var result;
+    try {
+      result = state.adapter.playSpin(betAmount);
+    } catch (e) {
+      console.error('[spin] adapter error', e);
+      toast('计算失败，请重试');
+      state.spinning = false;
+      if (btn) btn.disabled = false;
+      for (var k = 0; k < cells.length; k++) cells[k].classList.remove('is-spinning');
+      return;
+    }
+    var view = result.view;
 
     setTimeout(function () {
-      grid = newGrid;
-      for (var k = 0; k < grid.length; k++) paintCell(k, grid[k]);
+      state.won = view.totalWin;
+      state.balance += view.totalWin;
 
-      var win = calcWin(grid, BETS[state.betIndex]);
-
-      /* 免费旋转倍数累加（简化：若免费旋转期间触发，则乘 1.5） */
-      if (isFree && win.total > 0) {
-        win.total = win.total * 1.5;
+      var flatGrid = [];
+      for (var r = 0; r < view.grid.length; r++) {
+        for (var c = 0; c < view.grid[r].length; c++) {
+          flatGrid.push(view.grid[r][c]);
+        }
+      }
+      for (var m = 0; m < flatGrid.length; m++) {
+        paintCell(m, flatGrid[m]);
       }
 
-      state.won = win.total;
-      state.balance += win.total;
-
       var winSet = {};
-      for (var w = 0; w < win.winIds.length; w++) winSet[win.winIds[w]] = true;
+      for (var w = 0; w < view.winIds.length; w++) winSet[view.winIds[w]] = true;
 
       var cellList = document.querySelectorAll('.demo-cell');
-      for (var m = 0; m < cellList.length; m++) {
-        cellList[m].classList.remove('is-spinning');
-        var idx = parseInt(cellList[m].getAttribute('data-idx'), 10);
-        if (winSet[grid[idx].id]) cellList[m].classList.add('is-win');
+      for (var p = 0; p < cellList.length; p++) {
+        cellList[p].classList.remove('is-spinning');
+        var idx = parseInt(cellList[p].getAttribute('data-idx'), 10);
+        if (winSet[flatGrid[idx]]) cellList[p].classList.add('is-win');
       }
 
       updateAll();
-      if (win.total > 0) popWinAmount();
+      if (view.totalWin > 0) popWinAmount();
 
-      /* ── 反馈：音效 + 震动 + 大额中奖提示 ── */
-      playSpinFeedback(win);
+      playSpinFeedback(view);
 
-      /* ── RTP 记录 ── */
-      var rtp = window.ApexSweetRTP;
-      if (rtp && !isFree) rtp.record(state.mode, BETS[state.betIndex], win.total);
-
-      /* ── 免费旋转触发检测 ── */
-      var scatterCount = win.scatterCount;
-      var freeAwarded = 0;
-      if (scatterCount >= 6) freeAwarded = 15;
-      else if (scatterCount === 5) freeAwarded = 12;
-      else if (scatterCount === 4) freeAwarded = 10;
-
-      if (freeAwarded > 0 && !isFree) {
-        state.freeSpins = freeAwarded;
+      if (view.freeSpinsAwarded > 0) {
+        state.freeSpins = view.freeSpinsAwarded;
         updateFreeSpinUI();
-        toast('🎉 触发 ' + freeAwarded + ' 次免费旋转！');
+        toast('触发 ' + view.freeSpinsAwarded + ' 次免费旋转');
       }
 
-      /* ── 历史记录 ── */
       state.round += 1;
       var winDetails = [];
-      for (var wi = 0; wi < win.winIds.length; wi++) {
-        var wid = win.winIds[wi];
-        var ws = findSpec(wid);
-        var wc = 0;
-        for (var cc = 0; cc < grid.length; cc++) if (grid[cc].id === wid) wc++;
-        if (ws) winDetails.push({ id: wid, name: ws.name, count: wc });
+      for (var ti = 0; ti < view.tumbleSteps.length; ti++) {
+        var ts = view.tumbleSteps[ti];
+        for (var si = 0; si < ts.winIds.length; si++) {
+          winDetails.push({ id: ts.winIds[si], count: 0 });
+        }
       }
       state.history.push({
         round: state.round,
-        bet: BETS[state.betIndex],
-        won: win.total,
+        bet: betAmount,
+        won: view.totalWin,
         time: Date.now(),
-        free: !!isFree,
+        free: view.freeSpinsAwarded > 0,
         details: winDetails
       });
       if (state.history.length > 100) state.history.shift();
@@ -381,23 +235,6 @@
       state.spinning = false;
       if (btn) btn.disabled = false;
 
-      /* ── 免费旋转：自动续转 ── */
-      if (freeAwarded > 0 && !isFree) {
-        setTimeout(function () {
-          for (var fi = 0; fi < freeAwarded; fi++) {
-            (function (round) {
-              setTimeout(function () {
-                state.freeSpins = freeAwarded - round - 1;
-                updateFreeSpinUI();
-                spin(true);
-              }, round * 1600);
-            })(fi);
-          }
-        }, 800);
-        return;
-      }
-
-      /* ── 自动模式 ── */
       if (state.auto && state.freeSpins <= 0) {
         state.autoTimer = setTimeout(spin, AUTO_INTERVAL);
       }
@@ -427,12 +264,12 @@
   }
 
   /* ── 音效 + 震动 + 大额中奖 ── */
-  function playSpinFeedback(win) {
+  function playSpinFeedback(view) {
     /* 震动 */
     if (navigator.vibrate) {
-      if (win.tier === 'epic' || win.tier === 'mega') {
+      if (view.tier === 'epic' || view.tier === 'mega') {
         navigator.vibrate([60, 40, 60, 40, 120]);
-      } else if (win.total > 0) {
+      } else if (view.totalWin > 0) {
         navigator.vibrate(35);
       }
     }
@@ -442,8 +279,8 @@
       if (!ctx) return;
       if (ctx.state === 'suspended') ctx.resume().catch(function(){});
       var now = ctx.currentTime;
-      if (win.total > 0) {
-        var freqs = win.tier === 'epic' ? [523, 659, 784, 1047] : [660, 880];
+      if (view.totalWin > 0) {
+        var freqs = view.tier === 'epic' ? [523, 659, 784, 1047] : [660, 880];
         for (var i = 0; i < freqs.length; i++) {
           var o = ctx.createOscillator();
           var g = ctx.createGain();
@@ -463,8 +300,8 @@
     var tierLabels = {
       nice: '不错！', big: '大额中奖！', mega: '超大奖！', epic: '惊天巨奖！'
     };
-    if (tierLabels[win.tier]) {
-      showBigWin(win.tier, tierLabels[win.tier], win.total);
+    if (tierLabels[view.tier]) {
+      showBigWin(view.tier, tierLabels[view.tier], view.totalWin);
     }
   }
 
@@ -930,23 +767,51 @@
   }
 
   /* ── 初始化 ── */
-  function init() {
+  async function init() {
     if (!window.ApexSweetSymbols || !window.ApexSweetSymbols.list) {
       console.error('[demo] ApexSweetSymbols 未加载');
+      showFatal('符号系统未加载');
       return;
     }
-    symbolPool = window.ApexSweetSymbols.list.filter(function (s) {
-      return s.type === 'base' || s.type === 'high';
-    });
+
+    var config;
+    try {
+      var resp = await fetch('/config/game.json', { cache: 'no-store' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      config = await resp.json();
+    } catch (e) {
+      console.error('[demo] config 加载失败:', e);
+      showFatal('配置加载失败');
+      return;
+    }
+
+    if (!config.game || !config.symbols || !config.modes) {
+      showFatal('配置结构异常');
+      return;
+    }
+
     state.mode = getMode();
+    try {
+      state.adapter = createEngineAdapter(config, { mode: state.mode });
+    } catch (e) {
+      console.error('[demo] Adapter 创建失败:', e);
+      showFatal('引擎初始化失败');
+      return;
+    }
+
     state.history = loadHistory();
     state.round = state.history.length;
     applyMode();
     buildReels();
 
-    /* 初始盘面 */
-    grid = rollGrid();
-    for (var i = 0; i < grid.length; i++) paintCell(i, grid[i]);
+    var previewGrid = state.adapter.previewGrid();
+    var flat = [];
+    for (var r = 0; r < previewGrid.length; r++) {
+      for (var c = 0; c < previewGrid[r].length; c++) {
+        flat.push(previewGrid[r][c]);
+      }
+    }
+    for (var i = 0; i < flat.length; i++) paintCell(i, flat[i]);
 
     bindEvents();
     updateAll();
@@ -957,6 +822,17 @@
     window.addEventListener('orientationchange', function () {
       setTimeout(fitReels, 100);
     });
+  }
+
+  function showFatal(msg) {
+    var winEl = document.getElementById('demo-win-amount');
+    if (winEl) {
+      winEl.textContent = '初始化失败: ' + msg;
+      winEl.style.color = '#ff6b6b';
+    }
+    var btn = document.getElementById('demo-spin');
+    if (btn) btn.disabled = true;
+    console.error('[fatal]', msg);
   }
 
   if (document.readyState === 'loading') {
