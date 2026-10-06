@@ -87,11 +87,35 @@ export class MathEngine {
     return grid;
   }
 
-  // ── 掷命中骰子: 按 modeConfig.hitRateTarget 决定本局是否中奖 ──
-  rollHitDecision() {
-    const hr = this.modeConfig.hitRateTarget || 0.5;
+  // ── 掷命中骰子 ──
+  // overrideRate: 可选, 用于 Free Spins 使用独立的 freeSpinHitRate
+  // 缺省: 使用 modeConfig.hitRateTarget
+  rollHitDecision(overrideRate) {
+    let hr;
+    if (overrideRate != null) {
+      hr = overrideRate;
+    } else {
+      hr = this.modeConfig.hitRateTarget || 0.5;
+    }
+    if (typeof hr !== 'number' || hr < 0 || hr > 1) {
+      throw new RangeError('hitRate 必须是 [0,1] 数值, 实际 ' + hr);
+    }
     const isWin = this.rng.nextFloat() < hr;
     return { isWin };
+  }
+
+  // ── 取 Free Spins 内使用的 hitRate ──
+  // 优先 freeSpinHitRate; 缺省 fallback 到 hitRateTarget (保持 demo 行为不变)
+  getFreeSpinHitRate() {
+    const cfg = this.modeConfig;
+    if (cfg.freeSpinHitRate != null) {
+      const v = cfg.freeSpinHitRate;
+      if (typeof v !== 'number' || v < 0 || v > 1) {
+        throw new RangeError('freeSpinHitRate 必须是 [0,1] 数值, 实际 ' + v);
+      }
+      return v;
+    }
+    return cfg.hitRateTarget || 0.5;
   }
 
   // ── 靶向网格生成 ──
@@ -391,7 +415,8 @@ export class MathEngine {
       remaining -= 1;
       played += 1;
 
-      const decision = this.rollHitDecision();
+      const fsHitRate = this.getFreeSpinHitRate();
+      const decision = this.rollHitDecision(fsHitRate);
       const grid = this.rollGridTargeted(decision.isWin);
       const tumbleResult = this.tumble(grid, bet);
 

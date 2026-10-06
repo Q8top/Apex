@@ -119,7 +119,8 @@
         "hitRateRange":    { "$ref": "#/definitions/rangePair" },
         "maxWinMultiplier": { "type": "number", "exclusiveMinimum": 0 },
         "scatterRate":     { "type": "number", "minimum": 0, "maximum": 1 },
-        "bombRate":        { "type": "number", "minimum": 0, "maximum": 1 }
+        "bombRate":        { "type": "number", "minimum": 0, "maximum": 1 },
+        "freeSpinHitRate": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
 
@@ -135,7 +136,8 @@
         "hitRateRange":     { "$ref": "#/definitions/rangePair" },
         "maxWinMultiplier": { "type": "number", "exclusiveMinimum": 0 },
         "scatterRate":      { "type": "number", "minimum": 0, "maximum": 1 },
-        "bombRate":         { "type": "number", "minimum": 0, "maximum": 1 }
+        "bombRate":         { "type": "number", "minimum": 0, "maximum": 1 },
+        "freeSpinHitRate":  { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
 
