@@ -164,6 +164,12 @@ export class EngineAdapter {
     this._createEngine();
   }
 
+  // === 预览盘面 (不消耗 bet, 用于页面加载初始展示) ===
+  previewGrid() {
+    const g = this._engine.rollGrid();
+    return g.map(function (r) { return r.slice(); });
+  }
+
   // === 只读访问 ===
   getConfig() { return this.config; }
   getMode()   { return this.mode; }
