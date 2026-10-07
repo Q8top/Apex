@@ -158,7 +158,7 @@
       if (haptics) haptics.pulse('spin');
       provider_spin(betMinor, true).then(function (r) {
         totalWinMinor += r.totalWin || 0;
-        if (r.multiplierSum > 0) {
+        if (r.multiplierSum > 0 && r.totalWin > 0) {
           totalMult += r.multiplierSum;
           multEl.style.display = '';
           multValEl.textContent = '×' + totalMult;

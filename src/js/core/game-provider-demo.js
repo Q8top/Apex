@@ -52,6 +52,7 @@
       forceBonus = (typeof window !== 'undefined' && window.__APEX_FORCE_BONUS === true);
     } catch (e) {}
     if (!forceBonus && (buf[0] % 1000) >= 5) return { grid: grid, scatterCount: 0 };
+    crypto.getRandomValues(buf);
     var count = forceBonus ? 6 : (4 + (buf[0] % 3));
     if (count > 6) count = 6;
     var positions = [];
@@ -81,7 +82,7 @@
 
     function getBalance() {
       if (wallet) return { currency: wallet.getCurrency(), minor: wallet.getMinor() };
-      return { currency: 'CNY', minor: 1000000 };
+      currency: wallet ? wallet.getCurrency() : 'CNY',
     }
 
     function resolveTumbles(startGrid, betMinor) {
