@@ -56,7 +56,11 @@
     var winMinor = result.totalWin;
     state.win = winMinor / 100;
     state.balance = result.balanceAfter / 100;
-    renderBoard(false);
+    if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderGrid && result.finalGrid) {
+      window.ApexSymbolRenderer.renderGrid(el.board, result.finalGrid);
+    } else {
+      renderBoard(false);
+    }
     renderStats();
     if (state.win > 0 && window.ApexWinFeedback) {
       window.ApexWinFeedback.show(state.win, betMinor / 100);

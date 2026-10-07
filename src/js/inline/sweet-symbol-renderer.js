@@ -41,9 +41,21 @@
     container.replaceChildren(frag);
   }
 
+  function renderGrid(container, symbolTypes) {
+    if (!container) return;
+    if (!window.ApexSymbols) return;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < symbolTypes.length; i++) {
+      var id = window.ApexSymbols.getSymbolId(symbolTypes[i]);
+      frag.appendChild(createCell(id, i));
+    }
+    container.replaceChildren(frag);
+  }
+
   window.ApexSymbolRenderer = Object.freeze({
     createSymbol: createSymbol,
     createCell: createCell,
-    renderBoard: renderBoard
+    renderBoard: renderBoard,
+    renderGrid: renderGrid
   });
 })();
