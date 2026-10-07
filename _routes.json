@@ -1,6 +1,8 @@
 {
   "version": 1,
-  "include": ["/*"],
+  "include": [
+    "/*"
+  ],
   "exclude": [
     "/_headers",
     "/_routes.json",
@@ -22,6 +24,7 @@
     "/package.json",
     "/package-lock.json",
     "/wrangler.toml",
-    "/.env*"
+    "/.env*",
+    "/.cfignore"
   ]
 }
