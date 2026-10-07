@@ -10,20 +10,7 @@
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
 <link rel="stylesheet" href="/src/css/announcements.css?v=202610011614">
-<style>
-  html.ann-auth-hint body { visibility: hidden; }
-</style>
-<script>
-  (function(){try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.style.visibility='hidden';}
-  }catch(e){}
-  window.addEventListener('pageshow',function(e){
-    try{if(localStorage.getItem('apex_auth_hint')==='1'){document.documentElement.style.visibility='hidden';}
-    else{document.documentElement.style.visibility='';}
-    }catch(x){}
-  });
-  </script>
-  <style>html,body,*{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}</style>
-<style>.apex-loader{position:fixed;inset:0;z-index:9999;background:#fafafa;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease}.apex-loader.apex-hide{opacity:0;pointer-events:none}.apex-loader-spin{width:36px;height:36px;border:3px solid #ececee;border-top-color:#0a0a0a;border-radius:50%;animation:apexSpin .8s linear infinite}@keyframes apexSpin{to{transform:rotate(360deg)}}</style>
+<script src="/src/js/inline/announcements-boot.js"></script>
 </head>
 <body>
 <div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
