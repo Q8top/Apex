@@ -159,8 +159,14 @@
 <main class="sd-main">
   <section class="sd-stage" aria-label="游戏区域">
     <div class="sd-board" id="sd-board"></div>
-    <div class="sd-win-pop" id="sd-win-pop" hidden>
-      <span class="sd-win-pop-amount" id="sd-win-pop-amount">¥0.00</span>
+    <div class="sd-win-layer" id="sd-win-layer" hidden>
+      <div class="sd-win-toast" id="sd-win-toast" role="status" aria-live="polite" aria-atomic="true">
+        <svg class="sd-win-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M12 2 L14.4 9.2 L22 9.6 L16 14 L18 21.4 L12 17 L6 21.4 L8 14 L2 9.6 L9.6 9.2 Z"/>
+        </svg>
+        <span class="sd-win-label" id="sd-win-label">本局赢得</span>
+        <span class="sd-win-amount" id="sd-win-amount">¥0.00</span>
+      </div>
     </div>
   </section>
 
@@ -175,7 +181,7 @@
     </div>
     <div class="sd-stat">
       <span class="sd-stat-label">本局赢得</span>
-      <span class="sd-stat-value" id="sd-win">¥0.00</span>
+      <span class="sd-stat-value" id="sd-win" aria-live="polite" aria-atomic="true">¥0.00</span>
     </div>
   </section>
 
@@ -245,6 +251,7 @@
   </div>
 </div>
 
+<script src="/src/js/inline/sweet-win-feedback.js?v=1"></script>
 <script src="/src/js/inline/sweet-demo.js?v=1"></script>
 </body>
 </html>

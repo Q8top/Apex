@@ -50,8 +50,6 @@
     el.confirmCurrent = $('sd-confirm-current');
     el.confirmCancel = $('sd-confirm-cancel');
     el.confirmOk = $('sd-confirm-ok');
-    el.winPop = $('sd-win-pop');
-    el.winPopAmount = $('sd-win-pop-amount');
   }
 
   function renderBoard(initial) {
@@ -125,7 +123,9 @@
         var mult = ((r[0] % 20) + 1) / 10;
         state.win = Math.round(getBet() * mult * 100) / 100;
         state.balance += state.win;
-        showWinPop(state.win);
+        if (window.ApexWinFeedback) {
+          window.ApexWinFeedback.show(state.win, getBet());
+        }
       }
       el.board.dataset.spinning = '0';
       state.spinning = false;
@@ -216,22 +216,6 @@
     renderStats();
     closeConfirm();
     toast('试玩余额已重置');
-  }
-
-  /* ============ 中奖浮层 ============ */
-  var winPopTimer = 0;
-  function showWinPop(amount) {
-    if (!el.winPop || !el.winPopAmount) return;
-    el.winPopAmount.textContent = fmt(amount);
-    el.winPop.removeAttribute('hidden');
-    requestAnimationFrame(function () { el.winPop.classList.add('is-visible'); });
-    el.board.dataset.win = '1';
-    clearTimeout(winPopTimer);
-    winPopTimer = setTimeout(function () {
-      el.winPop.classList.remove('is-visible');
-      el.board.dataset.win = '0';
-      setTimeout(function () { el.winPop.setAttribute('hidden', ''); }, 400);
-    }, 1800);
   }
 
   var toastEl = null, toastTimer = 0;
