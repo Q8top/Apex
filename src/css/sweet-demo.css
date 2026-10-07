@@ -377,3 +377,7 @@ a{color:inherit;text-decoration:none}
 .sd-bonus-stat-value{display:block;font-size:18px;font-weight:800;color:#111;font-variant-numeric:tabular-nums}
 .sd-bonus-btn{width:100%;height:46px;border-radius:14px;background:#111;color:#fff;font-weight:700;font-size:14px;border:0;cursor:pointer}
 .sd-bonus-btn:hover{background:#1c1c1c}
+
+.sd-bonus-mult{margin-bottom:16px;background:linear-gradient(135deg,#fff7d6,#fde68a);border:1px solid rgba(180,83,9,.22);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.sd-bonus-mult .sd-bonus-stat-label{color:#92400e;margin:0}
+.sd-bonus-mult-val{font-size:22px;font-weight:900;color:#78350f;font-variant-numeric:tabular-nums;letter-spacing:-.5px}

@@ -118,6 +118,7 @@
       +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">剩余局数</span><span class="sd-bonus-stat-value" id="sd-bonus-left">-</span></div>'
       +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">累计赢得</span><span class="sd-bonus-stat-value" id="sd-bonus-total">¥0.00</span></div>'
       +   '</div>'
+      +   '<div class="sd-bonus-mult" id="sd-bonus-mult" style="display:none"><span class="sd-bonus-stat-label">倍率合计</span><span class="sd-bonus-mult-val" id="sd-bonus-mult-val">×0</span></div>'
       +   '<button type="button" class="sd-bonus-btn" id="sd-bonus-ok" style="display:none">完成</button>'
       + '</div>';
     var root = document.createElement('div');
@@ -135,7 +136,10 @@
     var okBtn = overlay.querySelector('#sd-bonus-ok');
     var remaining = feature.initialSpins || 10;
     var totalWinMinor = 0;
+    var totalMult = 0;
     var round = 0;
+    var multEl = overlay.querySelector('#sd-bonus-mult');
+    var multValEl = overlay.querySelector('#sd-bonus-mult-val');
 
     overlay.classList.add('is-open');
     leftEl.textContent = remaining;
@@ -149,6 +153,11 @@
       if (haptics) haptics.pulse('spin');
       provider_spin(betMinor, true).then(function (r) {
         totalWinMinor += r.totalWin || 0;
+        if (r.multiplierSum > 0) {
+          totalMult += r.multiplierSum;
+          multEl.style.display = '';
+          multValEl.textContent = '×' + totalMult;
+        }
         remaining--;
         leftEl.textContent = remaining;
         totalEl.textContent = fmt(totalWinMinor / 100);
