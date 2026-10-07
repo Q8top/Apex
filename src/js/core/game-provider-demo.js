@@ -159,6 +159,14 @@
 
       var result = resolveTumbles(initialGrid, betMinor);
 
+      var multiplierSum = 0;
+      for (var mi = 0; mi < mults.length; mi++) {
+        multiplierSum += mults[mi].value;
+      }
+      if (multiplierSum > 0 && result.totalWinMinor > 0) {
+        result.totalWinMinor = result.totalWinMinor * multiplierSum;
+      }
+
       balanceMinor += result.totalWinMinor;
 
       var payload = {
@@ -173,7 +181,8 @@
         tumbles: result.tumbles,
         totalWin: result.totalWinMinor,
         feature: bonusInfo,
-        multipliers: mults
+        multipliers: mults,
+        multiplierSum: multiplierSum
       };
       return simulateDelay(400, 900).then(function () { return payload; });
     }
