@@ -24,7 +24,8 @@
         events.emit('game:error', { stage: 'spin-start', error: e });
         return { ok: false, reason: 'transition' };
       }
-      Promise.resolve(provider.spin({ bet: bet }))
+      Promise.resolve()
+        .then(function () { return provider.spin({ bet: bet }); })
         .then(function (result) {
           sm.transition(sm.PHASE.SPINNING);
           events.emit('game:spin-result', result);
