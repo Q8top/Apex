@@ -84,18 +84,24 @@
         var t = tumbles[i];
         t.removedPositions.forEach(function (idx) {
           var c = getCellAt(idx);
-          if (c) c.classList.add('is-removing');
+          if (c) c.classList.add('is-winning');
         });
         setTimeout(function () {
-          renderGridAt(t.gridAfter);
-          var cells = el.board.querySelectorAll('.sd-sym');
-          cells.forEach(function (c) { c.classList.add('is-entering'); });
+          t.removedPositions.forEach(function (idx) {
+            var c = getCellAt(idx);
+            if (c) { c.classList.remove('is-winning'); c.classList.add('is-removing'); }
+          });
           setTimeout(function () {
-            cells.forEach(function (c) { c.classList.remove('is-entering'); });
-            i++;
-            playOne();
-          }, 400);
-        }, 300);
+            renderGridAt(t.gridAfter);
+            var cells = el.board.querySelectorAll('.sd-sym');
+            cells.forEach(function (c) { c.classList.add('is-entering'); });
+            setTimeout(function () {
+              cells.forEach(function (c) { c.classList.remove('is-entering'); });
+              i++;
+              playOne();
+            }, 400);
+          }, 300);
+        }, 500);
       }
       playOne();
     });
