@@ -165,6 +165,9 @@
           multEl.style.display = '';
           multValEl.textContent = '×' + totalMult;
         }
+        if (r.feature && r.feature.triggered && window.ApexBonus) {
+          remaining += window.ApexBonus.CONFIG.retriggerAdd;
+        }
         remaining--;
         leftEl.textContent = remaining;
         totalEl.textContent = fmt(totalWinMinor / 100);
@@ -265,6 +268,7 @@
     el.confirmCurrent = $('sd-confirm-current');
     el.confirmCancel = $('sd-confirm-cancel');
     el.confirmOk = $('sd-confirm-ok');
+    el.winLabel = $('sd-win-fb-label');
   }
 
   function renderBoard(initial) {
@@ -334,7 +338,6 @@
 
   function applyI18nDynamic() {
     if (!window.ApexI18n) return;
-    el.winLabel = el.winLabel || document.getElementById('sd-win-fb-label');
     if (el.winLabel) el.winLabel.textContent = window.ApexI18n.t('win.label');
   }
 
@@ -573,6 +576,7 @@
     if (window.ApexAudio) audio = window.ApexAudio.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     applyI18n();
+    applyI18nDynamic();
     applySettings();
     if (window.ApexSettings) window.ApexSettings.onChange(applySettings);
     renderBoard(true);
