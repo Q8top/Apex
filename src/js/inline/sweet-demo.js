@@ -359,7 +359,7 @@
   function handleMenuAction(action) {
     switch (action) {
       case 'home':    window.location.href = '/'; break;
-      case 'rules':   toast('游戏规则 · 即将上线'); break;
+      case 'rules':   if (window.ApexRules) window.ApexRules.open(); else toast('即将上线'); break;
       case 'history': toast('游戏记录 · 即将上线'); break;
       case 'settings':toast('游戏设置 · 即将上线'); break;
       case 'sound':   toast('音效设置 · 即将上线'); break;
