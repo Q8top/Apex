@@ -82,7 +82,7 @@
 
     function getBalance() {
       if (wallet) return { currency: wallet.getCurrency(), minor: wallet.getMinor() };
-      currency: wallet ? wallet.getCurrency() : 'CNY',
+      return { currency: 'CNY', minor: 1000000 };
     }
 
     function resolveTumbles(startGrid, betMinor) {
@@ -185,7 +185,7 @@
       var payload = {
         spinId: 'demo_' + Date.now() + '_' + (++SPIN_COUNTER) + '_' + randInt(100000),
         gameId: 'sweet',
-        currency: 'CNY',
+        currency: wallet ? wallet.getCurrency() : 'CNY',
         bet: betMinor,
         balanceBefore: before,
         balanceAfter: wallet ? wallet.getMinor() : before,
