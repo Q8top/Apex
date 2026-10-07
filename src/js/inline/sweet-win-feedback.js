@@ -90,9 +90,15 @@
     el.fb.classList.add('is-visible');
     state.visible = true;
 
+    // 滚动期间关闭 aria-live，避免每帧触发朗读
+    var liveRegion = el.fb.parentElement;
+    if (liveRegion) liveRegion.setAttribute('aria-live', 'off');
+
     // 数字滚动
     rollNumber(0, amt, meta.rollMs, function (v) {
       el.amount.textContent = fmt(v);
+      // 滚动结束（最后一份值 = amt）时恢复 aria-live
+      if (v === amt && liveRegion) liveRegion.setAttribute('aria-live', 'polite');
     });
 
     // 结束时隐藏

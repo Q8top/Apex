@@ -25,6 +25,9 @@
     var svg = createSymbol(symbolId);
     var delay = ((index * 137) % 36) / 10;
     svg.style.setProperty('--sd-sym-delay', delay.toFixed(2) + 's');
+    if (window.ApexSymbols && window.ApexSymbols.getScaleById) {
+      svg.style.setProperty('--symbol-scale', String(window.ApexSymbols.getScaleById(symbolId)));
+    }
     cell.appendChild(svg);
     return cell;
   }

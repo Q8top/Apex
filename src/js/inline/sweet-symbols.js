@@ -88,6 +88,12 @@
   }
 
   function getSymbolId(t) { return SYMBOLS[t] || null; }
+  var ID_TO_KEY = {};
+  Object.keys(SYMBOLS).forEach(function (k) { ID_TO_KEY[SYMBOLS[k]] = k; });
+  function getScaleById(symbolId) {
+    var k = ID_TO_KEY[symbolId];
+    return k ? SYMBOL_META[k].scale : 1;
+  }
   function getScale(t) {
     var m = SYMBOL_META[t];
     return m ? m.scale : 1;
@@ -108,6 +114,7 @@
     pickSymbol: pickSymbol,
     pickBase: pickBase,
     getSymbolId: getSymbolId,
+    getScaleById: getScaleById,
     getScale: getScale,
     getMaterial: getMaterial,
     getAll: function () { return Object.keys(SYMBOLS); }
