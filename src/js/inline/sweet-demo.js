@@ -5,7 +5,7 @@
   var INITIAL_BALANCE = 10000;
   var BET_OPTIONS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var DEFAULT_BET_INDEX = 3;
-  var SYM_IDS = ['sb-sym-red','sb-sym-blue','sb-sym-green','sb-sym-yellow','sb-sym-orange','sb-sym-purple','sb-sym-pink','sb-sym-rainbow'];
+  var SYM_IDS = ['sb-fruit-banana','sb-fruit-grape','sb-fruit-watermelon','sb-fruit-plum','sb-fruit-apple','sb-candy-blue','sb-candy-green','sb-candy-purple','sb-candy-heart','sb-scatter-lollipop','sb-multiplier-bomb'];
   var CELLS = 30;
 
   var state = {
