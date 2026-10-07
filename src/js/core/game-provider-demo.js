@@ -21,6 +21,27 @@
   }
 
 
+
+  function placeMultipliers(grid, count) {
+    var next = grid.slice();
+    var buf = new Uint32Array(1);
+    var placed = 0;
+    var guard = 0;
+    var mults = [];
+    while (placed < count && guard < 100) {
+      crypto.getRandomValues(buf);
+      var idx = buf[0] % TOTAL;
+      if (next[idx] !== 'LOLLIPOP' && next[idx] !== 'MULTIPLIER') {
+        var v = [2, 3, 5, 10, 25, 50, 100][buf[0] % 7];
+        next[idx] = 'MULTIPLIER';
+        mults.push({ pos: idx, value: v });
+        placed++;
+      }
+      guard++;
+    }
+    return { grid: next, mults: mults };
+  }
+
   function maybePlaceScatters(grid) {
     var buf = new Uint32Array(1);
     crypto.getRandomValues(buf);
@@ -126,6 +147,16 @@
         };
       }
 
+      var mults = [];
+      if (req && req.free) {
+        var buf2 = new Uint32Array(1);
+        crypto.getRandomValues(buf2);
+        var mc = 1 + (buf2[0] % 3);
+        var mres = placeMultipliers(initialGrid, mc);
+        initialGrid = mres.grid;
+        mults = mres.mults;
+      }
+
       var result = resolveTumbles(initialGrid, betMinor);
 
       balanceMinor += result.totalWinMinor;
@@ -141,7 +172,8 @@
         finalGrid: result.finalGrid,
         tumbles: result.tumbles,
         totalWin: result.totalWinMinor,
-        feature: bonusInfo
+        feature: bonusInfo,
+        multipliers: mults
       };
       return simulateDelay(400, 900).then(function () { return payload; });
     }
