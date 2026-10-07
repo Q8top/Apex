@@ -36,6 +36,38 @@
     return SYM_IDS[a[0] % SYM_IDS.length];
   }
 
+  var runtime = null;
+
+  function initRuntime() {
+    if (!window.ApexGameRuntime || !window.ApexDemoProvider) return null;
+    var bus = window.ApexEventBus();
+    var provider = window.ApexDemoProvider.create({ initialBalance: 1000000 });
+    var rt = window.ApexGameRuntime.create({ events: bus, provider: provider });
+    bus.on('game:spin-result', onSpinResult);
+    bus.on('game:error', function (e) { toast('游戏错误'); });
+    return rt;
+  }
+
+  var pending = null;
+
+  function onSpinResult(result) {
+    if (!pending) return;
+    var betMinor = result.bet;
+    var winMinor = result.totalWin;
+    state.win = winMinor / 100;
+    state.balance = result.balanceAfter / 100;
+    renderBoard(false);
+    renderStats();
+    if (state.win > 0 && window.ApexWinFeedback) {
+      window.ApexWinFeedback.show(state.win, betMinor / 100);
+    }
+    el.board.dataset.spinning = '0';
+    state.spinning = false;
+    renderSpinBtn();
+    if (state.autoSpin) scheduleAuto();
+    pending = null;
+  }
+
   var el = {};
   function cacheEl() {
     el.board = $('sd-board');
@@ -119,11 +151,19 @@
     }
 
     state.spinning = true;
+    el.board.dataset.spinning = '1';
+    renderSpinBtn();
+
+    if (runtime) {
+      pending = true;
+      var betMinor = Math.round(getBet() * 100);
+      runtime.startSpin(betMinor);
+      return;
+    }
+
     state.balance -= getBet();
     state.win = 0;
-    el.board.dataset.spinning = '1';
     renderStats();
-    renderSpinBtn();
 
     var duration = state.fastMode ? 400 : 900;
 
@@ -309,6 +349,7 @@
 
   function init() {
     cacheEl();
+    runtime = initRuntime();
     renderBoard(true);
     renderStats();
     renderBetButtons();
