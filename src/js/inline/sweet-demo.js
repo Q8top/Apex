@@ -501,6 +501,7 @@
   }
 
   function openConfirm() {
+    if (state.spinning || state.bonusLock) return;
     el.confirmCurrent.textContent = fmt(state.balance);
     el.confirmRoot.removeAttribute('hidden');
     void el.confirmRoot.offsetWidth;
