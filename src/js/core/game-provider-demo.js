@@ -18,6 +18,7 @@
   }
 
   function pickBaseSymbol() {
+    if (!window.ApexSymbols) return null;
     return window.ApexSymbols.pickBase();
   }
 
@@ -70,7 +71,8 @@
 
   function genGrid() {
     var g = [];
-    for (var i = 0; i < TOTAL; i++) g.push(pickBaseSymbol());
+    var s = pickBaseSymbol();
+    g.push(s || 'BANANA');
     return g;
   }
 
