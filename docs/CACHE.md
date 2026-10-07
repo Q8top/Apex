@@ -3,8 +3,7 @@
 ## 一、三条铁律
 
 ### 铁律 1 · HTML 永不缓存
-所有 .html 及其 clean URL（/sweet / /privacy / /terms / /status / /announcements）必须 Cache-Control: no-store。
-CF Pages 会把 /sweet.html 308 到 /sweet，两者都要写进 _headers。
+所有 .html 及其 clean URL（/privacy / /terms / /status / /announcements）必须 Cache-Control: no-store。
 
 ### 铁律 2 · CSS/JS 用内容 hash 做身份
 所有 /src/ 引用必须：以 /src/ 开头（带前导斜杠）；由 scripts/hash-assets.mjs 在 build 时自动加 ?v=<8位sha256>。
@@ -28,6 +27,6 @@ scripts/check-cache-refs.sh 扫描 dist/*.html，任何 /src/ 引用缺 ?v= 就�
 
 ## 五、改造记录（2026-10-05）
 - _headers: /src/* 从 no-cache 改 immutable；补齐 9 个 clean URL no-store
-- sweet.html: src/ 改 /src/ 前导斜杠
+- 各 .html: src/ 改 /src/ 前导斜杠
 - 新增 scripts/check-cache-refs.sh
 - 新增本文档
