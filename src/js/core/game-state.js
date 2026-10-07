@@ -44,6 +44,7 @@
 
     function transition(next) {
       var from = phase;
+      if (next === from) return phase;
       if (!can(next)) {
         throw new Error('Invalid transition: ' + from + ' -> ' + next);
       }
