@@ -9,6 +9,7 @@
   var ROWS = 5;
   var TOTAL = COLS * ROWS;
   var MAX_TUMBLES = 20;
+  var SPIN_COUNTER = 0;
 
   function randInt(max) {
     var b = new Uint32Array(1);
@@ -84,6 +85,9 @@
     }
 
     function resolveTumbles(startGrid, betMinor) {
+      if (!window.ApexEvaluator || !window.ApexTumble) {
+        return { finalGrid: startGrid, totalWinMinor: 0, tumbles: [] };
+      }
       var grid = startGrid;
       var totalWinMinor = 0;
       var tumbles = [];
@@ -178,7 +182,7 @@
       if (wallet) wallet.credit(result.totalWinMinor);
 
       var payload = {
-        spinId: 'demo_' + Date.now() + '_' + randInt(100000),
+        spinId: 'demo_' + Date.now() + '_' + (++SPIN_COUNTER) + '_' + randInt(100000),
         gameId: 'sweet',
         currency: 'CNY',
         bet: betMinor,
