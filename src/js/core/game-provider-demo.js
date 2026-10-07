@@ -78,6 +78,12 @@
       };
     }
 
+    function simulateDelay(minMs, maxMs) {
+      var span = Math.max(1, maxMs - minMs);
+      var ms = minMs + randInt(span);
+      return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
     function spin(req) {
       var betMinor = Number(req && req.bet) || 200;
       var before = balanceMinor;
@@ -88,7 +94,7 @@
 
       balanceMinor += result.totalWinMinor;
 
-      return Promise.resolve({
+      var payload = {
         spinId: 'demo_' + Date.now() + '_' + randInt(100000),
         gameId: 'sweet',
         currency: 'CNY',
@@ -100,7 +106,8 @@
         tumbles: result.tumbles,
         totalWin: result.totalWinMinor,
         feature: null
-      });
+      };
+      return simulateDelay(400, 900).then(function () { return payload; });
     }
 
     return { getBalance: getBalance, spin: spin };
