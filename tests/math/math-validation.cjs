@@ -3,7 +3,7 @@
 'use strict';
 var path = require('path');
 global.window = {};
-global.crypto = require('crypto').webcrypto;
+// Node 22 内置 webcrypto，无需手动赋值
 
 var ROOT = path.join(__dirname, '../..');
 require(path.join(ROOT, 'src/js/inline/sweet-symbols.js'));
