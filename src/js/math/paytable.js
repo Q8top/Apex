@@ -7,15 +7,15 @@
   'use strict';
 
   var PAYTABLE = Object.freeze({
-    BANANA:       Object.freeze({ 8: 1.0,  10: 2.0,  12: 7.0 }),
-    GRAPE:        Object.freeze({ 8: 1.0,  10: 3.0,  12: 8.0 }),
-    WATERMELON:   Object.freeze({ 8: 1.5,  10: 3.5,  12: 10.0 }),
-    PLUM:         Object.freeze({ 8: 1.5,  10: 3.5,  12: 10.0 }),
-    APPLE:        Object.freeze({ 8: 2.0,  10: 5.0,  12: 13.0 }),
-    BLUE_CANDY:   Object.freeze({ 8: 2.5,  10: 7.0,  12: 18.0 }),
-    GREEN_CANDY:  Object.freeze({ 8: 2.5,  10: 7.0,  12: 18.0 }),
-    PURPLE_CANDY: Object.freeze({ 8: 3.5,  10: 9.0,  12: 22.0 }),
-    RED_HEART:    Object.freeze({ 8: 5.0,  10: 13.0, 12: 36.0 })
+    BANANA:       Object.freeze({ 8: 0.9,  10: 2.0,  12: 6.5 }),
+    GRAPE:        Object.freeze({ 8: 0.9,  10: 2.7,  12: 7.5 }),
+    WATERMELON:   Object.freeze({ 8: 1.4,  10: 3.3,  12: 9.5 }),
+    PLUM:         Object.freeze({ 8: 1.4,  10: 3.3,  12: 9.5 }),
+    APPLE:        Object.freeze({ 8: 1.9,  10: 4.7,  12: 12.0 }),
+    BLUE_CANDY:   Object.freeze({ 8: 2.4,  10: 6.5,  12: 17.0 }),
+    GREEN_CANDY:  Object.freeze({ 8: 2.4,  10: 6.5,  12: 17.0 }),
+    PURPLE_CANDY: Object.freeze({ 8: 3.3,  10: 8.5,  12: 21.0 }),
+    RED_HEART:    Object.freeze({ 8: 4.7,  10: 12.0, 12: 34.0 })
   });
 
   var MIN_MATCH = 8;
