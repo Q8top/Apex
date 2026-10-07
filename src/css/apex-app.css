@@ -786,3 +786,16 @@
   border-radius: inherit;
   pointer-events: none;
 }
+
+/* Sweet Bonanza 卡片可交互（其余 11 张保持占位） */
+.apex-game-card--live,.apex-game-card--live *{pointer-events:auto!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important}
+.apex-game-card--live{position:relative;transition:transform .2s,box-shadow .2s;border-radius:inherit}
+.apex-game-card--live:hover{transform:translateY(-2px)}
+.apex-game-card--live:active{transform:translateY(0) scale(.98)}
+.apex-game-card--live:focus-visible{outline:2px solid #0a0a0a;outline-offset:3px;border-radius:12px}
+.apex-game-card--live::after{content:'';position:absolute;inset:-3px;border-radius:inherit;background:linear-gradient(135deg,rgba(255,107,157,.55),rgba(168,85,247,.45));opacity:0;z-index:-1;transition:opacity .22s;filter:blur(10px);pointer-events:none}
+.apex-game-card--live:hover::after{opacity:1}
+.apex-game-card--live .apex-game-card-icon{position:relative}
+.apex-game-card--live .apex-game-card-icon::after{content:'';position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#ff6b9d;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(255,107,157,.35);animation:apexSweetPulse 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes apexSweetPulse{0%,100%{box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(255,107,157,.35)}50%{box-shadow:0 0 0 2px #fff,0 0 0 6px rgba(255,107,157,.1)}}
+@media (prefers-reduced-motion:reduce){.apex-game-card--live,.apex-game-card--live::after,.apex-game-card--live .apex-game-card-icon::after{transition:none!important;animation:none!important}}

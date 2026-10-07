@@ -169,7 +169,10 @@ function renderCatContent(content, catKey){
   ];
   var html='<div class="apex-game-grid apex-game-placeholder">';
   GAMES.forEach(function(g){
-    html+='<div class="apex-game-card">'
+    var isSweet = g.n === '糖果连连爆';
+    var cls = isSweet ? ' apex-game-card--live' : '';
+    var attr = isSweet ? ' role="button" tabindex="0" aria-label="'+g.n+' 打开模式选择" data-game="sweet"' : '';
+    html+='<div class="apex-game-card'+cls+'"'+attr+'>'
       +'<span class="apex-game-card-icon"><img src="'+g.src+'" alt="" loading="lazy" draggable="false"></span>'
       +'<span class="apex-game-card-name">'+g.n+'</span>'
       +'</div>';
@@ -180,6 +183,17 @@ function renderCatContent(content, catKey){
   content.querySelectorAll(".apex-game-card").forEach(function(el){
     el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
     el.addEventListener("dragstart", function(e){ e.preventDefault(); });
+  });
+  content.querySelectorAll(".apex-game-card--live").forEach(function(el){
+    function go(){
+      if (window.ApexSweetModal && typeof window.ApexSweetModal.open === "function") {
+        window.ApexSweetModal.open();
+      }
+    }
+    el.addEventListener("click", go);
+    el.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
   });
 }
 function makeCats(){
