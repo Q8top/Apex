@@ -148,7 +148,6 @@
     function nextFree() {
       if (remaining <= 0 || !runtime || !runtime.state) return finish();
       round++;
-      runtime.provider = runtime.provider;
       if (window.ApexAudio) audio && audio.play('spin-start');
       if (haptics) haptics.pulse('spin');
       provider_spin(betMinor, true).then(function (r) {
@@ -179,11 +178,10 @@
   }
 
   function provider_spin(betMinor, isFree) {
-    if (window.ApexDemoProvider) {
-      var p = window.ApexDemoProvider.create({ initialBalance: 999999999 });
-      return p.spin({ bet: betMinor, free: !!isFree });
+    if (!runtime || !runtime.provider) {
+      return Promise.reject(new Error('no provider'));
     }
-    return Promise.reject(new Error('no provider'));
+    return runtime.provider.spin({ bet: betMinor, free: !!isFree });
   }
 
   function onSpinResult(result) {
