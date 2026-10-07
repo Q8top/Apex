@@ -23,14 +23,17 @@
 
     function setEnabled(v) {
       state.enabled = !!v;
-      if (!state.enabled && state.currentBgm) {
-        stop(state.currentBgm);
-      }
+      if (!state.enabled && state.currentBgm) stop(state.currentBgm);
     }
 
     function setVolume(kind, v) {
       var n = Math.max(0, Math.min(1, Number(v) || 0));
-      if (kind === 'master') state.masterVolume = n;
+      if (kind === 'master') {
+        state.masterVolume = n;
+        if (window.ApexAudioSynth && window.ApexAudioSynth.setMasterVolume) {
+          window.ApexAudioSynth.setMasterVolume(n);
+        }
+      }
       else if (kind === 'music') state.musicVolume = n;
       else if (kind === 'sfx') state.sfxVolume = n;
     }
@@ -42,10 +45,11 @@
 
     function play(name, opts) {
       if (!isEnabled()) return null;
-      var entry = state.loaded[name];
-      if (!entry) return null;
-      // 音源接入后此处播放；当前静默
-      return { name: name, category: classify(name), opts: opts || {} };
+      var handle = { name: name, category: classify(name), opts: opts || {} };
+      if (window.ApexAudioSynth && window.ApexAudioSynth.play) {
+        handle.played = window.ApexAudioSynth.play(name, opts);
+      }
+      return handle;
     }
 
     function stop(handle) { void handle; }
