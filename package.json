@@ -28,7 +28,8 @@
     "test:all": "npm run test:security && npm run test:password && npm run test:csrf && npm run test:headers && npm run test:cbor && npm run test:webauthn && npm run test:json-shape && npm run test:password-length",
     "verify": "npm run syntax && npm run test:all",
     "test:json-shape": "node tests/json-shape.test.js",
-    "test:password-length": "node tests/password-length.test.js"
+    "test:password-length": "node tests/password-length.test.js",
+    "test:math": "node tests/math/math-validation.js"
   },
   "devDependencies": {
     "wrangler": "^4.144.0"
