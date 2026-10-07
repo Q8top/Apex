@@ -243,7 +243,12 @@
       state.bonusLock = true;
       runBonusSequence(result.feature, betMinor, function (bonusWin) {
         state.bonusLock = false;
-        state.balance += bonusWin / 100;
+        var p = runtime && runtime.getProvider && runtime.getProvider();
+        if (p && p.getBalance) {
+          state.balance = p.getBalance().minor / 100;
+        } else {
+          state.balance += bonusWin / 100;
+        }
         renderStats();
         if (state.autoSpin) scheduleAuto();
         pending = null;

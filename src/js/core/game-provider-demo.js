@@ -134,11 +134,12 @@
 
     function spin(req) {
       var betMinor = Number(req && req.bet) || 200;
+      var isFree = !!(req && req.free);
       var before = wallet ? wallet.getMinor() : 1000000;
-      if (wallet && wallet.getMinor() < betMinor) {
+      if (!isFree && wallet && wallet.getMinor() < betMinor) {
         return Promise.reject(new Error('insufficient'));
       }
-      if (wallet) wallet.debit(betMinor);
+      if (!isFree && wallet) wallet.debit(betMinor);
 
       var initialGrid = genGrid();
       var scatterCheck = maybePlaceScatters(initialGrid);
