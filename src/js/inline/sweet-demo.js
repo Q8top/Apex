@@ -178,10 +178,12 @@
   }
 
   function provider_spin(betMinor, isFree) {
-    if (!runtime || !runtime.provider) {
-      return Promise.reject(new Error('no provider'));
+    if (!runtime || !runtime.getProvider) {
+      return Promise.reject(new Error('no runtime'));
     }
-    return runtime.provider.spin({ bet: betMinor, free: !!isFree });
+    var p = runtime.getProvider();
+    if (!p) return Promise.reject(new Error('no provider'));
+    return p.spin({ bet: betMinor, free: !!isFree });
   }
 
   function onSpinResult(result) {

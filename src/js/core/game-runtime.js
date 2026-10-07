@@ -46,6 +46,7 @@
       state: sm,
       getPhase: getPhase,
       isIdle: isIdle,
+      getProvider: function () { return provider; },
       attachProvider: attachProvider,
       startSpin: startSpin
     };
