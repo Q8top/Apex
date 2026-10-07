@@ -134,3 +134,129 @@ a{color:inherit;text-decoration:none}
   .sd-sheet,.sd-confirm,.sd-sheet-backdrop,.sd-confirm-backdrop,.sd-ctrl,.sd-bet-btn,.sd-sym{transition:none!important;animation:none!important}
   .sd-ctrl--primary.spinning .sd-ic-lg{animation:none!important}
 }
+
+/* ============================================================
+   v2 · 糖果符号系统 + 中奖浮层 + 重置按钮强化
+   ============================================================ */
+
+/* --- 棋盘格子：从渐变色块改为容器 --- */
+.sd-sym {
+  background: var(--sd-panel) !important;
+  border: 1px solid rgba(0,0,0,.04);
+}
+.sd-sym::before { display: none; }
+.sd-sym svg {
+  width: 88%;
+  height: 88%;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.10));
+  transition: transform .25s cubic-bezier(.2,.8,.3,1.2);
+}
+
+/* 保留 data-c 兼容旧逻辑（不再使用） */
+.sd-sym[data-c] { background: var(--sd-panel) !important; }
+
+/* --- 棋盘 stage 设为相对定位，供浮层使用 --- */
+.sd-stage { position: relative; }
+
+/* --- 中奖浮层 --- */
+.sd-win-pop {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(.5);
+  padding: 22px 36px;
+  background: linear-gradient(135deg, #fde047, #f59e0b);
+  border-radius: 26px;
+  box-shadow:
+    0 20px 60px rgba(245, 158, 11, .45),
+    0 0 0 4px rgba(255, 255, 255, .9),
+    0 0 0 6px rgba(245, 158, 11, .25);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 30;
+  transition:
+    opacity .35s ease,
+    transform .5s cubic-bezier(.2, .9, .3, 1.3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.sd-win-pop[hidden] { display: none !important; }
+.sd-win-pop.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sd-win-pop-amount {
+  display: block;
+  font-size: 30px;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-align: center;
+}
+.sd-win-pop-amount::before {
+  content: '本局赢得';
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, .55);
+  margin-bottom: 6px;
+}
+
+/* --- 重置余额按钮：从文字变成明显的胶囊按钮 --- */
+.sd-reset {
+  align-self: center;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px !important;
+  border-radius: 999px !important;
+  background: var(--sd-panel) !important;
+  border: 1px solid var(--sd-border) !important;
+  color: var(--sd-text) !important;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  box-shadow: var(--sd-shadow-1);
+  transition: border-color .15s, background .15s, transform .12s, box-shadow .15s, color .15s !important;
+}
+.sd-reset:hover {
+  background: #fafafa !important;
+  border-color: var(--sd-text) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+  color: var(--sd-text) !important;
+}
+.sd-reset:active {
+  transform: scale(.96);
+}
+.sd-reset .sd-ic-sm {
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--sd-pink);
+}
+
+/* --- 中奖时棋盘自身轻微发光 --- */
+.sd-board[data-win="1"] {
+  box-shadow:
+    var(--sd-shadow-2),
+    0 0 0 2px rgba(245, 158, 11, .35),
+    0 0 40px rgba(245, 158, 11, .22);
+  transition: box-shadow .3s ease;
+}
+
+/* --- 中奖格子脉冲 --- */
+@keyframes sdSymPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+.sd-sym.is-win svg {
+  animation: sdSymPulse .6s cubic-bezier(.2, .8, .3, 1.2) 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-win-pop, .sd-sym svg { transition: none !important; animation: none !important; }
+  .sd-sym.is-win svg { animation: none !important; }
+}

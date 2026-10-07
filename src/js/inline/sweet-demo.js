@@ -5,7 +5,7 @@
   var INITIAL_BALANCE = 10000;
   var BET_OPTIONS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var DEFAULT_BET_INDEX = 3;
-  var COLORS = ['pink', 'purple', 'green', 'red', 'blue', 'yellow', 'orange'];
+  var SYM_IDS = ['sb-sym-red','sb-sym-blue','sb-sym-green','sb-sym-yellow','sb-sym-orange','sb-sym-purple','sb-sym-pink','sb-sym-rainbow'];
   var CELLS = 30;
 
   var state = {
@@ -25,10 +25,10 @@
     return '¥' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }
-  function randomColor() {
+  function randomSymbol() {
     var a = new Uint32Array(1);
     crypto.getRandomValues(a);
-    return COLORS[a[0] % COLORS.length];
+    return SYM_IDS[a[0] % SYM_IDS.length];
   }
 
   var el = {};
@@ -50,12 +50,14 @@
     el.confirmCurrent = $('sd-confirm-current');
     el.confirmCancel = $('sd-confirm-cancel');
     el.confirmOk = $('sd-confirm-ok');
+    el.winPop = $('sd-win-pop');
+    el.winPopAmount = $('sd-win-pop-amount');
   }
 
   function renderBoard(initial) {
     var html = '';
     for (var i = 0; i < CELLS; i++) {
-      html += '<div class="sd-sym" data-c="' + randomColor() + '"></div>';
+      html += '<div class="sd-sym"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#' + randomSymbol() + '"/></svg></div>';
     }
     el.board.innerHTML = html;
     if (initial) el.board.dataset.fast = state.fastMode ? '1' : '0';
@@ -123,6 +125,7 @@
         var mult = ((r[0] % 20) + 1) / 10;
         state.win = Math.round(getBet() * mult * 100) / 100;
         state.balance += state.win;
+        showWinPop(state.win);
       }
       el.board.dataset.spinning = '0';
       state.spinning = false;
@@ -213,6 +216,22 @@
     renderStats();
     closeConfirm();
     toast('试玩余额已重置');
+  }
+
+  /* ============ 中奖浮层 ============ */
+  var winPopTimer = 0;
+  function showWinPop(amount) {
+    if (!el.winPop || !el.winPopAmount) return;
+    el.winPopAmount.textContent = fmt(amount);
+    el.winPop.removeAttribute('hidden');
+    requestAnimationFrame(function () { el.winPop.classList.add('is-visible'); });
+    el.board.dataset.win = '1';
+    clearTimeout(winPopTimer);
+    winPopTimer = setTimeout(function () {
+      el.winPop.classList.remove('is-visible');
+      el.board.dataset.win = '0';
+      setTimeout(function () { el.winPop.setAttribute('hidden', ''); }, 400);
+    }, 1800);
   }
 
   var toastEl = null, toastTimer = 0;
