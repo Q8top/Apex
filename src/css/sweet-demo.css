@@ -362,3 +362,18 @@ a{color:inherit;text-decoration:none}
 .sd-set-row span{font-weight:600}
 .sd-set-row input[type="checkbox"]{width:20px;height:20px;accent-color:#111}
 .sd-set-row input[type="range"]{width:140px;accent-color:#111}
+
+/* ===== Phase 12 · Bonus Overlay ===== */
+.sd-bonus-root{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .3s ease}
+.sd-bonus-root.is-open{opacity:1;pointer-events:auto}
+.sd-bonus-backdrop{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%, rgba(255,79,163,.22), rgba(0,0,0,.72) 70%);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.sd-bonus-panel{position:relative;width:88%;max-width:400px;background:#fff;border-radius:24px;padding:28px 24px 22px;box-shadow:0 30px 80px rgba(0,0,0,.4);transform:scale(.9);transition:transform .4s cubic-bezier(.2,.9,.3,1.2);text-align:center}
+.sd-bonus-root.is-open .sd-bonus-panel{transform:scale(1)}
+.sd-bonus-title{margin:0 0 6px;font-size:22px;font-weight:900;letter-spacing:-.4px;background:linear-gradient(135deg,#ff4fa3,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sd-bonus-sub{margin:0 0 18px;font-size:13px;color:#8a8a8f;font-weight:600}
+.sd-bonus-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.sd-bonus-stat{background:#f7f7f8;border-radius:14px;padding:12px}
+.sd-bonus-stat-label{display:block;font-size:10.5px;color:#8a8a8f;font-weight:600;margin-bottom:4px;letter-spacing:.3px}
+.sd-bonus-stat-value{display:block;font-size:18px;font-weight:800;color:#111;font-variant-numeric:tabular-nums}
+.sd-bonus-btn{width:100%;height:46px;border-radius:14px;background:#111;color:#fff;font-weight:700;font-size:14px;border:0;cursor:pointer}
+.sd-bonus-btn:hover{background:#1c1c1c}

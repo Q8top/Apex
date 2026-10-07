@@ -107,6 +107,76 @@
     });
   }
 
+
+  function buildBonusOverlay() {
+    var html = ''
+      + '<div class="sd-bonus-backdrop"></div>'
+      + '<div class="sd-bonus-panel">'
+      +   '<h2 class="sd-bonus-title">Candy Storm</h2>'
+      +   '<p class="sd-bonus-sub">免费旋转进行中</p>'
+      +   '<div class="sd-bonus-stats">'
+      +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">剩余局数</span><span class="sd-bonus-stat-value" id="sd-bonus-left">-</span></div>'
+      +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">累计赢得</span><span class="sd-bonus-stat-value" id="sd-bonus-total">¥0.00</span></div>'
+      +   '</div>'
+      +   '<button type="button" class="sd-bonus-btn" id="sd-bonus-ok" style="display:none">完成</button>'
+      + '</div>';
+    var root = document.createElement('div');
+    root.id = 'sd-bonus-root';
+    root.className = 'sd-bonus-root';
+    root.innerHTML = html;
+    document.body.appendChild(root);
+    return root;
+  }
+
+  function runBonusSequence(feature, betMinor, onDone) {
+    var overlay = buildBonusOverlay();
+    var leftEl = overlay.querySelector('#sd-bonus-left');
+    var totalEl = overlay.querySelector('#sd-bonus-total');
+    var okBtn = overlay.querySelector('#sd-bonus-ok');
+    var remaining = feature.initialSpins || 10;
+    var totalWinMinor = 0;
+    var round = 0;
+
+    overlay.classList.add('is-open');
+    leftEl.textContent = remaining;
+    totalEl.textContent = fmt(0);
+
+    function nextFree() {
+      if (remaining <= 0 || !runtime || !runtime.state) return finish();
+      round++;
+      runtime.provider = runtime.provider;
+      if (window.ApexAudio) audio && audio.play('spin-start');
+      if (haptics) haptics.pulse('spin');
+      provider_spin(betMinor, true).then(function (r) {
+        totalWinMinor += r.totalWin || 0;
+        remaining--;
+        leftEl.textContent = remaining;
+        totalEl.textContent = fmt(totalWinMinor / 100);
+        setTimeout(nextFree, 300);
+      }).catch(function () { finish(); });
+    }
+
+    function finish() {
+      okBtn.style.display = '';
+      okBtn.textContent = '领取 ' + fmt(totalWinMinor / 100);
+      okBtn.addEventListener('click', function () {
+        overlay.classList.remove('is-open');
+        setTimeout(function () { overlay.remove(); }, 400);
+        if (onDone) onDone(totalWinMinor);
+      });
+    }
+
+    nextFree();
+  }
+
+  function provider_spin(betMinor, isFree) {
+    if (window.ApexDemoProvider) {
+      var p = window.ApexDemoProvider.create({ initialBalance: 999999999 });
+      return p.spin({ bet: betMinor, free: !!isFree });
+    }
+    return Promise.reject(new Error('no provider'));
+  }
+
   function onSpinResult(result) {
     if (!pending) return;
     var betMinor = result.bet;
@@ -142,6 +212,16 @@
     el.board.dataset.spinning = '0';
     state.spinning = false;
     renderSpinBtn();
+    if (result.feature && result.feature.triggered) {
+      if (window.ApexAudio) audio && audio.play('bonus');
+      runBonusSequence(result.feature, betMinor, function (bonusWin) {
+        state.balance += bonusWin / 100;
+        renderStats();
+        if (state.autoSpin) scheduleAuto();
+        pending = null;
+      });
+      return;
+    }
     if (state.autoSpin) scheduleAuto();
     pending = null;
     });
