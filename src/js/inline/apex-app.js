@@ -149,39 +149,32 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
-  if(catKey==='hot'){
-    var GAMES=[
-      {id:'olympus',  n:'奥林匹斯',       k:'olympus'},
-      {id:'sweet',    n:'糖果连连爆',       k:'sweet'},
-      {id:'sugar',    n:'甜蜜爆奖',              k:'sugar'},
-      {id:'bass',     n:'巨型鲈鱼',              k:'bass'},
-      {id:'dog',      n:'狗狗之家',              k:'dog'},
-      {id:'book',     n:'死亡之书',              k:'book'},
-      {id:'starburst',n:'星爆',                          k:'starburst'},
-      {id:'gonzo',    n:'刚果探险',              k:'gonzo'},
-      {id:'buffalo',  n:'水牛之王',              k:'buffalo'},
-      {id:'wolf',     n:'狼黄金',                    k:'wolf'},
-      {id:'fruit',    n:'水果派对',              k:'fruit'},
-      {id:'megaways', n:'大富翁',                    k:'megaways'}
-    ];
-    var html='<div class="apex-game-grid">';
-    GAMES.forEach(function(g){
-      var svg=(window.ApexGameIcons&&window.ApexGameIcons.render)?window.ApexGameIcons.render(g.k):'';
-      html+='<a class="apex-game-card" aria-label="'+g.n+'">'
-        +'<span class="apex-game-card-icon">'+svg+'</span>'
-        +'<span class="apex-game-card-name">'+g.n+'</span>'
-        +'</a>';
-    });
-    html+='</div>';
-    html+='<button type="button" class="apex-more-btn" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
-    content.innerHTML=html;
-    content.querySelectorAll('.apex-game-card').forEach(function(a){
-      a.addEventListener('contextmenu',function(e){e.preventDefault();});
-      a.addEventListener('dragstart',function(e){e.preventDefault();});
-    });
-  }else{
-    content.innerHTML='<div class="apex-cats-empty"><p>暂无游戏</p></div>';
-  }
+  var IMGS=[
+    "/assets/games/olympus.webp",
+    "/assets/games/sweet.webp",
+    "/assets/games/sugar.webp",
+    "/assets/games/bass.webp",
+    "/assets/games/dog.webp",
+    "/assets/games/book.webp",
+    "/assets/games/starburst.webp",
+    "/assets/games/gonzo.webp",
+    "/assets/games/buffalo.webp",
+    "/assets/games/wolf.webp",
+    "/assets/games/fruit.webp",
+    "/assets/games/megaways.webp"
+  ];
+  var html = '<div class="apex-game-grid">';
+  IMGS.forEach(function(src){
+    html += '<div class="apex-game-card apex-game-placeholder" aria-hidden="true">'
+      + '<span class="apex-game-card-icon"><img src="' + src + '" alt="" loading="lazy" draggable="false"></span>'
+      + '</div>';
+  });
+  html += '</div>';
+  content.innerHTML = html;
+  content.querySelectorAll(".apex-game-card").forEach(function(el){
+    el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+    el.addEventListener("dragstart", function(e){ e.preventDefault(); });
+  });
 }
 function makeCats(){
   var CATS=[

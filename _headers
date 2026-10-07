@@ -46,7 +46,6 @@
 /status
   Cache-Control: no-store
 
-
 # PWA manifest：短期缓存
 /manifest.json
   Cache-Control: public, max-age=3600
@@ -134,30 +133,4 @@
   Cache-Control: no-store
 
 /slot
-  Cache-Control: no-store
-
-
-
-/olympus.html
-  Cache-Control: no-store
-
-/olympus
-  Cache-Control: no-store
-
-/sweet.html
-  Cache-Control: no-store
-
-/sweet-demo
-  Cache-Control: no-store
-
-/sweet-demo.html
-  Cache-Control: no-store
-
-/sweet
-  Cache-Control: no-store
-
-/sugar.html
-  Cache-Control: no-store
-
-/sugar
   Cache-Control: no-store

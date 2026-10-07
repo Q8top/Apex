@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200"><rect width="100" height="100" fill="#1a0b1f"/>
+    <defs>
+      <radialGradient id="gm_flw" cx="0.35" cy="0.28" r="0.85">
+        <stop offset="0" stop-color="#ffd0a3"/>
+        <stop offset="0.35" stop-color="#ff7a00"/>
+        <stop offset="0.75" stop-color="#ff7a00"/>
+        <stop offset="1" stop-color="#7a3700"/>
+      </radialGradient>
+      <radialGradient id="ao_flw" cx="0.6" cy="0.9" r="0.7">
+        <stop offset="0" stop-color="#7a3700" stop-opacity="0.7"/>
+        <stop offset="1" stop-color="#7a3700" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="sp_flw" cx="0.35" cy="0.25" r="0.6">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+        <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="rm_flw" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.1"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="cp_flw"><path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" clip-rule="nonzero"/></clipPath>
+    </defs>
+    <ellipse cx="50" cy="88" rx="26" ry="4" fill="#000000" opacity="0.28"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="#7a3700" opacity="0.85" transform="translate(0 1.2)"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="url(#gm_flw)"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="url(#ao_flw)" clip-path="url(#cp_flw)"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="url(#sp_flw)" clip-path="url(#cp_flw)"/>
+    <path d="M 22 36 Q 50 10 78 36" fill="none" stroke="url(#rm_flw)" stroke-width="3.5" stroke-linecap="round" opacity="0.85" clip-path="url(#cp_flw)"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="none" stroke="#7a3700" stroke-width="1.5" stroke-linejoin="round" opacity="0.9"/>
+    <path d="M 50.00 28.00 Q 70.00 15.36 69.05 39.00 Q 90.00 50.00 69.05 61.00 Q 70.00 84.64 50.00 72.00 Q 30.00 84.64 30.95 61.00 Q 10.00 50.00 30.95 39.00 Q 30.00 15.36 50.00 28.00Z" fill-rule="nonzero" fill="none" stroke="#ffffff" stroke-width="0.8" stroke-linejoin="round" opacity="0.55" transform="translate(0 -0.5)" clip-path="url(#cp_flw)"/>
+    
+      <circle cx="50" cy="50" r="11" fill="#fbbf24" stroke="#92400e" stroke-width="1.2"/>
+      <circle cx="50" cy="50" r="6" fill="#fde68a" opacity="0.9"/>
+      <ellipse cx="47" cy="47" rx="2.4" ry="1.5" fill="#ffffff" opacity="0.95"/>
+    
+  </svg>

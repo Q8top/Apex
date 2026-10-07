@@ -666,18 +666,6 @@
 .apex-game-card:active .apex-game-card-icon{transform:scale(.96);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .apex-game-card-name{display:block;width:100%;height:16px;line-height:16px;font-size:12px;font-weight:600;text-align:center;color:#0a0a0a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .apex-game-img{position:absolute;top:0;left:0;display:block;width:100%;height:100%;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
-.apex-game-img--olympus{background-image:url('/assets/games/olympus.webp')}
-.apex-game-img--sweet{background-image:url('/assets/games/sweet.webp')}
-.apex-game-img--sugar{background-image:url('/assets/games/sugar.webp')}
-.apex-game-img--book{background-image:url('/assets/games/book.webp')}
-.apex-game-img--dog{background-image:url('/assets/games/dog.webp')}
-.apex-game-img--bass{background-image:url('/assets/games/bass.webp')}
-.apex-game-img--gonzo{background-image:url('/assets/games/gonzo.webp')}
-.apex-game-img--starburst{background-image:url('/assets/games/starburst.webp')}
-.apex-game-img--megaways{background-image:url('/assets/games/megaways.webp')}
-.apex-game-img--buffalo{background-image:url('/assets/games/buffalo.webp')}
-.apex-game-img--wolf{background-image:url('/assets/games/wolf.webp')}
-.apex-game-img--fruit{background-image:url('/assets/games/fruit.webp')}
 .apex-more-btn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;margin-top:4px;padding:12px 14px;border:1px solid #0a0a0a;border-radius:12px;background:#fff;color:#0a0a0a;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .18s ease,color .18s ease,transform .18s ease;-webkit-tap-highlight-color:transparent}
 .apex-more-btn:hover{background:#0a0a0a;color:#fff}
 .apex-more-btn:active{transform:scale(.985)}
@@ -773,3 +761,28 @@
 /* 拖拽时底栏微缩放 */
 .apex-tabbar.is-dragging { transform: scale(1.015); transition: transform .22s cubic-bezier(.34, 1.56, .64, 1); }
 .apex-tabbar:not(.is-dragging) { transform: scale(1); transition: transform .32s cubic-bezier(.34, 1.56, .64, 1); }
+
+/* 游戏占位：禁用点击与交互 */
+.apex-game-placeholder,
+.apex-game-placeholder * {
+  pointer-events: none !important;
+  cursor: default !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+.apex-game-placeholder:hover,
+.apex-game-placeholder:active,
+.apex-game-placeholder:focus {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.apex-game-placeholder .apex-game-card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+  pointer-events: none;
+}
