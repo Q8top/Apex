@@ -169,6 +169,20 @@
     el.fastBtn.classList.toggle('active', state.fastMode);
   }
 
+  function applySettings() {
+    if (!window.ApexSettings) return;
+    var cfg = window.ApexSettings.get();
+    if (audio) {
+      audio.setEnabled(!!cfg.audioEnabled);
+      audio.setVolume('music', cfg.musicVolume);
+      audio.setVolume('sfx', cfg.sfxVolume);
+    }
+    if (haptics) haptics.setEnabled(!!cfg.hapticsEnabled);
+    state.fastMode = !!cfg.fastMode;
+    if (el.board) el.board.dataset.fast = state.fastMode ? '1' : '0';
+    renderFastBtn();
+  }
+
   function doSpin() {
     if (state.spinning) return;
     if (state.balance < getBet()) {
@@ -257,6 +271,7 @@
     state.fastMode = !state.fastMode;
     el.board.dataset.fast = state.fastMode ? '1' : '0';
     renderFastBtn();
+    if (window.ApexSettings) window.ApexSettings.set({ fastMode: state.fastMode });
   }
 
   function openSheet() {
@@ -368,7 +383,7 @@
       case 'home':    window.location.href = '/'; break;
       case 'rules':   if (window.ApexRules) window.ApexRules.open(); else toast('即将上线'); break;
       case 'history': if (window.ApexHistory) window.ApexHistory.open(); else toast('即将上线'); break;
-      case 'settings':toast('游戏设置 · 即将上线'); break;
+      case 'settings':if (window.ApexSettings) window.ApexSettings.open(); else toast('即将上线'); break;
       case 'sound':   toast('音效设置 · 即将上线'); break;
       case 'vibrate': toast('震动反馈 · 即将上线'); break;
       case 'help':    toast('游戏帮助 · 即将上线'); break;
@@ -381,6 +396,8 @@
     runtime = initRuntime();
     if (window.ApexAudio) audio = window.ApexAudio.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
+    applySettings();
+    if (window.ApexSettings) window.ApexSettings.onChange(applySettings);
     renderBoard(true);
     renderStats();
     renderBetButtons();
