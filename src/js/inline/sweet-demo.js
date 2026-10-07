@@ -52,17 +52,62 @@
 
   var pending = null;
 
+  function getCellAt(i) {
+    var cells = el.board.querySelectorAll('.sd-sym');
+    return cells[i];
+  }
+
+  function renderGridAt(types) {
+    if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderGrid) {
+      window.ApexSymbolRenderer.renderGrid(el.board, types);
+    } else {
+      renderBoard(false);
+    }
+  }
+
+  function playTumbleSequence(result) {
+    return new Promise(function (resolve) {
+      var tumbles = result.tumbles || [];
+      if (!tumbles.length) {
+        renderGridAt(result.finalGrid);
+        setTimeout(resolve, 200);
+        return;
+      }
+      renderGridAt(result.grid);
+      var i = 0;
+      function playOne() {
+        if (i >= tumbles.length) {
+          renderGridAt(result.finalGrid);
+          setTimeout(resolve, 200);
+          return;
+        }
+        var t = tumbles[i];
+        t.removedPositions.forEach(function (idx) {
+          var c = getCellAt(idx);
+          if (c) c.classList.add('is-removing');
+        });
+        setTimeout(function () {
+          renderGridAt(t.gridAfter);
+          var cells = el.board.querySelectorAll('.sd-sym');
+          cells.forEach(function (c) { c.classList.add('is-entering'); });
+          setTimeout(function () {
+            cells.forEach(function (c) { c.classList.remove('is-entering'); });
+            i++;
+            playOne();
+          }, 400);
+        }, 300);
+      }
+      playOne();
+    });
+  }
+
   function onSpinResult(result) {
     if (!pending) return;
     var betMinor = result.bet;
     var winMinor = result.totalWin;
     state.win = winMinor / 100;
     state.balance = result.balanceAfter / 100;
-    if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderGrid && result.finalGrid) {
-      window.ApexSymbolRenderer.renderGrid(el.board, result.finalGrid);
-    } else {
-      renderBoard(false);
-    }
+    playTumbleSequence(result).then(function () {
     renderStats();
     if (window.ApexHistory) {
       window.ApexHistory.push({
@@ -93,6 +138,7 @@
     renderSpinBtn();
     if (state.autoSpin) scheduleAuto();
     pending = null;
+    });
   }
 
   var el = {};
