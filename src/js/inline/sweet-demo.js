@@ -413,7 +413,7 @@
 
     var duration = state.fastMode ? 400 : 900;
 
-    state.spinTimer = window.setTimeout(function () {
+    window.setTimeout(function () {
       renderBoard(false);
       var r = new Uint32Array(1);
       crypto.getRandomValues(r);
