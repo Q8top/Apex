@@ -64,6 +64,13 @@
       renderBoard(false);
     }
     renderStats();
+    if (window.ApexHistory) {
+      window.ApexHistory.push({
+        ts: Date.now(),
+        betMinor: betMinor,
+        winMinor: winMinor
+      });
+    }
     if (state.win > 0) {
       var ratio = state.win / (betMinor / 100);
       if (audio) {
@@ -360,7 +367,7 @@
     switch (action) {
       case 'home':    window.location.href = '/'; break;
       case 'rules':   if (window.ApexRules) window.ApexRules.open(); else toast('即将上线'); break;
-      case 'history': toast('游戏记录 · 即将上线'); break;
+      case 'history': if (window.ApexHistory) window.ApexHistory.open(); else toast('即将上线'); break;
       case 'settings':toast('游戏设置 · 即将上线'); break;
       case 'sound':   toast('音效设置 · 即将上线'); break;
       case 'vibrate': toast('震动反馈 · 即将上线'); break;
