@@ -58,12 +58,18 @@
   }
 
   function renderBoard(initial) {
-    var html = '';
-    for (var i = 0; i < CELLS; i++) {
-      var delay = ((i * 137) % 36) / 10;
-      html += '<div class="sd-sym"><svg viewBox="0 0 160 160" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + randomSymbol() + '"/></svg></div>';
+    var ids = [];
+    for (var i = 0; i < CELLS; i++) ids.push(randomSymbol());
+    if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderBoard) {
+      window.ApexSymbolRenderer.renderBoard(el.board, ids);
+    } else {
+      var html = '';
+      for (var j = 0; j < CELLS; j++) {
+        var delay = ((j * 137) % 36) / 10;
+        html += '<div class="sd-sym"><svg viewBox="0 0 160 160" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + ids[j] + '"/></svg></div>';
+      }
+      el.board.innerHTML = html;
     }
-    el.board.innerHTML = html;
     if (initial) el.board.dataset.fast = state.fastMode ? '1' : '0';
   }
 

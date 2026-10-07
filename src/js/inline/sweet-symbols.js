@@ -1,11 +1,10 @@
-/* Apex · Sweet Bonanza Symbol Registry v1
- * 只定义数据结构，不接入渲染
+/* Apex · Sweet Bonanza Symbol Registry v3
+ * 只负责资产数据，不负责抽签概率
  */
 (function () {
   'use strict';
 
-  // 11 个符号（5 水果 + 4 糖果 + 2 特殊）
-  var SYMBOLS = {
+  var SYMBOLS = Object.freeze({
     BANANA:       'sb-fruit-banana',
     GRAPE:        'sb-fruit-grape',
     WATERMELON:   'sb-fruit-watermelon',
@@ -17,62 +16,100 @@
     RED_HEART:    'sb-candy-heart',
     LOLLIPOP:     'sb-scatter-lollipop',
     MULTIPLIER:   'sb-multiplier-bomb'
-  };
+  });
 
-  var SYMBOL_META = {
-    BANANA:       { tier: 'low',  weight: 14, label: '香蕉' },
-    GRAPE:        { tier: 'low',  weight: 14, label: '葡萄' },
-    WATERMELON:   { tier: 'low',  weight: 13, label: '西瓜' },
-    PLUM:         { tier: 'low',  weight: 13, label: '李子' },
-    APPLE:        { tier: 'low',  weight: 12, label: '苹果' },
-    BLUE_CANDY:   { tier: 'high', weight: 6,  label: '蓝糖果' },
-    GREEN_CANDY:  { tier: 'high', weight: 6,  label: '绿糖果' },
-    PURPLE_CANDY: { tier: 'high', weight: 5,  label: '紫糖果' },
-    RED_HEART:    { tier: 'high', weight: 5,  label: '红心糖' },
-    LOLLIPOP:     { tier: 'scatter', weight: 1, label: '棒棒糖' },
-    MULTIPLIER:   { tier: 'bonus',   weight: 2, label: '倍率' }
-  };
+  var SYMBOL_META = Object.freeze({
+    BANANA:       { group: 'fruit',   material: 'organic',        label: '香蕉',   scale: 0.92 },
+    GRAPE:        { group: 'fruit',   material: 'organic',        label: '葡萄',   scale: 0.84 },
+    WATERMELON:   { group: 'fruit',   material: 'organic',        label: '西瓜',   scale: 0.88 },
+    PLUM:         { group: 'fruit',   material: 'organic',        label: '李子',   scale: 0.84 },
+    APPLE:        { group: 'fruit',   material: 'organic',        label: '苹果',   scale: 0.86 },
+    BLUE_CANDY:   { group: 'candy',   material: 'gel',            label: '蓝糖果', scale: 0.78 },
+    GREEN_CANDY:  { group: 'candy',   material: 'gel',            label: '绿糖果', scale: 0.80 },
+    PURPLE_CANDY: { group: 'candy',   material: 'gel',            label: '紫糖果', scale: 0.78 },
+    RED_HEART:    { group: 'candy',   material: 'gel',            label: '红心糖', scale: 0.80 },
+    LOLLIPOP:     { group: 'scatter', material: 'hard-candy',     label: '棒棒糖', scale: 0.92 },
+    MULTIPLIER:   { group: 'feature', material: 'metallic-candy', label: '倍率',   scale: 0.86 }
+  });
 
-  var SYMBOL_MATERIAL = {
-    fruit:  { gloss: 0.55, roughness: 0.38, shadow: 0.18 },
-    candy:  { gloss: 0.85, roughness: 0.12, shadow: 0.14 },
-    jelly:  { gloss: 0.95, roughness: 0.08, shadow: 0.10, translucency: 0.15 },
-    special:{ gloss: 0.90, roughness: 0.10, shadow: 0.12, emissive: true }
-  };
+  var SYMBOL_MATERIAL = Object.freeze({
+    organic:          { saturation: 1.00, highlight: 0.42, transmission: 0.10, rim: 0.08, shadow: 0.18 },
+    gel:              { saturation: 1.08, highlight: 0.72, transmission: 0.28, rim: 0.18, shadow: 0.30 },
+    'hard-candy':     { saturation: 1.05, highlight: 0.82, transmission: 0.18, rim: 0.24, shadow: 0.22 },
+    'metallic-candy': { saturation: 1.02, highlight: 0.88, transmission: 0.06, rim: 0.42, shadow: 0.32 }
+  });
 
-  var LIGHT = { x: 0.32, y: 0.24, intensity: 0.92, softness: 0.7 };
+  var LIGHT = Object.freeze({
+    x: 0.30, y: 0.20,
+    keyIntensity: 1.0,
+    fillIntensity: 0.82,
+    rimIntensity: 0.42,
+    shadowIntensity: 0.24,
+    specularPower: 72
+  });
 
-  window.ApexSymbols = {
+  /* ============ 抽签池（分离 base / scatter / feature）============ */
+  var BASE_SYMBOL_KEYS = Object.freeze([
+    'BANANA', 'GRAPE', 'WATERMELON', 'PLUM', 'APPLE',
+    'BLUE_CANDY', 'GREEN_CANDY', 'PURPLE_CANDY', 'RED_HEART'
+  ]);
+  var SCATTER_SYMBOL_KEYS = Object.freeze(['LOLLIPOP']);
+  var FEATURE_SYMBOL_KEYS = Object.freeze(['MULTIPLIER']);
+
+  // 权重只在 base 池内部有效
+  var BASE_WEIGHTS = Object.freeze({
+    BANANA: 14, GRAPE: 14, WATERMELON: 13, PLUM: 13, APPLE: 12,
+    BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
+  });
+
+  var BASE_TOTAL = BASE_SYMBOL_KEYS.reduce(function (s, k) { return s + BASE_WEIGHTS[k]; }, 0);
+
+  function pickFrom(keys, weights) {
+    var buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    if (!weights) return keys[buf[0] % keys.length];
+    var n = buf[0] % weights.total;
+    var acc = 0;
+    for (var i = 0; i < keys.length; i++) {
+      acc += weights.map[keys[i]] || 0;
+      if (n < acc) return keys[i];
+    }
+    return keys[0];
+  }
+
+  /* 普通抽取：9 个 base 符号，不含 scatter/feature */
+  function pickBase() {
+    return pickFrom(BASE_SYMBOL_KEYS, { total: BASE_TOTAL, map: BASE_WEIGHTS });
+  }
+
+  /* 旧 API 兼容：默认走 base 池 */
+  function pickSymbol() {
+    return pickBase();
+  }
+
+  function getSymbolId(t) { return SYMBOLS[t] || null; }
+  function getScale(t) {
+    var m = SYMBOL_META[t];
+    return m ? m.scale : 1;
+  }
+  function getMaterial(t) {
+    var m = SYMBOL_META[t];
+    return m ? SYMBOL_MATERIAL[m.material] : null;
+  }
+
+  window.ApexSymbols = Object.freeze({
     SYMBOLS: SYMBOLS,
     SYMBOL_META: SYMBOL_META,
     SYMBOL_MATERIAL: SYMBOL_MATERIAL,
     LIGHT: LIGHT,
-    getSymbolId: function (t) { return SYMBOLS[t] || null; },
+    BASE_SYMBOL_KEYS: BASE_SYMBOL_KEYS,
+    SCATTER_SYMBOL_KEYS: SCATTER_SYMBOL_KEYS,
+    FEATURE_SYMBOL_KEYS: FEATURE_SYMBOL_KEYS,
+    pickSymbol: pickSymbol,
+    pickBase: pickBase,
+    getSymbolId: getSymbolId,
+    getScale: getScale,
+    getMaterial: getMaterial,
     getAll: function () { return Object.keys(SYMBOLS); }
-  };
-})();
-
-/* ============ 加权随机抽取 ============ */
-(function () {
-  'use strict';
-  var A = window.ApexSymbols;
-  if (!A) return;
-
-  var KEYS = Object.keys(A.SYMBOL_META);
-  var TOTAL = 0;
-  for (var i = 0; i < KEYS.length; i++) {
-    TOTAL += A.SYMBOL_META[KEYS[i]].weight;
-  }
-
-  A.pickSymbol = function () {
-    var buf = new Uint32Array(1);
-    crypto.getRandomValues(buf);
-    var n = buf[0] % TOTAL;
-    var acc = 0;
-    for (var j = 0; j < KEYS.length; j++) {
-      acc += A.SYMBOL_META[KEYS[j]].weight;
-      if (n < acc) return KEYS[j];
-    }
-    return KEYS[0];
-  };
+  });
 })();
