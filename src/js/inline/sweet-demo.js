@@ -15,6 +15,7 @@
     autoSpin: false,
     fastMode: false,
     spinning: false,
+    bonusLock: false,
     autoTimer: 0,
     spinTimer: 0,
     lastFocused: null
@@ -46,7 +47,14 @@
     var provider = window.ApexDemoProvider.create({ initialBalance: 1000000 });
     var rt = window.ApexGameRuntime.create({ events: bus, provider: provider });
     bus.on('game:spin-result', onSpinResult);
-    bus.on('game:error', function (e) { toast('游戏错误'); });
+    bus.on('game:error', function (e) {
+      toast('游戏错误');
+      state.spinning = false;
+      state.bonusLock = false;
+      pending = null;
+      if (el.board) el.board.dataset.spinning = '0';
+      renderSpinBtn();
+    });
     return rt;
   }
 
@@ -223,7 +231,9 @@
     renderSpinBtn();
     if (result.feature && result.feature.triggered) {
       if (window.ApexAudio) audio && audio.play('bonus');
+      state.bonusLock = true;
       runBonusSequence(result.feature, betMinor, function (bonusWin) {
+        state.bonusLock = false;
         state.balance += bonusWin / 100;
         renderStats();
         if (state.autoSpin) scheduleAuto();
@@ -344,6 +354,7 @@
 
   function doSpin() {
     if (state.spinning) return;
+    if (state.bonusLock) return;
     if (state.balance < getBet()) {
       toast('试玩余额不足');
       stopAuto();
@@ -359,7 +370,13 @@
     if (runtime) {
       pending = true;
       var betMinor = Math.round(getBet() * 100);
-      runtime.startSpin(betMinor);
+      var res = runtime.startSpin(betMinor);
+      if (!res || !res.ok) {
+        pending = null;
+        state.spinning = false;
+        el.board.dataset.spinning = '0';
+        renderSpinBtn();
+      }
       return;
     }
 
