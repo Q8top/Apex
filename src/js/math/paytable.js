@@ -1,21 +1,21 @@
 /* Apex · Candy Tumble Paytable
  * 8+ 相同符号中奖（Pay Anywhere）
  * 赔率为 bet 的倍数：实际支付 = bet * 倍数
- * 数值经 10 万局模拟校准，目标 RTP 88%~93%
+ * 数值经模拟校准，目标 RTP 88%~93%
  */
 (function () {
   'use strict';
 
   var PAYTABLE = Object.freeze({
-    BANANA:       Object.freeze({ 8: 2.0, 10: 5.0, 12: 15.0 }),
-    GRAPE:        Object.freeze({ 8: 2.5, 10: 6.0, 12: 18.0 }),
-    WATERMELON:   Object.freeze({ 8: 3.0, 10: 8.0, 12: 22.0 }),
-    PLUM:         Object.freeze({ 8: 3.0, 10: 8.0, 12: 22.0 }),
-    APPLE:        Object.freeze({ 8: 4.0, 10: 10.0, 12: 28.0 }),
-    BLUE_CANDY:   Object.freeze({ 8: 6.0, 10: 15.0, 12: 40.0 }),
-    GREEN_CANDY:  Object.freeze({ 8: 6.0, 10: 15.0, 12: 40.0 }),
-    PURPLE_CANDY: Object.freeze({ 8: 8.0, 10: 20.0, 12: 50.0 }),
-    RED_HEART:    Object.freeze({ 8: 12.0, 10: 30.0, 12: 80.0 })
+    BANANA:       Object.freeze({ 8: 1.0,  10: 2.0,  12: 7.0 }),
+    GRAPE:        Object.freeze({ 8: 1.0,  10: 3.0,  12: 8.0 }),
+    WATERMELON:   Object.freeze({ 8: 1.5,  10: 3.5,  12: 10.0 }),
+    PLUM:         Object.freeze({ 8: 1.5,  10: 3.5,  12: 10.0 }),
+    APPLE:        Object.freeze({ 8: 2.0,  10: 5.0,  12: 13.0 }),
+    BLUE_CANDY:   Object.freeze({ 8: 2.5,  10: 7.0,  12: 18.0 }),
+    GREEN_CANDY:  Object.freeze({ 8: 2.5,  10: 7.0,  12: 18.0 }),
+    PURPLE_CANDY: Object.freeze({ 8: 3.5,  10: 9.0,  12: 22.0 }),
+    RED_HEART:    Object.freeze({ 8: 5.0,  10: 13.0, 12: 36.0 })
   });
 
   var MIN_MATCH = 8;
