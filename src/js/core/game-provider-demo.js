@@ -32,6 +32,7 @@
       crypto.getRandomValues(buf);
       var idx = buf[0] % TOTAL;
       if (next[idx] !== 'LOLLIPOP' && next[idx] !== 'MULTIPLIER') {
+        crypto.getRandomValues(buf);
         var v = [2, 3, 5, 10, 25, 50, 100][buf[0] % 7];
         next[idx] = 'MULTIPLIER';
         mults.push({ pos: idx, value: v });
