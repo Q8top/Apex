@@ -26,6 +26,11 @@
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }
   function randomSymbol() {
+    if (window.ApexSymbols && window.ApexSymbols.pickSymbol) {
+      var t = window.ApexSymbols.pickSymbol();
+      var id = window.ApexSymbols.getSymbolId(t);
+      if (id) return id;
+    }
     var a = new Uint32Array(1);
     crypto.getRandomValues(a);
     return SYM_IDS[a[0] % SYM_IDS.length];
@@ -56,7 +61,7 @@
     var html = '';
     for (var i = 0; i < CELLS; i++) {
       var delay = ((i * 137) % 36) / 10;
-      html += '<div class="sd-sym"><svg viewBox="0 0 120 120" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + randomSymbol() + '"/></svg></div>';
+      html += '<div class="sd-sym"><svg viewBox="0 0 160 160" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + randomSymbol() + '"/></svg></div>';
     }
     el.board.innerHTML = html;
     if (initial) el.board.dataset.fast = state.fastMode ? '1' : '0';
