@@ -149,28 +149,30 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
-  var IMGS=[
-    "/assets/games/olympus.webp",
-    "/assets/games/sweet.webp",
-    "/assets/games/sugar.webp",
-    "/assets/games/bass.webp",
-    "/assets/games/dog.webp",
-    "/assets/games/book.webp",
-    "/assets/games/starburst.webp",
-    "/assets/games/gonzo.webp",
-    "/assets/games/buffalo.webp",
-    "/assets/games/wolf.webp",
-    "/assets/games/fruit.webp",
-    "/assets/games/megaways.webp"
+  var GAMES=[
+    {n:"奥林匹斯",   src:"/assets/games/olympus.webp"},
+    {n:"糖果连连爆", src:"/assets/games/sweet.webp"},
+    {n:"甜蜜爆奖",   src:"/assets/games/sugar.webp"},
+    {n:"巨型鲈鱼",   src:"/assets/games/bass.webp"},
+    {n:"狗狗之家",   src:"/assets/games/dog.webp"},
+    {n:"死亡之书",   src:"/assets/games/book.webp"},
+    {n:"星爆",       src:"/assets/games/starburst.webp"},
+    {n:"刚果探险",   src:"/assets/games/gonzo.webp"},
+    {n:"水牛之王",   src:"/assets/games/buffalo.webp"},
+    {n:"狼黄金",     src:"/assets/games/wolf.webp"},
+    {n:"水果派对",   src:"/assets/games/fruit.webp"},
+    {n:"大富翁",     src:"/assets/games/megaways.webp"}
   ];
-  var html = '<div class="apex-game-grid">';
-  IMGS.forEach(function(src){
-    html += '<div class="apex-game-card apex-game-placeholder" aria-hidden="true">'
-      + '<span class="apex-game-card-icon"><img src="' + src + '" alt="" loading="lazy" draggable="false"></span>'
-      + '</div>';
+  var html='<div class="apex-game-grid apex-game-placeholder">';
+  GAMES.forEach(function(g){
+    html+='<div class="apex-game-card">'
+      +'<span class="apex-game-card-icon"><img src="'+g.src+'" alt="" loading="lazy" draggable="false"></span>'
+      +'<span class="apex-game-card-name">'+g.n+'</span>'
+      +'</div>';
   });
-  html += '</div>';
-  content.innerHTML = html;
+  html+='</div>';
+  html+='<button type="button" class="apex-more-btn apex-game-placeholder" aria-label="更多热门游戏" aria-disabled="true" tabindex="-1">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
+  content.innerHTML=html;
   content.querySelectorAll(".apex-game-card").forEach(function(el){
     el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
     el.addEventListener("dragstart", function(e){ e.preventDefault(); });
