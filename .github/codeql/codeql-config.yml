@@ -1,0 +1,20 @@
+# Apex · CodeQL 配置
+#
+# 目的：排除不应被安全扫描的目录
+#
+# 排除规则说明：
+#   tests/  — 测试代码中的"敏感信息"是构造用例，非真实用户数据；
+#             排除后可避免 js/clear-text-logging 等规则的假阳性。
+#
+# 保留扫描：
+#   functions/  后端 Cloudflare Functions
+#   src/        前端源码
+#   scripts/    构建与维护脚本
+#   *.html      顶层页面
+#   sw.js       Service Worker
+#   .github/workflows/  GitHub Actions（language: actions 覆盖）
+
+name: "Apex CodeQL config"
+
+paths-ignore:
+  - 'tests/**'
