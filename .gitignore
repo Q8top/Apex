@@ -80,3 +80,6 @@ previews/
 
 # 本地清理脚本备份目录
 .cleanup-backup-*/
+
+# 旧游戏 replay 系统残留目录（不再使用）
+replays/
