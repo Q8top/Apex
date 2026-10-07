@@ -37,6 +37,8 @@
   }
 
   var runtime = null;
+  var audio = null;
+  var haptics = null;
 
   function initRuntime() {
     if (!window.ApexGameRuntime || !window.ApexDemoProvider) return null;
@@ -62,8 +64,22 @@
       renderBoard(false);
     }
     renderStats();
-    if (state.win > 0 && window.ApexWinFeedback) {
-      window.ApexWinFeedback.show(state.win, betMinor / 100);
+    if (state.win > 0) {
+      var ratio = state.win / (betMinor / 100);
+      if (audio) {
+        if (ratio >= 50) audio.play('super-win');
+        else if (ratio >= 25) audio.play('mega-win');
+        else if (ratio >= 10) audio.play('big-win');
+        else audio.play('win-normal');
+      }
+      if (haptics) haptics.winPulse(ratio);
+      if (window.ApexWinFeedback) {
+        window.ApexWinFeedback.show(state.win, betMinor / 100);
+      }
+    }
+    if (result.tumbles && result.tumbles.length > 1) {
+      if (audio) audio.play('tumble');
+      if (haptics) haptics.pulse('tumble');
     }
     el.board.dataset.spinning = '0';
     state.spinning = false;
@@ -157,6 +173,8 @@
     state.spinning = true;
     el.board.dataset.spinning = '1';
     renderSpinBtn();
+    if (haptics) haptics.pulse('spin');
+    if (audio) audio.play('spin-start');
 
     if (runtime) {
       pending = true;
@@ -354,6 +372,8 @@
   function init() {
     cacheEl();
     runtime = initRuntime();
+    if (window.ApexAudio) audio = window.ApexAudio.create();
+    if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     renderBoard(true);
     renderStats();
     renderBetButtons();
