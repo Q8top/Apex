@@ -117,4 +117,9 @@
 
 /announcements
   Cache-Control: no-store
+# Sweet Bonanza Demo 游戏页：不缓存
+/sweet-demo.html
+  Cache-Control: no-store
 
+/sweet-demo
+  Cache-Control: no-store

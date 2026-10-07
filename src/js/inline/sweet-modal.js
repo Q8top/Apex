@@ -78,6 +78,9 @@ var SVG_REAL = ''
         e.preventDefault();
         try { window.dispatchEvent(new CustomEvent('apex:sweet-mode', { detail: { mode: m.getAttribute('data-mode') || '' } })); } catch (x) {}
         close();
+        setTimeout(function () {
+          window.location.href = '/sweet-demo.html?mode=' + encodeURIComponent(m.getAttribute('data-mode') || 'demo');
+        }, 220);
       }
     });
     document.body.appendChild(r);
