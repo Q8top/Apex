@@ -20,6 +20,26 @@
     return window.ApexSymbols.pickBase();
   }
 
+
+  function maybePlaceScatters(grid) {
+    var buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    if ((buf[0] % 1000) >= 5) return { grid: grid, scatterCount: 0 };
+    var count = 4 + (buf[0] % 3);
+    if (count > 6) count = 6;
+    var positions = [];
+    var guard = 0;
+    while (positions.length < count && guard < 100) {
+      crypto.getRandomValues(buf);
+      var idx = buf[0] % TOTAL;
+      if (positions.indexOf(idx) === -1) positions.push(idx);
+      guard++;
+    }
+    var next = grid.slice();
+    positions.forEach(function (i) { next[i] = 'LOLLIPOP'; });
+    return { grid: next, scatterCount: count };
+  }
+
   function genGrid() {
     var g = [];
     for (var i = 0; i < TOTAL; i++) g.push(pickBaseSymbol());
@@ -90,6 +110,18 @@
       balanceMinor -= betMinor;
 
       var initialGrid = genGrid();
+      var scatterCheck = maybePlaceScatters(initialGrid);
+      initialGrid = scatterCheck.grid;
+
+      var bonusInfo = null;
+      if (scatterCheck.scatterCount >= 4 && window.ApexBonus) {
+        bonusInfo = {
+          triggered: true,
+          scatterCount: scatterCheck.scatterCount,
+          initialSpins: window.ApexBonus.resolveInitialSpins(scatterCheck.scatterCount)
+        };
+      }
+
       var result = resolveTumbles(initialGrid, betMinor);
 
       balanceMinor += result.totalWinMinor;
@@ -105,7 +137,7 @@
         finalGrid: result.finalGrid,
         tumbles: result.tumbles,
         totalWin: result.totalWinMinor,
-        feature: null
+        feature: bonusInfo
       };
       return simulateDelay(400, 900).then(function () { return payload; });
     }
