@@ -73,10 +73,13 @@
 
   function DemoProvider(opts) {
     opts = opts || {};
-    var balanceMinor = Number(opts.initialBalance) || 1000000;
+    var wallet = (window.ApexWallet && window.ApexWallet.createDemo)
+      ? window.ApexWallet.createDemo({ initialMinor: Number(opts.initialBalance) || 1000000 })
+      : null;
 
     function getBalance() {
-      return { currency: 'CNY', minor: balanceMinor };
+      if (wallet) return { currency: wallet.getCurrency(), minor: wallet.getMinor() };
+      return { currency: 'CNY', minor: 1000000 };
     }
 
     function resolveTumbles(startGrid, betMinor) {
@@ -131,8 +134,11 @@
 
     function spin(req) {
       var betMinor = Number(req && req.bet) || 200;
-      var before = balanceMinor;
-      balanceMinor -= betMinor;
+      var before = wallet ? wallet.getMinor() : 1000000;
+      if (wallet && wallet.getMinor() < betMinor) {
+        return Promise.reject(new Error('insufficient'));
+      }
+      if (wallet) wallet.debit(betMinor);
 
       var initialGrid = genGrid();
       var scatterCheck = maybePlaceScatters(initialGrid);
@@ -167,7 +173,7 @@
         result.totalWinMinor = result.totalWinMinor * multiplierSum;
       }
 
-      balanceMinor += result.totalWinMinor;
+      if (wallet) wallet.credit(result.totalWinMinor);
 
       var payload = {
         spinId: 'demo_' + Date.now() + '_' + randInt(100000),
@@ -175,7 +181,7 @@
         currency: 'CNY',
         bet: betMinor,
         balanceBefore: before,
-        balanceAfter: balanceMinor,
+        balanceAfter: wallet ? wallet.getMinor() : before,
         grid: initialGrid,
         finalGrid: result.finalGrid,
         tumbles: result.tumbles,
