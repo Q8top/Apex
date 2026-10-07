@@ -138,6 +138,7 @@
   }
 
   function runBonusSequence(feature, betMinor, onDone) {
+    var finished = false;
     var overlay = buildBonusOverlay();
     var leftEl = overlay.querySelector('#sd-bonus-left');
     var totalEl = overlay.querySelector('#sd-bonus-total');
@@ -176,6 +177,8 @@
     }
 
     function finish() {
+      if (finished) return;
+      finished = true;
       okBtn.style.display = '';
       okBtn.textContent = '领取 ' + fmt(totalWinMinor / 100);
       okBtn.addEventListener('click', function () {
@@ -332,10 +335,13 @@
 
   function renderSpinBtn() {
     var label = '旋转';
-    if (state.autoSpin) label = '停止';
+    var disabled = false;
+    if (state.bonusLock) { label = '免费旋转中'; disabled = true; }
+    else if (state.autoSpin) label = '停止';
     else if (state.spinning) label = '旋转中';
     el.spinBtn.querySelector('.sd-ctrl-label').textContent = label;
     el.spinBtn.classList.toggle('spinning', state.spinning);
+    el.spinBtn.disabled = disabled;
   }
 
   function renderFastBtn() {
@@ -452,6 +458,7 @@
   }
 
   function decreaseBet() {
+    if (state.bonusLock) return;
     if (state.betIndex > 0) {
       state.betIndex--;
       renderStats();
@@ -459,6 +466,7 @@
     }
   }
   function increaseBet() {
+    if (state.bonusLock) return;
     if (state.betIndex < BET_OPTIONS.length - 1) {
       state.betIndex++;
       renderStats();
