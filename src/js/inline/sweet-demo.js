@@ -353,10 +353,10 @@
     var scope = root || document;
     var nodes = scope.querySelectorAll('[data-i18n]');
     for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      var key = el.getAttribute('data-i18n');
+      var node = nodes[i];
+      var key = node.getAttribute('data-i18n');
       var val = window.ApexI18n.t(key);
-      if (val && val !== key) el.textContent = val;
+      if (val && val !== key) node.textContent = val;
     }
   }
 
@@ -451,8 +451,6 @@
     state.autoSpin = false;
     clearTimeout(state.autoTimer);
     state.autoTimer = 0;
-    clearTimeout(state.spinTimer);
-    state.spinTimer = 0;
     renderAutoBtn();
     renderSpinBtn();
   }
