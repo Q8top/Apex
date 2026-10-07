@@ -149,7 +149,7 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
-  if (catKey !== '""" + hot_key + """') {
+  if (catKey !== 'hot') {
     content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
     return;
   }
