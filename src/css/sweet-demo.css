@@ -317,27 +317,3 @@ a{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion: reduce) {
   .sd-sym svg { animation: none !important; }
 }
-
-/* ===== v6 · 中奖提示微悬浮（30% 叠盘 / 70% 盘下）===== */
-.sd-win-area{
-  position:relative;
-  min-height:52px;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding:0 16px;
-}
-.sd-win-fb{
-  position:absolute;
-  top:-18px;
-  left:50%;
-  transform:translateX(-50%) translateY(-6px);
-  will-change:opacity,transform;
-}
-.sd-win-fb.is-visible{
-  transform:translateX(-50%) translateY(0);
-}
-@media (prefers-reduced-motion:reduce){
-  .sd-win-fb{transform:translateX(-50%)!important}
-  .sd-win-fb.is-visible{transform:translateX(-50%)!important}
-}
