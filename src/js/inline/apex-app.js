@@ -149,6 +149,10 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
+  if (catKey !== '""" + hot_key + """') {
+    content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
+    return;
+  }
   var GAMES=[
     {n:"奥林匹斯",   src:"/assets/games/olympus.webp"},
     {n:"糖果连连爆", src:"/assets/games/sweet.webp"},
