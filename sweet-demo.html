@@ -31,15 +31,150 @@
     <symbol id="ic-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
     <symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
     <symbol id="ic-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
-    <!-- ===== 糖果符号库 ===== -->
-    <symbol id="sb-sym-red" viewBox="0 0 100 100">
+    
+    <!-- ========== Apex 糖果符号系统 v3 · 7 层视觉 ========== -->
+
+    <symbol id="sb-sym-red" viewBox="0 0 120 120">
+      <defs><radialGradient id="v3RedBody" cx="36%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#ffd1d1"/><stop offset="28%" stop-color="#ff6b6b"/>
+        <stop offset="62%" stop-color="#e63946"/><stop offset="100%" stop-color="#8b1524"/>
+      </radialGradient></defs>
+      <ellipse cx="60" cy="100" rx="30" ry="6" fill="rgba(0,0,0,.10)"/>
+      <path d="M60 92 C24 66 22 38 38 26 C48 18 60 24 60 36 C60 24 72 18 82 26 C98 38 96 66 60 92 Z" fill="url(#v3RedBody)"/>
+      <path d="M30 60 C34 78 46 86 60 90 C74 86 86 78 90 60 C82 74 72 80 60 80 C48 80 38 74 30 60 Z" fill="rgba(0,0,0,.16)"/>
+      <ellipse cx="46" cy="42" rx="10" ry="6.5" fill="rgba(255,255,255,.72)" transform="rotate(-28 46 42)"/>
+      <circle cx="72" cy="40" r="3" fill="rgba(255,255,255,.45)"/>
+      <path d="M60 92 C24 66 22 38 38 26 C48 18 60 24 60 36 C60 24 72 18 82 26 C98 38 96 66 60 92 Z" fill="none" stroke="rgba(120,20,35,.22)" stroke-width="1.2"/>
+    </symbol>
+
+    <symbol id="sb-sym-blue" viewBox="0 0 120 120">
+      <defs><radialGradient id="v3BlueBody" cx="34%" cy="26%" r="74%">
+        <stop offset="0%" stop-color="#c5dcff"/><stop offset="30%" stop-color="#6aa8ff"/>
+        <stop offset="65%" stop-color="#3468d4"/><stop offset="100%" stop-color="#1a3d8f"/>
+      </radialGradient></defs>
+      <ellipse cx="60" cy="100" rx="28" ry="6" fill="rgba(0,0,0,.10)"/>
+      <circle cx="60" cy="62" r="36" fill="url(#v3BlueBody)"/>
+      <path d="M26 64 C28 86 42 98 60 98 C78 98 92 86 94 64 C88 80 76 88 60 88 C44 88 32 80 26 64 Z" fill="rgba(0,0,0,.18)"/>
+      <ellipse cx="46" cy="42" rx="12" ry="8" fill="rgba(255,255,255,.75)" transform="rotate(-25 46 42)"/>
+      <circle cx="74" cy="34" r="3.5" fill="rgba(255,255,255,.55)"/>
+      <path d="M60 26 Q60 20 64 18" stroke="#2d6a2d" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M60 26 Q54 22 50 22 Q52 28 60 26 Z" fill="#4ade80"/>
+      <circle cx="60" cy="62" r="36" fill="none" stroke="rgba(20,40,90,.15)" stroke-width="1"/>
+    </symbol>
+
+    <symbol id="sb-sym-green" viewBox="0 0 120 120">
+      <defs><radialGradient id="v3GreenBody" cx="38%" cy="30%" r="72%">
+        <stop offset="0%" stop-color="#c8f5d0"/><stop offset="30%" stop-color="#65cf7a"/>
+        <stop offset="65%" stop-color="#2b9a45"/><stop offset="100%" stop-color="#0e4d1f"/>
+      </radialGradient></defs>
+      <ellipse cx="60" cy="100" rx="26" ry="6" fill="rgba(0,0,0,.10)"/>
+      <path d="M60 26 C32 26 26 48 28 66 C30 88 46 96 60 96 C74 96 90 88 92 66 C94 48 88 26 60 26 Z" fill="url(#v3GreenBody)"/>
+      <path d="M30 68 C33 86 45 94 60 94 C75 94 87 86 90 68 C84 82 73 88 60 88 C47 88 36 82 30 68 Z" fill="rgba(0,0,0,.20)"/>
+      <ellipse cx="46" cy="46" rx="11" ry="7" fill="rgba(255,255,255,.75)" transform="rotate(-22 46 46)"/>
+      <circle cx="72" cy="38" r="3" fill="rgba(255,255,255,.5)"/>
+      <path d="M60 26 Q58 18 62 14" stroke="#166534" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M60 22 Q68 16 74 18 Q72 26 62 26 Z" fill="#22c55e"/>
+      <path d="M60 26 C32 26 26 48 28 66 C30 88 46 96 60 96 C74 96 90 88 92 66 C94 48 88 26 60 26 Z" fill="none" stroke="rgba(10,60,20,.18)" stroke-width="1"/>
+    </symbol>
+
+    <symbol id="sb-sym-yellow" viewBox="0 0 120 120">
       <defs>
-        <radialGradient id="gRed" cx="0.35" cy="0.3" r="0.7">
-          <stop offset="0" stop-color="#ff9a9a"/>
-          <stop offset="0.5" stop-color="#ef4444"/>
-          <stop offset="1" stop-color="#991b1b"/>
-        </radialGradient>
+        <linearGradient id="v3YTop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff9c4"/><stop offset="100%" stop-color="#fbbf24"/>
+        </linearGradient>
+        <linearGradient id="v3YBot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#78350f"/>
+        </linearGradient>
+        <linearGradient id="v3YLeft" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fde68a"/><stop offset="100%" stop-color="#b45309"/>
+        </linearGradient>
       </defs>
+      <ellipse cx="60" cy="102" rx="24" ry="5" fill="rgba(0,0,0,.10)"/>
+      <path d="M60 14 L92 52 L60 96 L28 52 Z" fill="url(#v3YLeft)"/>
+      <path d="M60 14 L92 52 L60 52 Z" fill="url(#v3YTop)"/>
+      <path d="M60 52 L92 52 L60 96 Z" fill="url(#v3YBot)"/>
+      <path d="M60 14 L78 34 L60 30 L42 34 Z" fill="rgba(255,255,255,.55)"/>
+      <path d="M60 20 L82 48 L60 44 Z" fill="rgba(255,255,255,.20)"/>
+      <circle cx="52" cy="24" r="2.5" fill="#fff"/>
+      <path d="M60 14 L92 52 L60 96 L28 52 Z" fill="none" stroke="rgba(120,60,10,.22)" stroke-width="1.2"/>
+    </symbol>
+
+    <symbol id="sb-sym-orange" viewBox="0 0 120 120">
+      <defs><radialGradient id="v3OrangeBody" cx="34%" cy="28%" r="74%">
+        <stop offset="0%" stop-color="#ffe0b3"/><stop offset="30%" stop-color="#fda24f"/>
+        <stop offset="65%" stop-color="#e56a1a"/><stop offset="100%" stop-color="#8c3708"/>
+      </radialGradient></defs>
+      <ellipse cx="60" cy="100" rx="28" ry="6" fill="rgba(0,0,0,.10)"/>
+      <circle cx="60" cy="62" r="36" fill="url(#v3OrangeBody)"/>
+      <path d="M26 64 C28 86 42 98 60 98 C78 98 92 86 94 64 C88 80 76 88 60 88 C44 88 32 80 26 64 Z" fill="rgba(0,0,0,.20)"/>
+      <ellipse cx="46" cy="42" rx="12" ry="8" fill="rgba(255,255,255,.70)" transform="rotate(-25 46 42)"/>
+      <circle cx="74" cy="34" r="3.5" fill="rgba(255,255,255,.5)"/>
+      <circle cx="42" cy="76" r="1" fill="rgba(80,30,0,.25)"/>
+      <circle cx="66" cy="82" r="1" fill="rgba(80,30,0,.25)"/>
+      <circle cx="76" cy="68" r="1" fill="rgba(80,30,0,.25)"/>
+      <path d="M60 26 Q58 18 62 14" stroke="#7c2d12" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M60 22 Q68 16 74 18 Q72 26 62 26 Z" fill="#22c55e"/>
+      <circle cx="60" cy="62" r="36" fill="none" stroke="rgba(100,40,10,.18)" stroke-width="1"/>
+    </symbol>
+
+    <symbol id="sb-sym-purple" viewBox="0 0 120 120">
+      <defs><radialGradient id="v3PurpleBody" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#e9d5ff"/><stop offset="30%" stop-color="#a855f7"/>
+        <stop offset="65%" stop-color="#7e22ce"/><stop offset="100%" stop-color="#4c1d95"/>
+      </radialGradient></defs>
+      <ellipse cx="60" cy="102" rx="30" ry="6" fill="rgba(0,0,0,.10)"/>
+      <path d="M60 34 Q46 34 44 52 Q42 72 60 74 Q78 72 76 52 Q74 34 60 34 Z" fill="url(#v3PurpleBody)"/>
+      <circle cx="42" cy="66" r="16" fill="url(#v3PurpleBody)"/>
+      <circle cx="78" cy="66" r="16" fill="url(#v3PurpleBody)"/>
+      <circle cx="60" cy="80" r="16" fill="url(#v3PurpleBody)"/>
+      <circle cx="42" cy="66" r="16" fill="rgba(0,0,0,.10)"/>
+      <circle cx="78" cy="66" r="16" fill="rgba(0,0,0,.10)"/>
+      <ellipse cx="38" cy="60" rx="5" ry="3.5" fill="rgba(255,255,255,.65)" transform="rotate(-25 38 60)"/>
+      <ellipse cx="74" cy="60" rx="5" ry="3.5" fill="rgba(255,255,255,.55)" transform="rotate(-25 74 60)"/>
+      <ellipse cx="55" cy="72" rx="5" ry="3.5" fill="rgba(255,255,255,.6)" transform="rotate(-25 55 72)"/>
+      <circle cx="72" cy="50" r="2.5" fill="rgba(255,255,255,.45)"/>
+      <path d="M60 34 Q58 24 62 20" stroke="#166534" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M60 28 Q68 22 74 24 Q72 32 62 32 Z" fill="#22c55e"/>
+    </symbol>
+
+    <symbol id="sb-sym-pink" viewBox="0 0 120 120">
+      <defs>
+        <linearGradient id="v3PinkTop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffd6ea"/><stop offset="100%" stop-color="#ec4899"/>
+        </linearGradient>
+        <linearGradient id="v3PinkBot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#db2777"/><stop offset="100%" stop-color="#831843"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="60" cy="104" rx="26" ry="5" fill="rgba(0,0,0,.10)"/>
+      <path d="M60 20 L76 50 L110 54 L84 78 L90 112 L60 94 L30 112 L36 78 L10 54 L44 50 Z" fill="url(#v3PinkBot)"/>
+      <path d="M60 20 L76 50 L60 56 L44 50 Z" fill="url(#v3PinkTop)"/>
+      <path d="M60 20 L76 50 L60 56 Z" fill="rgba(255,255,255,.55)"/>
+      <path d="M60 30 L70 48 L60 52 L50 48 Z" fill="rgba(255,255,255,.30)"/>
+      <path d="M60 20 L76 50 L110 54 L84 78 L90 112 L60 94 L30 112 L36 78 L10 54 L44 50 Z" fill="none" stroke="rgba(130,20,70,.22)" stroke-width="1.2"/>
+    </symbol>
+
+    <symbol id="sb-sym-rainbow" viewBox="0 0 120 120">
+      <defs>
+        <radialGradient id="v3RainbowBody" cx="32%" cy="26%" r="78%">
+          <stop offset="0%" stop-color="#ffffff"/><stop offset="18%" stop-color="#ffe8a3"/>
+          <stop offset="36%" stop-color="#ff8a8a"/><stop offset="52%" stop-color="#c084fc"/>
+          <stop offset="70%" stop-color="#60a5fa"/><stop offset="88%" stop-color="#22c55e"/>
+          <stop offset="100%" stop-color="#0f766e"/>
+        </radialGradient>
+        <linearGradient id="v3RainbowShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,255,255,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.22)"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="60" cy="100" rx="28" ry="6" fill="rgba(0,0,0,.10)"/>
+      <circle cx="60" cy="62" r="36" fill="url(#v3RainbowBody)"/>
+      <circle cx="60" cy="62" r="36" fill="url(#v3RainbowShade)"/>
+      <ellipse cx="46" cy="42" rx="12" ry="8" fill="rgba(255,255,255,.85)" transform="rotate(-25 46 42)"/>
+      <circle cx="74" cy="34" r="4" fill="rgba(255,255,255,.75)"/>
+      <circle cx="68" cy="48" r="2.5" fill="rgba(255,255,255,.55)"/>
+      <circle cx="60" cy="62" r="36" fill="none" stroke="rgba(0,0,0,.10)" stroke-width="1"/>
+    </symbol>
+  </defs>
       <path d="M50 78 C22 58 22 38 34 28 C42 22 50 26 50 34 C50 26 58 22 66 28 C78 38 78 58 50 78 Z" fill="url(#gRed)"/>
       <ellipse cx="38" cy="38" rx="7" ry="5" fill="#fff" opacity="0.6"/>
     </symbol>
@@ -159,18 +294,16 @@
 <main class="sd-main">
   <section class="sd-stage" aria-label="游戏区域">
     <div class="sd-board" id="sd-board"></div>
-    <div class="sd-win-layer" id="sd-win-layer" hidden>
-      <div class="sd-win-toast" id="sd-win-toast" role="status" aria-live="polite" aria-atomic="true">
-        <svg class="sd-win-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M12 2 L14.4 9.2 L22 9.6 L16 14 L18 21.4 L12 17 L6 21.4 L8 14 L2 9.6 L9.6 9.2 Z"/>
-        </svg>
-        <span class="sd-win-label" id="sd-win-label">本局赢得</span>
-        <span class="sd-win-amount" id="sd-win-amount">¥0.00</span>
-      </div>
-    </div>
   </section>
 
-  <section class="sd-stats">
+    <section class="sd-win-area" aria-live="polite" aria-atomic="true">
+    <div class="sd-win-fb" id="sd-win-fb">
+      <span class="sd-win-fb-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 L14.4 9.2 L22 9.6 L16 14 L18 21.4 L12 17 L6 21.4 L8 14 L2 9.6 L9.6 9.2 Z"/></svg></span>
+      <span class="sd-win-fb-label" id="sd-win-fb-label">本局赢得</span>
+      <strong class="sd-win-fb-value" id="sd-win-fb-value">¥0.00</strong>
+    </div>
+  </section>
+<section class="sd-stats">
     <div class="sd-stat">
       <span class="sd-stat-label">试玩余额</span>
       <span class="sd-stat-value" id="sd-balance">¥10,000.00</span>

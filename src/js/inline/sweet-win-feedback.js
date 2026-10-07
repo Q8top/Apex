@@ -13,10 +13,9 @@
 (function () {
   'use strict';
 
-  var ID_LAYER  = 'sd-win-layer';
-  var ID_TOAST  = 'sd-win-toast';
-  var ID_LABEL  = 'sd-win-label';
-  var ID_AMOUNT = 'sd-win-amount';
+  var ID_FB     = 'sd-win-fb';
+  var ID_LABEL  = 'sd-win-fb-label';
+  var ID_AMOUNT = 'sd-win-fb-value';
 
   // 等级阈值：ratio = win / bet
   var LEVELS = {
@@ -68,14 +67,13 @@
   }
 
   function cache() {
-    el.layer  = document.getElementById(ID_LAYER);
-    el.toast  = document.getElementById(ID_TOAST);
+    el.fb     = document.getElementById(ID_FB);
     el.label  = document.getElementById(ID_LABEL);
     el.amount = document.getElementById(ID_AMOUNT);
   }
 
   function show(win, bet) {
-    if (!el.layer || !el.toast) return;
+    if (!el.fb) return;
     var amt = Number(win) || 0;
     if (amt <= 0) return;
 
@@ -87,13 +85,9 @@
     if (state.rafId)     { cancelAnimationFrame(state.rafId); state.rafId = 0; }
 
     // 更新内容
-    el.toast.dataset.level = level;
+    el.fb.dataset.level = level;
     el.label.textContent = meta.label;
-
-    // 显示
-    el.layer.removeAttribute('hidden');
-    void el.layer.offsetWidth;
-    el.layer.classList.add('is-visible');
+    el.fb.classList.add('is-visible');
     state.visible = true;
 
     // 数字滚动
@@ -109,12 +103,9 @@
   }
 
   function hide() {
-    if (!el.layer) return;
-    el.layer.classList.remove('is-visible');
+    if (!el.fb) return;
+    el.fb.classList.remove('is-visible');
     state.visible = false;
-    setTimeout(function () {
-      if (!state.visible) el.layer.setAttribute('hidden', '');
-    }, 400);
   }
 
   function init() { cache(); }

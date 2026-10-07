@@ -55,7 +55,8 @@
   function renderBoard(initial) {
     var html = '';
     for (var i = 0; i < CELLS; i++) {
-      html += '<div class="sd-sym"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#' + randomSymbol() + '"/></svg></div>';
+      var delay = ((i * 137) % 36) / 10;
+      html += '<div class="sd-sym"><svg viewBox="0 0 120 120" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + randomSymbol() + '"/></svg></div>';
     }
     el.board.innerHTML = html;
     if (initial) el.board.dataset.fast = state.fastMode ? '1' : '0';
