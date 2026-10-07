@@ -198,7 +198,13 @@
   }
 
   function onSpinResult(result) {
-    if (!pending) return;
+    if (!pending) {
+      state.spinning = false;
+      state.bonusLock = false;
+      if (el.board) el.board.dataset.spinning = '0';
+      renderSpinBtn();
+      return;
+    }
     var betMinor = result.bet;
     var winMinor = result.totalWin;
     state.win = winMinor / 100;
@@ -246,6 +252,13 @@
     }
     if (state.autoSpin) scheduleAuto();
     pending = null;
+    }).catch(function (err) {
+      if (window.console && console.error) console.error('[onSpinResult] tumble failed:', err);
+      state.spinning = false;
+      state.bonusLock = false;
+      pending = null;
+      if (el.board) el.board.dataset.spinning = '0';
+      renderSpinBtn();
     });
   }
 
@@ -427,6 +440,8 @@
     state.autoSpin = false;
     clearTimeout(state.autoTimer);
     state.autoTimer = 0;
+    clearTimeout(state.spinTimer);
+    state.spinTimer = 0;
     renderAutoBtn();
     renderSpinBtn();
   }
