@@ -194,7 +194,13 @@
       return simulateDelay(400, 900).then(function () { return payload; });
     }
 
-    return { getBalance: getBalance, spin: spin };
+    function resetBalance(minor) {
+      var n = Math.floor(Number(minor) || 1000000);
+      if (wallet && wallet.set) wallet.set(n);
+      return { currency: 'CNY', minor: n };
+    }
+
+    return { getBalance: getBalance, spin: spin, resetBalance: resetBalance };
   }
 
   window.ApexDemoProvider = { create: DemoProvider };

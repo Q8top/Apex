@@ -17,7 +17,6 @@
     spinning: false,
     bonusLock: false,
     autoTimer: 0,
-    spinTimer: 0,
     lastFocused: null
   };
 
@@ -146,7 +145,6 @@
     var remaining = feature.initialSpins || 10;
     var totalWinMinor = 0;
     var totalMult = 0;
-    var round = 0;
     var multEl = overlay.querySelector('#sd-bonus-mult');
     var multValEl = overlay.querySelector('#sd-bonus-mult-val');
 
@@ -156,7 +154,6 @@
 
     function nextFree() {
       if (remaining <= 0 || !runtime || !runtime.state) return finish();
-      round++;
       if (window.ApexAudio) audio && audio.play('spin-start');
       if (haptics) haptics.pulse('spin');
       provider_spin(betMinor, true).then(function (r) {
@@ -336,7 +333,10 @@
   function renderSpinBtn() {
     var label = '旋转';
     var disabled = false;
-    if (state.bonusLock) { label = '免费旋转中'; disabled = true; }
+    if (state.bonusLock) {
+      label = window.ApexI18n ? window.ApexI18n.t('btn.bonus') : '免费旋转中';
+      disabled = true;
+    }
     else if (state.autoSpin) label = '停止';
     else if (state.spinning) label = '旋转中';
     el.spinBtn.querySelector('.sd-ctrl-label').textContent = label;
@@ -512,7 +512,13 @@
     setTimeout(function () { el.confirmRoot.setAttribute('hidden', ''); }, 220);
   }
   function doReset() {
-    state.balance = INITIAL_BALANCE;
+    var p = runtime && runtime.getProvider && runtime.getProvider();
+    if (p && p.resetBalance) {
+      var r = p.resetBalance(INITIAL_BALANCE * 100);
+      state.balance = (r.minor || INITIAL_BALANCE * 100) / 100;
+    } else {
+      state.balance = INITIAL_BALANCE;
+    }
     state.win = 0;
     renderStats();
     closeConfirm();
