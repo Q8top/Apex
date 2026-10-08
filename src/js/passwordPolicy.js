@@ -155,9 +155,9 @@
     return { level: 1, message: r.message, valid: false };
   }
 
-  window.ApexPasswordPolicy = {
+  window.ApexPasswordPolicy = Object.freeze({
     validatePassword: validatePassword,
     scorePassword: scorePassword,
     STRONG_PASSWORD_RE: STRONG_PASSWORD_RE,
-  };
+  });
 })();

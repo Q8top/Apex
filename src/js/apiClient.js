@@ -1,7 +1,12 @@
 // Apex API Client - 统一请求处理
-(function() {
+(function () {
+  'use strict';
+  function escapeRegExp(s) {
+    return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
   const getCookie = (name) => {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    const pattern = new RegExp('(^| )' + escapeRegExp(name) + '=([^;]+)');
+    const match = document.cookie.match(pattern);
     return match ? match[2] : null;
   };
 
@@ -22,12 +27,20 @@
 
     // Captcha Token 自动注入（如果存在且是对象请求体）
     let body = data;
-    if (data && typeof data === 'object' && !Array.isArray(data) && window.__captchaToken && data.captchaToken === undefined) {
-      body = { ...data, captchaToken: window.__captchaToken };
+    if (
+      data && typeof data === 'object' && !Array.isArray(data) &&
+      window.__captchaToken &&
+      (data.captchaToken === undefined || data.captchaToken === null)
+    ) {
+      body = Object.assign({}, data, { captchaToken: window.__captchaToken });
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), options.timeout || 15000);
+    const rawTimeout = Number(options.timeout);
+    const timeoutMs = Number.isFinite(rawTimeout) && rawTimeout >= 0 ? rawTimeout : 15000;
+    const timeoutId = timeoutMs > 0
+      ? setTimeout(() => controller.abort(), timeoutMs)
+      : 0;
 
     try {
       const response = await fetch(url, {
@@ -38,13 +51,13 @@
         signal: controller.signal,
         keepalive: options.keepalive === true,
       });
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
 
       let json;
       try {
         json = await response.json();
       } catch (e) {
-        json = { success: false, message: '无效的服务器响应' };
+        json = { success: false, message: '无效的服务器响应', status: response.status };
       }
 
       // CSRF 自愈：若首次请求因缺少 CSRF cookie 被 403 拒绝，
@@ -70,7 +83,7 @@
 
       return json;
     } catch (err) {
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
       if (err.name === 'AbortError') {
         return { success: false, message: '请求超时，请检查网络' };
       }
@@ -93,13 +106,11 @@
     }
   }
 
-  window.apiClient = {
+  window.apiClient = Object.freeze({
     get: (url, options) => request('GET', url, null, options),
     post: (url, data, options) => request('POST', url, data, options),
     put: (url, data, options) => request('PUT', url, data, options),
     patch: (url, data, options) => request('PATCH', url, data, options),
     delete: (url, data, options) => request('DELETE', url, data, options),
-  };
-
-  console.log('[Apex] apiClient 已加载');
+  });
 })();

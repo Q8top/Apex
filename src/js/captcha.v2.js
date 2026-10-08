@@ -1,9 +1,10 @@
 // Apex Captcha - 行为验证前端逻辑
-(function() {
+(function () {
+  'use strict';
+  var RAND_BUF = new Uint32Array(1);
   function cryptoRandom() {
-    var buf = new Uint32Array(1);
-    crypto.getRandomValues(buf);
-    return buf[0] / 4294967296;
+    crypto.getRandomValues(RAND_BUF);
+    return RAND_BUF[0] / 4294967296;
   }
   // 行为信号采集
   const signals = {
@@ -50,6 +51,10 @@
       var purpose = box.dataset.purpose || 'register';
       const challengeRes = await window.apiClient.post('/api/captcha/challenge', { purpose: purpose });
       if (!challengeRes.success) throw new Error(challengeRes.message || '无法获取验证挑战');
+      if (typeof challengeRes.challenge !== 'string' || !challengeRes.challenge ||
+          typeof challengeRes.signature !== 'string' || !challengeRes.signature) {
+        throw new Error('服务器返回的挑战格式无效');
+      }
 
       // Step 2: 汇总信号
       const payload = {
@@ -102,5 +107,4 @@
     }
   };
 
-  console.log('[Apex] Captcha 模块已加载');
 })();
