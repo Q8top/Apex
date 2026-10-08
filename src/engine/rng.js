@@ -22,8 +22,9 @@ function Rng(symbolWeights){
   var total = 0;
   for (var i = 0; i < keys.length; i++){
     var w = symbolWeights[keys[i]];
-    if (!Number.isFinite(w) || w <= 0){
-      throw _err.ApexError(_err.CODES.INVALID_WEIGHTS, 'invalid weight for ' + keys[i]);
+    if (!Number.isSafeInteger(w) || w <= 0){
+      throw _err.ApexError(_err.CODES.INVALID_WEIGHTS,
+        'weight must be positive safe integer (got ' + w + ' for ' + keys[i] + ')');
     }
     entries.push([keys[i], w]);
     total += w;
