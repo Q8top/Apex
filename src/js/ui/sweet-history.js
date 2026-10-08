@@ -1,27 +1,62 @@
 /* Apex · 游戏记录 Sheet
  * 数据源：内存数组（本轮不作持久化）
+ *
+ * 不变量：
+ *   - push 入口校验 rec 结构，非法输入不污染列表
+ *   - MAX 上限 100，超出丢弃最旧
+ *   - close 用 clearTimeout 防时序竞态
+ *   - ESC 关闭 + 焦点恢复；监听器仅 open 期间挂载
+ *   - open/close 幂等
+ *   - 所有 innerHTML 内容均为内部数字格式化，无 XSS 面
+ *
+ * TODO(P0-cross)：body scroll lock 目前模块内计数，跨 sheet 冲突。
+ *                 待规则 / 记录 / 设置三份审完后统一抽 ApexSheetLock。
+ * TODO(P2)：金额前缀硬编码 ¥，待 rec 透传 currency 后改为动态。
  */
 (function () {
   'use strict';
 
   var ID = 'sd-history-root';
-  var records = [];
+  var BODY_SEL = '#sd-hist-body';
   var MAX = 100;
+  var CLOSE_ANIM_MS = 300;
+  var PLACEHOLDER = '—';
+
+  var records = [];
+
+  function isValidRec(rec) {
+    if (!rec || typeof rec !== 'object') return false;
+    if (!Number.isFinite(Number(rec.betMinor))) return false;
+    if (!Number.isFinite(Number(rec.winMinor))) return false;
+    if (!Number.isFinite(Number(rec.ts))) return false;
+    return true;
+  }
 
   function push(rec) {
-    records.unshift(rec);
+    if (!isValidRec(rec)) return false;
+    records.unshift({
+      ts: Number(rec.ts),
+      betMinor: Math.floor(Number(rec.betMinor)),
+      winMinor: Math.floor(Number(rec.winMinor))
+    });
     if (records.length > MAX) records.length = MAX;
+    return true;
   }
 
   function fmtMoney(minor) {
-    var n = Number(minor) / 100;
-    return '¥' + n.toLocaleString('en-US', {
+    var n = Number(minor);
+    if (!Number.isFinite(n)) return PLACEHOLDER;
+    var yuan = n / 100;
+    return '¥' + yuan.toLocaleString('en-US', {
       minimumFractionDigits: 2, maximumFractionDigits: 2
     });
   }
 
   function fmtTime(ts) {
-    var d = new Date(ts);
+    var n = Number(ts);
+    if (!Number.isFinite(n)) return PLACEHOLDER;
+    var d = new Date(n);
+    if (isNaN(d.getTime())) return PLACEHOLDER;
     function p(v) { return v < 10 ? '0' + v : String(v); }
     return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
   }
@@ -50,7 +85,7 @@
   function build() {
     return ''
       + '<div class="sd-hist-backdrop" data-hist-close="1"></div>'
-      + '<div class="sd-hist-panel" role="dialog" aria-modal="true" aria-labelledby="sd-hist-title">'
+      + '<div class="sd-hist-panel" role="dialog" aria-modal="true" aria-labelledby="sd-hist-title" tabindex="-1">'
       +   '<div class="sd-hist-handle"></div>'
       +   '<header class="sd-hist-header"><h2 id="sd-hist-title">游戏记录</h2></header>'
       +   '<div class="sd-hist-body" id="sd-hist-body"></div>'
@@ -58,6 +93,22 @@
   }
 
   var root = null;
+  var panel = null;
+  var bodyEl = null;
+  var closeTimer = null;
+  var escHandler = null;
+  var focusBefore = null;
+  var openCount = 0;
+
+  function lockScroll() {
+    openCount++;
+    if (openCount === 1) document.body.style.overflow = 'hidden';
+  }
+  function unlockScroll() {
+    openCount = Math.max(0, openCount - 1);
+    if (openCount === 0) document.body.style.overflow = '';
+  }
+
   function ensure() {
     if (root) return root;
     root = document.createElement('div');
@@ -66,39 +117,92 @@
     root.setAttribute('hidden', '');
     root.innerHTML = build();
     root.addEventListener('click', function (e) {
-      if (e.target.closest && e.target.closest('[data-hist-close]')) close();
+      var t = e.target;
+      if (!t || !t.closest) return;
+      if (t.closest('[data-hist-close]')) close();
     });
     document.body.appendChild(root);
+    panel = root.querySelector('.sd-hist-panel');
+    bodyEl = root.querySelector(BODY_SEL);
     return root;
   }
 
   function refresh() {
-    var body = document.getElementById('sd-hist-body');
-    if (body) body.innerHTML = renderList();
+    if (!bodyEl && root) bodyEl = root.querySelector(BODY_SEL);
+    if (bodyEl) bodyEl.innerHTML = renderList();
+  }
+
+  function bindEsc() {
+    if (escHandler) return;
+    escHandler = function (e) {
+      if (e.key === 'Escape' || e.keyCode === 27) close();
+    };
+    document.addEventListener('keydown', escHandler);
+  }
+  function unbindEsc() {
+    if (!escHandler) return;
+    document.removeEventListener('keydown', escHandler);
+    escHandler = null;
   }
 
   function open() {
     var r = ensure();
+    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+
+    var wasOpen = r.classList.contains('is-open');
     refresh();
     r.removeAttribute('hidden');
     void r.offsetWidth;
     r.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
+
+    if (!wasOpen) {
+      lockScroll();
+      focusBefore = (document.activeElement && document.activeElement !== document.body)
+        ? document.activeElement : null;
+      bindEsc();
+    }
+    if (panel && typeof panel.focus === 'function') {
+      try { panel.focus(); } catch (e) {}
+    }
   }
 
   function close() {
-    if (!root) return;
+    if (!root || !root.classList.contains('is-open')) return;
+
     root.classList.remove('is-open');
-    document.body.style.overflow = '';
-    setTimeout(function () {
-      if (root) root.setAttribute('hidden', '');
-    }, 300);
+    unlockScroll();
+    unbindEsc();
+
+    if (focusBefore && typeof focusBefore.focus === 'function') {
+      try { focusBefore.focus(); } catch (e) {}
+    }
+    focusBefore = null;
+
+    if (closeTimer) clearTimeout(closeTimer);
+    closeTimer = setTimeout(function () {
+      closeTimer = null;
+      if (root && !root.classList.contains('is-open')) {
+        root.setAttribute('hidden', '');
+      }
+    }, CLOSE_ANIM_MS);
   }
 
-  function clear() { records.length = 0; }
+  function clear() {
+    records.length = 0;
+    if (isOpen()) refresh();   // 打开状态下清空立刻反映
+  }
 
-  window.ApexHistory = {
-    open: open, close: close, push: push, clear: clear,
+  function isOpen() {
+    return !!(root && root.classList.contains('is-open'));
+  }
+
+  window.ApexHistory = Object.freeze({
+    open: open,
+    close: close,
+    isOpen: isOpen,
+    push: push,
+    clear: clear,
+    MAX: MAX,
     getRecords: function () { return records.slice(); }
-  };
+  });
 })();
