@@ -124,17 +124,48 @@ function scopeIds(svg, uid) {
   return svg;
 }
 
-function get(id, uid) {
-  var raw = SVGS[id];
-  if (!raw) return '';
-  return scopeIds(raw, uid || nextUid('s'));
+var ALIASES = {
+  'sb-fruit-banana': 'banana',
+  'sb-fruit-grape': 'grape',
+  'sb-fruit-watermelon': 'watermelon',
+  'sb-fruit-plum': 'plum',
+  'sb-fruit-apple': 'apple',
+  'sb-candy-blue': 'blue_candy',
+  'sb-candy-green': 'green_candy',
+  'sb-candy-purple': 'purple_candy',
+  'sb-candy-heart': 'red_heart_candy',
+  'sb-scatter-lollipop': 'lollipop',
+  'sb-multiplier-bomb': 'multiplier_bomb',
+  'BANANA': 'banana',
+  'GRAPE': 'grape',
+  'WATERMELON': 'watermelon',
+  'PLUM': 'plum',
+  'APPLE': 'apple',
+  'BLUE_CANDY': 'blue_candy',
+  'GREEN_CANDY': 'green_candy',
+  'PURPLE_CANDY': 'purple_candy',
+  'RED_HEART_CANDY': 'red_heart_candy',
+  'LOLLIPOP': 'lollipop',
+  'MULTIPLIER_BOMB': 'multiplier_bomb'
+};
+
+function resolve(id) {
+  if (Object.prototype.hasOwnProperty.call(SVGS, id)) return id;
+  if (Object.prototype.hasOwnProperty.call(ALIASES, id)) return ALIASES[id];
+  return null;
 }
-function has(id) { return Object.prototype.hasOwnProperty.call(SVGS, id); }
+function get(id, uid) {
+  var key = resolve(id);
+  if (!key) return '';
+  return scopeIds(SVGS[key], uid || nextUid('s'));
+}
+function has(id) { return resolve(id) !== null; }
 function list() { return Object.keys(SVGS); }
 
 window.ApexSymbolsV2 = Object.freeze({
   get: get, has: has, list: list,
   VIEWBOX: '0 0 100 100',
-  SVGS: Object.freeze(SVGS)
+  SVGS: Object.freeze(SVGS),
+  ALIASES: Object.freeze(ALIASES)
 });
 })();
