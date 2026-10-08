@@ -3,10 +3,24 @@
   'use strict';
 
   var INITIAL_BALANCE = 10000;
-  var BET_OPTIONS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
+  var BET_OPTIONS = Object.freeze([0.2, 0.5, 1, 2, 5, 10, 20, 50, 100]);
   var DEFAULT_BET_INDEX = 3;
-  var SYM_IDS = ['sb-fruit-banana','sb-fruit-grape','sb-fruit-watermelon','sb-fruit-plum','sb-fruit-apple','sb-candy-blue','sb-candy-green','sb-candy-purple','sb-candy-heart','sb-scatter-lollipop','sb-multiplier-bomb'];
+
+  var SYM_IDS = Object.freeze([
+    'sb-fruit-banana','sb-fruit-grape','sb-fruit-watermelon',
+    'sb-fruit-plum','sb-fruit-apple','sb-candy-blue','sb-candy-green',
+    'sb-candy-purple','sb-candy-heart','sb-scatter-lollipop','sb-multiplier-bomb'
+  ]);
+
+  var BASE_FALLBACK_IDS = Object.freeze([
+    'sb-fruit-banana','sb-fruit-grape','sb-fruit-watermelon',
+    'sb-fruit-plum','sb-fruit-apple','sb-candy-blue','sb-candy-green',
+    'sb-candy-purple','sb-candy-heart'
+  ]);
+
   var CELLS = 30;
+  var RAND_BUF = new Uint32Array(1);
+  var XLINK_NS = 'http://www.w3.org/1999/xlink';
 
   var state = {
     balance: INITIAL_BALANCE,
@@ -17,7 +31,11 @@
     spinning: false,
     bonusLock: false,
     autoTimer: 0,
-    lastFocused: null
+    tumbleTimers: [],
+    sheetCloseTimer: 0,
+    confirmCloseTimer: 0,
+    sheetFocusBefore: null,
+    confirmFocusBefore: null
   };
 
   function $(id) { return document.getElementById(id); }
@@ -26,14 +44,13 @@
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }
   function randomSymbol() {
-    if (window.ApexSymbols && window.ApexSymbols.pickSymbol) {
+    if (window.ApexSymbols && typeof window.ApexSymbols.pickSymbol === 'function') {
       var t = window.ApexSymbols.pickSymbol();
       var id = window.ApexSymbols.getSymbolId(t);
       if (id) return id;
     }
-    var a = new Uint32Array(1);
-    crypto.getRandomValues(a);
-    return SYM_IDS[a[0] % SYM_IDS.length];
+    crypto.getRandomValues(RAND_BUF);
+    return BASE_FALLBACK_IDS[RAND_BUF[0] % BASE_FALLBACK_IDS.length];
   }
 
   var runtime = null;
@@ -72,12 +89,25 @@
     }
   }
 
+  function clearTumbleTimers() {
+    for (var i = 0; i < state.tumbleTimers.length; i++) {
+      clearTimeout(state.tumbleTimers[i]);
+    }
+    state.tumbleTimers.length = 0;
+  }
+  function tumbleSetTimeout(fn, ms) {
+    var id = setTimeout(fn, ms);
+    state.tumbleTimers.push(id);
+    return id;
+  }
+
   function playTumbleSequence(result) {
+    clearTumbleTimers();
     return new Promise(function (resolve) {
       var tumbles = result.tumbles || [];
       if (!tumbles.length) {
         renderGridAt(result.finalGrid);
-        setTimeout(resolve, 200);
+        tumbleSetTimeout(resolve, 200);
         return;
       }
       renderGridAt(result.grid);
@@ -85,25 +115,25 @@
       function playOne() {
         if (i >= tumbles.length) {
           renderGridAt(result.finalGrid);
-          setTimeout(resolve, 200);
+          tumbleSetTimeout(resolve, 200);
           return;
         }
         var t = tumbles[i];
-        t.removedPositions.forEach(function (idx) {
-          var c = getCellAt(idx);
-          if (c) c.classList.add('is-winning');
-        });
-        setTimeout(function () {
-          t.removedPositions.forEach(function (idx) {
-            var c = getCellAt(idx);
-            if (c) { c.classList.remove('is-winning'); c.classList.add('is-removing'); }
-          });
-          setTimeout(function () {
+        for (var a = 0; a < t.removedPositions.length; a++) {
+          var ca = getCellAt(t.removedPositions[a]);
+          if (ca) ca.classList.add('is-winning');
+        }
+        tumbleSetTimeout(function () {
+          for (var b = 0; b < t.removedPositions.length; b++) {
+            var cb = getCellAt(t.removedPositions[b]);
+            if (cb) { cb.classList.remove('is-winning'); cb.classList.add('is-removing'); }
+          }
+          tumbleSetTimeout(function () {
             renderGridAt(t.gridAfter);
             var cells = el.board.querySelectorAll('.sd-sym');
-            cells.forEach(function (c) { c.classList.add('is-entering'); });
-            setTimeout(function () {
-              cells.forEach(function (c) { c.classList.remove('is-entering'); });
+            for (var c = 0; c < cells.length; c++) cells[c].classList.add('is-entering');
+            tumbleSetTimeout(function () {
+              for (var d = 0; d < cells.length; d++) cells[d].classList.remove('is-entering');
               i++;
               playOne();
             }, 400);
@@ -180,7 +210,10 @@
       okBtn.textContent = '领取 ' + fmt(totalWinMinor / 100);
       okBtn.addEventListener('click', function () {
         overlay.classList.remove('is-open');
-        setTimeout(function () { overlay.remove(); }, 400);
+        setTimeout(function () {
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          else if (typeof overlay.remove === 'function') overlay.remove();
+        }, 400);
         if (onDone) onDone(totalWinMinor);
       });
     }
@@ -259,6 +292,7 @@
     pending = null;
     }).catch(function (err) {
       if (window.console && console.error) console.error('[onSpinResult] tumble failed:', err);
+      clearTumbleTimers();
       state.spinning = false;
       state.bonusLock = false;
       pending = null;
@@ -318,15 +352,22 @@
     el.betPlus.disabled = state.betIndex === BET_OPTIONS.length - 1;
   }
 
+  function setUseHref(useEl, href) {
+    if (!useEl) return;
+    useEl.setAttribute('href', href);
+    try { useEl.setAttributeNS(XLINK_NS, 'xlink:href', href); } catch (e) {}
+  }
   function renderAutoBtn() {
+    var useEl = el.autoBtn.querySelector('use');
+    var labelEl = el.autoBtn.querySelector('.sd-ctrl-label');
     if (state.autoSpin) {
       el.autoBtn.classList.add('active');
-      el.autoBtn.querySelector('.sd-ctrl-label').textContent = '停止';
-      el.autoBtn.querySelector('use').setAttribute('href', '#ic-stop');
+      if (labelEl) labelEl.textContent = '停止';
+      setUseHref(useEl, '#ic-stop');
     } else {
       el.autoBtn.classList.remove('active');
-      el.autoBtn.querySelector('.sd-ctrl-label').textContent = '自动';
-      el.autoBtn.querySelector('use').setAttribute('href', '#ic-repeat');
+      if (labelEl) labelEl.textContent = '自动';
+      setUseHref(useEl, '#ic-repeat');
     }
   }
 
@@ -480,28 +521,39 @@
   }
 
   function openSheet() {
-    state.lastFocused = document.activeElement;
+    if (state.sheetCloseTimer) { clearTimeout(state.sheetCloseTimer); state.sheetCloseTimer = 0; }
+    var ae = document.activeElement;
+    state.sheetFocusBefore = (ae && ae !== document.body) ? ae : null;
     el.sheetRoot.removeAttribute('hidden');
     void el.sheetRoot.offsetWidth;
     el.sheetRoot.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
+    if (window.ApexSheetLock) window.ApexSheetLock.lock();
+    else document.body.style.overflow = 'hidden';
     var first = el.sheetRoot.querySelector('.sd-sheet-item');
     if (first) setTimeout(function () { try { first.focus(); } catch (e) {} }, 60);
   }
   function closeSheet() {
+    if (!el.sheetRoot.classList.contains('is-open')) return;
     el.sheetRoot.classList.remove('is-open');
-    document.body.style.overflow = '';
-    setTimeout(function () {
+    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
+    else document.body.style.overflow = '';
+    if (state.sheetCloseTimer) clearTimeout(state.sheetCloseTimer);
+    state.sheetCloseTimer = setTimeout(function () {
+      state.sheetCloseTimer = 0;
       el.sheetRoot.setAttribute('hidden', '');
-      if (state.lastFocused && state.lastFocused.focus) {
-        try { state.lastFocused.focus(); } catch (e) {}
+      if (state.sheetFocusBefore && typeof state.sheetFocusBefore.focus === 'function') {
+        try { state.sheetFocusBefore.focus(); } catch (e) {}
       }
-      state.lastFocused = null;
+      state.sheetFocusBefore = null;
     }, 300);
   }
 
   function openConfirm() {
     if (state.spinning || state.bonusLock) return;
+    if (el.confirmRoot.classList.contains('is-open')) return;
+    if (state.confirmCloseTimer) { clearTimeout(state.confirmCloseTimer); state.confirmCloseTimer = 0; }
+    var ae = document.activeElement;
+    state.confirmFocusBefore = (ae && ae !== document.body) ? ae : null;
     el.confirmCurrent.textContent = fmt(state.balance);
     el.confirmRoot.removeAttribute('hidden');
     void el.confirmRoot.offsetWidth;
@@ -509,8 +561,17 @@
     setTimeout(function () { try { el.confirmCancel.focus(); } catch (e) {} }, 60);
   }
   function closeConfirm() {
+    if (!el.confirmRoot.classList.contains('is-open')) return;
     el.confirmRoot.classList.remove('is-open');
-    setTimeout(function () { el.confirmRoot.setAttribute('hidden', ''); }, 220);
+    if (state.confirmCloseTimer) clearTimeout(state.confirmCloseTimer);
+    state.confirmCloseTimer = setTimeout(function () {
+      state.confirmCloseTimer = 0;
+      el.confirmRoot.setAttribute('hidden', '');
+      if (state.confirmFocusBefore && typeof state.confirmFocusBefore.focus === 'function') {
+        try { state.confirmFocusBefore.focus(); } catch (e) {}
+      }
+      state.confirmFocusBefore = null;
+    }, 220);
   }
   function doReset() {
     var p = runtime && runtime.getProvider && runtime.getProvider();
