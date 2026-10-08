@@ -139,3 +139,43 @@ git show d272bbd~1:src/js/core/game-provider-demo.js > src/js/core/game-provider
 | docs/CACHE.md | 缓存策略 |
 | docs/RELEASE_CHECKLIST.md | 发布检查清单 |
 | docs/backup-rpo-rto.md | 备份与恢复 |
+
+---
+
+## 10. 错误码策略
+
+项目分两层错误，各有用途：
+
+| 层 | 用 | 场景 | 示例 |
+|---|---|---|---|
+| **config 层** | 原生 `Error` | 配置错误（开发时发现） | math-profile.js 权重非整数 |
+| **engine 及以上** | `ApexEngineErrors.ApexError(code, msg)` | 运行时错误（用户能触发） | INVALID_BET / INSUFFICIENT_BALANCE |
+
+### 为什么 config 层不用 ApexError
+
+依赖方向：`config ← engine`（config 不允许依赖上层）。
+若让 config 引用 engine/errors.js，会破坏依赖方向。
+
+config 错误本质是**启动时配置错误**——要么开发时自测发现，
+要么 CI 拦，不应该出现在用户运行时。用原生 Error 足矣。
+
+### ApexError 错误码
+
+全部错误码在 `src/engine/errors.js` 的 CODES：
+
+```
+INVALID_MODE / INVALID_BET / INSUFFICIENT_BALANCE
+SPIN_IN_PROGRESS / SPIN_NOT_ALLOWED
+PROVIDER_UNAVAILABLE / INVALID_RESULT / NETWORK_ERROR
+SYMBOLS_LOCKED / RTP_HARD_LIMIT
+INVALID_MAX / INVALID_MULTIPLIER / INVALID_GRID_SIZE
+RNG_SYMBOL_NOT_FOUND / INVALID_WEIGHTS
+```
+
+调用方通过 `e.code` 判断类型，通过 `e.message` 显示。
+
+### 老业务文件
+
+src/js/ 下的 wallet / sweet-symbols / audio / captcha 等仍用原生
+Error——它们不在游戏主链路，且被多页面复用（index / announcements / status），
+改动会连坐。保持现状。
