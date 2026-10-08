@@ -52,7 +52,7 @@
     /* 极轻阴影 */
     + '<ellipse cx="132" cy="212" rx="55" ry="5" fill="#000" opacity=".06" filter="url(#banana-v9-shadow)"/>'
     /* 主体：粗实心弯曲棒（梗根左上 → 尾端右下，中段厚度 45~52px） */
-    + '<path d="M 78 44 C 64 60, 52 80, 44 106 C 36 134, 40 168, 58 196 C 78 220, 114 228, 150 224 C 180 220, 204 204, 218 182 C 224 172, 228 158, 228 146 C 228 138, 220 136, 214 144 C 206 158, 194 178, 176 192 C 154 206, 130 206, 112 194 C 98 184, 90 168, 86 148 C 82 128, 82 106, 86 86 C 88 70, 92 56, 98 48 C 94 42, 84 40, 78 44 Z" fill="url(#banana-v9-body)"/>'
+    + '<path d="M 78 44 C 64 60, 52 80, 44 106 C 36 134, 40 168, 58 196 C 78 220, 114 228, 150 224 C 180 220, 204 204, 218 182 C 226 170, 232 154, 232 142 C 232 130, 222 128, 218 140 C 212 156, 200 176, 182 190 C 162 202, 138 204, 118 194 C 100 184, 90 166, 86 146 C 82 124, 82 102, 86 82 C 88 68, 94 54, 100 46 C 96 40, 84 40, 78 44 Z" fill="url(#banana-v9-body)"/>'
     /* 内边缘柔和亮线（沿上边缘，很克制） */
     + '<path d="M 90 60 C 82 80, 82 108, 88 132" fill="none" stroke="#FFEEA0" stroke-width="5" stroke-linecap="round" opacity=".30"/>'
     /* 皮纹（不平行） */
@@ -63,9 +63,9 @@
     + '<circle cx="86" cy="29" r="3" fill="#8DA030" opacity=".68"/>'
     + '<ellipse cx="86" cy="27" rx="4.5" ry="2.2" transform="rotate(-20 86 27)" fill="#241706"/>'
     /* 尾端（钝圆，非完美收尖） */
-    + '<path d="M 228 146 C 232 140, 236 142, 236 148 C 236 153, 231 155, 227 153 L 224 148 Z" fill="#5A3605"/>'
-    + '<circle cx="233" cy="148" r="1.7" fill="#2A1703"/>'
-    + '<circle cx="230" cy="145" r="0.9" fill="#7A4E10" opacity=".70"/>'
+    
+    + '<circle cx="228" cy="142" r="1.7" fill="#2A1703"/>'
+    + '<circle cx="225" cy="140" r="0.9" fill="#7A4E10" opacity=".70"/>'
     + '</svg>';
 
   /* ============================================================
@@ -125,8 +125,8 @@
     + '<circle cx="104" cy="152" r="18"  fill="url(#grape-v7-ball)"/>'
     + '<circle cx="134" cy="154" r="17"  fill="url(#grape-v7-ball)"/>'
     /* 底部 2 颗最小 (r=14, 13) */
-    + '<circle cx="119" cy="174" r="14"  fill="url(#grape-v7-ball)"/>'
-    + '<circle cx="141" cy="175" r="13"  fill="url(#grape-v7-ball)"/>'
+    + '<circle cx="113" cy="177" r="14"  fill="url(#grape-v7-ball)"/>'
+    + '<circle cx="146" cy="178" r="12.5" fill="url(#grape-v7-ball)"/>'
     /* 每颗底部阴影（增加层叠感） */
     + '<g fill="url(#grape-v7-shade)">'
     + '<circle cx="119" cy="82" r="13"/>'
@@ -138,8 +138,8 @@
     + '<circle cx="150" cy="126" r="19"/>'
     + '<circle cx="104" cy="152" r="18"/>'
     + '<circle cx="134" cy="154" r="17"/>'
-    + '<circle cx="119" cy="174" r="14"/>'
-    + '<circle cx="141" cy="175" r="13"/>'
+    + '<circle cx="113" cy="177" r="14"/>'
+    + '<circle cx="146" cy="178" r="12.5"/>'
     + '</g>'
     /* 每颗独立高光（位置/角度微不同） */
     + '<g fill="#FFFFFF" opacity=".52">'
@@ -152,8 +152,8 @@
     + '<ellipse cx="144" cy="120" rx="5" ry="2.8" transform="rotate(-42 144 120)"/>'
     + '<ellipse cx="98"  cy="146" rx="5" ry="2.8" transform="rotate(-36 98 146)"/>'
     + '<ellipse cx="128" cy="148" rx="4.8" ry="2.6" transform="rotate(-30 128 148)"/>'
-    + '<ellipse cx="114" cy="169" rx="4" ry="2.4" transform="rotate(-35 114 169)"/>'
-    + '<ellipse cx="136" cy="170" rx="4" ry="2.2" transform="rotate(-32 136 170)"/>'
+    + '<ellipse cx="108" cy="172" rx="4" ry="2.4" transform="rotate(-38 108 172)"/>'
+    + '<ellipse cx="141" cy="173" rx="4" ry="2.2" transform="rotate(-30 141 173)"/>'
     + '</g>'
     + '</g>'
     + '</svg>';
@@ -218,12 +218,12 @@
   var PLUM_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
     + '<radialGradient id="plum-v7-body" cx="28%" cy="20%" r="88%">'
-    + '<stop offset="0%" stop-color="#E394AE"/>'
-    + '<stop offset="14%" stop-color="#BE5379"/>'
-    + '<stop offset="40%" stop-color="#8B2C5B"/>'
-    + '<stop offset="70%" stop-color="#5C1946"/>'
-    + '<stop offset="92%" stop-color="#390F33"/>'
-    + '<stop offset="100%" stop-color="#270925"/>'
+    + '<stop offset="0%" stop-color="#E79FB8"/>'
+    + '<stop offset="14%" stop-color="#C45982"/>'
+    + '<stop offset="40%" stop-color="#903161"/>'
+    + '<stop offset="70%" stop-color="#5F1C4A"/>'
+    + '<stop offset="92%" stop-color="#3B1135"/>'
+    + '<stop offset="100%" stop-color="#290928"/>'
     + '</radialGradient>'
     + '<linearGradient id="plum-v7-side" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#E69CB0"/>'
