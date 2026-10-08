@@ -11,6 +11,20 @@
   'use strict';
 
   var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  // Step 6b：优先使用新引擎渲染器（src/js/engine/symbols-render.js）
+  // 若不可用，则回退到本文件的 <svg><use> 方式
+  function tryEngineRender(symbolId, opts) {
+    if (typeof window === 'undefined') return '';
+    var R = window.ApexEngineSymbolRender;
+    if (!R || typeof R.render !== 'function') return '';
+    if (!R.has(symbolId)) return '';
+    try {
+      return R.render(symbolId, opts || {});
+    } catch (e) {
+      return '';
+    }
+  }
   var XLINK_NS = 'http://www.w3.org/1999/xlink';
 
   // 视觉错觉算法：137 为质数，对 36 取模保证分布均匀；
@@ -27,6 +41,21 @@
     var id = safeId(symbolId);
     if (!id) return null;
 
+    // 优先：用新引擎渲染器（返回完整 SVG 字符串 → 包成 DOM）
+    var engineHtml = tryEngineRender(id, { size: '100%' });
+    if (engineHtml) {
+      var wrap = document.createElement('div');
+      wrap.className = 'sb-symbol-wrap';
+      wrap.style.width = '100%';
+      wrap.style.height = '100%';
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.justifyContent = 'center';
+      wrap.innerHTML = engineHtml;
+      return wrap;
+    }
+
+    // 回退：旧的 <svg><use> 方式
     var svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', '0 0 160 160');
     svg.setAttribute('aria-hidden', 'true');
