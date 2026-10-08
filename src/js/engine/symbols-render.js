@@ -465,6 +465,18 @@
     var cls = 'slot-symbol slot-symbol--' + state;
     if (opts.highlighted) cls += ' slot-symbol--highlighted';
 
+    // ⓪ Symbols V2 —— 新引擎优先（只对已迁移的符号生效）
+    if (window.ApexSymbolsV2 && window.ApexSymbolsV2.has(symbolId)) {
+      var svg2 = window.ApexSymbolsV2.get(symbolId, u);
+      if (svg2) {
+        var styleAttr2 = ' class="' + cls
+          + '" aria-hidden="true" style="width:' + size
+          + ';height:' + size + ';" ';
+        var out2 = svg2.replace(/<svg\s/, '<svg ' + styleAttr2);
+        return out2;
+      }
+    }
+
     // ① 5 个水果：优先走 ApexFruitSvg（新 SVG，256 viewBox，含 filter）
     if (window.ApexFruitSvg && window.ApexFruitSvg.has(symbolId)) {
       var svg = window.ApexFruitSvg.get(symbolId, u);
