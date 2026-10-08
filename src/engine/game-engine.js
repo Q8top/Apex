@@ -30,7 +30,15 @@ GameEngine.prototype.spin = function(request){
     throw _err.ApexError(_err.CODES.INVALID_BET, 'spinId must be string >= 10 chars');
   }
 
-  var grid = this.rng.generateGrid();
+  var grid = null;
+  if (request.gridOverride != null){
+    if (!Array.isArray(request.gridOverride) || request.gridOverride.length !== _grid.GRID.size){
+      throw _err.ApexError(_err.CODES.INVALID_GRID_SIZE, 'gridOverride must be 30-length array');
+    }
+    grid = request.gridOverride.slice();
+  } else {
+    grid = this.rng.generateGrid();
+  }
   var cascades = [];
   var totalMultiplier = 0;
   var bonusTriggered = false;
