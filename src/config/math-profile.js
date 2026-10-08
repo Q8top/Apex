@@ -13,8 +13,8 @@ var VERSION = '1.0.0';
 var PROFILES = Object.freeze({
   real: Object.freeze({
     baseWeights: Object.freeze({
-      BANANA: 14, GRAPE: 14, WATERMELON: 13, PLUM: 13, APPLE: 12,
-      BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
+      BANANA: 3, GRAPE: 3, WATERMELON: 3, PLUM: 3, APPLE: 3,
+      BLUE_CANDY: 12, GREEN_CANDY: 12, PURPLE_CANDY: 15, RED_HEART: 22
     }),
     scatterWeight: 1,
     multiplierWeight: 0,
@@ -27,8 +27,8 @@ var PROFILES = Object.freeze({
   }),
   demo: Object.freeze({
     baseWeights: Object.freeze({
-      BANANA: 14, GRAPE: 14, WATERMELON: 13, PLUM: 13, APPLE: 12,
-      BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
+      BANANA: 3, GRAPE: 3, WATERMELON: 3, PLUM: 3, APPLE: 3,
+      BLUE_CANDY: 12, GREEN_CANDY: 12, PURPLE_CANDY: 15, RED_HEART: 22
     }),
     scatterWeight: 3,
     multiplierWeight: 0,
