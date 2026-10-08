@@ -16,48 +16,56 @@
     + '" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"';
 
   /* ============================================================
-   * BANANA (V8) —— 上半段陡弧 + 中间厚 + 尾端钝圆
+   * BANANA (V9) —— 真实弯曲香蕉（果肉厚度 45~50px）
+   *
+   * 锁定比例（按用户规格）：
+   *   梗根宽度   ≈ 20px（最细）
+   *   中段厚度   ≈ 45~52px（最粗，位于后中段）
+   *   尾端宽度   ≈ 14px（钝圆收窄）
+   *   总宽 × 总高 ≈ 192 × 190
+   *
+   * 颜色（用户指定）：
+   *   梗        #70410E
+   *   主体深部  #D99A16
+   *   主体中部  #F3C52E
+   *   主体亮部  #FFE66B
+   *
+   * 不额外加白高光 / 不再加大面积阴影。
    * ============================================================ */
   var BANANA_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<linearGradient id="banana-v8-body" x1="12%" y1="10%" x2="88%" y2="92%">'
-    + '<stop offset="0%" stop-color="#D4DE55"/>'
-    + '<stop offset="10%" stop-color="#F3E54E"/>'
-    + '<stop offset="34%" stop-color="#EFC124"/>'
-    + '<stop offset="62%" stop-color="#D39711"/>'
-    + '<stop offset="86%" stop-color="#9C6509"/>'
-    + '<stop offset="100%" stop-color="#5C3A05"/>'
+    + '<linearGradient id="banana-v9-body" x1="12%" y1="15%" x2="82%" y2="88%">'
+    + '<stop offset="0%" stop-color="#FFE66B"/>'
+    + '<stop offset="32%" stop-color="#F3C52E"/>'
+    + '<stop offset="65%" stop-color="#D99A16"/>'
+    + '<stop offset="100%" stop-color="#7A4D0B"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v8-core" x1="0%" y1="0%" x2="100%" y2="0%">'
-    + '<stop offset="0%" stop-color="#FFFCC4" stop-opacity=".55"/>'
-    + '<stop offset="62%" stop-color="#FFE27A" stop-opacity=".16"/>'
-    + '<stop offset="100%" stop-color="#FFF" stop-opacity="0"/>'
+    + '<linearGradient id="banana-v9-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#8F7939"/>'
+    + '<stop offset="50%" stop-color="#5C441A"/>'
+    + '<stop offset="100%" stop-color="#2A1B08"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v8-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#8B9A3B"/>'
-    + '<stop offset="40%" stop-color="#564713"/>'
-    + '<stop offset="100%" stop-color="#241705"/>'
-    + '</linearGradient>'
-    + '<filter id="banana-v8-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<filter id="banana-v9-shadow" x="-20%" y="-20%" width="140%" height="160%">'
     + '<feGaussianBlur stdDeviation="9"/>'
     + '</filter>'
     + '</defs>'
-    + '<ellipse cx="130" cy="212" rx="55" ry="5" fill="#000" opacity=".06" filter="url(#banana-v8-shadow)"/>'
-    /* 主体：上半段陡弧（梗根→中段快速下弯）+ 腰部更厚 + 尾端钝圆不完美 */
-    + '<path d="M 74 46 C 62 56, 51 76, 48 100 C 45 132, 64 162, 96 182 C 128 202, 166 204, 192 190 C 210 180, 220 162, 218 148 C 217 136, 208 132, 204 140 C 200 156, 190 170, 172 180 C 148 194, 118 194, 96 182 C 74 170, 60 148, 58 122 C 56 96, 64 72, 76 58 Z" fill="url(#banana-v8-body)"/>'
-    /* 内侧亮线 */
-    + '<path d="M 66 60 C 56 80, 52 106, 56 130 C 63 160, 88 184, 122 194 C 152 202, 182 196, 198 182" fill="none" stroke="url(#banana-v8-core)" stroke-width="8.5" stroke-linecap="round"/>'
+    /* 极轻阴影 */
+    + '<ellipse cx="132" cy="212" rx="55" ry="5" fill="#000" opacity=".06" filter="url(#banana-v9-shadow)"/>'
+    /* 主体：粗实心弯曲棒（梗根左上 → 尾端右下，中段厚度 45~52px） */
+    + '<path d="M 78 44 C 64 60, 52 80, 44 106 C 36 134, 40 168, 58 196 C 78 220, 114 228, 150 224 C 180 220, 204 204, 218 182 C 224 172, 228 158, 228 146 C 228 138, 220 136, 214 144 C 206 158, 194 178, 176 192 C 154 206, 130 206, 112 194 C 98 184, 90 168, 86 148 C 82 128, 82 106, 86 86 C 88 70, 92 56, 98 48 C 94 42, 84 40, 78 44 Z" fill="url(#banana-v9-body)"/>'
+    /* 内边缘柔和亮线（沿上边缘，很克制） */
+    + '<path d="M 90 60 C 82 80, 82 108, 88 132" fill="none" stroke="#FFEEA0" stroke-width="5" stroke-linecap="round" opacity=".30"/>'
     /* 皮纹（不平行） */
-    + '<path d="M 72 68 C 64 88, 62 112, 68 136" fill="none" stroke="#C09011" stroke-width="1.8" opacity=".26" stroke-linecap="round"/>'
-    + '<path d="M 190 158 C 184 174, 172 186, 154 192" fill="none" stroke="#94640A" stroke-width="1.6" opacity=".20" stroke-linecap="round"/>'
-    /* 短梗（比 V7 更短） */
-    + '<path d="M 74 46 C 71 38, 73 31, 78 27 C 83 24, 88 27, 88 32 C 88 36, 84 40, 81 44 L 80 49 Z" fill="url(#banana-v8-stem)"/>'
-    + '<circle cx="80" cy="30" r="2.8" fill="#8DA030" opacity=".68"/>'
-    + '<ellipse cx="80" cy="28" rx="4.5" ry="2.2" transform="rotate(-22 80 28)" fill="#251905"/>'
-    /* 尾端：不完美收尖，钝圆带小挫 */
-    + '<path d="M 218 148 C 223 143, 229 145, 229 150 C 229 155, 224 158, 219 157 L 216 152 Z" fill="#5A3605"/>'
-    + '<circle cx="226" cy="150" r="1.8" fill="#2A1703"/>'
-    + '<circle cx="223" cy="147" r="0.9" fill="#7A4E10" opacity=".72"/>'
+    + '<path d="M 74 72 C 66 96, 64 124, 70 148" fill="none" stroke="#B8860F" stroke-width="1.6" opacity=".22" stroke-linecap="round"/>'
+    + '<path d="M 180 172 C 172 186, 158 196, 142 200" fill="none" stroke="#95640A" stroke-width="1.5" opacity=".18" stroke-linecap="round"/>'
+    /* 短梗（宽约 20px） */
+    + '<path d="M 78 44 C 74 36, 76 29, 82 26 C 88 24, 94 27, 94 33 C 94 38, 90 41, 88 45 L 87 49 Z" fill="url(#banana-v9-stem)"/>'
+    + '<circle cx="86" cy="29" r="3" fill="#8DA030" opacity=".68"/>'
+    + '<ellipse cx="86" cy="27" rx="4.5" ry="2.2" transform="rotate(-20 86 27)" fill="#241706"/>'
+    /* 尾端（钝圆，非完美收尖） */
+    + '<path d="M 228 146 C 232 140, 236 142, 236 148 C 236 153, 231 155, 227 153 L 224 148 Z" fill="#5A3605"/>'
+    + '<circle cx="233" cy="148" r="1.7" fill="#2A1703"/>'
+    + '<circle cx="230" cy="145" r="0.9" fill="#7A4E10" opacity=".70"/>'
     + '</svg>';
 
   /* ============================================================
@@ -103,7 +111,7 @@
     + '<path d="M 127 68 C 116 78, 106 88, 98 100 M 130 69 C 142 79, 152 89, 160 102 M 127 68 C 124 78, 122 88, 122 98 M 127 68 C 127 78, 128 88, 129 100" fill="none" stroke="url(#grape-v7-stem)" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>'
     /* ============ 11 颗葡萄（尺寸阶梯 + 位置微偏移） ============ */
     /* 顶部 2 颗小 (r=13, 14) */
-    + '<g transform="translate(128,128) scale(1.10,0.95) translate(-128,-128)">'
+    + '<g transform="translate(128,128) scale(1.19,0.92) translate(-128,-128)">'
     + '<circle cx="119" cy="82" r="13"   fill="url(#grape-v7-ball)"/>'
     + '<circle cx="137" cy="83" r="14"   fill="url(#grape-v7-ball)"/>'
     /* 中上 2 颗 (r=17, 18) */
