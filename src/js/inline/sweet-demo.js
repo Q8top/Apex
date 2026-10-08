@@ -624,7 +624,7 @@
   function bindEvents() {
     el.betMinus.addEventListener('click', decreaseBet);
     el.betPlus.addEventListener('click', increaseBet);
-    el.resetBtn.addEventListener('click', openConfirm);
+    // resetBtn 的行为由 applyModeUI() 根据 mode 决定
     el.fastBtn.addEventListener('click', toggleFast);
 
     el.autoBtn.addEventListener('click', function () {
@@ -706,7 +706,32 @@
     renderAutoBtn();
     renderSpinBtn();
     renderFastBtn();
+    applyModeUI();
     bindEvents();
+  }
+
+  // Step 2：根据 GAME_MODE 决定"重置/充值"按钮的文本与行为
+  function applyModeUI() {
+    if (!el.resetBtn) return;
+    var label = el.resetBtn.querySelector('[data-i18n="btn.reset"]')
+      || el.resetBtn.querySelector('span');
+    var i18n = window.ApexI18n;
+
+    if (GAME_MODE === 'demo') {
+      if (label) {
+        label.textContent = i18n ? i18n.t('btn.reset') : '重置余额';
+        label.removeAttribute('data-i18n');   // 防止语言切换时被覆盖
+      }
+      el.resetBtn.addEventListener('click', openConfirm);
+    } else {
+      if (label) {
+        label.textContent = i18n ? i18n.t('btn.recharge') : '充值余额';
+        label.removeAttribute('data-i18n');
+      }
+      el.resetBtn.addEventListener('click', function () {
+        toast(i18n ? i18n.t('toast.coming') : '功能开发中', 'info');
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
