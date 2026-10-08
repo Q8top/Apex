@@ -59,7 +59,7 @@ GameEngine.prototype.spin = function(request){
     };
     cascades.push(cascade);
 
-    if (!bonusTriggered && _bonus.resolveBonusTrigger(ev.scatterCount)){
+    if (step === 0 && _bonus.resolveBonusTrigger(ev.scatterCount)){
       bonusTriggered = true;
       bonusScatterCount = ev.scatterCount;
       bonusScatterPayout = _bonus.scatterPayout(ev.scatterCount);
@@ -77,6 +77,8 @@ GameEngine.prototype.spin = function(request){
 
     grid = _tumble.tumble(grid, ev.winningPositions, this.rng);
   }
+
+  totalMultiplier += bonusScatterPayout;
 
   var totalWinMinor = _pay.calculatePayout(betMinor, totalMultiplier);
 
