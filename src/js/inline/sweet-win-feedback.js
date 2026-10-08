@@ -29,10 +29,11 @@
 
   // 等级阈值：ratio = win / bet
   var LEVELS = Object.freeze({
-    normal: Object.freeze({ min: 0,  label: '本局赢得', rollMs: 480, holdMs: 1100 }),
-    big:    Object.freeze({ min: 10, label: '大奖',     rollMs: 600, holdMs: 1500 }),
-    mega:   Object.freeze({ min: 25, label: '超级中奖', rollMs: 800, holdMs: 2000 }),
-    super:  Object.freeze({ min: 50, label: '超级大奖', rollMs: 900, holdMs: 2400 })
+    normal: Object.freeze({ min: 0,   label: '本局赢得', rollMs: 480, holdMs: 1100 }),
+    big:    Object.freeze({ min: 5,   label: '大奖',     rollMs: 600, holdMs: 1500 }),
+    mega:   Object.freeze({ min: 20,  label: '超级中奖', rollMs: 800, holdMs: 2000 }),
+    epic:   Object.freeze({ min: 50,  label: '史诗大奖', rollMs: 900, holdMs: 2400 }),
+    ultra:  Object.freeze({ min: 100, label: '至尊大奖', rollMs: 1100, holdMs: 3000 })
   });
 
   var el = {};
@@ -63,7 +64,8 @@
     var b = safeNum(bet, 0);
     if (b <= 0) b = 1;                          // 防御：bet 必须正数，否则按 1 计
     var ratio = w / b;
-    if (ratio >= LEVELS.super.min) return 'super';
+    if (ratio >= LEVELS.ultra.min) return 'ultra';
+    if (ratio >= LEVELS.epic.min)  return 'epic';
     if (ratio >= LEVELS.mega.min)  return 'mega';
     if (ratio >= LEVELS.big.min)   return 'big';
     return 'normal';

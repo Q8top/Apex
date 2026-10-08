@@ -141,6 +141,21 @@
       });
       tone({ freq: 1568, dur: 600, type: 'sine', gain: 0.10, delay: 0.4 });
     },
+    'epic-win':    function () {
+      [523, 659, 784, 1047, 1319, 1568].forEach(function (f, i) {
+        tone({ freq: f, dur: 240, type: 'sine', gain: 0.17, delay: i * 0.06 });
+      });
+      tone({ freq: 2093, dur: 800, type: 'sine', gain: 0.12, delay: 0.42 });
+      tone({ freq: 1047, dur: 400, type: 'triangle', gain: 0.10, delay: 0.6 });
+    },
+    'ultra-win':   function () {
+      [523, 659, 784, 1047, 1319, 1568, 2093].forEach(function (f, i) {
+        tone({ freq: f, dur: 260, type: 'sine', gain: 0.18, delay: i * 0.055 });
+      });
+      tone({ freq: 2637, dur: 1000, type: 'sine', gain: 0.13, delay: 0.42 });
+      tone({ freq: 1568, dur: 600, type: 'triangle', gain: 0.12, delay: 0.7 });
+      tone({ freq: 2093, dur: 800, type: 'triangle', gain: 0.10, delay: 0.9 });
+    },
     'bonus':       function () {
       [440, 554, 659, 880].forEach(function (f, i) {
         tone({ freq: f, dur: 200, type: 'triangle', gain: 0.13, delay: i * 0.10 });

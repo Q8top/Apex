@@ -17,7 +17,8 @@
     win:      [12, 20, 12],
     big:      [20, 25, 30],
     mega:     [25, 30, 40],
-    super:    [30, 40, 30, 40],
+    epic:     [35, 45, 35, 45],
+    ultra:    [40, 50, 50, 60, 40],
     bonus:    [15, 30, 15, 40],
     tumble:   [8, 12, 8]
   });
@@ -29,7 +30,8 @@
     win:      200,
     big:      200,
     mega:     200,
-    super:    200,
+    epic:     200,
+    ultra:    200,
     bonus:    200,
     tumble:   60
   });
@@ -82,9 +84,10 @@
     function winPulse(multiplier) {
       var m = Number(multiplier);
       if (!Number.isFinite(m)) m = 0;
-      if (m >= 50) return pulse('super');
-      if (m >= 25) return pulse('mega');
-      if (m >= 10) return pulse('big');
+      if (m >= 100) return pulse('ultra');
+      if (m >= 50)  return pulse('epic');
+      if (m >= 20)  return pulse('mega');
+      if (m >= 5)   return pulse('big');
       return pulse('win');
     }
 

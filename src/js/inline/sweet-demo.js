@@ -346,10 +346,11 @@
     if (state.win > 0) {
       var ratio = state.win / (betMinor / 100);
       if (audio) {
-        if (ratio >= 50) audio.play('super-win');
-        else if (ratio >= 25) audio.play('mega-win');
-        else if (ratio >= 10) audio.play('big-win');
-        else audio.play('win-normal');
+        if (ratio >= 100) audio.play('ultra-win');
+        else if (ratio >= 50) audio.play('epic-win');
+        else if (ratio >= 20) audio.play('mega-win');
+        else if (ratio >= 5)  audio.play('big-win');
+        else                  audio.play('win-normal');
       }
       if (haptics) haptics.winPulse(ratio);
       if (window.ApexWinFeedback) {
