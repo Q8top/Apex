@@ -38,6 +38,9 @@ jobs:
       - name: Syntax check
         run: bash scripts/syntax-check.sh
 
+      - name: RTP Gate (math regression)
+        run: npm run test:rtp
+
       - name: Unit tests (password / csrf / headers / cbor / webauthn)
         run: |
           node tests/password-policy.test.js
