@@ -10,8 +10,6 @@
  *   - 本模块不主动调 ApexAudio / ApexHaptics（无实例持有权），
  *     联动由上层通过 onChange 桥接
  *
- * TODO(P0-cross)：body scroll lock 目前模块内计数，跨 sheet 冲突。
- *                 待三份 UI 审完后统一抽 ApexSheetLock。
  */
 (function () {
   'use strict';
@@ -127,15 +125,14 @@
   var closeTimer = null;
   var escHandler = null;
   var focusBefore = null;
-  var openCount = 0;
 
   function lockScroll() {
-    openCount++;
-    if (openCount === 1) document.body.style.overflow = 'hidden';
+    if (window.ApexSheetLock) window.ApexSheetLock.lock();
+    else document.body.style.overflow = 'hidden';
   }
   function unlockScroll() {
-    openCount = Math.max(0, openCount - 1);
-    if (openCount === 0) document.body.style.overflow = '';
+    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
+    else document.body.style.overflow = '';
   }
 
   function ensure() {

@@ -4,7 +4,7 @@
  * 关键不变量：
  *   - open/close 幂等，重复 open 不产生多个 DOM 节点
  *   - close 的收起动画用 clearTimeout 防时序竞态
- *   - 多 sheet 共享 body scroll lock（openCount 计数）
+ *   - 多 sheet 共享 body scroll lock（ApexSheetLock）
  *   - ESC 关闭 + 焦点恢复；监听器仅在 open 期间挂载
  *   - CONTENT / 导出对象冻结
  *
@@ -34,15 +34,14 @@
   var closeTimer = null;
   var escHandler = null;
   var focusBefore = null;
-  var openCount = 0;   // 共享 scroll lock 计数
 
   function lockScroll() {
-    openCount++;
-    if (openCount === 1) document.body.style.overflow = 'hidden';
+    if (window.ApexSheetLock) window.ApexSheetLock.lock();
+    else document.body.style.overflow = 'hidden';
   }
   function unlockScroll() {
-    openCount = Math.max(0, openCount - 1);
-    if (openCount === 0) document.body.style.overflow = '';
+    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
+    else document.body.style.overflow = '';
   }
 
   function build() {

@@ -9,8 +9,6 @@
  *   - open/close 幂等
  *   - 所有 innerHTML 内容均为内部数字格式化，无 XSS 面
  *
- * TODO(P0-cross)：body scroll lock 目前模块内计数，跨 sheet 冲突。
- *                 待规则 / 记录 / 设置三份审完后统一抽 ApexSheetLock。
  * TODO(P2)：金额前缀硬编码 ¥，待 rec 透传 currency 后改为动态。
  */
 (function () {
@@ -98,15 +96,14 @@
   var closeTimer = null;
   var escHandler = null;
   var focusBefore = null;
-  var openCount = 0;
 
   function lockScroll() {
-    openCount++;
-    if (openCount === 1) document.body.style.overflow = 'hidden';
+    if (window.ApexSheetLock) window.ApexSheetLock.lock();
+    else document.body.style.overflow = 'hidden';
   }
   function unlockScroll() {
-    openCount = Math.max(0, openCount - 1);
-    if (openCount === 0) document.body.style.overflow = '';
+    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
+    else document.body.style.overflow = '';
   }
 
   function ensure() {
