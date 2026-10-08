@@ -116,6 +116,53 @@
     return id;
   }
 
+  // Step 3d：计算每格在本次 tumble 中的动画角色（精确版）
+  //
+  // 语义：
+  //   - 逐列独立处理
+  //   - 保留的格子按原相对顺序从顶部下移，最终排在底部
+  //   - 顶部空位由新符号补位
+  //   - 每格下落距离 = 新 row - 原 row（>0 才有动画）
+  //
+  // 返回：
+  //   { entering: [newIndex...], falling: [{ index, rows }...] }
+  //   index 均为 gridAfter 中的位置（row * COLS + col）
+  function computeTumbleAnimations(t) {
+    var COLS = 6, ROWS = 5;
+    var removed = {};
+    for (var r = 0; r < t.removedPositions.length; r++) {
+      removed[t.removedPositions[r]] = true;
+    }
+
+    var entering = [];
+    var falling = [];
+
+    for (var c = 0; c < COLS; c++) {
+      // 从上到下收集保留格子的原 row
+      var keptRows = [];
+      for (var rr = 0; rr < ROWS; rr++) {
+        if (!removed[rr * COLS + c]) keptRows.push(rr);
+      }
+      var newCount = ROWS - keptRows.length;
+
+      // 新符号落在顶部 newCount 格
+      for (var e = 0; e < newCount; e++) {
+        entering.push(e * COLS + c);
+      }
+
+      // 保留的格子从 row = newCount 开始排列
+      for (var k = 0; k < keptRows.length; k++) {
+        var oldRow = keptRows[k];
+        var newRow = newCount + k;
+        if (newRow > oldRow) {
+          falling.push({ index: newRow * COLS + c, rows: newRow - oldRow });
+        }
+      }
+    }
+
+    return { entering: entering, falling: falling };
+  }
+
   function playTumbleSequence(result) {
     clearTumbleTimers();
     return new Promise(function (resolve) {
@@ -134,26 +181,56 @@
           return;
         }
         var t = tumbles[i];
+        var anim = computeTumbleAnimations(t);
+
+        var tWin    = state.fastMode ? 180 : 500;
+        var tRemove = state.fastMode ? 120 : 300;
+        var tIn     = state.fastMode ? 180 : 400;
+
+        // Phase 1: 中奖格弹跳
         for (var a = 0; a < t.removedPositions.length; a++) {
           var ca = getCellAt(t.removedPositions[a]);
           if (ca) ca.classList.add('is-winning');
         }
+
         tumbleSetTimeout(function () {
+          // Phase 2: 中奖格消失
           for (var b = 0; b < t.removedPositions.length; b++) {
             var cb = getCellAt(t.removedPositions[b]);
             if (cb) { cb.classList.remove('is-winning'); cb.classList.add('is-removing'); }
           }
+
           tumbleSetTimeout(function () {
+            // Phase 3: 换盘 + 分角色动画
             renderGridAt(t.gridAfter);
             var cells = el.board.querySelectorAll('.sd-sym');
-            for (var c = 0; c < cells.length; c++) cells[c].classList.add('is-entering');
+
+            // 新格子：从上方进入
+            for (var e = 0; e < anim.entering.length; e++) {
+              var ce = cells[anim.entering[e]];
+              if (ce) ce.classList.add('is-entering');
+            }
+            // 下移的格子：从原位置滑下
+            for (var f = 0; f < anim.falling.length; f++) {
+              var info = anim.falling[f];
+              var cf = cells[info.index];
+              if (cf) {
+                cf.style.setProperty('--fall-rows', String(info.rows));
+                cf.classList.add('is-falling');
+              }
+            }
+
             tumbleSetTimeout(function () {
-              for (var d = 0; d < cells.length; d++) cells[d].classList.remove('is-entering');
+              // Phase 4: 清理
+              for (var c2 = 0; c2 < cells.length; c2++) {
+                cells[c2].classList.remove('is-entering', 'is-falling');
+                cells[c2].style.removeProperty('--fall-rows');
+              }
               i++;
               playOne();
-            }, 400);
-          }, 300);
-        }, 500);
+            }, tIn);
+          }, tRemove);
+        }, tWin);
       }
       playOne();
     });

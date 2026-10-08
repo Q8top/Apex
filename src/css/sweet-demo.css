@@ -371,3 +371,33 @@ a{color:inherit;text-decoration:none}
 }
   .sd-sym.is-removing svg { opacity: 0; }
 }
+
+
+/* ===== Step 3b · Tumble 分步动画 · is-falling ===== */
+@keyframes sdCellFall {
+  0%   { transform: translate3d(0, calc(var(--fall-rows, 1) * -100%), 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.sd-sym.is-falling {
+  animation: sdCellFall 400ms cubic-bezier(.2, .85, .25, 1) both;
+}
+
+/* 快模式：缩短所有 tumble 动画时长 */
+.sd-board[data-fast="1"] .sd-sym.is-winning,
+.sd-board[data-fast="1"] .sd-sym.is-removing,
+.sd-board[data-fast="1"] .sd-sym.is-entering,
+.sd-board[data-fast="1"] .sd-sym.is-falling {
+  animation-duration: 180ms;
+}
+
+/* prefers-reduced-motion：所有 tumble 动画改为瞬间 */
+@media (prefers-reduced-motion: reduce) {
+  .sd-sym.is-winning,
+  .sd-sym.is-removing,
+  .sd-sym.is-entering,
+  .sd-sym.is-falling {
+    animation: none !important;
+    transform: none !important;
+  }
+}
