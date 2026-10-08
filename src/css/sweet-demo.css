@@ -433,3 +433,18 @@ a{color:inherit;text-decoration:none}
     transform: none !important;
   }
 }
+
+/* ── 规则页：赔率表 ──────────────────────────────────────── */
+.sd-rules-pt{margin-top:4px}
+.sd-rules-pt-note{margin:6px 0 10px;font-size:12px;color:#8A97A8;line-height:1.55}
+.sd-pt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid rgba(120,160,220,.16);background:rgba(10,16,28,.55)}
+.sd-pt-table{width:100%;border-collapse:collapse;font-size:12.5px;color:#E6EDF6;font-variant-numeric:tabular-nums}
+.sd-pt-table th,.sd-pt-table td{padding:8px 6px;text-align:center;white-space:nowrap;border-bottom:1px solid rgba(120,160,220,.10)}
+.sd-pt-table thead th{position:sticky;top:0;background:rgba(20,28,46,.95);color:#A9B7CC;font-weight:600;font-size:11.5px}
+.sd-pt-table tbody tr:last-child td{border-bottom:0}
+.sd-pt-table tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+.sd-pt-sym{text-align:left;padding-left:10px;font-weight:600;color:#FFF}
+.sd-pt-kind{color:#8A97A8;font-size:11.5px}
+.sd-pt-top{color:#FFD34D;font-weight:700}
+.sd-pt-table--special td:nth-child(2){color:#A9B7CC}
+.sd-pt-table--special td:nth-child(3){color:#FFB84D;font-weight:600}

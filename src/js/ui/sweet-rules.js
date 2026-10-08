@@ -21,9 +21,9 @@
     Object.freeze({ h: '玩法说明', p: '6 列 × 5 行棋盘。每次旋转后生成 30 个符号，相同符号数量达标即中奖。' }),
     Object.freeze({ h: '中奖规则', p: 'Pay Anywhere：同一种符号出现 8 个及以上即中奖，位置无需相邻。' }),
     Object.freeze({ h: '连消（Tumble）', p: '中奖符号消失，上方符号下落补位，形成新棋盘；若再次中奖则继续连消，直至无中奖。' }),
-    Object.freeze({ h: 'Scatter 棒棒糖', p: '单次旋转出现 4~6 个棒棒糖触发免费旋转：4 个 10 局 / 5 个 12 局 / 6 个 15 局。' }),
-    Object.freeze({ h: '免费旋转中再次触发', p: '3 个及以上棒棒糖可再增加 5 局免费旋转。' }),
-    Object.freeze({ h: '倍率炸弹', p: '免费旋转期间出现，倍数包括 2× 3× 5× 10× 25× 50× 100×。' }),
+    Object.freeze({ h: 'Scatter 棒棒糖', p: '单次旋转出现 4 个及以上触发免费旋转，每次固定 10 局：4 个 = 3× 派彩 + 10 FS；5 个 = 5× 派彩 + 10 FS；6 个 = 100× 派彩 + 10 FS。' }),
+    Object.freeze({ h: '免费旋转中再次触发', p: '免费旋转期间再次出现 4 个及以上棒棒糖，按相同规则再触发 10 局。' }),
+    Object.freeze({ h: '倍率炸弹', p: '仅免费旋转期间出现，倍率 2× ~ 100×。同一轮（一次旋转的所有连消）结束时，场上所有炸弹的倍率相加，共同作用于本轮总派彩。' }),
     Object.freeze({ h: '下注金额', p: '0.20 / 0.50 / 1 / 2 / 5 / 10 / 20 / 50 / 100，共 9 档。' }),
     Object.freeze({ h: '试玩模式说明', p: '试玩模式使用虚拟余额，仅供体验玩法与规则，不涉及真实资金。' })
   ]);
@@ -44,6 +44,66 @@
     else document.body.style.overflow = '';
   }
 
+
+  // ── 赔率表渲染 ────────────────────────────────────────────────
+  var PAY_ORDER = [
+    ['RED_HEART',    '❤️ 红心糖',   '普通高赔'],
+    ['PURPLE_CANDY', '🟪 紫色方糖', '普通高赔'],
+    ['GREEN_CANDY',  '🟩 绿色糖',   '普通高赔'],
+    ['BLUE_CANDY',   '🟦 蓝色糖',   '普通高赔'],
+    ['APPLE',        '🍎 苹果',     '普通水果'],
+    ['PLUM',         '🟣 李子',     '普通水果'],
+    ['WATERMELON',   '🍉 西瓜',     '普通水果'],
+    ['GRAPE',        '🍇 葡萄',     '普通水果'],
+    ['BANANA',       '🍌 香蕉',     '普通水果']
+  ];
+
+  function fmt(v) {
+    if (v == null) return '—';
+    return String(v) + '×';
+  }
+
+  function buildPaytable() {
+    var PT = window.ApexPaytable && window.ApexPaytable.PAYTABLE;
+    if (!PT) return '';
+    var html = '<section class="sd-rules-block sd-rules-pt">';
+    html += '<h3>赔率表（Pay Anywhere）</h3>';
+    html += '<p class="sd-rules-pt-note">同种符号出现 8 个及以上即中奖，'
+          + '位置无需相邻。8~9 同档，10~11 同档，12+ 最高档。</p>';
+    html += '<div class="sd-pt-scroll"><table class="sd-pt-table">';
+    html += '<thead><tr><th>符号</th><th>类型</th>'
+          + '<th>8</th><th>9</th><th>10</th><th>11</th><th>12+</th></tr></thead>';
+    html += '<tbody>';
+    for (var i = 0; i < PAY_ORDER.length; i++) {
+      var key = PAY_ORDER[i][0], name = PAY_ORDER[i][1], kind = PAY_ORDER[i][2];
+      var t = PT[key];
+      if (!t) continue;
+      var v8 = t[8], v10 = t[10], v12 = t[12];
+      html += '<tr>'
+            + '<td class="sd-pt-sym">' + name + '</td>'
+            + '<td class="sd-pt-kind">' + kind + '</td>'
+            + '<td>' + fmt(v8) + '</td>'
+            + '<td>' + fmt(v8) + '</td>'
+            + '<td>' + fmt(v10) + '</td>'
+            + '<td>' + fmt(v10) + '</td>'
+            + '<td class="sd-pt-top">' + fmt(v12) + '</td>'
+            + '</tr>';
+    }
+    html += '</tbody></table></div></section>';
+
+    html += '<section class="sd-rules-block sd-rules-pt">';
+    html += '<h3>特殊符号</h3>';
+    html += '<div class="sd-pt-scroll"><table class="sd-pt-table sd-pt-table--special">';
+    html += '<thead><tr><th>符号</th><th>触发条件</th><th>奖励</th></tr></thead>';
+    html += '<tbody>'
+          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>4 个</td><td>3× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>5 个</td><td>5× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>6 个</td><td>100× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym">💣 倍率炸弹</td><td>仅 Free Spins</td><td>×2 ~ ×100，同轮倍率相加</td></tr>'
+          + '</tbody></table></div></section>';
+    return html;
+  }
+
   function build() {
     var html = '';
     html += '<div class="sd-rules-backdrop" data-rules-close="1"></div>';
@@ -57,6 +117,7 @@
       html += '<p>' + CONTENT[i].p + '</p>';
       html += '</section>';
     }
+    html += buildPaytable();
     html += '</div>';
     html += '</div>';
     return html;
