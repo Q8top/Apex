@@ -448,3 +448,9 @@ a{color:inherit;text-decoration:none}
 .sd-pt-top{color:#FFD34D;font-weight:700}
 .sd-pt-table--special td:nth-child(2){color:#A9B7CC}
 .sd-pt-table--special td:nth-child(3){color:#FFB84D;font-weight:600}
+
+/* 规则页赔率表：行内符号图标 */
+.sd-pt-ic{display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;margin-right:6px;vertical-align:middle;flex:0 0 auto}
+.sd-pt-ic svg{display:block;width:100%;height:100%;overflow:visible}
+.sd-pt-sym{display:flex;align-items:center}

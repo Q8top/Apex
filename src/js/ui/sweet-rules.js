@@ -47,16 +47,29 @@
 
   // ── 赔率表渲染 ────────────────────────────────────────────────
   var PAY_ORDER = [
-    ['RED_HEART',    '❤️ 红心糖',   '普通高赔'],
-    ['PURPLE_CANDY', '🟪 紫色方糖', '普通高赔'],
-    ['GREEN_CANDY',  '🟩 绿色糖',   '普通高赔'],
-    ['BLUE_CANDY',   '🟦 蓝色糖',   '普通高赔'],
-    ['APPLE',        '🍎 苹果',     '普通水果'],
-    ['PLUM',         '🟣 李子',     '普通水果'],
-    ['WATERMELON',   '🍉 西瓜',     '普通水果'],
-    ['GRAPE',        '🍇 葡萄',     '普通水果'],
-    ['BANANA',       '🍌 香蕉',     '普通水果']
+    ['RED_HEART',    '红心糖',   '普通高赔'],
+    ['PURPLE_CANDY', '紫色方糖', '普通高赔'],
+    ['GREEN_CANDY',  '绿色糖',   '普通高赔'],
+    ['BLUE_CANDY',   '蓝色糖',   '普通高赔'],
+    ['APPLE',        '苹果',     '普通水果'],
+    ['PLUM',         '李子',     '普通水果'],
+    ['WATERMELON',   '西瓜',     '普通水果'],
+    ['GRAPE',        '葡萄',     '普通水果'],
+    ['BANANA',       '香蕉',     '普通水果']
   ];
+  // 符号 key → ApexSymbolsV2 的 id
+  var SYM_ID = {
+    RED_HEART: 'red_heart_candy', PURPLE_CANDY: 'purple_candy',
+    GREEN_CANDY: 'green_candy', BLUE_CANDY: 'blue_candy',
+    APPLE: 'apple', PLUM: 'plum', WATERMELON: 'watermelon',
+    GRAPE: 'grape', BANANA: 'banana'
+  };
+  function symSVG(key) {
+    var V2 = window.ApexSymbolsV2;
+    if (!V2) return '';
+    var id = SYM_ID[key] || key;
+    try { return V2.get(id, 'rules-' + key); } catch (e) { return ''; }
+  }
 
   function fmt(v) {
     if (v == null) return '—';
@@ -79,8 +92,9 @@
       var t = PT[key];
       if (!t) continue;
       var v8 = t[8], v10 = t[10], v12 = t[12];
+      var svg = symSVG(key);
       html += '<tr>'
-            + '<td class="sd-pt-sym">' + name + '</td>'
+            + '<td class="sd-pt-sym"><span class="sd-pt-ic">' + svg + '</span>' + name + '</td>'
             + '<td class="sd-pt-kind">' + kind + '</td>'
             + '<td>' + fmt(v8) + '</td>'
             + '<td>' + fmt(v8) + '</td>'
@@ -95,11 +109,13 @@
     html += '<h3>特殊符号</h3>';
     html += '<div class="sd-pt-scroll"><table class="sd-pt-table sd-pt-table--special">';
     html += '<thead><tr><th>符号</th><th>触发条件</th><th>奖励</th></tr></thead>';
+    var lp = symSVG('lollipop') || (window.ApexSymbolsV2 ? window.ApexSymbolsV2.get('lollipop', 'rules-lp') : '');
+    var mb = symSVG('multiplier_bomb') || (window.ApexSymbolsV2 ? window.ApexSymbolsV2.get('multiplier_bomb', 'rules-mb') : '');
     html += '<tbody>'
-          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>4 个</td><td>3× 派彩 + 10 FS</td></tr>'
-          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>5 个</td><td>5× 派彩 + 10 FS</td></tr>'
-          + '<tr><td class="sd-pt-sym">🍭 棒棒糖</td><td>6 个</td><td>100× 派彩 + 10 FS</td></tr>'
-          + '<tr><td class="sd-pt-sym">💣 倍率炸弹</td><td>仅 Free Spins</td><td>×2 ~ ×100，同轮倍率相加</td></tr>'
+          + '<tr><td class="sd-pt-sym"><span class="sd-pt-ic">' + lp + '</span>棒棒糖</td><td>4 个</td><td>3× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym"><span class="sd-pt-ic">' + lp + '</span>棒棒糖</td><td>5 个</td><td>5× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym"><span class="sd-pt-ic">' + lp + '</span>棒棒糖</td><td>6 个</td><td>100× 派彩 + 10 FS</td></tr>'
+          + '<tr><td class="sd-pt-sym"><span class="sd-pt-ic">' + mb + '</span>倍率炸弹</td><td>仅 Free Spins</td><td>×2 ~ ×100，同轮倍率相加</td></tr>'
           + '</tbody></table></div></section>';
     return html;
   }
