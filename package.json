@@ -29,7 +29,9 @@
     "verify": "npm run syntax && npm run test:all",
     "test:json-shape": "node tests/json-shape.test.js",
     "test:password-length": "node tests/password-length.test.js",
-    "test:math": "node tests/math/math-validation.cjs"
+    "test:math": "node tests/math/math-validation.cjs",
+    "test:rtp": "node tests/math/rtp-gate.cjs",
+    "test:rtp:full": "RTP_GATE_SPINS=200000 node tests/math/rtp-gate.cjs"
   },
   "devDependencies": {
     "wrangler": "^4.144.0"
