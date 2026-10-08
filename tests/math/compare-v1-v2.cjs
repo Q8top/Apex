@@ -8,7 +8,7 @@ if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValu
 }
 if (typeof global.window === 'undefined') global.window = {};
 
-var ROOT = '/root/projects/Apex';
+var ROOT = require('path').resolve(__dirname, '../..');
 
 // ---------- 加载老引擎 ----------
 [

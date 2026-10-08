@@ -7,7 +7,7 @@
  *   var r = sim.simulate({ mode:'real', spins:100000, betMinor:100, seed:'v1' });
  */
 
-var ROOT = '/root/projects/Apex';
+var ROOT = require('path').resolve(__dirname, '../..');
 
 if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues){
   globalThis.crypto = require('crypto').webcrypto;

@@ -10,7 +10,7 @@
  *   RTP_GATE_SPINS=10000 node tests/math/rtp-gate.cjs
  */
 
-var sim = require('/root/projects/Apex/tests/math/simulator-v2.cjs');
+var sim = require(__dirname + '/simulator-v2.cjs');
 var MP  = (function(){
   if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues){
     globalThis.crypto = require('crypto').webcrypto;
@@ -30,7 +30,7 @@ var MP  = (function(){
     '/src/engine/bonus.js',
     '/src/engine/payout.js',
     '/src/engine/game-engine.js'
-  ].forEach(function(p){ require('/root/projects/Apex' + p); });
+  ].forEach(function(p){ require(require('path').resolve(__dirname, '../..') + p); });
   return global.window.ApexMathProfile;
 })();
 
