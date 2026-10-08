@@ -1,5 +1,7 @@
-(function() {
+(function () {
   'use strict';
+
+  var POLL_MS = 60000;
 
   function setStatus(id, state, text) {
     var el = document.getElementById(id);
@@ -32,7 +34,7 @@
   }
 
   async function checkAll() {
-    ['website', 'api', 'db', 'email'].forEach(function(k) {
+    ['website', 'api', 'db', 'email'].forEach(function (k) {
       setStatus('status-' + k, 'loading', '检查中');
     });
     setOverall('loading', '检查中...', '正在获取系统状态');
@@ -40,7 +42,6 @@
     var errCount = 0;
     var warnCount = 0;
 
-    // 1) 前端
     try {
       var t0 = performance.now();
       var r = await fetch('/', { method: 'HEAD', cache: 'no-store' });
@@ -56,13 +57,13 @@
       errCount++;
     }
 
-    // 2) API + DB + Email
     try {
       var t1 = performance.now();
       var res = await fetch('/api/status', { cache: 'no-store' });
       var ms2 = Math.round(performance.now() - t1);
-      var data = await res.json();
-      var checks = (data && data.checks) || {};
+      var data = await res.json().catch(function () { return null; });
+      var checks = (data && typeof data === 'object' && data.checks && typeof data.checks === 'object')
+        ? data.checks : {};
 
       setStatus('status-api', res.ok ? 'ok' : 'err', '正常 ' + ms2 + 'ms');
       if (!res.ok) errCount++;
@@ -72,7 +73,7 @@
       if (dbState === 'error') errCount++;
       else if (dbState === 'warn') warnCount++;
 
-      var email = checks.email || {};
+      var email = (checks.email && typeof checks.email === 'object') ? checks.email : {};
       var emailState = email.state;
       var providers = Array.isArray(email.providers) ? email.providers : [];
       var descEl = document.getElementById('email-provider-desc');
@@ -84,7 +85,6 @@
       setStatus('status-email', mapState(emailState), mapLabel(emailState));
       if (emailState === 'error') errCount++;
       else if (emailState === 'warn') warnCount++;
-
     } catch (e) {
       setStatus('status-api', 'err', '不可达');
       setStatus('status-db', 'err', '不可达');
@@ -107,23 +107,24 @@
     }
   }
 
-  // 关键：暴露到全局，让 HTML 的 onclick 能找到
+  function boot() {
+    var btn = document.getElementById('btn-refresh');
+    if (btn && !btn.__apexBound) {
+      btn.__apexBound = true;
+      btn.addEventListener('click', checkAll);
+    }
+    checkAll();
+    if (!window.__apexStatusTimer) {
+      window.__apexStatusTimer = setInterval(checkAll, POLL_MS);
+    }
+  }
+
   window.checkAll = checkAll;
   window.__apexStatusCheck = checkAll;
 
-  // 绑定刷新按钮
-  document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.getElementById('btn-refresh');
-    if (btn) btn.addEventListener('click', checkAll);
-    checkAll();
-    setInterval(checkAll, 60000);
-  });
-
-  // 兜底：DOM 已加载就直接跑
-  if (document.readyState !== 'loading') {
-    var btn2 = document.getElementById('btn-refresh');
-    if (btn2) btn2.addEventListener('click', checkAll);
-    checkAll();
-    setInterval(checkAll, 60000);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
   }
 })();
