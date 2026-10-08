@@ -1,15 +1,12 @@
-/* Apex · Fruit Symbols V5 (自然水果版)
+/* Apex · Fruit Symbols V6 (真实水果版)
  * 5 个水果 SVG。挂载：window.ApexFruitSvg
  *
- * V5 相对 V4 的关键改动：
- *   1. BANANA：改用用户提供的新路径（去 U 型感，自然弯曲）
- *   2. GRAPE：9 颗大小完全不同（r=17~21 不等）+ 非对齐位置
- *   3. WATERMELON：厚切片轮廓（非纯椭圆）
- *   4. PLUM：圆润成熟李形 + 中央深沟（V5 单独塑形）
- *   5. APPLE：顶部凹陷加强 + 弱化高光
- *   6. 阴影：每水果独立（不再统一灰色椭圆）
- *      banana 0.08 / grape 0.10 / watermelon 0.06
- *      plum 0.10 / apple 0.11
+ * V6 相对 V5 的关键重构：
+ *   针对用户反馈"仍然像 SVG 图标"，不再补细节，而是重做形态语言
+ *   - BANANA：从"U/月牙"改成"真实弯曲香蕉"（两端粗细不一 + 内弧外弧不平行）
+ *   - GRAPE：上部小 / 中部最大 / 底部收窄（摆脱糖球堆叠感）
+ *   - WATERMELON / PLUM / APPLE：Part 2 按规格微调
+ *   - 阴影进一步弱化（不追求"漂浮图标"感）
  */
 (function () {
   'use strict';
@@ -19,256 +16,291 @@
     + '" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"';
 
   /* ============================================================
-   * BANANA (V5)
+   * BANANA (V6) —— 真实弯曲香蕉
+   *
+   * 结构要点：
+   *   - 梗端（左/上）较粗，尾端（右/下）收尖
+   *   - 外弧长 + 内弧短（不平行）
+   *   - 靠近梗部有微黄绿色
+   *   - 尾部有深棕色干燥点
+   *   - 极轻阴影（opacity 0.06）
    * ============================================================ */
   var BANANA_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<linearGradient id="banana-v5-body" x1="18%" y1="10%" x2="85%" y2="90%">'
-    + '<stop offset="0%" stop-color="#FFF7A0"/>'
-    + '<stop offset="20%" stop-color="#FFE85C"/>'
-    + '<stop offset="50%" stop-color="#F5C42C"/>'
-    + '<stop offset="80%" stop-color="#D89E17"/>'
-    + '<stop offset="100%" stop-color="#9E6A0A"/>'
+    /* 主体渐变：从黄绿 → 亮黄 → 金黄 → 深黄 → 棕 */
+    + '<linearGradient id="banana-v6-body" x1="15%" y1="8%" x2="85%" y2="95%">'
+    + '<stop offset="0%" stop-color="#DFE470"/>'
+    + '<stop offset="12%" stop-color="#FFEE55"/>'
+    + '<stop offset="38%" stop-color="#F7CA26"/>'
+    + '<stop offset="68%" stop-color="#DFA317"/>'
+    + '<stop offset="88%" stop-color="#AD720A"/>'
+    + '<stop offset="100%" stop-color="#6B4206"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v5-light" x1="0%" y1="0%" x2="100%" y2="0%">'
-    + '<stop offset="0%" stop-color="#FFFBC8" stop-opacity=".68"/>'
-    + '<stop offset="60%" stop-color="#FFEC7A" stop-opacity=".18"/>'
+    /* 内侧浅色条（香蕉芯） */
+    + '<linearGradient id="banana-v6-core" x1="0%" y1="0%" x2="100%" y2="0%">'
+    + '<stop offset="0%" stop-color="#FFFCB8" stop-opacity=".62"/>'
+    + '<stop offset="60%" stop-color="#FFE77A" stop-opacity=".22"/>'
     + '<stop offset="100%" stop-color="#FFF" stop-opacity="0"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v5-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#9A6317"/>'
-    + '<stop offset="55%" stop-color="#5E380D"/>'
-    + '<stop offset="100%" stop-color="#2F1B06"/>'
+    /* 梗 */
+    + '<linearGradient id="banana-v6-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#967C2E"/>'
+    + '<stop offset="45%" stop-color="#5C4610"/>'
+    + '<stop offset="100%" stop-color="#2B1D06"/>'
     + '</linearGradient>'
-    + '<filter id="banana-v5-shadow" x="-20%" y="-20%" width="140%" height="160%">'
-    + '<feGaussianBlur stdDeviation="8"/>'
-    + '</filter>'
-    + '<filter id="banana-v5-soft" x="-30%" y="-30%" width="160%" height="170%">'
-    + '<feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#7C5400" flood-opacity=".14"/>'
+    /* 极轻阴影 */
+    + '<filter id="banana-v6-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<feGaussianBlur stdDeviation="9"/>'
     + '</filter>'
     + '</defs>'
-    /* 独立软阴影：opacity 0.08 / blur 8 / scaleX 0.65 */
-    + '<ellipse cx="128" cy="207" rx="55" ry="6" fill="#000" opacity=".08" filter="url(#banana-v5-shadow)"/>'
-    + '<path d="M 73 42 C 68 48, 64 57, 62 69 C 59 87, 61 105, 68 121 C 76 140, 89 156, 105 166 C 120 176, 137 180, 151 174 C 167 167, 176 152, 181 135 C 184 126, 186 117, 191 114 C 196 111, 202 114, 204 120 C 207 128, 203 143, 197 156 C 190 176, 177 192, 161 200 C 142 210, 121 208, 103 199 C 82 189, 65 174, 54 154 C 43 134, 39 111, 42 91 C 45 70, 53 51, 64 43 C 68 40, 71 40, 73 42 Z" fill="url(#banana-v5-body)" filter="url(#banana-v5-soft)"/>'
-    + '<path d="M 60 56 C 52 79, 52 104, 60 126 C 70 150, 86 168, 106 178 C 124 186, 145 185, 160 177" fill="none" stroke="url(#banana-v5-light)" stroke-width="9" stroke-linecap="round" opacity=".72"/>'
-    + '<path d="M 74 54 C 66 78, 68 106, 78 128" fill="none" stroke="#DAA118" stroke-width="2.5" opacity=".35" stroke-linecap="round"/>'
-    /* 顶部梗 */
-    + '<path d="M 70 46 C 66 39, 67 30, 73 24 C 78 19, 85 21, 86 27 C 87 32, 82 37, 79 42 L 78 49 Z" fill="url(#banana-v5-stem)"/>'
-    + '<ellipse cx="78" cy="25" rx="5.5" ry="3" transform="rotate(-22 78 25)" fill="#341D06"/>'
-    /* 尾部尖 */
-    + '<path d="M 193 112 C 199 109, 205 111, 207 116 C 209 121, 205 127, 199 129 L 192 124 Z" fill="#6E420A"/>'
+    /* 极轻阴影 opacity 0.06 */
+    + '<ellipse cx="128" cy="207" rx="52" ry="5" fill="#000" opacity=".06" filter="url(#banana-v6-shadow)"/>'
+    /* 真实弯曲香蕉主体 */
+    + '<path d="M 55 45 C 40 65, 33 95, 38 125 C 45 160, 72 190, 110 205 C 148 218, 185 210, 205 185 C 218 168, 222 145, 220 128 C 217 112, 210 108, 204 116 C 202 122, 202 132, 200 145 C 196 168, 180 186, 155 195 C 128 204, 100 200, 80 185 C 60 168, 50 140, 50 115 C 50 88, 55 65, 65 50 C 68 46, 58 40, 55 45 Z" fill="url(#banana-v6-body)"/>'
+    /* 内侧亮线 */
+    + '<path d="M 62 56 C 52 75, 47 100, 51 124 C 57 152, 80 180, 112 194 C 142 205, 172 203, 190 189" fill="none" stroke="url(#banana-v6-core)" stroke-width="10" stroke-linecap="round"/>'
+    /* 皮纹（不平行） */
+    + '<path d="M 68 62 C 60 82, 58 108, 64 132" fill="none" stroke="#C8920F" stroke-width="2.2" opacity=".30" stroke-linecap="round"/>'
+    + '<path d="M 188 155 C 182 175, 168 188, 148 195" fill="none" stroke="#A06806" stroke-width="2" opacity=".26" stroke-linecap="round"/>'
+    /* 梗端（左/上，略粗） */
+    + '<path d="M 55 45 C 51 36, 54 27, 62 22 C 68 18, 76 21, 76 28 C 76 33, 71 38, 67 43 L 66 50 Z" fill="url(#banana-v6-stem)"/>'
+    /* 梗部微绿点 */
+    + '<circle cx="63" cy="27" r="3" fill="#8DA030" opacity=".68"/>'
+    /* 梗部切面 */
+    + '<ellipse cx="64" cy="24" rx="5" ry="2.8" transform="rotate(-25 64 24)" fill="#2A1B05"/>'
+    /* 尾端（右/下，收尖 + 深棕干燥点） */
+    + '<path d="M 220 128 C 224 122, 230 122, 232 128 C 233 133, 229 138, 224 139 L 218 134 Z" fill="#5C3806"/>'
+    /* 尾部干燥点 */
+    + '<circle cx="228" cy="131" r="2.2" fill="#2B1703"/>'
+    + '<circle cx="226" cy="128" r="1" fill="#7A4E10" opacity=".7"/>'
     + '</svg>';
 
   /* ============================================================
-   * GRAPE (V5) —— 9 颗不同尺寸 / 非对齐
+   * GRAPE (V6) —— 上部小 / 中部最大 / 底部收窄
+   *
+   * 结构要点：
+   *   - 上部 2 颗 r=14~15
+   *   - 中部 4 颗 r=18~20（最大）
+   *   - 底部 3 颗 r=15~17（收窄）
+   *   - 位置不完全对称
+   *   - 高光位置独立
    * ============================================================ */
   var GRAPE_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<radialGradient id="grape-v5-ball" cx="30%" cy="22%" r="78%">'
-    + '<stop offset="0%" stop-color="#E7BFF5"/>'
-    + '<stop offset="18%" stop-color="#B96EE1"/>'
-    + '<stop offset="48%" stop-color="#6D2FA8"/>'
-    + '<stop offset="80%" stop-color="#45197C"/>'
-    + '<stop offset="100%" stop-color="#2A0E4D"/>'
+    + '<radialGradient id="grape-v6-ball" cx="30%" cy="22%" r="78%">'
+    + '<stop offset="0%" stop-color="#E9C2F8"/>'
+    + '<stop offset="16%" stop-color="#BC73E4"/>'
+    + '<stop offset="46%" stop-color="#6D2FA8"/>'
+    + '<stop offset="78%" stop-color="#41187A"/>'
+    + '<stop offset="100%" stop-color="#26104A"/>'
     + '</radialGradient>'
-    + '<linearGradient id="grape-v5-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<linearGradient id="grape-v6-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#A7D94A"/>'
     + '<stop offset="48%" stop-color="#5BAA2F"/>'
     + '<stop offset="100%" stop-color="#2B6D28"/>'
     + '</linearGradient>'
-    + '<linearGradient id="grape-v5-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<linearGradient id="grape-v6-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#966026"/>'
     + '<stop offset="60%" stop-color="#5C3A12"/>'
     + '<stop offset="100%" stop-color="#2F1D08"/>'
     + '</linearGradient>'
-    + '<filter id="grape-v5-shadow" x="-20%" y="-20%" width="140%" height="160%">'
-    + '<feGaussianBlur stdDeviation="9"/>'
+    + '<filter id="grape-v6-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<feGaussianBlur stdDeviation="8"/>'
     + '</filter>'
     + '</defs>'
-    /* 独立阴影：opacity 0.10 / blur 9 / scaleX 0.72 */
-    + '<ellipse cx="128" cy="201" rx="52" ry="6" fill="#000" opacity=".10" filter="url(#grape-v5-shadow)"/>'
-    /* 双叶（自然不对称） */
-    + '<path d="M 126 64 C 108 46, 86 42, 63 50 C 71 68, 90 78, 111 79 C 100 88, 96 100, 99 110 C 116 101, 127 87, 131 71 Z" fill="url(#grape-v5-leaf)"/>'
-    + '<path d="M 130 68 C 144 47, 165 40, 185 45 C 178 62, 160 73, 138 76 Z" fill="url(#grape-v5-leaf)"/>'
-    + '<path d="M 68 53 C 88 61, 107 68, 127 70" fill="none" stroke="#3C8127" stroke-width="1.8" opacity=".55"/>'
-    + '<path d="M 136 69 C 152 60, 168 51, 182 47" fill="none" stroke="#3C8127" stroke-width="1.8" opacity=".55"/>'
-    /* 主梗 + 分枝 */
-    + '<path d="M 127 69 C 123 55, 118 43, 124 31 C 128 25, 136 24, 141 27" fill="none" stroke="url(#grape-v5-stem)" stroke-width="7" stroke-linecap="round"/>'
-    + '<path d="M 127 70 C 118 82, 108 92, 100 104 M 130 71 C 141 82, 151 92, 158 105" fill="none" stroke="url(#grape-v5-stem)" stroke-width="4" stroke-linecap="round"/>'
-    /* 9 颗非均匀葡萄 */
-    + '<circle cx="128" cy="86"  r="17" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="107" cy="104" r="19" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="147" cy="106" r="20" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="89"  cy="126" r="18" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="124" cy="127" r="21" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="163" cy="130" r="18" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="101" cy="151" r="19" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="137" cy="153" r="20" fill="url(#grape-v5-ball)"/>'
-    + '<circle cx="119" cy="177" r="17" fill="url(#grape-v5-ball)"/>'
-    /* 非对齐高光 */
+    /* 阴影 0.08 */
+    + '<ellipse cx="128" cy="200" rx="48" ry="5" fill="#000" opacity=".08" filter="url(#grape-v6-shadow)"/>'
+    /* 双叶 */
+    + '<path d="M 126 62 C 108 45, 86 41, 63 49 C 71 67, 90 77, 111 78 C 100 87, 96 99, 99 109 C 116 100, 127 86, 131 70 Z" fill="url(#grape-v6-leaf)"/>'
+    + '<path d="M 130 66 C 144 45, 165 38, 185 43 C 178 60, 160 71, 138 74 Z" fill="url(#grape-v6-leaf)"/>'
+    + '<path d="M 68 52 C 88 60, 107 67, 127 68" fill="none" stroke="#3C8127" stroke-width="1.8" opacity=".55"/>'
+    + '<path d="M 136 67 C 152 58, 168 49, 182 45" fill="none" stroke="#3C8127" stroke-width="1.8" opacity=".55"/>'
+    /* 主梗 + 分枝（梗真正插入葡萄串中心） */
+    + '<path d="M 127 68 C 124 53, 120 41, 126 30 C 130 24, 138 23, 143 26" fill="none" stroke="url(#grape-v6-stem)" stroke-width="7" stroke-linecap="round"/>'
+    + '<path d="M 127 68 C 118 80, 108 90, 100 102 M 130 69 C 140 80, 150 90, 157 102 M 127 68 C 123 78, 121 88, 122 98" fill="none" stroke="url(#grape-v6-stem)" stroke-width="3.5" stroke-linecap="round"/>'
+    /* 上部（2 颗，小） */
+    + '<circle cx="121" cy="82" r="14" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="137" cy="82" r="14.5" fill="url(#grape-v6-ball)"/>'
+    /* 中部（4 颗，最大） */
+    + '<circle cx="105" cy="104" r="19" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="127" cy="106" r="20" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="149" cy="104" r="19.5" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="128" cy="128" r="20.5" fill="url(#grape-v6-ball)"/>'
+    /* 底部（3 颗，略收窄） */
+    + '<circle cx="112" cy="150" r="17" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="144" cy="150" r="16.5" fill="url(#grape-v6-ball)"/>'
+    + '<circle cx="128" cy="170" r="15" fill="url(#grape-v6-ball)"/>'
+    /* 每颗独立高光（不完全对齐） */
     + '<g fill="#FFFFFF" opacity=".48">'
-    + '<ellipse cx="122" cy="80" rx="4.5" ry="2.8" transform="rotate(-35 122 80)"/>'
-    + '<ellipse cx="100" cy="97"  rx="5"   ry="3"   transform="rotate(-42 100 97)"/>'
-    + '<ellipse cx="141" cy="98"  rx="5"   ry="3"   transform="rotate(-28 141 98)"/>'
-    + '<ellipse cx="82"  cy="119" rx="4.5" ry="2.6" transform="rotate(-38 82 119)"/>'
-    + '<ellipse cx="117" cy="119" rx="5"   ry="3"   transform="rotate(-32 117 119)"/>'
-    + '<ellipse cx="157" cy="123" rx="4.5" ry="2.6" transform="rotate(-40 157 123)"/>'
-    + '<ellipse cx="95"  cy="145" rx="4.5" ry="2.8" transform="rotate(-36 95 145)"/>'
-    + '<ellipse cx="130" cy="146" rx="4.5" ry="2.8" transform="rotate(-30 130 146)"/>'
-    + '<ellipse cx="113" cy="170" rx="4"   ry="2.4" transform="rotate(-35 113 170)"/>'
+    + '<ellipse cx="116" cy="77" rx="4" ry="2.4" transform="rotate(-32 116 77)"/>'
+    + '<ellipse cx="132" cy="77" rx="4" ry="2.4" transform="rotate(-40 132 77)"/>'
+    + '<ellipse cx="99" cy="98" rx="5" ry="3" transform="rotate(-42 99 98)"/>'
+    + '<ellipse cx="121" cy="99" rx="5" ry="3" transform="rotate(-30 121 99)"/>'
+    + '<ellipse cx="143" cy="98" rx="5" ry="3" transform="rotate(-28 143 98)"/>'
+    + '<ellipse cx="122" cy="122" rx="5" ry="3" transform="rotate(-35 122 122)"/>'
+    + '<ellipse cx="106" cy="144" rx="4.5" ry="2.6" transform="rotate(-38 106 144)"/>'
+    + '<ellipse cx="138" cy="145" rx="4.5" ry="2.6" transform="rotate(-32 138 145)"/>'
+    + '<ellipse cx="123" cy="165" rx="4" ry="2.2" transform="rotate(-36 123 165)"/>'
     + '</g>'
     + '</svg>';
 
   /* ============================================================
-   * WATERMELON (V5) —— 厚切片
+   * WATERMELON (V6) —— 更真实厚切片
+   *
+   * 相对 V5：
+   *   - 外轮廓左右不对称（左侧略高）
+   *   - 分层更明显：深绿皮 → 浅绿皮 → 白瓤 → 红肉
+   *   - 籽不工整排列
+   *   - 阴影 0.05（切片不需要落影）
    * ============================================================ */
   var WATERMELON_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<linearGradient id="melon-v5-rind" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#2F8A43"/>'
-    + '<stop offset="48%" stop-color="#156A34"/>'
-    + '<stop offset="100%" stop-color="#0A4525"/>'
+    + '<linearGradient id="melon-v6-rind" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#2E8A42"/>'
+    + '<stop offset="45%" stop-color="#146532"/>'
+    + '<stop offset="100%" stop-color="#083F21"/>'
     + '</linearGradient>'
-    + '<linearGradient id="melon-v5-light-rind" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#DBF39B"/>'
-    + '<stop offset="50%" stop-color="#95D05A"/>'
-    + '<stop offset="100%" stop-color="#5A9B3D"/>'
+    + '<linearGradient id="melon-v6-light-rind" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#DDF49C"/>'
+    + '<stop offset="55%" stop-color="#8FCB55"/>'
+    + '<stop offset="100%" stop-color="#4E8F35"/>'
     + '</linearGradient>'
-    + '<radialGradient id="melon-v5-flesh" cx="42%" cy="30%" r="80%">'
+    + '<radialGradient id="melon-v6-flesh" cx="40%" cy="28%" r="82%">'
     + '<stop offset="0%" stop-color="#FF9093"/>'
-    + '<stop offset="38%" stop-color="#FF6570"/>'
-    + '<stop offset="72%" stop-color="#ED4253"/>'
-    + '<stop offset="100%" stop-color="#CF2438"/>'
+    + '<stop offset="34%" stop-color="#FF636E"/>'
+    + '<stop offset="70%" stop-color="#EA3F52"/>'
+    + '<stop offset="100%" stop-color="#C81F34"/>'
     + '</radialGradient>'
-    + '<filter id="melon-v5-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<filter id="melon-v6-shadow" x="-20%" y="-20%" width="140%" height="160%">'
     + '<feGaussianBlur stdDeviation="10"/>'
     + '</filter>'
     + '</defs>'
-    /* 独立阴影：opacity 0.06 / blur 10 / scaleX 0.82 */
-    + '<ellipse cx="128" cy="203" rx="68" ry="6" fill="#000" opacity=".06" filter="url(#melon-v5-shadow)"/>'
-    /* 厚切片外皮（自然不规则） */
-    + '<path d="M 48 137 C 54 111, 72 92, 96 82 C 118 73, 142 73, 163 82 C 187 92, 202 111, 208 137 C 201 160, 187 179, 166 190 C 145 202, 110 204, 88 193 C 67 182, 53 162, 48 137 Z" fill="url(#melon-v5-rind)"/>'
+    /* 阴影 0.05（切片几乎不需要落影） */
+    + '<ellipse cx="128" cy="202" rx="66" ry="5" fill="#000" opacity=".05" filter="url(#melon-v6-shadow)"/>'
+    /* 外皮（左侧略高，非对称） */
+    + '<path d="M 46 138 C 52 110, 70 90, 96 79 C 120 70, 146 71, 168 81 C 189 92, 203 112, 208 138 C 200 161, 185 179, 163 189 C 141 200, 108 202, 87 192 C 66 181, 51 161, 46 138 Z" fill="url(#melon-v6-rind)"/>'
     /* 浅绿皮 */
-    + '<path d="M 55 137 C 61 114, 78 97, 100 88 C 120 80, 142 80, 161 88 C 182 97, 196 114, 201 137 C 195 158, 182 175, 162 185 C 142 196, 111 198, 90 187 C 71 177, 59 159, 55 137 Z" fill="url(#melon-v5-light-rind)"/>'
+    + '<path d="M 54 138 C 60 113, 77 95, 100 85 C 122 77, 145 77, 164 86 C 183 96, 196 114, 201 138 C 194 158, 180 175, 160 185 C 140 195, 110 197, 89 187 C 71 177, 58 158, 54 138 Z" fill="url(#melon-v6-light-rind)"/>'
     /* 白瓤 */
-    + '<path d="M 62 137 C 68 118, 84 103, 105 94 C 123 87, 141 87, 158 94 C 177 103, 189 118, 194 137 C 189 155, 176 170, 159 179 C 141 189, 113 191, 94 181 C 78 172, 66 156, 62 137 Z" fill="#FAFAE0"/>'
-    /* 红肉（略偏左） */
-    + '<path d="M 69 137 C 75 121, 89 108, 108 100 C 124 94, 140 94, 155 100 C 172 108, 183 121, 187 137 C 183 152, 171 165, 156 173 C 140 182, 115 184, 98 175 C 84 167, 73 153, 69 137 Z" fill="url(#melon-v5-flesh)"/>'
-    /* 7 颗黑籽 */
-    + '<g fill="#352020">'
-    + '<ellipse cx="97"  cy="127" rx="3.5" ry="7.5" transform="rotate(-30 97 127)"/>'
-    + '<ellipse cx="115" cy="112" rx="3.5" ry="7.5" transform="rotate(-14 115 112)"/>'
-    + '<ellipse cx="133" cy="109" rx="3.5" ry="7.5" transform="rotate(4 133 109)"/>'
-    + '<ellipse cx="151" cy="113" rx="3.5" ry="7.5" transform="rotate(18 151 113)"/>'
-    + '<ellipse cx="168" cy="128" rx="3.5" ry="7.5" transform="rotate(28 168 128)"/>'
-    + '<ellipse cx="126" cy="140" rx="3.5" ry="7.5"/>'
-    + '<ellipse cx="108" cy="142" rx="3.5" ry="7.5" transform="rotate(-12 108 142)"/>'
+    + '<path d="M 61 138 C 67 117, 84 102, 105 93 C 124 86, 143 86, 160 93 C 178 103, 190 118, 195 138 C 188 155, 175 170, 156 179 C 138 189, 111 190, 92 181 C 77 172, 64 156, 61 138 Z" fill="#FBFBE0"/>'
+    /* 红肉（偏移左） */
+    + '<path d="M 68 138 C 74 120, 89 107, 108 99 C 125 93, 141 93, 156 99 C 173 107, 184 120, 188 138 C 182 154, 169 167, 152 176 C 137 184, 113 185, 96 177 C 82 169, 71 154, 68 138 Z" fill="url(#melon-v6-flesh)"/>'
+    /* 8 颗籽（不工整排列） */
+    + '<g fill="#332020">'
+    + '<ellipse cx="98"  cy="126" rx="3.2" ry="7"   transform="rotate(-32 98 126)"/>'
+    + '<ellipse cx="116" cy="111" rx="3.4" ry="7.2" transform="rotate(-16 116 111)"/>'
+    + '<ellipse cx="135" cy="108" rx="3.4" ry="7.2" transform="rotate(6 135 108)"/>'
+    + '<ellipse cx="153" cy="112" rx="3.2" ry="7"   transform="rotate(20 153 112)"/>'
+    + '<ellipse cx="169" cy="127" rx="3" ry="6.8"   transform="rotate(30 169 127)"/>'
+    + '<ellipse cx="128" cy="141" rx="3.2" ry="7"   transform="rotate(2 128 141)"/>'
+    + '<ellipse cx="108" cy="142" rx="3" ry="6.8"   transform="rotate(-16 108 142)"/>'
+    + '<ellipse cx="148" cy="145" rx="3" ry="6.8"   transform="rotate(22 148 145)"/>'
     + '</g>'
-    + '<path d="M 82 130 C 92 113, 110 103, 128 102" fill="none" stroke="#FFB4B4" stroke-width="4.5" stroke-linecap="round" opacity=".28"/>'
+    /* 自然高光 */
+    + '<path d="M 81 130 C 91 113, 110 103, 128 102" fill="none" stroke="#FFB4B4" stroke-width="4" stroke-linecap="round" opacity=".24"/>'
+    /* 外皮自然纹路 */
+    + '<path d="M 60 152 C 78 178, 102 190, 128 191" fill="none" stroke="#3A853C" stroke-width="1.6" opacity=".40" stroke-linecap="round"/>'
+    + '<path d="M 128 191 C 154 190, 178 178, 196 152" fill="none" stroke="#2C6B2C" stroke-width="1.6" opacity=".35" stroke-linecap="round"/>'
     + '</svg>';
 
   /* ============================================================
-   * PLUM (V5) —— 圆润成熟李形 + 中央深沟（V5 单独塑形）
+   * PLUM (V6) —— 更圆扁（不是梨形）+ 顶部微凹 + 明显果沟
    * ============================================================ */
   var PLUM_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<radialGradient id="plum-v5-body" cx="28%" cy="20%" r="85%">'
-    + '<stop offset="0%" stop-color="#DE8FA8"/>'
-    + '<stop offset="16%" stop-color="#BB5179"/>'
-    + '<stop offset="40%" stop-color="#892C5A"/>'
-    + '<stop offset="70%" stop-color="#5F1B49"/>'
-    + '<stop offset="92%" stop-color="#3D1136"/>'
-    + '<stop offset="100%" stop-color="#2A0B26"/>'
+    + '<radialGradient id="plum-v6-body" cx="28%" cy="20%" r="88%">'
+    + '<stop offset="0%" stop-color="#E394AE"/>'
+    + '<stop offset="14%" stop-color="#BE5379"/>'
+    + '<stop offset="40%" stop-color="#8B2C5B"/>'
+    + '<stop offset="70%" stop-color="#5C1946"/>'
+    + '<stop offset="92%" stop-color="#390F33"/>'
+    + '<stop offset="100%" stop-color="#270925"/>'
     + '</radialGradient>'
-    + '<linearGradient id="plum-v5-side" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<linearGradient id="plum-v6-side" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#E69CB0"/>'
     + '<stop offset="38%" stop-color="#B44C72"/>'
-    + '<stop offset="100%" stop-color="#5A1B46"/>'
+    + '<stop offset="100%" stop-color="#51173F"/>'
     + '</linearGradient>'
-    + '<linearGradient id="plum-v5-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<linearGradient id="plum-v6-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#A6D84D"/>'
     + '<stop offset="45%" stop-color="#5DA92F"/>'
     + '<stop offset="100%" stop-color="#2C6E27"/>'
     + '</linearGradient>'
-    + '<linearGradient id="plum-v5-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#956026"/>'
-    + '<stop offset="60%" stop-color="#5A3712"/>'
-    + '<stop offset="100%" stop-color="#2E1B08"/>'
+    + '<linearGradient id="plum-v6-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#8F5C24"/>'
+    + '<stop offset="60%" stop-color="#523010"/>'
+    + '<stop offset="100%" stop-color="#2A1706"/>'
     + '</linearGradient>'
-    + '<filter id="plum-v5-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<filter id="plum-v6-shadow" x="-20%" y="-20%" width="140%" height="160%">'
     + '<feGaussianBlur stdDeviation="9"/>'
     + '</filter>'
-    + '<filter id="plum-v5-soft" x="-30%" y="-30%" width="160%" height="170%">'
-    + '<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#320F2D" flood-opacity=".18"/>'
-    + '</filter>'
     + '</defs>'
-    /* 独立阴影：opacity 0.10 / blur 9 / scaleX 0.68 */
-    + '<ellipse cx="128" cy="206" rx="48" ry="6" fill="#000" opacity=".10" filter="url(#plum-v5-shadow)"/>'
+    /* 阴影 0.09 */
+    + '<ellipse cx="128" cy="208" rx="50" ry="5" fill="#000" opacity=".09" filter="url(#plum-v6-shadow)"/>'
     /* 叶 + 梗 */
-    + '<path d="M 128 63 C 143 44, 163 37, 184 43 C 176 60, 158 72, 136 74 C 132 71, 130 67, 128 63 Z" fill="url(#plum-v5-leaf)"/>'
-    + '<path d="M 135 68 C 152 59, 167 50, 180 45" fill="none" stroke="#3B7E29" stroke-width="2" stroke-linecap="round" opacity=".62"/>'
-    + '<path d="M 127 64 C 125 51, 128 40, 135 31" fill="none" stroke="url(#plum-v5-stem)" stroke-width="8" stroke-linecap="round"/>'
-    /* 成熟李子主体（略扁 + 顶部微凹） */
-    + '<path d="M 128 61 C 110 57, 92 62, 79 76 C 66 90, 62 111, 65 132 C 68 154, 79 176, 96 191 C 108 202, 120 207, 128 208 C 137 207, 149 202, 161 191 C 178 176, 188 154, 191 132 C 194 110, 190 90, 177 76 C 164 62, 146 57, 128 61 Z" fill="url(#plum-v5-body)" filter="url(#plum-v5-soft)"/>'
-    /* 左侧自然果肉反光 */
-    + '<path d="M 101 70 C 81 82, 74 104, 76 128 C 78 151, 88 173, 106 188" fill="none" stroke="url(#plum-v5-side)" stroke-width="16" stroke-linecap="round" opacity=".68"/>'
-    /* 中央深沟（分段绘制：暗沟 + 边缘柔光） */
-    + '<path d="M 128 62 C 123 82, 121 103, 122 124 C 123 148, 126 174, 128 199" fill="none" stroke="#4B183D" stroke-width="6" stroke-linecap="round" opacity=".42"/>'
-    + '<path d="M 124 66 C 120 90, 120 112, 122 137" fill="none" stroke="#D98DA6" stroke-width="2" stroke-linecap="round" opacity=".38"/>'
+    + '<path d="M 128 64 C 143 45, 163 38, 184 44 C 176 61, 158 73, 136 75 C 132 72, 130 68, 128 64 Z" fill="url(#plum-v6-leaf)"/>'
+    + '<path d="M 135 69 C 152 60, 167 51, 180 46" fill="none" stroke="#3B7E29" stroke-width="2" stroke-linecap="round" opacity=".62"/>'
+    + '<path d="M 128 65 C 126 51, 129 40, 136 31" fill="none" stroke="url(#plum-v6-stem)" stroke-width="7.5" stroke-linecap="round"/>'
+    /* 圆扁成熟李形（更宽更矮） */
+    + '<path d="M 128 62 C 106 58, 85 65, 73 82 C 61 100, 57 124, 61 148 C 66 172, 79 191, 100 201 C 111 206, 121 208, 128 208 C 136 208, 146 206, 157 201 C 177 191, 191 172, 196 148 C 200 124, 196 100, 184 82 C 172 65, 151 58, 128 62 Z" fill="url(#plum-v6-body)"/>'
+    /* 顶部微凹阴影 */
+    + '<path d="M 116 63 Q 128 72 140 63" fill="none" stroke="#3F0E30" stroke-width="4" stroke-linecap="round" opacity=".42"/>'
+    /* 左侧反光 */
+    + '<path d="M 99 71 C 79 83, 71 105, 73 128 C 75 152, 85 174, 103 188" fill="none" stroke="url(#plum-v6-side)" stroke-width="15" stroke-linecap="round" opacity=".66"/>'
+    /* 中央深沟（暗沟 + 边缘柔光） */
+    + '<path d="M 128 63 C 124 82, 122 102, 123 122 C 124 146, 127 172, 128 197" fill="none" stroke="#451539" stroke-width="6" stroke-linecap="round" opacity=".40"/>'
+    + '<path d="M 124 67 C 120 90, 120 112, 122 136" fill="none" stroke="#D98DA6" stroke-width="2" stroke-linecap="round" opacity=".36"/>'
     /* 果粉 */
-    + '<ellipse cx="115" cy="104" rx="52" ry="64" fill="#E7B2C7" opacity=".06"/>'
-    /* 非常克制的高光 */
-    + '<ellipse cx="99" cy="90" rx="15" ry="7.5" transform="rotate(-42 99 90)" fill="#FFFFFF" opacity=".20"/>'
-    + '<ellipse cx="92" cy="106" rx="4.5" ry="2.5" transform="rotate(-42 92 106)" fill="#FFFFFF" opacity=".22"/>'
+    + '<ellipse cx="115" cy="106" rx="54" ry="60" fill="#E7B2C7" opacity=".055"/>'
+    /* 高光（顶部偏粉紫） */
+    + '<ellipse cx="98" cy="90" rx="15" ry="7" transform="rotate(-42 98 90)" fill="#FFFFFF" opacity=".20"/>'
+    + '<ellipse cx="91" cy="106" rx="4.2" ry="2.4" transform="rotate(-42 91 106)" fill="#FFE2F0" opacity=".24"/>'
     + '</svg>';
 
   /* ============================================================
-   * APPLE (V5) —— 保留 V4 方向，微调：顶部凹陷更深 + 高光弱化
+   * APPLE (V6) —— 微调：高光进一步弱化 + 更自然不对称
    * ============================================================ */
   var APPLE_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<radialGradient id="apple-v5-body" cx="30%" cy="21%" r="85%">'
-    + '<stop offset="0%" stop-color="#FF9B9F"/>'
-    + '<stop offset="18%" stop-color="#FF6369"/>'
-    + '<stop offset="46%" stop-color="#EE2F3B"/>'
-    + '<stop offset="74%" stop-color="#CF1728"/>'
-    + '<stop offset="94%" stop-color="#9C0D1B"/>'
-    + '<stop offset="100%" stop-color="#710915"/>'
+    + '<radialGradient id="apple-v6-body" cx="30%" cy="21%" r="86%">'
+    + '<stop offset="0%" stop-color="#FF9BA0"/>'
+    + '<stop offset="18%" stop-color="#FF5F68"/>'
+    + '<stop offset="46%" stop-color="#EA2C38"/>'
+    + '<stop offset="74%" stop-color="#C61425"/>'
+    + '<stop offset="94%" stop-color="#930B19"/>'
+    + '<stop offset="100%" stop-color="#650712"/>'
     + '</radialGradient>'
-    + '<linearGradient id="apple-v5-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<linearGradient id="apple-v6-leaf" x1="0%" y1="0%" x2="100%" y2="100%">'
     + '<stop offset="0%" stop-color="#A9DA4C"/>'
     + '<stop offset="48%" stop-color="#61B32F"/>'
     + '<stop offset="100%" stop-color="#2F7728"/>'
     + '</linearGradient>'
-    + '<linearGradient id="apple-v5-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#94602A"/>'
-    + '<stop offset="55%" stop-color="#5E3C17"/>'
-    + '<stop offset="100%" stop-color="#321F0A"/>'
+    + '<linearGradient id="apple-v6-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#8E5B27"/>'
+    + '<stop offset="55%" stop-color="#563616"/>'
+    + '<stop offset="100%" stop-color="#2C1B09"/>'
     + '</linearGradient>'
-    + '<filter id="apple-v5-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<filter id="apple-v6-shadow" x="-20%" y="-20%" width="140%" height="160%">'
     + '<feGaussianBlur stdDeviation="9"/>'
     + '</filter>'
-    + '<filter id="apple-v5-soft" x="-30%" y="-30%" width="160%" height="170%">'
-    + '<feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#5B0712" flood-opacity=".18"/>'
-    + '</filter>'
     + '</defs>'
-    /* 独立阴影：opacity 0.11 / blur 9 / scaleX 0.70 */
-    + '<ellipse cx="128" cy="207" rx="50" ry="6" fill="#000" opacity=".11" filter="url(#apple-v5-shadow)"/>'
+    /* 阴影 0.10 */
+    + '<ellipse cx="128" cy="208" rx="50" ry="5" fill="#000" opacity=".10" filter="url(#apple-v6-shadow)"/>'
     /* 叶 + 梗 */
-    + '<path d="M 129 59 C 143 42, 162 35, 182 40 C 176 56, 159 68, 136 71 C 133 67, 131 63, 129 59 Z" fill="url(#apple-v5-leaf)"/>'
-    + '<path d="M 135 65 C 150 56, 165 47, 178 42" fill="none" stroke="#3C8228" stroke-width="2" stroke-linecap="round" opacity=".62"/>'
-    + '<path d="M 127 68 C 124 54, 126 42, 132 32" fill="none" stroke="url(#apple-v5-stem)" stroke-width="8" stroke-linecap="round"/>'
-    /* 苹果主体（左侧略鼓，非完全对称） */
-    + '<path d="M 128 70 C 115 58, 100 55, 87 60 C 66 68, 55 88, 56 112 C 57 141, 70 171, 88 192 C 100 205, 115 212, 128 212 C 140 211, 155 204, 167 191 C 185 170, 197 140, 198 111 C 199 87, 188 68, 168 61 C 155 56, 140 59, 128 70 Z" fill="url(#apple-v5-body)" filter="url(#apple-v5-soft)"/>'
-    /* 左侧红橙自然反射（更柔） */
-    + '<path d="M 92 72 C 72 84, 67 108, 71 132 C 75 156, 88 179, 106 193" fill="none" stroke="#FF6B65" stroke-width="15" stroke-linecap="round" opacity=".26"/>'
-    /* 顶部凹陷（加深） */
-    + '<path d="M 102 70 C 111 79, 120 83, 128 83 C 137 83, 146 78, 155 69" fill="none" stroke="#8C101B" stroke-width="8" stroke-linecap="round" opacity=".55"/>'
-    + '<path d="M 108 70 C 116 77, 122 80, 128 80 C 135 80, 141 76, 148 70" fill="none" stroke="#5F0713" stroke-width="3" stroke-linecap="round" opacity=".55"/>'
-    /* 高光弱化（.36 → .25） */
-    + '<ellipse cx="91" cy="94" rx="17" ry="9.5" transform="rotate(-42 91 94)" fill="#FFFFFF" opacity=".25"/>'
-    + '<path d="M 80 96 C 73 113, 77 133, 85 145" fill="none" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" opacity=".15"/>'
-    + '<ellipse cx="77" cy="110" rx="4.5" ry="2.6" transform="rotate(-40 77 110)" fill="#FFFFFF" opacity=".22"/>'
+    + '<path d="M 129 60 C 143 42, 162 34, 182 40 C 176 56, 159 68, 136 71 C 133 67, 131 63, 129 60 Z" fill="url(#apple-v6-leaf)"/>'
+    + '<path d="M 135 66 C 150 57, 165 48, 178 43" fill="none" stroke="#3C8228" stroke-width="2" stroke-linecap="round" opacity=".60"/>'
+    + '<path d="M 127 69 C 124 54, 126 42, 132 32" fill="none" stroke="url(#apple-v6-stem)" stroke-width="8" stroke-linecap="round"/>'
+    /* 苹果主体（左侧更鼓，右侧稍平） */
+    + '<path d="M 128 70 C 114 58, 98 55, 86 61 C 64 69, 52 90, 54 114 C 56 143, 70 172, 88 192 C 100 205, 115 212, 128 212 C 140 211, 155 204, 167 191 C 185 170, 197 140, 198 111 C 199 87, 188 68, 168 61 C 155 56, 140 59, 128 70 Z" fill="url(#apple-v6-body)"/>'
+    /* 左侧红橙反射（更柔） */
+    + '<path d="M 90 73 C 71 85, 66 108, 70 132 C 74 156, 87 179, 105 193" fill="none" stroke="#FF6B65" stroke-width="14" stroke-linecap="round" opacity=".22"/>'
+    /* 顶部凹陷（双层） */
+    + '<path d="M 102 70 C 111 79, 120 83, 128 83 C 137 83, 146 78, 155 69" fill="none" stroke="#8C101B" stroke-width="7.5" stroke-linecap="round" opacity=".52"/>'
+    + '<path d="M 108 70 C 116 77, 122 80, 128 80 C 135 80, 141 76, 148 70" fill="none" stroke="#5F0713" stroke-width="3" stroke-linecap="round" opacity=".52"/>'
+    /* 高光进一步弱化（.25 → .20） */
+    + '<ellipse cx="90" cy="94" rx="16" ry="9" transform="rotate(-42 90 94)" fill="#FFFFFF" opacity=".20"/>'
+    + '<path d="M 79 96 C 72 113, 76 133, 84 145" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity=".12"/>'
+    + '<ellipse cx="76" cy="110" rx="4" ry="2.4" transform="rotate(-40 76 110)" fill="#FFFFFF" opacity=".20"/>'
     + '</svg>';
 
   /* ============================================================
