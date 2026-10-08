@@ -105,36 +105,703 @@
    *   4 颗自然散落籽 + 轻微水润高光 + 极浅落影
    *   阴影：opacity 0.06 / blur 10（切片几乎不落影）
    * ============================================================ */
-  var WATERMELON_SVG = '<svg ' + SVG_HEAD + '>'
-    + '<defs>'
-    + '<radialGradient id="watermelon-v12-red" cx="42%" cy="30%" r="80%">'
-    + '<stop offset="0%" stop-color="#FF8D91"/>'
-    + '<stop offset="35%" stop-color="#FF6570"/>'
-    + '<stop offset="72%" stop-color="#F04452"/>'
-    + '<stop offset="100%" stop-color="#D8243B"/>'
-    + '</radialGradient>'
-    + '<filter id="watermelon-v12-shadow" x="-20%" y="-20%" width="140%" height="160%">'
-    + '<feGaussianBlur stdDeviation="10"/>'
-    + '</filter>'
-    + '</defs>'
-    /* 1. 深绿外皮 */
-    + '<path d="M 48 137 C 54 111, 72 92, 96 82 C 118 73, 142 73, 163 82 C 187 92, 202 111, 208 137 C 201 160, 187 179, 166 190 C 145 202, 110 204, 88 193 C 67 182, 53 162, 48 137 Z" fill="#1B5E20"/>'
-    /* 2. 绿皮 */
-    + '<path d="M 52 137 C 57 114, 74 97, 96 88 C 116 79, 138 79, 158 88 C 180 97, 194 114, 200 137 C 194 158, 180 175, 160 185 C 140 195, 110 197, 90 188 C 70 178, 56 158, 52 137 Z" fill="#388E3C"/>'
-    /* 3. 白瓤 */
-    + '<path d="M 58 137 C 62 117, 78 102, 98 94 C 116 87, 135 87, 152 94 C 172 102, 185 117, 190 137 C 185 155, 172 170, 154 178 C 136 186, 110 188, 92 180 C 74 172, 62 155, 58 137 Z" fill="#F1F8E9"/>'
-    /* 4. 红肉 */
-    + '<path d="M 65 137 C 68 121, 83 109, 100 102 C 115 96, 132 96, 147 102 C 164 109, 175 121, 180 137 C 175 151, 164 163, 149 170 C 134 176, 111 178, 96 170 C 81 163, 70 149, 65 137 Z" fill="url(#watermelon-v12-red)"/>'
-    /* 5. 4 颗自然散落籽 */
-    + '<ellipse cx="120" cy="115" rx="2" ry="4" fill="#1A1A1A" transform="rotate(30 120 115)" opacity=".8"/>'
-    + '<ellipse cx="145" cy="125" rx="2.5" ry="4.5" fill="#1A1A1A" transform="rotate(-15 145 125)" opacity=".8"/>'
-    + '<ellipse cx="100" cy="135" rx="2" ry="3.5" fill="#1A1A1A" transform="rotate(45 100 135)" opacity=".8"/>'
-    + '<ellipse cx="130" cy="155" rx="2" ry="4" fill="#1A1A1A" transform="rotate(-30 130 155)" opacity=".8"/>'
-    /* 6. 水润高光（克制） */
-    + '<path d="M 85 115 C 95 105, 110 102, 120 102" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity=".15"/>'
-    /* 7. 极浅落影 */
-    + '<ellipse cx="128" cy="205" rx="65" ry="8" fill="#000" opacity=".06" filter="url(#watermelon-v12-shadow)"/>'
-    + '</svg>';
+  /* WATERMELON (V13) —— 用户提供版本，100% 原样（无 uid 隔离） */
+  var WATERMELON_SVG = `<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 100 100"
+  width="100"
+  height="100"
+  preserveAspectRatio="xMidYMid meet"
+  aria-hidden="true"
+  focusable="false"
+>
+
+  <defs>
+
+    <!-- =========================================================
+         1. Outer watermelon rind
+         ========================================================= -->
+
+    <linearGradient
+      id="wm-rind"
+      x1="18"
+      y1="15"
+      x2="82"
+      y2="88"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#8FE85A"/>
+      <stop offset="28%" stop-color="#3EAF43"/>
+      <stop offset="65%" stop-color="#147B38"/>
+      <stop offset="100%" stop-color="#07532D"/>
+    </linearGradient>
+
+
+    <!-- Darker outside edge -->
+    <linearGradient
+      id="wm-rind-dark"
+      x1="50"
+      y1="7"
+      x2="50"
+      y2="94"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#51B947"/>
+      <stop offset="50%" stop-color="#176B36"/>
+      <stop offset="100%" stop-color="#063B28"/>
+    </linearGradient>
+
+
+    <!-- Light inner rind -->
+    <linearGradient
+      id="wm-inner-rind"
+      x1="25"
+      y1="20"
+      x2="75"
+      y2="82"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#F5FF8A"/>
+      <stop offset="35%" stop-color="#CDEB55"/>
+      <stop offset="70%" stop-color="#7FCA42"/>
+      <stop offset="100%" stop-color="#3D9638"/>
+    </linearGradient>
+
+
+    <!-- =========================================================
+         2. Watermelon flesh
+         ========================================================= -->
+
+    <radialGradient
+      id="wm-flesh"
+      cx="36"
+      cy="25"
+      r="72"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#FF7A82"/>
+      <stop offset="22%" stop-color="#FF596A"/>
+      <stop offset="52%" stop-color="#F73552"/>
+      <stop offset="80%" stop-color="#E91F43"/>
+      <stop offset="100%" stop-color="#B91235"/>
+    </radialGradient>
+
+
+    <!-- Flesh bottom depth -->
+    <linearGradient
+      id="wm-flesh-depth"
+      x1="50"
+      y1="20"
+      x2="50"
+      y2="83"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#FF6A73" stop-opacity="0"/>
+      <stop offset="55%" stop-color="#C91939" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#7D0D2C" stop-opacity=".48"/>
+    </linearGradient>
+
+
+    <!-- =========================================================
+         3. Flesh highlight
+         ========================================================= -->
+
+    <radialGradient
+      id="wm-highlight"
+      cx="28"
+      cy="18"
+      r="48"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".78"/>
+      <stop offset="28%" stop-color="#FFFFFF" stop-opacity=".30"/>
+      <stop offset="65%" stop-color="#FFFFFF" stop-opacity=".07"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+
+    <!-- =========================================================
+         4. Rind highlight
+         ========================================================= -->
+
+    <linearGradient
+      id="wm-rind-highlight"
+      x1="20"
+      y1="18"
+      x2="76"
+      y2="55"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".55"/>
+      <stop offset="35%" stop-color="#E9FFB0" stop-opacity=".20"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+
+    <!-- =========================================================
+         5. Seed gradient
+         ========================================================= -->
+
+    <linearGradient
+      id="wm-seed"
+      x1="0"
+      y1="0"
+      x2="1"
+      y2="1"
+    >
+      <stop offset="0%" stop-color="#3C1620"/>
+      <stop offset="45%" stop-color="#170D14"/>
+      <stop offset="100%" stop-color="#050509"/>
+    </linearGradient>
+
+
+    <!-- Seed highlight -->
+    <linearGradient
+      id="wm-seed-light"
+      x1="0"
+      y1="0"
+      x2="0"
+      y2="1"
+    >
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".45"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+
+    <!-- =========================================================
+         6. Drop / contact shadow
+         ========================================================= -->
+
+    <radialGradient
+      id="wm-ground-shadow"
+      cx="50"
+      cy="50"
+      r="50"
+    >
+      <stop offset="0%" stop-color="#071B12" stop-opacity=".42"/>
+      <stop offset="70%" stop-color="#071B12" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="#071B12" stop-opacity="0"/>
+    </radialGradient>
+
+
+    <!-- =========================================================
+         7. Soft SVG shadow
+         ========================================================= -->
+
+    <filter
+      id="wm-soft-shadow"
+      x="-30%"
+      y="-30%"
+      width="160%"
+      height="170%"
+    >
+      <feGaussianBlur
+        in="SourceAlpha"
+        stdDeviation="2.2"
+      />
+
+      <feOffset
+        dx="0"
+        dy="2.5"
+        result="offsetblur"
+      />
+
+      <feComponentTransfer>
+        <feFuncA
+          type="linear"
+          slope=".42"
+        />
+      </feComponentTransfer>
+
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+
+    <!-- =========================================================
+         8. Small highlight blur
+         ========================================================= -->
+
+    <filter
+      id="wm-glow"
+      x="-50%"
+      y="-50%"
+      width="200%"
+      height="200%"
+    >
+      <feGaussianBlur
+        stdDeviation="1.5"
+      />
+    </filter>
+
+  </defs>
+
+
+  <!-- ===========================================================
+       GROUND SHADOW
+       =========================================================== -->
+
+  <ellipse
+    cx="50"
+    cy="91"
+    rx="30"
+    ry="5"
+    fill="url(#wm-ground-shadow)"
+  />
+
+
+  <!-- ===========================================================
+       OUTER WATERMELON BODY
+       =========================================================== -->
+
+  <path
+    d="
+      M 14 49
+      C 14 25, 30 9, 50 8
+      C 71 9, 87 25, 87 49
+      C 87 68, 73 84, 50 91
+      C 27 84, 13 68, 14 49
+      Z
+    "
+    fill="url(#wm-rind-dark)"
+    stroke="#063A27"
+    stroke-width="2.4"
+    stroke-linejoin="round"
+    filter="url(#wm-soft-shadow)"
+  />
+
+
+  <!-- ===========================================================
+       OUTER LIGHT RIND
+       =========================================================== -->
+
+  <path
+    d="
+      M 17 48
+      C 17 28, 31 13, 50 12
+      C 69 13, 83 28, 83 48
+      C 83 65, 70 79, 50 86
+      C 30 79, 17 65, 17 48
+      Z
+    "
+    fill="url(#wm-rind)"
+  />
+
+
+  <!-- ===========================================================
+       RIND STRIPE / INNER RIND
+       =========================================================== -->
+
+  <path
+    d="
+      M 21 48
+      C 21 31, 33 19, 50 17
+      C 67 19, 79 31, 79 48
+      C 79 63, 67 75, 50 81
+      C 33 75, 21 63, 21 48
+      Z
+    "
+    fill="url(#wm-inner-rind)"
+  />
+
+
+  <!-- ===========================================================
+       WATERMELON FLESH
+       =========================================================== -->
+
+  <path
+    d="
+      M 25 48
+      C 25 34, 35 24, 50 21
+      C 65 24, 75 34, 75 48
+      C 75 60, 65 70, 50 76
+      C 35 70, 25 60, 25 48
+      Z
+    "
+    fill="url(#wm-flesh)"
+  />
+
+
+  <!-- ===========================================================
+       FLESH DEPTH
+       =========================================================== -->
+
+  <path
+    d="
+      M 25 48
+      C 25 60, 35 70, 50 76
+      C 65 70, 75 60, 75 48
+      C 75 58, 66 68, 50 73
+      C 34 68, 25 58, 25 48
+      Z
+    "
+    fill="url(#wm-flesh-depth)"
+  />
+
+
+  <!-- ===========================================================
+       INNER RIND RIM
+       =========================================================== -->
+
+  <path
+    d="
+      M 22 48
+      C 22 64, 34 76, 50 82
+      C 66 76, 78 64, 78 48
+      C 76 64, 65 74, 50 79
+      C 35 74, 24 64, 22 48
+      Z
+    "
+    fill="#A5D94A"
+    opacity=".68"
+  />
+
+
+  <!-- ===========================================================
+       TOP FLESH GLOW
+       =========================================================== -->
+
+  <ellipse
+    cx="38"
+    cy="27"
+    rx="26"
+    ry="19"
+    fill="url(#wm-highlight)"
+  />
+
+
+  <!-- ===========================================================
+       CURVED SURFACE HIGHLIGHT
+       =========================================================== -->
+
+  <path
+    d="
+      M 26 37
+      C 31 24, 42 18, 55 19
+      C 42 22, 34 29, 29 40
+      C 27 43, 25 41, 26 37
+      Z
+    "
+    fill="#FFFFFF"
+    opacity=".19"
+  />
+
+
+  <!-- ===========================================================
+       STRONG SPECULAR HIGHLIGHT
+       =========================================================== -->
+
+  <ellipse
+    cx="33"
+    cy="28"
+    rx="7"
+    ry="3.2"
+    transform="rotate(-27 33 28)"
+    fill="#FFFFFF"
+    opacity=".42"
+    filter="url(#wm-glow)"
+  />
+
+  <ellipse
+    cx="31"
+    cy="27"
+    rx="4.5"
+    ry="1.8"
+    transform="rotate(-27 31 27)"
+    fill="#FFFFFF"
+    opacity=".78"
+  />
+
+
+  <!-- ===========================================================
+       RIND REFLECTION
+       =========================================================== -->
+
+  <path
+    d="
+      M 20 43
+      C 23 26, 35 15, 49 14
+      C 34 19, 26 29, 23 44
+      C 22 47, 20 46, 20 43
+      Z
+    "
+    fill="url(#wm-rind-highlight)"
+  />
+
+
+  <!-- ===========================================================
+       WATERMELON SEEDS
+       =========================================================== -->
+
+  <!-- Seed 1 -->
+  <g transform="translate(39 37) rotate(-18)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.25"
+      ry="4.1"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.65"
+      cy="-1.7"
+      rx=".65"
+      ry="1.1"
+      fill="url(#wm-seed-light)"
+      opacity=".55"
+    />
+  </g>
+
+
+  <!-- Seed 2 -->
+  <g transform="translate(51 33) rotate(6)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.2"
+      ry="4"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.55"
+      cy="-1.6"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 3 -->
+  <g transform="translate(61 39) rotate(24)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.15"
+      ry="3.9"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.55"
+      cy="-1.55"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 4 -->
+  <g transform="translate(33 49) rotate(-26)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.15"
+      ry="4"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.6"
+      cy="-1.6"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 5 -->
+  <g transform="translate(47 48) rotate(8)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.3"
+      ry="4.15"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.6"
+      cy="-1.7"
+      rx=".65"
+      ry="1.1"
+      fill="url(#wm-seed-light)"
+      opacity=".55"
+    />
+  </g>
+
+
+  <!-- Seed 6 -->
+  <g transform="translate(63 51) rotate(28)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.15"
+      ry="4"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.55"
+      cy="-1.55"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 7 -->
+  <g transform="translate(40 60) rotate(-15)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.15"
+      ry="4"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.55"
+      cy="-1.6"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 8 -->
+  <g transform="translate(54 61) rotate(12)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2.2"
+      ry="4"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.55"
+      cy="-1.55"
+      rx=".6"
+      ry="1"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- Seed 9 -->
+  <g transform="translate(68 61) rotate(30)">
+    <ellipse
+      cx="0"
+      cy="0"
+      rx="2"
+      ry="3.8"
+      fill="url(#wm-seed)"
+      stroke="#120B11"
+      stroke-width=".55"
+    />
+    <ellipse
+      cx="-.5"
+      cy="-1.5"
+      rx=".55"
+      ry=".95"
+      fill="url(#wm-seed-light)"
+      opacity=".5"
+    />
+  </g>
+
+
+  <!-- ===========================================================
+       SMALL FLESH LIGHT DOTS
+       =========================================================== -->
+
+  <circle
+    cx="29"
+    cy="54"
+    r="1.15"
+    fill="#FFB1A9"
+    opacity=".62"
+  />
+
+  <circle
+    cx="71"
+    cy="45"
+    r=".95"
+    fill="#FFAAA4"
+    opacity=".55"
+  />
+
+  <circle
+    cx="58"
+    cy="27"
+    r=".8"
+    fill="#FFFFFF"
+    opacity=".38"
+  />
+
+
+  <!-- ===========================================================
+       LOWER RIM SPECULAR
+       =========================================================== -->
+
+  <path
+    d="
+      M 30 69
+      C 36 76, 43 80, 50 82
+      C 57 80, 64 76, 70 69
+      C 64 78, 57 83, 50 86
+      C 43 83, 36 78, 30 69
+      Z
+    "
+    fill="#FFFFFF"
+    opacity=".10"
+  />
+
+
+  <!-- ===========================================================
+       FINAL OUTLINE
+       =========================================================== -->
+
+  <path
+    d="
+      M 14 49
+      C 14 25, 30 9, 50 8
+      C 71 9, 87 25, 87 49
+      C 87 68, 73 84, 50 91
+      C 27 84, 13 68, 14 49
+      Z
+    "
+    fill="none"
+    stroke="#073C2A"
+    stroke-width="1.8"
+    stroke-linejoin="round"
+    opacity=".9"
+  />
+
+</svg>
+`;
 
   /* ============================================================
    * PLUM (V7) —— V6 基础上横向 +8% / 纵向 -6%
@@ -278,9 +945,13 @@
     return svg;
   }
 
+  // 用户要求 100% 原样的符号：跳过 uid 隔离（保留原 id）
+  var NO_SCOPE = { 'watermelon': true };
+
   function get(id, uid) {
     var key = resolveKey(id);
     if (!key) return '';
+    if (NO_SCOPE[key]) return SVGS[key];  // 原样返回，不加 uid 后缀
     return scopeIds(SVGS[key], uid || '');
   }
 

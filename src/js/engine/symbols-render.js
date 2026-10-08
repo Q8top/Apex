@@ -469,11 +469,12 @@
     if (window.ApexFruitSvg && window.ApexFruitSvg.has(symbolId)) {
       var svg = window.ApexFruitSvg.get(symbolId, u);
       if (svg) {
-        // 注入 class 与 style（fruit SVG 根已有 viewBox/width/height）
-        return svg.replace(
-          '<svg ',
-          '<svg class="' + cls + '" aria-hidden="true" style="width:' + size + ';height:' + size + ';" '
-        );
+        // 注入 class 与 style
+        // 兼容两种写法：'<svg ' (单行) 和 '<svg\n' (多行)
+        var styleAttr = ' class="' + cls + '" aria-hidden="true" style="width:' + size + ';height:' + size + ';" ';
+        var replaced = svg.replace(/<svg(\s|>)/, '<svg' + styleAttr + '$1');
+        // 若 style 已注入成功就返回，否则回退原样
+        return replaced;
       }
     }
 
