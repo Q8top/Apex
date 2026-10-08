@@ -1,5 +1,11 @@
 /* Apex · i18n 本地化
  * 支持 zh-CN / en-US，语言从 localStorage 或 navigator.language
+ *
+ * 说明：
+ *   - 未知 locale 一律回退 DEFAULT，不尝试 zh-TW/zh-HK 拆分（当前无繁体表）
+ *   - t(key) 使用 hasOwnProperty 查表，避免命中原型链（如 t('toString')）
+ *   - STRINGS 深层冻结，禁止运行时改写
+ *   - 监听 storage 事件，多标签语言切换自动同步
  */
 (function () {
   'use strict';
@@ -78,6 +84,10 @@
     }
   };
 
+  // 深层冻结：外层 + 每个语言字典
+  Object.keys(STRINGS).forEach(function (k) { Object.freeze(STRINGS[k]); });
+  Object.freeze(STRINGS);
+
   var lang = DEFAULT;
 
   function detect() {
@@ -93,10 +103,10 @@
 
   function t(key, fallback) {
     var dict = STRINGS[lang] || STRINGS[DEFAULT];
-    if (key in dict) return dict[key];
+    if (Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
     var fb = STRINGS[DEFAULT];
-    if (key in fb) return fb[key];
-    return fallback || key;
+    if (Object.prototype.hasOwnProperty.call(fb, key)) return fb[key];
+    return (fallback !== undefined && fallback !== null) ? fallback : key;
   }
 
   function setLang(code) {
@@ -109,13 +119,22 @@
   function getLang() { return lang; }
   function getLangs() { return Object.keys(STRINGS); }
 
+  // 多标签同步：其他标签改了 STORAGE_KEY，本标签跟随
+  try {
+    window.addEventListener('storage', function (ev) {
+      if (!ev || ev.key !== STORAGE_KEY) return;
+      var next = ev.newValue;
+      if (next && STRINGS[next] && next !== lang) lang = next;
+    });
+  } catch (e) {}
+
   lang = detect();
 
-  window.ApexI18n = {
+  window.ApexI18n = Object.freeze({
     t: t,
     set: setLang,
     get: getLang,
     langs: getLangs,
     STRINGS: STRINGS
-  };
+  });
 })();
