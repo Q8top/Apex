@@ -8,7 +8,17 @@
  *   - prefers-reduced-motion 支持
  *   - 自动模式下动画自动合并
  *
- * 全局 API：window.ApexWinFeedback = { show(win, bet), hide() }
+ * 全局 API：window.ApexWinFeedback = { show, hide, isShowing, refresh }
+ *
+ * 不变量：
+ *   - LEVELS / 导出对象冻结
+ *   - show 对 win/bet 做 Number.isFinite 校验，非法输入不显示
+ *   - hide() 清理 hideTimer 和 rafId，防止状态泄漏
+ *   - rollNumber 的 onTick 第二参 done 表示"最后一次"，不靠浮点相等
+ *   - cache() 可重复调用（refresh 触发），支持 DOM 重建
+ *
+ * TODO(P2)：LEVELS.label 与 fmt 的 ¥ 硬编码，待 UI 层统一接入
+ *           ApexI18n / rec.currency 后动态化。
  */
 (function () {
   'use strict';
@@ -18,12 +28,12 @@
   var ID_AMOUNT = 'sd-win-fb-value';
 
   // 等级阈值：ratio = win / bet
-  var LEVELS = {
-    normal: { min: 0,  label: '本局赢得', rollMs: 480, holdMs: 1100 },
-    big:    { min: 10, label: '大奖',     rollMs: 600, holdMs: 1500 },
-    mega:   { min: 25, label: '超级中奖', rollMs: 800, holdMs: 2000 },
-    super:  { min: 50, label: '超级大奖', rollMs: 900, holdMs: 2400 }
-  };
+  var LEVELS = Object.freeze({
+    normal: Object.freeze({ min: 0,  label: '本局赢得', rollMs: 480, holdMs: 1100 }),
+    big:    Object.freeze({ min: 10, label: '大奖',     rollMs: 600, holdMs: 1500 }),
+    mega:   Object.freeze({ min: 25, label: '超级中奖', rollMs: 800, holdMs: 2000 }),
+    super:  Object.freeze({ min: 50, label: '超级大奖', rollMs: 900, holdMs: 2400 })
+  });
 
   var el = {};
   var state = {
@@ -37,10 +47,22 @@
     maximumFractionDigits: 2
   });
 
-  function fmt(n) { return '¥' + nf.format(Number(n) || 0); }
+  function safeNum(v, fallback) {
+    var n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function fmt(n) {
+    var x = Number(n);
+    if (!Number.isFinite(x)) x = 0;
+    return '¥' + nf.format(x);
+  }
 
   function classify(win, bet) {
-    var ratio = (Number(win) || 0) / Math.max(Number(bet) || 1, 0.01);
+    var w = safeNum(win, 0);
+    var b = safeNum(bet, 0);
+    if (b <= 0) b = 1;                          // 防御：bet 必须正数，否则按 1 计
+    var ratio = w / b;
     if (ratio >= LEVELS.super.min) return 'super';
     if (ratio >= LEVELS.mega.min)  return 'mega';
     if (ratio >= LEVELS.big.min)   return 'big';
@@ -48,19 +70,21 @@
   }
 
   function prefersReduced() {
-    return window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return !!(window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
+  // onTick(value, isLast)
   function rollNumber(from, to, duration, onTick) {
     if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = 0; }
-    if (prefersReduced() || duration <= 0) { onTick(to); return; }
+    if (prefersReduced() || !(duration > 0)) { onTick(to, true); return; }
     var start = performance.now();
     function tick(now) {
       var t = Math.min(1, (now - start) / duration);
-      var eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-      onTick(from + (to - from) * eased);
-      if (t < 1) state.rafId = requestAnimationFrame(tick);
+      var eased = 1 - Math.pow(1 - t, 3);
+      var last = t >= 1;
+      onTick(from + (to - from) * eased, last);
+      if (!last) state.rafId = requestAnimationFrame(tick);
       else state.rafId = 0;
     }
     state.rafId = requestAnimationFrame(tick);
@@ -72,49 +96,55 @@
     el.amount = document.getElementById(ID_AMOUNT);
   }
 
+  function clearPending() {
+    if (state.hideTimer) { clearTimeout(state.hideTimer); state.hideTimer = 0; }
+    if (state.rafId)     { cancelAnimationFrame(state.rafId); state.rafId = 0; }
+  }
+
   function show(win, bet) {
-    if (!el.fb) return;
-    var amt = Number(win) || 0;
-    if (amt <= 0) return;
+    if (!el.fb) return false;
+    var amt = Number(win);
+    if (!Number.isFinite(amt) || amt <= 0) return false;
 
     var level = classify(amt, bet);
     var meta = LEVELS[level];
 
-    // 若上一局动画未完，先清理
-    if (state.hideTimer) { clearTimeout(state.hideTimer); state.hideTimer = 0; }
-    if (state.rafId)     { cancelAnimationFrame(state.rafId); state.rafId = 0; }
+    clearPending();
 
-    // 更新内容
     el.fb.dataset.level = level;
     el.label.textContent = meta.label;
     el.fb.classList.add('is-visible');
     state.visible = true;
 
-    // 滚动期间关闭 aria-live，避免每帧触发朗读
     var liveRegion = el.fb.parentElement;
     if (liveRegion) liveRegion.setAttribute('aria-live', 'off');
 
-    // 数字滚动
-    rollNumber(0, amt, meta.rollMs, function (v) {
+    rollNumber(0, amt, meta.rollMs, function (v, last) {
       el.amount.textContent = fmt(v);
-      // 滚动结束（最后一份值 = amt）时恢复 aria-live
-      if (v === amt && liveRegion) liveRegion.setAttribute('aria-live', 'polite');
+      if (last && liveRegion) liveRegion.setAttribute('aria-live', 'polite');
     });
 
-    // 结束时隐藏
     state.hideTimer = setTimeout(function () {
       state.hideTimer = 0;
       hide();
     }, meta.rollMs + meta.holdMs);
+
+    return true;
   }
 
   function hide() {
+    clearPending();
     if (!el.fb) return;
     el.fb.classList.remove('is-visible');
     state.visible = false;
   }
 
+  function isShowing() { return state.visible === true; }
+
   function init() { cache(); }
+
+  // DOM 重建后调用，重新抓取元素引用
+  function refresh() { cache(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -122,5 +152,11 @@
     init();
   }
 
-  window.ApexWinFeedback = { show: show, hide: hide };
+  window.ApexWinFeedback = Object.freeze({
+    show: show,
+    hide: hide,
+    isShowing: isShowing,
+    refresh: refresh,
+    LEVELS: LEVELS
+  });
 })();
