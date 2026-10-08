@@ -311,19 +311,176 @@
   };
 
   /* =========================================================
+   * 6 个糖果类符号（100 viewBox）
+   * ======================================================= */
+
+  // --- BLUE_CANDY ---
+  PAINTERS.BLUE_CANDY = function (u) {
+    var body = 'bc-body-' + u;
+    var edge = 'bc-edge-' + u;
+    var shine = 'bc-shine-' + u;
+    return '<defs>'
+      + radial(body, '30%', '23%', '78%', [
+          ['0%', '#F4FAFF'], ['9%', '#B5D7FF'], ['28%', '#579AFF'],
+          ['55%', '#246AD7'], ['82%', '#0D438F'], ['100%', '#061F50']
+        ])
+      + linear(edge, '0', '0', '1', '1', [
+          ['0%', '#91C4FF', '0.7'], ['55%', '#1E61C7', '0.25'], ['100%', '#00183D', '0.9']
+        ])
+      + radial(shine, '30%', '20%', '70%', [
+          ['0%', '#FFFFFF', '0.95'], ['35%', '#FFFFFF', '0.45'], ['100%', '#FFFFFF', '0']
+        ])
+      + '</defs>'
+      + groundShadow(50, 83, 25, 4.8, 0.42)
+      + '<circle cx="50" cy="50" r="31" fill="url(#' + edge + ')"/>'
+      + '<circle cx="50" cy="48" r="28.5" fill="url(#' + body + ')"/>'
+      + '<ellipse cx="38" cy="34" rx="19" ry="17" fill="url(#' + shine + ')"/>'
+      + gloss(31, 27, 8, 6, -25, 0.92)
+      + '<circle cx="64" cy="62" r="2.2" fill="#DCEBFF" opacity="0.8"/>'
+      + '<circle cx="69" cy="58" r="1" fill="#FFFFFF" opacity="0.75"/>';
+  };
+
+  // --- GREEN_CANDY ---
+  PAINTERS.GREEN_CANDY = function (u) {
+    var body = 'gc-body-' + u;
+    var shade = 'gc-shade-' + u;
+    return '<defs>'
+      + linear(body, '0', '0', '1', '1', [
+          ['0%', '#E6FFD9'], ['22%', '#A0E57E'], ['55%', '#4CB23B'],
+          ['85%', '#1E7A1A'], ['100%', '#0C4410']
+        ])
+      + linear(shade, '0', '0', '0', '1', [
+          ['0%', 'rgba(0,0,0,0)'], ['100%', 'rgba(4,32,8,.32)']
+        ])
+      + '</defs>'
+      + groundShadow(50, 86, 24, 5, 0.42)
+      + '<polygon points="50,18 80,36 80,66 50,84 20,66 20,36" fill="url(#' + body + ')" stroke="#1E7A1A" stroke-width="1.5"/>'
+      + '<polygon points="50,18 80,36 80,66 50,84 20,66 20,36" fill="url(#' + shade + ')"/>'
+      + '<polygon points="50,24 74,38 74,62 50,76 26,62 26,38" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>'
+      + gloss(40, 34, 8, 5, -30, 0.6);
+  };
+
+  // --- PURPLE_CANDY ---
+  PAINTERS.PURPLE_CANDY = function (u) {
+    var body = 'pc-body-' + u;
+    var shade = 'pc-shade-' + u;
+    return '<defs>'
+      + radial(body, '34%', '26%', '76%', [
+          ['0%', '#F3E5FF'], ['24%', '#C39BF6'], ['58%', '#8B46E0'],
+          ['86%', '#5B1FA5'], ['100%', '#340F66']
+        ])
+      + linear(shade, '0', '0', '0', '1', [
+          ['0%', 'rgba(0,0,0,0)'], ['100%', 'rgba(28,6,58,.34)']
+        ])
+      + '</defs>'
+      + groundShadow(50, 84, 24, 5, 0.42)
+      + '<rect x="28" y="28" width="44" height="44" rx="10" fill="url(#' + body + ')" transform="rotate(8 50 50)"/>'
+      + '<rect x="28" y="28" width="44" height="44" rx="10" fill="url(#' + shade + ')" transform="rotate(8 50 50)"/>'
+      + '<rect x="32" y="32" width="36" height="36" rx="8" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" transform="rotate(8 50 50)"/>'
+      + gloss(40, 38, 8, 5, -28, 0.6);
+  };
+
+  // --- RED_HEART_CANDY ---
+  PAINTERS.RED_HEART_CANDY = function (u) {
+    var body = 'rh-body-' + u;
+    var inner = 'rh-inner-' + u;
+    var bottom = 'rh-bottom-' + u;
+    return '<defs>'
+      + radial(body, '32%', '24%', '80%', [
+          ['0%', '#FFF0F2'], ['12%', '#FFB4BD'], ['34%', '#FF6476'],
+          ['64%', '#E52E47'], ['84%', '#A50F2D'], ['100%', '#5D0819']
+        ])
+      + radial(inner, '38%', '30%', '68%', [
+          ['0%', '#FFF', '0.35'], ['25%', '#FFD9DF', '0.20'],
+          ['58%', '#FF6578', '0.05'], ['100%', '#5C0818', '0']
+        ])
+      + linear(bottom, '0', '0', '0', '1', [
+          ['0%', '#8C1028', '0'], ['72%', '#7A0B22', '0.14'], ['100%', '#420511', '0.46']
+        ])
+      + '</defs>'
+      + groundShadow(50, 84, 24, 5, 0.42)
+      + '<path d="M50 78 C46 74 24 60 24 44 C24 32 33 26 42 29 C46 30 49 33 50 37 C51 33 54 30 58 29 C67 26 76 32 76 44 C76 60 54 74 50 78 Z" fill="url(#' + body + ')"/>'
+      + '<path d="M50 76 C46 72 26 59 26 45 C26 34 34 29 42 32 C45 33 48 35 50 39 C52 35 55 33 58 32 C66 29 74 34 74 45 C74 59 54 72 50 76 Z" fill="url(#' + inner + ')"/>'
+      + '<path d="M26 50 C32 66 44 76 50 78 C56 76 68 66 74 50 C68 64 58 71 50 71 C42 71 32 64 26 50 Z" fill="url(#' + bottom + ')"/>'
+      + gloss(38, 36, 10, 7, -25, 0.55)
+      + gloss(33, 32, 5, 3.5, -25, 0.82);
+  };
+
+  // --- LOLLIPOP (scatter) ---
+  PAINTERS.LOLLIPOP = function (u) {
+    var candy = 'lp-candy-' + u;
+    var stick = 'lp-stick-' + u;
+    return '<defs>'
+      + radial(candy, '30%', '20%', '80%', [
+          ['0%', '#FFF3FA'], ['16%', '#FFB5DA'], ['40%', '#FF61AC'],
+          ['72%', '#ED2584'], ['100%', '#970B4C']
+        ])
+      + linear(stick, '0', '0', '1', '0', [
+          ['0%', '#EAEAEA'], ['35%', '#FFFFFF'], ['60%', '#D7D7D7'], ['100%', '#A8A8A8']
+        ])
+      + '</defs>'
+      + groundShadow(50, 88, 15, 4, 0.32)
+      + '<path d="M50 53 L50 88" stroke="#000" stroke-width="6" opacity="0.15" stroke-linecap="round"/>'
+      + '<path d="M49 53 L49 88" stroke="url(#' + stick + ')" stroke-width="4" stroke-linecap="round"/>'
+      + '<path d="M48 54 L48 87" stroke="#FFFFFF" stroke-width="1.2" opacity="0.82" stroke-linecap="round"/>'
+      + '<circle cx="50" cy="39" r="25" fill="url(#' + candy + ')" stroke="#A40E53" stroke-width="1.5"/>'
+      + '<circle cx="50" cy="39" r="20" fill="none" stroke="#FFD0E7" stroke-width="2" opacity="0.58"/>'
+      + '<path d="M40 30 C47 25 57 27 62 33 C67 39 63 48 56 51 C48 54 39 50 36 43 C32 35 38 28 46 27 C56 25 64 31 66 39" fill="none" stroke="#FFE5F2" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>'
+      + '<path d="M46 33 C51 30 56 31 58 35 C61 40 57 44 53 45 C48 47 43 44 43 40 C42 36 45 34 49 33" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.72"/>'
+      + gloss(40, 29, 7, 5, -25, 0.88)
+      + '<circle cx="35" cy="36" r="1.8" fill="#FFFFFF" opacity="0.55"/>';
+  };
+
+  // --- MULTIPLIER_BOMB ---
+  PAINTERS.MULTIPLIER_BOMB = function (u) {
+    var body = 'ml-body-' + u;
+    var halo = 'ml-halo-' + u;
+    return '<defs>'
+      + radial(body, '38%', '32%', '72%', [
+          ['0%', '#FFF7D6'], ['22%', '#FDE047'], ['55%', '#F59E0B'],
+          ['85%', '#B45309'], ['100%', '#451A03']
+        ])
+      + radial(halo, '50%', '50%', '50%', [
+          ['60%', 'rgba(253,224,71,0)'],
+          ['85%', 'rgba(253,224,71,0.32)'],
+          ['100%', 'rgba(253,224,71,0)']
+        ])
+      + '</defs>'
+      + groundShadow(50, 84, 26, 5, 0.4)
+      + '<circle cx="50" cy="48" r="40" fill="url(#' + halo + ')"/>'
+      + '<circle cx="50" cy="48" r="29" fill="url(#' + body + ')" stroke="#B66A00" stroke-width="1.8"/>'
+      + '<path d="M50 22 L56 39 L74 39 L59 49 L65 66 L50 56 L35 66 L41 49 L26 39 L44 39 Z" fill="#FFF4A2" opacity="0.42"/>'
+      + '<text x="50" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="900" fill="#8A4600">&#215;</text>'
+      + gloss(38, 31, 10, 6, -25, 0.45);
+  };
+
+  /* =========================================================
    * 渲染入口
    * ======================================================= */
   function render(symbolId, opts) {
     opts = opts || {};
-    var key = ID_TO_KEY[symbolId] || symbolId;
-    var painter = PAINTERS[key];
-    if (!painter) return '';
-
     var u = nextUid('s');
     var size = opts.size == null ? '100%' : opts.size;
     var state = opts.state || 'idle';
     var cls = 'slot-symbol slot-symbol--' + state;
     if (opts.highlighted) cls += ' slot-symbol--highlighted';
+
+    // ① 5 个水果：优先走 ApexFruitSvg（新 SVG，256 viewBox，含 filter）
+    if (window.ApexFruitSvg && window.ApexFruitSvg.has(symbolId)) {
+      var svg = window.ApexFruitSvg.get(symbolId, u);
+      if (svg) {
+        // 注入 class 与 style（fruit SVG 根已有 viewBox/width/height）
+        return svg.replace(
+          '<svg ',
+          '<svg class="' + cls + '" aria-hidden="true" style="width:' + size + ';height:' + size + ';" '
+        );
+      }
+    }
+
+    // ② 其余符号（糖果 6 个）：走老 painter（100 viewBox）
+    var key = ID_TO_KEY[symbolId] || symbolId;
+    var painter = PAINTERS[key];
+    if (!painter) return '';
 
     var inner = painter(u);
     return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 100 100"'
