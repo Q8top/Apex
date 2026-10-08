@@ -49,17 +49,29 @@ var GRAPE = svg(
   +'<ellipse cx="27" cy="62" rx="3" ry="1.8" fill="#FFF" opacity="0.5"/>');
 
 var WATERMELON = svg(
-  rg('wm-b','32%','28%','82%',[['0%','#B0F090'],['30%','#5AB838'],['65%','#2A7020'],['100%','#0E3A08']])
-  +rg('wm-h','26%','22%','38%',[['0%','#FFF','0.9'],['100%','#FFF','0']])
-  +rg('wm-dk','50%','110%','60%',[['0%','#000','0.3'],['100%','#000','0']])
+  rg('wm-b','32%','26%','82%',[['0%','#B8F090'],['25%','#78D050'],['60%','#3E9A28'],['85%','#1E6010'],['100%','#0A3808']])
+  +rg('wm-h','26%','20%','38%',[['0%','#FFF','0.95'],['100%','#FFF','0']])
+  +rg('wm-dk','50%','110%','65%',[['0%','#000','0.42'],['100%','#000','0']])
+  +lg('wm-st','0','0','0','1',[['0%','#1A5010'],['100%','#0A3808']])
   +shd2('wm-s'),
+  // 主体：光滑绿球
   '<ellipse cx="50" cy="54" rx="35" ry="33" fill="url(#wm-b)" stroke="#0A3808" stroke-width="2.2" filter="url(#wm-s)"/>'
-  +'<path d="M28,30 Q40,24 52,32 Q60,38 72,30" stroke="#2A7020" stroke-width="2.8" fill="none" opacity="0.55" stroke-linecap="round"/>'
-  +'<path d="M22,46 Q36,40 48,48 Q58,54 74,46" stroke="#2A7020" stroke-width="2.8" fill="none" opacity="0.55" stroke-linecap="round"/>'
-  +'<path d="M26,64 Q40,58 52,66 Q62,72 74,64" stroke="#2A7020" stroke-width="2.8" fill="none" opacity="0.55" stroke-linecap="round"/>'
-  +'<ellipse cx="50" cy="78" rx="32" ry="10" fill="url(#wm-dk)"/>'
-  +'<ellipse cx="32" cy="32" rx="14" ry="8" fill="url(#wm-h)" transform="rotate(-25 32 32)"/>'
-  +'<ellipse cx="60" cy="30" rx="6" ry="3" fill="#FFF" opacity="0.35" transform="rotate(-20 60 30)"/>');
+  // 深绿色不规则斑纹（西瓜表面标志性花纹）
+  +'<path d="M22,34 Q32,28 40,34 Q34,42 22,40 Z" fill="url(#wm-st)" opacity="0.7"/>'
+  +'<path d="M62,28 Q74,24 82,32 Q76,42 64,38 Z" fill="url(#wm-st)" opacity="0.7"/>'
+  +'<path d="M26,54 Q38,48 48,56 Q42,66 30,62 Z" fill="url(#wm-st)" opacity="0.6"/>'
+  +'<path d="M60,52 Q72,48 80,58 Q74,66 62,62 Z" fill="url(#wm-st)" opacity="0.6"/>'
+  +'<path d="M36,74 Q48,70 58,76 Q50,84 40,80 Z" fill="url(#wm-st)" opacity="0.55"/>'
+  +'<path d="M14,44 Q18,40 22,44 Q18,48 14,44 Z" fill="url(#wm-st)" opacity="0.5"/>'
+  // 底部暗部
+  +'<ellipse cx="50" cy="80" rx="32" ry="10" fill="url(#wm-dk)"/>'
+  // 左上主高光
+  +'<ellipse cx="30" cy="32" rx="15" ry="9" fill="url(#wm-h)" transform="rotate(-25 30 32)"/>'
+  // 右上副高光
+  +'<ellipse cx="62" cy="30" rx="6" ry="3" fill="#FFF" opacity="0.4" transform="rotate(-15 62 30)"/>'
+  // 底部反光
+  +'<ellipse cx="50" cy="78" rx="16" ry="3.5" fill="#FFF" opacity="0.15"/>'
+)
 
 var PLUM = svg(
   rg('pl-b','35%','30%','78%',[['0%','#F0A0E8'],['40%','#B040A8'],['78%','#701070'],['100%','#3A0830']])
