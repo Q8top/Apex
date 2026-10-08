@@ -4,68 +4,57 @@ var H = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" h
 var _u = 0;
 function nextUid(p) { _u += 1; return p + _u.toString(36); }
 
-/* ============================================================
- * 糖果生成器（原版 Sweet Bonanza 风格）
- *   形状：方形糖块 + 两端三角糖纸
- *   技术：LinearGradient 主体明暗 + RadialGradient 高光
- *        + Stroke 描边 + feDropShadow 投影
- * ============================================================ */
+/* 糖果（参考原版 Sweet Bonanza 方形糖块）
+ *   - 圆角方形主体（rect rx=14）
+ *   - 顶部白色反光条（横向弧）
+ *   - 左上斜向高光渐变
+ *   - 深色描边 + feDropShadow
+ *   - 红心糖中心白色心形 */
 function candy(p, c1, c2, c3, st, heart) {
-  return '<svg ' + H + '><defs>'
-  + '<linearGradient id="' + p + '-b" x1="15%" y1="10%" x2="85%" y2="95%">'
-  +   '<stop offset="0%" stop-color="' + c1 + '"/>'
-  +   '<stop offset="45%" stop-color="' + c2 + '"/>'
-  +   '<stop offset="100%" stop-color="' + c3 + '"/>'
-  + '</linearGradient>'
-  + '<radialGradient id="' + p + '-h" cx="32%" cy="28%" r="50%">'
-  +   '<stop offset="0%" stop-color="#FFF" stop-opacity="0.85"/>'
-  +   '<stop offset="100%" stop-color="#FFF" stop-opacity="0"/>'
-  + '</radialGradient>'
-  + '<filter id="' + p + '-s" x="-25%" y="-25%" width="150%" height="150%">'
-  +   '<feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#000" flood-opacity="0.42"/>'
-  + '</filter>'
-  + '</defs>'
-  + '<path d="M18,38 L6,30 L12,42 L3,50 L12,58 L6,70 L18,62 Z" fill="url(#' + p + '-b)" stroke="' + st + '" stroke-width="1.4" stroke-linejoin="round" filter="url(#' + p + '-s)"/>'
-  + '<path d="M82,38 L94,30 L88,42 L97,50 L88,58 L94,70 L82,62 Z" fill="url(#' + p + '-b)" stroke="' + st + '" stroke-width="1.4" stroke-linejoin="round" filter="url(#' + p + '-s)"/>'
-  + '<rect x="22" y="36" width="56" height="28" rx="6" fill="url(#' + p + '-b)" stroke="' + st + '" stroke-width="1.6" filter="url(#' + p + '-s)"/>'
-  + '<ellipse cx="42" cy="44" rx="16" ry="6" fill="url(#' + p + '-h)"/>'
-  + '<path d="M32,44 Q50,38 68,44" stroke="#FFF" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>'
-  + (heart ? '<path d="M50,57 C46,53 42,51 42,47 C42,44 45,43 47,44 C48,45 50,46 50,48 C50,46 52,45 53,44 C55,43 58,44 58,47 C58,51 54,53 50,57 Z" fill="#FFF" opacity="0.9"/>' : '')
-  + '</svg>';
+  var body = '<defs>'
+    + '<linearGradient id="' + p + '-b" x1="0" y1="0" x2="0" y2="1">'
+    +   '<stop offset="0%" stop-color="' + c1 + '"/>'
+    +   '<stop offset="55%" stop-color="' + c2 + '"/>'
+    +   '<stop offset="100%" stop-color="' + c3 + '"/>'
+    + '</linearGradient>'
+    + '<linearGradient id="' + p + '-hl" x1="0" y1="0" x2="0.7" y2="1">'
+    +   '<stop offset="0%" stop-color="#FFF" stop-opacity="0.72"/>'
+    +   '<stop offset="55%" stop-color="#FFF" stop-opacity="0"/>'
+    + '</linearGradient>'
+    + '<filter id="' + p + '-s" x="-20%" y="-20%" width="140%" height="140%">'
+    +   '<feDropShadow dx="0" dy="2.2" stdDeviation="1.8" flood-color="#000" flood-opacity="0.42"/>'
+    + '</filter>'
+    + '</defs>';
+  var base = '<rect x="16" y="16" width="68" height="68" rx="14" '
+    + 'fill="url(#' + p + '-b)" stroke="' + st + '" stroke-width="1.8" '
+    + 'filter="url(#' + p + '-s)"/>';
+  var glow = '<path d="M24,26 L50,20 L30,76 L22,74 Z" fill="url(#' + p + '-hl)"/>';
+  var shine = '<path d="M28,34 Q50,26 72,34" stroke="#FFF" stroke-width="1.8" '
+    + 'fill="none" opacity="0.55" stroke-linecap="round"/>';
+  var mark = heart
+    ? '<path d="M50,66 C42,60 34,55 34,48 C34,43 39,40 44,44 '
+      + 'C47,46 50,51 50,51 C50,51 53,46 56,44 C61,40 66,43 66,48 '
+      + 'C66,55 58,60 50,66 Z" fill="#FFF" opacity="0.95"/>'
+    : '';
+  return '<svg ' + H + '>' + body + base + glow + shine + mark + '</svg>';
 }
 
 var SVGS = {};
-SVGS.blue_candy      = candy('bc', '#8AD8FF', '#3B9EFF', '#0E3E7A', '#0A2E5A', false);
-SVGS.green_candy     = candy('gc', '#B5F5A0', '#4EC22E', '#0A5418', '#0A4D10', false);
-SVGS.purple_candy    = candy('pc', '#E0A8FF', '#A040D0', '#3A0A5A', '#2A0845', false);
-SVGS.red_heart_candy = candy('rh', '#FFA0A0', '#E02030', '#6A0A0A', '#4A0505', true);
-
-/* @@INSERT_SYMBOLS@@ */
+SVGS.blue_candy      = candy('bc', '#A6E3FF', '#3B9EFF', '#0E3E7A', '#0A2E5A', false);
+SVGS.green_candy     = candy('gc', '#CBF8B4', '#4EC22E', '#0A5418', '#0A4D10', false);
+SVGS.purple_candy    = candy('pc', '#E9BCFF', '#A040D0', '#3A0A5A', '#2A0845', false);
+SVGS.red_heart_candy = candy('rh', '#FFB4B4', '#E02030', '#6A0A0A', '#4A0505', true);
 
 var ALIASES = {
   'sb-candy-blue': 'blue_candy',
   'sb-candy-green': 'green_candy',
   'sb-candy-purple': 'purple_candy',
   'sb-candy-heart': 'red_heart_candy',
-  'sb-fruit-banana': 'banana',
-  'sb-fruit-grape': 'grape',
-  'sb-fruit-watermelon': 'watermelon',
-  'sb-fruit-plum': 'plum',
-  'sb-fruit-apple': 'apple',
-  'sb-scatter-lollipop': 'lollipop',
-  'sb-multiplier-bomb': 'multiplier_bomb',
-  'BANANA': 'banana',
-  'GRAPE': 'grape',
-  'WATERMELON': 'watermelon',
-  'PLUM': 'plum',
-  'APPLE': 'apple',
   'BLUE_CANDY': 'blue_candy',
   'GREEN_CANDY': 'green_candy',
   'PURPLE_CANDY': 'purple_candy',
   'RED_HEART_CANDY': 'red_heart_candy',
-  'RED_HEART': 'red_heart_candy',
-  'LOLLIPOP': 'lollipop',
-  'MULTIPLIER_BOMB': 'multiplier_bomb'
+  'RED_HEART': 'red_heart_candy'
 };
 
 function scopeIds(svg, uid) {
@@ -82,7 +71,6 @@ function scopeIds(svg, uid) {
   }
   return svg;
 }
-
 function resolve(id) {
   if (Object.prototype.hasOwnProperty.call(SVGS, id)) return id;
   if (Object.prototype.hasOwnProperty.call(ALIASES, id)) return ALIASES[id];
