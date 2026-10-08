@@ -35,7 +35,6 @@ var CHECKS = [
   ['core/runtime',          'ApexCoreRuntime'],
   ['symbols V2',            'ApexSymbolsV2'],
   ['old symbols',           'ApexSymbols'],
-  ['old evaluator',         'ApexEvaluator'],
   ['old paytable',          'ApexPaytable'],
   ['old demo provider',     'ApexDemoProvider'],
   ['rules sheet',           'ApexRules'],
