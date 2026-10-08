@@ -16,49 +16,48 @@
     + '" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"';
 
   /* ============================================================
-   * BANANA (V7) —— 去 U 型，弯曲中心偏左，右端更长更直
+   * BANANA (V8) —— 上半段陡弧 + 中间厚 + 尾端钝圆
    * ============================================================ */
   var BANANA_SVG = '<svg ' + SVG_HEAD + '>'
     + '<defs>'
-    + '<linearGradient id="banana-v7-body" x1="15%" y1="10%" x2="88%" y2="92%">'
-    + '<stop offset="0%" stop-color="#D8E15B"/>'
-    + '<stop offset="10%" stop-color="#F5E84E"/>'
-    + '<stop offset="34%" stop-color="#F0C426"/>'
-    + '<stop offset="62%" stop-color="#D49912"/>'
-    + '<stop offset="86%" stop-color="#9D660A"/>'
-    + '<stop offset="100%" stop-color="#5D3A06"/>'
+    + '<linearGradient id="banana-v8-body" x1="12%" y1="10%" x2="88%" y2="92%">'
+    + '<stop offset="0%" stop-color="#D4DE55"/>'
+    + '<stop offset="10%" stop-color="#F3E54E"/>'
+    + '<stop offset="34%" stop-color="#EFC124"/>'
+    + '<stop offset="62%" stop-color="#D39711"/>'
+    + '<stop offset="86%" stop-color="#9C6509"/>'
+    + '<stop offset="100%" stop-color="#5C3A05"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v7-core" x1="0%" y1="0%" x2="100%" y2="0%">'
-    + '<stop offset="0%" stop-color="#FFFCC4" stop-opacity=".58"/>'
-    + '<stop offset="62%" stop-color="#FFE27A" stop-opacity=".18"/>'
+    + '<linearGradient id="banana-v8-core" x1="0%" y1="0%" x2="100%" y2="0%">'
+    + '<stop offset="0%" stop-color="#FFFCC4" stop-opacity=".55"/>'
+    + '<stop offset="62%" stop-color="#FFE27A" stop-opacity=".16"/>'
     + '<stop offset="100%" stop-color="#FFF" stop-opacity="0"/>'
     + '</linearGradient>'
-    + '<linearGradient id="banana-v7-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
-    + '<stop offset="0%" stop-color="#8F9E3E"/>'
-    + '<stop offset="40%" stop-color="#5B4A12"/>'
-    + '<stop offset="100%" stop-color="#281A05"/>'
+    + '<linearGradient id="banana-v8-stem" x1="0%" y1="0%" x2="100%" y2="100%">'
+    + '<stop offset="0%" stop-color="#8B9A3B"/>'
+    + '<stop offset="40%" stop-color="#564713"/>'
+    + '<stop offset="100%" stop-color="#241705"/>'
     + '</linearGradient>'
-    + '<filter id="banana-v7-shadow" x="-20%" y="-20%" width="140%" height="160%">'
+    + '<filter id="banana-v8-shadow" x="-20%" y="-20%" width="140%" height="160%">'
     + '<feGaussianBlur stdDeviation="9"/>'
     + '</filter>'
     + '</defs>'
-    /* 极轻阴影 */
-    + '<ellipse cx="130" cy="210" rx="55" ry="5" fill="#000" opacity=".06" filter="url(#banana-v7-shadow)"/>'
-    /* 主体（弯曲中心左移 + 右端延伸 + 两端钝圆） */
-    + '<path d="M 72 44 C 55 58, 43 82, 41 108 C 39 145, 60 178, 96 197 C 132 215, 178 213, 208 190 C 226 176, 234 158, 232 142 C 230 132, 220 130, 216 140 C 212 158, 202 176, 184 187 C 160 201, 132 198, 110 184 C 84 168, 68 142, 66 116 C 64 88, 72 62, 84 50 Z" fill="url(#banana-v7-body)"/>'
+    + '<ellipse cx="130" cy="212" rx="55" ry="5" fill="#000" opacity=".06" filter="url(#banana-v8-shadow)"/>'
+    /* 主体：上半段陡弧（梗根→中段快速下弯）+ 腰部更厚 + 尾端钝圆不完美 */
+    + '<path d="M 74 46 C 62 56, 51 76, 48 100 C 45 132, 64 162, 96 182 C 128 202, 166 204, 192 190 C 210 180, 220 162, 218 148 C 217 136, 208 132, 204 140 C 200 156, 190 170, 172 180 C 148 194, 118 194, 96 182 C 74 170, 60 148, 58 122 C 56 96, 64 72, 76 58 Z" fill="url(#banana-v8-body)"/>'
     /* 内侧亮线 */
-    + '<path d="M 68 58 C 58 78, 54 104, 58 128 C 65 158, 90 184, 124 196 C 156 207, 188 202, 205 186" fill="none" stroke="url(#banana-v7-core)" stroke-width="9" stroke-linecap="round"/>'
+    + '<path d="M 66 60 C 56 80, 52 106, 56 130 C 63 160, 88 184, 122 194 C 152 202, 182 196, 198 182" fill="none" stroke="url(#banana-v8-core)" stroke-width="8.5" stroke-linecap="round"/>'
     /* 皮纹（不平行） */
-    + '<path d="M 74 66 C 66 86, 64 110, 70 134" fill="none" stroke="#C29112" stroke-width="2" opacity=".28" stroke-linecap="round"/>'
-    + '<path d="M 196 158 C 190 176, 178 188, 160 195" fill="none" stroke="#96660A" stroke-width="1.8" opacity=".22" stroke-linecap="round"/>'
-    /* 梗（带微绿） */
-    + '<path d="M 72 44 C 68 34, 71 25, 79 21 C 86 18, 93 21, 92 28 C 91 34, 86 38, 83 43 L 82 50 Z" fill="url(#banana-v7-stem)"/>'
-    + '<circle cx="81" cy="26" r="3.2" fill="#8DA030" opacity=".7"/>'
-    + '<ellipse cx="82" cy="24" rx="5" ry="2.6" transform="rotate(-25 82 24)" fill="#2A1B05"/>'
-    /* 尾端（收窄钝圆） */
-    + '<path d="M 232 142 C 236 136, 242 138, 242 144 C 242 149, 238 153, 233 153 L 229 148 Z" fill="#5C3806"/>'
-    + '<circle cx="239" cy="144" r="2" fill="#2B1703"/>'
-    + '<circle cx="236" cy="141" r="1" fill="#7A4E10" opacity=".7"/>'
+    + '<path d="M 72 68 C 64 88, 62 112, 68 136" fill="none" stroke="#C09011" stroke-width="1.8" opacity=".26" stroke-linecap="round"/>'
+    + '<path d="M 190 158 C 184 174, 172 186, 154 192" fill="none" stroke="#94640A" stroke-width="1.6" opacity=".20" stroke-linecap="round"/>'
+    /* 短梗（比 V7 更短） */
+    + '<path d="M 74 46 C 71 38, 73 31, 78 27 C 83 24, 88 27, 88 32 C 88 36, 84 40, 81 44 L 80 49 Z" fill="url(#banana-v8-stem)"/>'
+    + '<circle cx="80" cy="30" r="2.8" fill="#8DA030" opacity=".68"/>'
+    + '<ellipse cx="80" cy="28" rx="4.5" ry="2.2" transform="rotate(-22 80 28)" fill="#251905"/>'
+    /* 尾端：不完美收尖，钝圆带小挫 */
+    + '<path d="M 218 148 C 223 143, 229 145, 229 150 C 229 155, 224 158, 219 157 L 216 152 Z" fill="#5A3605"/>'
+    + '<circle cx="226" cy="150" r="1.8" fill="#2A1703"/>'
+    + '<circle cx="223" cy="147" r="0.9" fill="#7A4E10" opacity=".72"/>'
     + '</svg>';
 
   /* ============================================================
@@ -104,6 +103,7 @@
     + '<path d="M 127 68 C 116 78, 106 88, 98 100 M 130 69 C 142 79, 152 89, 160 102 M 127 68 C 124 78, 122 88, 122 98 M 127 68 C 127 78, 128 88, 129 100" fill="none" stroke="url(#grape-v7-stem)" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>'
     /* ============ 11 颗葡萄（尺寸阶梯 + 位置微偏移） ============ */
     /* 顶部 2 颗小 (r=13, 14) */
+    + '<g transform="translate(128,128) scale(1.10,0.95) translate(-128,-128)">'
     + '<circle cx="119" cy="82" r="13"   fill="url(#grape-v7-ball)"/>'
     + '<circle cx="137" cy="83" r="14"   fill="url(#grape-v7-ball)"/>'
     /* 中上 2 颗 (r=17, 18) */
@@ -146,6 +146,7 @@
     + '<ellipse cx="128" cy="148" rx="4.8" ry="2.6" transform="rotate(-30 128 148)"/>'
     + '<ellipse cx="114" cy="169" rx="4" ry="2.4" transform="rotate(-35 114 169)"/>'
     + '<ellipse cx="136" cy="170" rx="4" ry="2.2" transform="rotate(-32 136 170)"/>'
+    + '</g>'
     + '</g>'
     + '</svg>';
 
@@ -242,7 +243,7 @@
     + '<path d="M 135 69 C 152 60, 167 51, 180 46" fill="none" stroke="#3B7E29" stroke-width="2" stroke-linecap="round" opacity=".62"/>'
     + '<path d="M 128 65 C 126 51, 129 40, 136 31" fill="none" stroke="url(#plum-v7-stem)" stroke-width="7.5" stroke-linecap="round"/>'
     /* 李子主体（V7：加 transform 压扁一点） */
-    + '<g transform="translate(128,135) scale(1.08,0.94) translate(-128,-135)">'
+    + '<g transform="translate(128,135) scale(1.13,0.91) translate(-128,-135)">'
     + '<path d="M 128 62 C 106 58, 85 65, 73 82 C 61 100, 57 124, 61 148 C 66 172, 79 191, 100 201 C 111 206, 121 208, 128 208 C 136 208, 146 206, 157 201 C 177 191, 191 172, 196 148 C 200 124, 196 100, 184 82 C 172 65, 151 58, 128 62 Z" fill="url(#plum-v7-body)"/>'
     /* 顶部微凹阴影 */
     + '<path d="M 116 63 Q 128 72 140 63" fill="none" stroke="#3F0E30" stroke-width="4" stroke-linecap="round" opacity=".42"/>'
