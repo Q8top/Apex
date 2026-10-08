@@ -117,10 +117,6 @@ a{color:inherit;text-decoration:none}
   .sd-stat-value{font-size:13px}
 }
 @media (max-height:700px){.sd-board{max-width:400px}}
-@media (prefers-reduced-motion:reduce){
-  .sd-sheet,.sd-confirm,.sd-sheet-backdrop,.sd-confirm-backdrop,.sd-ctrl,.sd-bet-btn,.sd-sym{transition:none!important;animation:none!important}
-  .sd-ctrl--primary.spinning .sd-ic-lg{animation:none!important}
-}
 
 /* ============================================================
    v2 · 糖果符号系统 + 中奖浮层 + 重置按钮强化
@@ -139,7 +135,6 @@ a{color:inherit;text-decoration:none}
   filter: drop-shadow(0 2px 3px rgba(0,0,0,.10));
   transition: transform .25s cubic-bezier(.2,.8,.3,1.2);
 }
-
 
 /* --- 棋盘 stage 设为相对定位，供浮层使用 --- */
 .sd-stage { position: relative; }
@@ -180,14 +175,9 @@ a{color:inherit;text-decoration:none}
 
 /* --- 中奖格子脉冲 --- */
 
-
 /* ============================================================
    v3 · 中奖反馈系统（轻量提示层）
    ============================================================ */
-
-
-/* --- 中奖层：绝对定位在棋盘底部内侧，不遮挡格子 --- */
-/* --- 等级：big --- */
 
 /* --- 棋盘在 super 时轻微高亮 --- */
 .sd-board[data-win="1"] {
@@ -209,9 +199,6 @@ a{color:inherit;text-decoration:none}
 }
 
 /* --- 无障碍：reduced motion --- */
-@media (prefers-reduced-motion: reduce) {
-  .sd-board { transition: none !important; }
-}
 
 /* ===== 盘外中奖信息带（固定高度防跳）===== */
 .sd-win-area{
@@ -257,8 +244,6 @@ a{color:inherit;text-decoration:none}
 /* 统计栏强调：微上浮不改高度 */
 .sd-stat-value{transition:color .25s ease,transform .25s cubic-bezier(.22,.8,.2,1)}
 
-
-
 /* ============================================================
    Symbol Rendering 3.0 · 状态动画（默认静止）
    ============================================================ */
@@ -303,14 +288,6 @@ a{color:inherit;text-decoration:none}
 }
 
 /* 减少动画：只保留淡入淡出 */
-@media (prefers-reduced-motion: reduce) {
-  .sd-sym.is-winning svg,
-  .sd-sym.is-removing svg,
-  .sd-sym.is-entering svg {
-    animation: none !important;
-  }
-  .sd-sym.is-removing svg { opacity: 0; }
-}
 
 /* ===== Phase 7 · Rules Sheet ===== */
 .sd-rules-root{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center}
@@ -381,3 +358,16 @@ a{color:inherit;text-decoration:none}
 .sd-bonus-mult{margin-bottom:16px;background:linear-gradient(135deg,#fff7d6,#fde68a);border:1px solid rgba(180,83,9,.22);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
 .sd-bonus-mult .sd-bonus-stat-label{color:#92400e;margin:0}
 .sd-bonus-mult-val{font-size:22px;font-weight:900;color:#78350f;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+
+/* ===== 无障碍 · prefers-reduced-motion（合并自原 3 处）===== */
+@media (prefers-reduced-motion: reduce) {
+  .sd-sheet,.sd-confirm,.sd-sheet-backdrop,.sd-confirm-backdrop,.sd-ctrl,.sd-bet-btn,.sd-sym{transition:none!important;animation:none!important}
+  .sd-ctrl--primary.spinning .sd-ic-lg{animation:none!important}
+  .sd-board { transition: none !important; }
+  .sd-sym.is-winning svg,
+  .sd-sym.is-removing svg,
+  .sd-sym.is-entering svg {
+  animation: none !important;
+}
+  .sd-sym.is-removing svg { opacity: 0; }
+}
