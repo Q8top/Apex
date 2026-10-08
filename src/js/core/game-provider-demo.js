@@ -100,6 +100,8 @@
   function DemoProvider(opts) {
     opts = opts || {};
     var noDelay = opts.noDelay === true;
+    // P0-1 修复：构造时记录 mode（外部决定），默认 real 保持向后兼容
+    var providerMode = (opts.mode === 'demo' || opts.mode === 'real') ? opts.mode : 'real';
 
     var wallet = (window.ApexWallet && window.ApexWallet.createDemo)
       ? window.ApexWallet.createDemo({ initialMinor: Number(opts.initialBalance) || 1000000 })
@@ -163,7 +165,7 @@
 
     function spin(req) {
       req = req || {};
-      var mode = req.mode || 'real';
+      var mode = (req.mode === 'demo' || req.mode === 'real') ? req.mode : providerMode;
       var profile = getProfile(mode);
       var betMinor = Number(req.bet) || 200;
       var isFree = !!req.free;
@@ -250,7 +252,12 @@
       return { currency: 'CNY', minor: n };
     }
 
-    return { getBalance: getBalance, spin: spin, resetBalance: resetBalance };
+    return {
+      getBalance: getBalance,
+      getMode: function () { return providerMode; },
+      spin: spin,
+      resetBalance: resetBalance
+    };
   }
 
   window.ApexDemoProvider = { create: DemoProvider };
