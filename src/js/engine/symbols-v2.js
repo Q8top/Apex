@@ -12,15 +12,19 @@ function svg(d,b){return '<svg '+H+'><defs>'+d+'</defs>'+b+'</svg>';}
 
 /* ==================== 5 水果 ==================== */
 var BANANA = svg(
-  lg('ba-b','0.1','0','0.7','1',[['0%','#FFF8A0'],['22%','#FFDC48'],['55%','#F5A800'],['85%','#B86800'],['100%','#704000']])
-  +rg('ba-h','26%','22%','45%',[['0%','#FFF','0.95'],['100%','#FFF','0']])
+  lg('ba-b','0','0','0.3','1',[['0%','#FFEE60'],['25%','#FFD520'],['60%','#F0A000'],['100%','#A86000']])
+  +lg('ba-sh','0','0','0','1',[['0%','#FFF','0.7'],['100%','#FFF','0']])
   +shd2('ba-s'),
-  '<path d="M14,36 Q20,20 38,18 Q64,20 80,42 Q92,60 82,74 Q74,82 62,74 Q50,58 32,50 Q18,44 14,36 Z" fill="url(#ba-b)" stroke="#3A1E00" stroke-width="2.2" filter="url(#ba-s)"/>'
-  +'<path d="M26,32 Q38,25 54,32" stroke="#FFF" stroke-width="3.2" fill="none" opacity="0.8" stroke-linecap="round"/>'
-  +'<path d="M30,44 Q44,40 58,46" stroke="#FFF" stroke-width="1.8" fill="none" opacity="0.45" stroke-linecap="round"/>'
-  +'<path d="M18,58 Q28,54 38,58" stroke="#FFF" stroke-width="1.4" fill="none" opacity="0.25" stroke-linecap="round"/>'
-  +'<ellipse cx="15" cy="35" rx="3.5" ry="2.8" fill="#2A1400"/><ellipse cx="81" cy="73" rx="3.5" ry="2.8" fill="#2A1400"/>'
-  +'<ellipse cx="14" cy="33" rx="1.6" ry="1" fill="#6A4420" opacity="0.7"/><ellipse cx="80" cy="71" rx="1.6" ry="1" fill="#6A4420" opacity="0.7"/>');
+  '<path d="M18,30 Q16,20 26,22 Q30,24 30,30 '
+  + 'Q32,50 48,60 Q66,70 80,64 '
+  + 'Q90,60 88,70 Q86,82 74,84 Q56,86 40,74 Q22,60 18,42 Z" '
+  + 'fill="url(#ba-b)" stroke="#5A3000" stroke-width="2.4" filter="url(#ba-s)"/>'
+  + '<path d="M24,36 Q32,52 50,62 Q64,68 76,64" '
+  + 'stroke="url(#ba-sh)" stroke-width="5" fill="none" opacity="0.85" stroke-linecap="round"/>'
+  + '<ellipse cx="22" cy="26" rx="5" ry="3.2" fill="#3A1E00" transform="rotate(-15 22 26)"/>'
+  + '<ellipse cx="84" cy="73" rx="4" ry="3" fill="#3A1E00" transform="rotate(15 84 73)"/>'
+  + '<path d="M26,34 Q34,44 46,52" stroke="#FFF" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>'
+)
 
 var GRAPE = svg(
   rg('gr-b1','32%','28%','75%',[['0%','#B088E8'],['48%','#7A36C0'],['100%','#2A0844']])
@@ -105,7 +109,19 @@ function candy(p,c1,c2,c3,dk,shape){
     +'<path d="M26,34 Q44,28 60,34" stroke="#FFF" stroke-width="2.6" fill="none" opacity="0.6" stroke-linecap="round"/>'
     +'<path d="M30,44 Q46,42 60,46" stroke="#FFF" stroke-width="1.2" fill="none" opacity="0.25" stroke-linecap="round"/>');
 }
-var BLUE_CANDY = candy('bc','#B8E8FF','#4A9EFF','#0A3A7A','#062A5A','oval');
+var BLUE_CANDY = svg(
+  lg('bc-b','0','0','0.4','1',[['0%','#8DD4FF'],['35%','#3B96FF'],['75%','#0A4A9A'],['100%','#032A66']])
+  +rg('bc-h','30%','26%','42%',[['0%','#FFF','0.95'],['100%','#FFF','0']])
+  +rg('bc-in','50%','50%','75%',[['60%','#000','0'],['100%','#000','0.32']])
+  +shd2('bc-s'),
+  '<ellipse cx="50" cy="54" rx="40" ry="27" fill="#032A66" transform="translate(0,3.5)" opacity="0.95"/>'
+  +'<ellipse cx="50" cy="54" rx="40" ry="27" fill="url(#bc-b)" stroke="#032A66" stroke-width="2.4" filter="url(#bc-s)"/>'
+  +'<ellipse cx="50" cy="54" rx="40" ry="27" fill="url(#bc-in)" opacity="0.7"/>'
+  +'<ellipse cx="50" cy="54" rx="36.8" ry="24.8" fill="none" stroke="#FFF" stroke-width="1.2" opacity="0.4"/>'
+  +'<ellipse cx="40" cy="44" rx="18" ry="8" fill="url(#bc-h)"/>'
+  +'<path d="M26,52 Q42,44 58,48 Q74,52 74,52" stroke="#FFF" stroke-width="2.6" fill="none" opacity="0.6" stroke-linecap="round"/>'
+  +'<path d="M32,62 Q50,66 68,62" stroke="#032A66" stroke-width="2" fill="none" opacity="0.4"/>'
+)
 var GREEN_CANDY = candy('gc','#D0F8B0','#52C430','#0E5418','#083A10','pent');
 var PURPLE_CANDY = candy('pc','#F0C0FF','#B040E0','#5A0A6A','#3A0548','square');
 var RED_HEART_CANDY = candy('rh','#FFC0C0','#E82838','#8A0A1A','#4A0505','heart');
