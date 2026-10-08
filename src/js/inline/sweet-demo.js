@@ -57,10 +57,25 @@
   var audio = null;
   var haptics = null;
 
+  // P0-1：从 URL ?mode= 读取游戏模式（demo / real），默认 real
+  function getGameMode() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var m = params.get('mode');
+      if (m === 'demo' || m === 'real') return m;
+    } catch (e) {}
+    return 'real';
+  }
+
+  var GAME_MODE = getGameMode();
+
   function initRuntime() {
     if (!window.ApexGameRuntime || !window.ApexDemoProvider) return null;
     var bus = window.ApexEventBus();
-    var provider = window.ApexDemoProvider.create({ initialBalance: 1000000 });
+    var provider = window.ApexDemoProvider.create({
+      initialBalance: 1000000,
+      mode: GAME_MODE
+    });
     var rt = window.ApexGameRuntime.create({ events: bus, provider: provider });
     bus.on('game:spin-result', onSpinResult);
     bus.on('game:error', function (e) {
@@ -673,6 +688,18 @@
     applyI18nDynamic();
     applySettings();
     if (window.ApexSettings) window.ApexSettings.onChange(applySettings);
+
+    // P0-1：让 UI 文案与真实 mode 一致
+    try {
+      var subEl = document.querySelector('.sd-header-sub');
+      if (subEl) {
+        if (GAME_MODE === 'demo') subEl.textContent = '试玩模式';
+        else subEl.textContent = '正式模式';
+      }
+      var modeHint = document.querySelector('.sd-mode-badge');
+      if (modeHint) modeHint.textContent = GAME_MODE.toUpperCase();
+    } catch (e) {}
+
     renderBoard(true);
     renderStats();
     renderBetButtons();
@@ -687,4 +714,7 @@
   } else {
     init();
   }
+
+  // P0-1：暴露当前 mode（调试 / 自动化测试用）
+  window.__APEX_GAME_MODE = GAME_MODE;
 })();
