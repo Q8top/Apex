@@ -1,8 +1,20 @@
-/* Apex · Sweet Bonanza Symbol Registry v3
+/* Apex · Sweet Bonanza Symbol Registry v4
  * 只负责资产数据，不负责抽签概率
+ *
+ * 不变量：
+ *   - SYMBOL_META / SYMBOL_MATERIAL 深层冻结，运行时不可改
+ *   - getSymbolId / getScale / getMaterial 用 hasOwnProperty 查表，
+ *     避免命中原型链（'__proto__' / 'constructor'）
+ *   - BASE_SYMBOL_KEYS 每项在 SYMBOLS / SYMBOL_META / BASE_WEIGHTS 中
+ *     必须存在且权重为正 —— init 阶段自检，缺失即抛错
+ *   - pickFrom 复用模块级 RAND_BUF，不在热路径 new
+ *   - pickBase 复用模块级 WEIGHTS_REF，不每次建对象
  */
 (function () {
   'use strict';
+
+  var RAND_BUF = new Uint32Array(1);
+  var owns = Object.prototype.hasOwnProperty;
 
   var SYMBOLS = Object.freeze({
     BANANA:       'sb-fruit-banana',
@@ -18,7 +30,7 @@
     MULTIPLIER:   'sb-multiplier-bomb'
   });
 
-  var SYMBOL_META = Object.freeze({
+  var SYMBOL_META_RAW = {
     BANANA:       { group: 'fruit',   material: 'organic',        label: '香蕉',   scale: 0.92 },
     GRAPE:        { group: 'fruit',   material: 'organic',        label: '葡萄',   scale: 0.84 },
     WATERMELON:   { group: 'fruit',   material: 'organic',        label: '西瓜',   scale: 0.88 },
@@ -30,14 +42,27 @@
     RED_HEART:    { group: 'candy',   material: 'gel',            label: '红心糖', scale: 0.80 },
     LOLLIPOP:     { group: 'scatter', material: 'hard-candy',     label: '棒棒糖', scale: 0.92 },
     MULTIPLIER:   { group: 'feature', material: 'metallic-candy', label: '倍率',   scale: 0.86 }
-  });
+  };
 
-  var SYMBOL_MATERIAL = Object.freeze({
+  var SYMBOL_MATERIAL_RAW = {
     organic:          { saturation: 1.00, highlight: 0.42, transmission: 0.10, rim: 0.08, shadow: 0.18 },
     gel:              { saturation: 1.08, highlight: 0.72, transmission: 0.28, rim: 0.18, shadow: 0.30 },
     'hard-candy':     { saturation: 1.05, highlight: 0.82, transmission: 0.18, rim: 0.24, shadow: 0.22 },
     'metallic-candy': { saturation: 1.02, highlight: 0.88, transmission: 0.06, rim: 0.42, shadow: 0.32 }
+  };
+
+  // 深层冻结
+  Object.keys(SYMBOL_META_RAW).forEach(function (k) {
+    Object.freeze(SYMBOL_META_RAW[k]);
   });
+  Object.freeze(SYMBOL_META_RAW);
+  Object.keys(SYMBOL_MATERIAL_RAW).forEach(function (k) {
+    Object.freeze(SYMBOL_MATERIAL_RAW[k]);
+  });
+  Object.freeze(SYMBOL_MATERIAL_RAW);
+
+  var SYMBOL_META = SYMBOL_META_RAW;
+  var SYMBOL_MATERIAL = SYMBOL_MATERIAL_RAW;
 
   var LIGHT = Object.freeze({
     x: 0.30, y: 0.20,
@@ -62,16 +87,42 @@
     BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
   });
 
-  var BASE_TOTAL = BASE_SYMBOL_KEYS.reduce(function (s, k) { return s + BASE_WEIGHTS[k]; }, 0);
+  /* ============ init 自检：BASE_SYMBOL_KEYS 与三张表对齐 ============ */
+  (function selfCheck() {
+    var total = 0;
+    for (var i = 0; i < BASE_SYMBOL_KEYS.length; i++) {
+      var k = BASE_SYMBOL_KEYS[i];
+      if (!owns.call(SYMBOLS, k)) {
+        throw new Error('symbols: BASE_SYMBOL_KEYS 中的 ' + k + ' 未在 SYMBOLS 定义');
+      }
+      if (!owns.call(SYMBOL_META, k)) {
+        throw new Error('symbols: BASE_SYMBOL_KEYS 中的 ' + k + ' 未在 SYMBOL_META 定义');
+      }
+      var w = BASE_WEIGHTS[k];
+      if (!(w > 0)) {
+        throw new Error('symbols: BASE_SYMBOL_KEYS 中的 ' + k + ' 权重缺失或非正');
+      }
+      total += w;
+    }
+    if (total <= 0) throw new Error('symbols: BASE_TOTAL <= 0');
+  })();
+
+  var BASE_TOTAL = BASE_SYMBOL_KEYS.reduce(function (s, k) {
+    return s + BASE_WEIGHTS[k];
+  }, 0);
+
+  // pickBase 复用同一引用，避免每次调用 new
+  var BASE_POOL_REF = Object.freeze({ total: BASE_TOTAL, map: BASE_WEIGHTS });
 
   function pickFrom(keys, weights) {
-    var buf = new Uint32Array(1);
-    crypto.getRandomValues(buf);
-    if (!weights) return keys[buf[0] % keys.length];
-    var n = buf[0] % weights.total;
+    crypto.getRandomValues(RAND_BUF);
+    if (!weights) return keys[RAND_BUF[0] % keys.length];
+    var n = RAND_BUF[0] % weights.total;
     var acc = 0;
     for (var i = 0; i < keys.length; i++) {
-      acc += weights.map[keys[i]] || 0;
+      var w = weights.map[keys[i]];
+      if (!(w > 0)) throw new Error('symbols: pickFrom 权重缺失 ' + keys[i]);
+      acc += w;
       if (n < acc) return keys[i];
     }
     return keys[0];
@@ -79,7 +130,7 @@
 
   /* 普通抽取：9 个 base 符号，不含 scatter/feature */
   function pickBase() {
-    return pickFrom(BASE_SYMBOL_KEYS, { total: BASE_TOTAL, map: BASE_WEIGHTS });
+    return pickFrom(BASE_SYMBOL_KEYS, BASE_POOL_REF);
   }
 
   /* 旧 API 兼容：默认走 base 池 */
@@ -87,20 +138,38 @@
     return pickBase();
   }
 
-  function getSymbolId(t) { return SYMBOLS[t] || null; }
-  var ID_TO_KEY = {};
-  Object.keys(SYMBOLS).forEach(function (k) { ID_TO_KEY[SYMBOLS[k]] = k; });
+  function getSymbolId(t) {
+    if (typeof t !== 'string' || !owns.call(SYMBOLS, t)) return null;
+    return SYMBOLS[t];
+  }
+
+  var ID_TO_KEY = (function () {
+    var m = {};
+    Object.keys(SYMBOLS).forEach(function (k) {
+      m[SYMBOLS[k]] = k;
+    });
+    return Object.freeze(m);
+  })();
+
   function getScaleById(symbolId) {
+    if (typeof symbolId !== 'string' || !owns.call(ID_TO_KEY, symbolId)) return 1;
     var k = ID_TO_KEY[symbolId];
-    return k ? SYMBOL_META[k].scale : 1;
+    if (!owns.call(SYMBOL_META, k)) return 1;
+    var s = SYMBOL_META[k].scale;
+    return (typeof s === 'number' && Number.isFinite(s)) ? s : 1;
   }
+
   function getScale(t) {
-    var m = SYMBOL_META[t];
-    return m ? m.scale : 1;
+    if (typeof t !== 'string' || !owns.call(SYMBOL_META, t)) return 1;
+    var s = SYMBOL_META[t].scale;
+    return (typeof s === 'number' && Number.isFinite(s)) ? s : 1;
   }
+
   function getMaterial(t) {
-    var m = SYMBOL_META[t];
-    return m ? SYMBOL_MATERIAL[m.material] : null;
+    if (typeof t !== 'string' || !owns.call(SYMBOL_META, t)) return null;
+    var mat = SYMBOL_META[t].material;
+    if (typeof mat !== 'string' || !owns.call(SYMBOL_MATERIAL, mat)) return null;
+    return SYMBOL_MATERIAL[mat];
   }
 
   window.ApexSymbols = Object.freeze({
