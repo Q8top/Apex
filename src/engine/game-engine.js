@@ -96,10 +96,15 @@ GameEngine.prototype.spin = function(request){
 };
 
 function _uuid(){
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  if (typeof crypto === 'undefined'){
+    throw _err.ApexError(_err.CODES.NETWORK_ERROR, 'crypto unavailable');
+  }
+  if (crypto.randomUUID) return crypto.randomUUID();
+  if (!crypto.getRandomValues){
+    throw _err.ApexError(_err.CODES.NETWORK_ERROR, 'crypto.getRandomValues unavailable');
+  }
   var b = new Uint8Array(16);
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) crypto.getRandomValues(b);
-  else for (var i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256);
+  crypto.getRandomValues(b);
   b[6] = (b[6] & 0x0f) | 0x40;
   b[8] = (b[8] & 0x3f) | 0x80;
   var hex = '';
