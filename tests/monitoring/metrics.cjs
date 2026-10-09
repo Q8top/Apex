@@ -111,7 +111,7 @@ function makeReq(token) {
   // ============================================================
   console.log('\n=== 2) wrong token ===');
   var mem2 = bootstrapDb();
-  var envOk = { apex_db: makeD1(mem2), METRICS_TOKEN: 'a-very-secret-metrics-token-2026' };
+  var envOk = { apex_db: makeD1(mem2), METRICS_TOKEN: 'apex-test-tok-1234' };
 
   var r2 = await onRequestGet({ request: makeReq(''), env: envOk, data: {} });
   t('2a missing header -> 401', r2.status === 401, 'got ' + r2.status);
@@ -149,9 +149,9 @@ function makeReq(token) {
   ins.run('metric-f1',uid1,'real',1,100,150,1000,1100,'{}','g1','m1.0.0',nowIso);
   ins.run('metric-f2',uid1,'real',1,100,150,1000,1100,'{}','g1','m1.0.0',nowIso);
 
-  var env3 = { apex_db: makeD1(mem3), METRICS_TOKEN: 'a-very-secret-metrics-token-2026' };
+  var env3 = { apex_db: makeD1(mem3), METRICS_TOKEN: 'apex-test-tok-1234' };
   var r4 = await onRequestGet({
-    request: makeReq('a-very-secret-metrics-token-2026'),
+    request: makeReq('apex-test-tok-1234'),
     env: env3,
     data: {}
   });
@@ -176,7 +176,7 @@ function makeReq(token) {
 
   // Secret leak check
   var b4Str = JSON.stringify(b4);
-  t('4p no token in body', b4Str.indexOf('a-very-secret-metrics-token') < 0);
+  t('4p no token in body', b4Str.indexOf('apex-test-tok-1234') < 0);
   t('4q no user_id in body', b4Str.indexOf('"user_id"') < 0);
   t('4r no spin_id in body', b4Str.indexOf('metric-p1') < 0);
   t('4s no result_json in body', b4Str.indexOf('result_json') < 0);
@@ -197,7 +197,7 @@ function makeReq(token) {
     .run('ev2', uid2, 100000, 'opening');
 
   var r5 = await onRequestGet({
-    request: makeReq('a-very-secret-metrics-token-2026'),
+    request: makeReq('apex-test-tok-1234'),
     env: env3,
     data: {}
   });
@@ -207,7 +207,7 @@ function makeReq(token) {
   // Introduce drift
   mem3.prepare('UPDATE users SET wallet_balance = wallet_balance + 1 WHERE id = ?').run(uid1);
   var r6 = await onRequestGet({
-    request: makeReq('a-very-secret-metrics-token-2026'),
+    request: makeReq('apex-test-tok-1234'),
     env: env3,
     data: {}
   });
@@ -221,7 +221,7 @@ function makeReq(token) {
   // Spins seeded "now" should appear in 1h window
   var req6 = new Request('https://apextop.cc.cd/api/metrics?hours=1', {
     method: 'GET',
-    headers: { 'X-Metrics-Token': 'a-very-secret-metrics-token-2026' }
+    headers: { 'X-Metrics-Token': 'apex-test-tok-1234' }
   });
   var r7 = await onRequestGet({ request: req6, env: env3, data: {} });
   var b7 = await r7.json();
@@ -230,7 +230,7 @@ function makeReq(token) {
 
   var req7 = new Request('https://apextop.cc.cd/api/metrics?hours=99999', {
     method: 'GET',
-    headers: { 'X-Metrics-Token': 'a-very-secret-metrics-token-2026' }
+    headers: { 'X-Metrics-Token': 'apex-test-tok-1234' }
   });
   var r8 = await onRequestGet({ request: req7, env: env3, data: {} });
   var b8 = await r8.json();
@@ -250,10 +250,10 @@ function makeReq(token) {
         };
       }
     },
-    METRICS_TOKEN: 'a-very-secret-metrics-token-2026'
+    METRICS_TOKEN: 'apex-test-tok-1234'
   };
   var r9 = await onRequestGet({
-    request: makeReq('a-very-secret-metrics-token-2026'),
+    request: makeReq('apex-test-tok-1234'),
     env: envBad,
     data: {}
   });
