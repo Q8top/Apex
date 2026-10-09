@@ -894,6 +894,12 @@ function toast(msg) {
     if (window.ApexAudio) audio = window.ApexAudio.create();
     if (window.ApexAnimator) animator = window.ApexAnimator.create();
     if (window.ApexPerf) perfBoard = window.ApexPerf.create({ cap: 100 });
+    // client error reporter (real: POST /api/log; demo: console only)
+    try {
+      if (window.ApexErrorReporter && typeof window.ApexErrorReporter.install === 'function') {
+        window.ApexErrorReporter.install({ mode: GAME_MODE });
+      }
+    } catch (e) {}
     if (window.ApexA11y) { try { announcer = window.ApexA11y.createAnnouncer(); } catch (e) {} }
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
