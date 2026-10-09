@@ -25,6 +25,9 @@
   var audioBridge = null;
 var sheetTrap = null;
 var confirmTrap = null;
+var autoSpinCtl = null;
+var pendingAutoResolve = null;
+var animator = null;
 var state = {
     balance: INITIAL_BALANCE,
     betIndex: DEFAULT_BET_INDEX,
@@ -115,12 +118,20 @@ var state = {
   }
 
   function clearTumbleTimers() {
+    if (animator && animator.cancelAll) {
+      try { animator.cancelAll(); } catch (e) {}
+    }
     for (var i = 0; i < state.tumbleTimers.length; i++) {
       clearTimeout(state.tumbleTimers[i]);
     }
     state.tumbleTimers.length = 0;
   }
   function tumbleSetTimeout(fn, ms) {
+    if (animator && animator.delay) {
+      var h = animator.delay(ms, fn);
+      state.tumbleTimers.push(h);
+      return h;
+    }
     var id = setTimeout(fn, ms);
     state.tumbleTimers.push(id);
     return id;
@@ -388,7 +399,7 @@ var state = {
         var p = runtime && runtime.getProvider && runtime.getProvider();
         var done = function () {
           renderStats();
-          if (state.autoSpin) scheduleAuto();
+          resolveAutoDone({ stop: false });
           pending = null;
         };
         if (p && p.getBalance) {
@@ -406,7 +417,7 @@ var state = {
       });
       return;
     }
-    if (state.autoSpin) scheduleAuto();
+    resolveAutoDone({ stop: false });
     pending = null;
     }).catch(function (err) {
       if (window.console && console.error) console.error('[onSpinResult] tumble failed:', err);
@@ -416,6 +427,7 @@ var state = {
       pending = null;
       if (el.board) el.board.dataset.spinning = '0';
       renderSpinBtn();
+      resolveAutoDone({ stop: true, stopReason: 'spin_error' });
     });
   }
 
@@ -588,26 +600,74 @@ var state = {
       state.spinning = false;
       renderStats();
       renderSpinBtn();
-      if (state.autoSpin) scheduleAuto();
     }, duration);
   }
 
   function scheduleAuto() {
-    clearTimeout(state.autoTimer);
-    var delay = state.fastMode ? 150 : 400;
-    state.autoTimer = window.setTimeout(doSpin, delay);
+    /* compat shim */
+  }
+
+  function resolveAutoDone(outcome) {
+    if (pendingAutoResolve) {
+      var r = pendingAutoResolve;
+      pendingAutoResolve = null;
+      try { r(outcome || { stop: false }); } catch (e) {}
+    }
+  }
+
+  function autoSpinFn() {
+    if (state.bonusLock) {
+      return Promise.resolve({ stop: true, stopReason: 'bonus_lock' });
+    }
+    if (state.balance < getBet()) {
+      toast('试玩余额不足');
+      return Promise.resolve({ stop: true, stopReason: 'insufficient' });
+    }
+    return new Promise(function (resolve) {
+      pendingAutoResolve = resolve;
+      doSpin();
+    });
   }
 
   function startAuto() {
     if (state.spinning) return;
+    if (!window.ApexAutoSpin) {
+      state.autoSpin = true;
+      renderAutoBtn();
+      renderSpinBtn();
+      doSpin();
+      return;
+    }
+    if (autoSpinCtl && autoSpinCtl.isRunning()) return;
+    autoSpinCtl = window.ApexAutoSpin.create({
+      delay: state.fastMode ? 150 : 400,
+      spinFn: autoSpinFn,
+      onState: function () {
+        state.autoSpin = !!(autoSpinCtl && autoSpinCtl.isRunning());
+        renderAutoBtn();
+        renderSpinBtn();
+      },
+      onFinish: function (reason) {
+        state.autoSpin = false;
+        pendingAutoResolve = null;
+        renderAutoBtn();
+        renderSpinBtn();
+        if (reason === 'insufficient') toast('试玩余额不足');
+      }
+    });
     state.autoSpin = true;
     renderAutoBtn();
     renderSpinBtn();
-    doSpin();
+    autoSpinCtl.start();
   }
 
   function stopAuto() {
+    if (autoSpinCtl) {
+      try { autoSpinCtl.stop(); } catch (e) {}
+      autoSpinCtl = null;
+    }
     state.autoSpin = false;
+    pendingAutoResolve = null;
     clearTimeout(state.autoTimer);
     state.autoTimer = 0;
     renderAutoBtn();
@@ -825,6 +885,7 @@ function toast(msg) {
     cacheEl();
     runtime = initRuntime();
     if (window.ApexAudio) audio = window.ApexAudio.create();
+    if (window.ApexAnimator) animator = window.ApexAnimator.create();
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     applyI18n();
