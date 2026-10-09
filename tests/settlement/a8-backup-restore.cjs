@@ -14,7 +14,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const sqlite = require('node:sqlite');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 const bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
 
 if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues) {

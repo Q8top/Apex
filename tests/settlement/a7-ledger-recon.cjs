@@ -1,7 +1,8 @@
 'use strict';
+const path = require('node:path');
 /* Apex · A-7 账本三层对账测试 */
 const sqlite = require('node:sqlite');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 const bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
 if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues) { globalThis.crypto = require('crypto').webcrypto; }
 if (typeof globalThis.window === 'undefined') globalThis.window = globalThis;

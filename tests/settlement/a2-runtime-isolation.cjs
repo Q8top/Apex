@@ -12,7 +12,7 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 
 let pass = 0, fail = 0;
 function t(name, cond) {

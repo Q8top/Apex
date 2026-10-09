@@ -1,10 +1,11 @@
 'use strict';
+const path = require('node:path');
 /* Apex · A-9 Session 配额 trigger 测试
  * 验证 BEFORE INSERT trigger 是否在 SQLite 中按预期工作。
  * 若通过，说明 trigger 机制可用（D1 需实测）。
  */
 const sqlite = require('node:sqlite');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 const bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
 const fs = require('node:fs');
 

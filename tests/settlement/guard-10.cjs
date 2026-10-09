@@ -10,7 +10,7 @@
 const sqlite = require('node:sqlite');
 const path = require('path');
 const fs = require('node:fs');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 
 let pass = 0, fail = 0;
 function t(name, cond) {

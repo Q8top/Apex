@@ -1,4 +1,5 @@
 'use strict';
+const path = require('node:path');
 /* Apex · A-6 奖励链联合一致性测试
  *
  * 覆盖施工单 §A-6.3：
@@ -7,7 +8,7 @@
  *   - chain_win_minor 与 base_spin.win_minor 一致性
  */
 const sqlite = require('node:sqlite');
-const ROOT = '/root/projects/Apex';
+const ROOT = require('node:path').resolve(__dirname, '../..');
 const bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
 
 let pass = 0, fail = 0;

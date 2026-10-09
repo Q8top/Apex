@@ -61,11 +61,16 @@ jobs:
         run: |
           set -euo pipefail
           echo "[CREATE] $DB_NAME"
-          OUT=$(npx wrangler d1 create "$DB_NAME" --json 2>&1 || true)
+          # wrangler 4.x 的 d1 create 不支持 --json，从默认输出提取 uuid
+          OUT=$(npx wrangler d1 create "$DB_NAME" 2>&1 || true)
           echo "$OUT"
-          DB_ID=$(echo "$OUT" | grep -oE '"uuid"[[:space:]]*:[[:space:]]*"[a-f0-9-]+"' | head -1 | grep -oE '[a-f0-9-]{36}')
+          DB_ID=$(echo "$OUT" | grep -oE 'database_id[[:space:]]*=[[:space:]]*"[a-f0-9-]{36}"' | head -1 | grep -oE '[a-f0-9-]{36}')
           if [ -z "$DB_ID" ]; then
-            echo "[FATAL] 无法从 wrangler 输出提取 uuid"
+            # 兼容其它输出格式：直接找 36 位 hex
+            DB_ID=$(echo "$OUT" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1)
+          fi
+          if [ -z "$DB_ID" ]; then
+            echo "[FATAL] 无法提取 uuid"
             exit 1
           fi
           echo "db_id=$DB_ID" >> $GITHUB_OUTPUT
@@ -87,12 +92,12 @@ jobs:
         run: |
           set -euo pipefail
           for t in users sessions spins free_spin_sessions wallet_ledger reward_chains _settlement_guard; do
-            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM $t" --json 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM $t" 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
             echo "[TABLE] $t rows=$CNT"
           done
           # trigger 存在性
           for trg in trg_users_balance_nonnegative_update trg_users_balance_nonnegative_insert trg_sessions_limit; do
-            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM sqlite_master WHERE type='trigger' AND name='$trg'" --json 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM sqlite_master WHERE type='trigger' AND name='$trg'" 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
             if [ "$CNT" = "1" ]; then
               echo "[TRIGGER OK] $trg"
             else
@@ -102,7 +107,7 @@ jobs:
           done
           # spins 扩展列
           for col in request_fingerprint effective_bet_minor fs_session_id chain_id balance_delta; do
-            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM pragma_table_info('spins') WHERE name='$col'" --json 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            CNT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM pragma_table_info('spins') WHERE name='$col'" 2>&1 | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
             if [ "$CNT" = "1" ]; then
               echo "[COL OK] spins.$col"
             else
@@ -118,7 +123,7 @@ jobs:
           npx wrangler d1 execute "$DB_NAME" --remote --command "INSERT INTO users (username,email,password_hash,wallet_balance) VALUES ('t1','t1@e','h',1000)"
           # 1. 扣款成功 + 守卫
           npx wrangler d1 execute "$DB_NAME" --remote --command "UPDATE users SET wallet_balance=wallet_balance-100 WHERE username='t1' AND wallet_balance>=100; INSERT INTO _settlement_guard (slot,guard_value) VALUES (1,CASE WHEN changes()=1 THEN 1 ELSE 0 END) ON CONFLICT(slot) DO UPDATE SET guard_value=CASE WHEN changes()=1 THEN 1 ELSE 0 END"
-          BAL=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" --json 2>&1 | grep -oE '"b":[0-9]+' | grep -oE '[0-9]+')
+          BAL=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" 2>&1 | grep -oE '"b":[0-9]+' | grep -oE '[0-9]+')
           echo "[TEST 1] balance after debit = $BAL (expect 900)"
           [ "$BAL" = "900" ] || exit 1
 
@@ -131,7 +136,7 @@ jobs:
             echo "[TEST 2] WARN: guard ABORT 未触发（D1 行为可能与 SQLite 不同）"
             echo "$RESULT" | tail -10
           fi
-          BAL=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" --json 2>&1 | grep -oE '"b":[0-9]+' | grep -oE '[0-9]+')
+          BAL=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" 2>&1 | grep -oE '"b":[0-9]+' | grep -oE '[0-9]+')
           echo "[TEST 2] balance unchanged = $BAL (expect 900)"
 
           # 3. 负余额 trigger
