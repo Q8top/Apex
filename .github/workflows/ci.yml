@@ -46,6 +46,9 @@ jobs:
           fi
           echo "[OK] functions/_engine 与 src/engine 一致"
 
+      - name: Check config sync (src ↔ functions)
+        run: bash scripts/check-config-sync.sh
+
       - name: Syntax check
         run: bash scripts/syntax-check.sh
 
@@ -60,6 +63,9 @@ jobs:
           node tests/cbor.test.js
           node tests/webauthn.test.js
           node tests/password-length.test.js
+
+      - name: Settlement guard tests
+        run: node tests/settlement/guard-10.cjs
 
       - name: Security Scan
         run: node tests/security-scan.js

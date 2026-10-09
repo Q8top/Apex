@@ -83,3 +83,7 @@ previews/
 
 # 旧游戏 replay 系统残留目录（不再使用）
 replays/
+apex-game-bundle.md
+apex-game-*.tar.gz
+*.tar.gz
+*.tgz

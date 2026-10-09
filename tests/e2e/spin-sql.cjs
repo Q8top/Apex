@@ -22,12 +22,14 @@ catch (e) {
 var db = new sqlite.DatabaseSync(':memory:');
 db.exec('PRAGMA foreign_keys = ON;');
 
-// 按顺序跑迁移
-['0001_initial.sql','0024_users_wallet_balance.sql','0025_spins.sql','0026_free_spin_sessions.sql'].forEach(function(f){
-  var p = path.join(ROOT, 'migrations', f);
-  db.exec(fs.readFileSync(p, 'utf-8'));
-  console.log('  [APPLY] ' + f);
-});
+// 按 curated 列表跑迁移（用共享 bootstrap）
+var bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
+var migRes = bootstrap.applyCuratedMigrations(db, ROOT);
+migRes.applied.forEach(function(f){ console.log('  [APPLY] ' + f); });
+if (migRes.failed.length > 0) {
+  console.error('migration failed:', migRes.failed);
+  process.exit(2);
+}
 
 var pass = 0, fail = 0;
 function t(name, cond) {

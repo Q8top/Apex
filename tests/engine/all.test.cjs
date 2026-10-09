@@ -4,7 +4,7 @@
  * 覆盖：errors / grid / rng / multiplier / evaluator / tumble / bonus / payout / game-engine
  */
 var path = require('path');
-var ROOT = '/root/projects/Apex';
+var ROOT = require('path').resolve(__dirname, '../..');
 
 if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues) {
   globalThis.crypto = require('crypto').webcrypto;

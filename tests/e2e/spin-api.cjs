@@ -141,8 +141,13 @@ function createD1(db) {
 // ---------- 引导数据库 ----------
 var mem = new sqlite.DatabaseSync(':memory:');
 mem.exec('PRAGMA foreign_keys = ON;');
-['0001_initial.sql','0024_users_wallet_balance.sql','0025_spins.sql','0026_free_spin_sessions.sql']
-  .forEach(function(f){ mem.exec(fs.readFileSync(path.join(ROOT, 'migrations', f), 'utf-8')); });
+var bootstrap = require(ROOT + '/tests/settlement/bootstrap.cjs');
+var migRes = bootstrap.applyCuratedMigrations(mem, ROOT);
+if (migRes.failed.length > 0) {
+  console.error('migration failed:', migRes.failed);
+  process.exit(2);
+}
+console.log('  [MIG] applied ' + migRes.applied.length + ' migrations');
 
 var d1 = createD1(mem);
 

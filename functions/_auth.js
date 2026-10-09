@@ -89,7 +89,8 @@ export async function getCurrentUser(env, request) {
       return null;
     }
   }
-  if (row.status && row.status !== 'active') return null;
+  // v9 A-2.2：不再对非 active 状态返回 null
+  // 让调用方根据 user.status 决定 401/403
 
   env.apex_db.prepare('UPDATE sessions SET last_seen_at = CURRENT_TIMESTAMP WHERE id = ?').bind(tokenHash).run().catch(() => {});
 
