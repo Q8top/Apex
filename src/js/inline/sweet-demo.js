@@ -22,7 +22,10 @@
   var RAND_BUF = new Uint32Array(1);
   var XLINK_NS = 'http://www.w3.org/1999/xlink';
 
-  var state = {
+  var audioBridge = null;
+var sheetTrap = null;
+var confirmTrap = null;
+var state = {
     balance: INITIAL_BALANCE,
     betIndex: DEFAULT_BET_INDEX,
     win: 0,
@@ -283,13 +286,13 @@
 
     function nextFree() {
       if (remaining <= 0 || !runtime || !runtime.state) return finish();
-      if (window.ApexAudio) audio && audio.play('spin-start');
+      if (window.ApexAudio) audio && playAudio('spin-start');
       if (haptics) haptics.pulse('spin');
       provider_spin(betMinor, true).then(function (r) {
         totalWinMinor += r.totalWin || 0;
         if (r.multiplierSum > 0 && r.totalWin > 0) {
           if (audio && audio.play) {
-            try { audio.play('multiplier'); } catch (err) {}
+            try { playAudio('multiplier'); } catch (err) {}
           }
           totalMult += r.multiplierSum;
           multEl.style.display = '';
@@ -346,7 +349,7 @@
     state.balance = result.balanceAfter / 100;
     playTumbleSequence(result).then(function () {
     if (audio && audio.play) {
-      try { audio.play('spin-stop'); } catch (err) {}
+      try { playAudio('spin-stop'); } catch (err) {}
     }
     renderStats();
     if (window.ApexHistory) {
@@ -359,11 +362,11 @@
     if (state.win > 0) {
       var ratio = state.win / (betMinor / 100);
       if (audio) {
-        if (ratio >= 100) audio.play('ultra-win');
-        else if (ratio >= 50) audio.play('epic-win');
-        else if (ratio >= 20) audio.play('mega-win');
-        else if (ratio >= 5)  audio.play('big-win');
-        else                  audio.play('win-normal');
+        if (ratio >= 100) playAudio('ultra-win');
+        else if (ratio >= 50) playAudio('epic-win');
+        else if (ratio >= 20) playAudio('mega-win');
+        else if (ratio >= 5)  playAudio('big-win');
+        else                  playAudio('win-normal');
       }
       if (haptics) haptics.winPulse(ratio);
       if (window.ApexWinFeedback) {
@@ -371,14 +374,14 @@
       }
     }
     if (result.tumbles && result.tumbles.length > 1) {
-      if (audio) audio.play('tumble');
+      if (audio) playAudio('tumble');
       if (haptics) haptics.pulse('tumble');
     }
     el.board.dataset.spinning = '0';
     state.spinning = false;
     renderSpinBtn();
     if (result.feature && result.feature.triggered) {
-      if (window.ApexAudio) audio && audio.play('bonus');
+      if (window.ApexAudio) audio && playAudio('bonus');
       state.bonusLock = true;
       runBonusSequence(result.feature, betMinor, function (bonusWin) {
         state.bonusLock = false;
@@ -548,7 +551,7 @@
     el.board.dataset.spinning = '1';
     renderSpinBtn();
     if (haptics) haptics.pulse('spin');
-    if (audio) audio.play('spin-start');
+    if (audio) playAudio('spin-start');
 
     if (runtime) {
       pending = true;
@@ -646,10 +649,16 @@
     else document.body.style.overflow = 'hidden';
     var first = el.sheetRoot.querySelector('.sd-sheet-item');
     if (first) setTimeout(function () { try { first.focus(); } catch (e) {} }, 60);
+    if (window.ApexA11y) {
+      sheetTrap = window.ApexA11y.trapFocus(el.sheetRoot, {
+        autoFocus: false, restoreFocus: false
+      });
+    }
   }
   function closeSheet() {
     if (!el.sheetRoot.classList.contains('is-open')) return;
     el.sheetRoot.classList.remove('is-open');
+    if (sheetTrap) { try { sheetTrap.release(); } catch (e) {} sheetTrap = null; }
     if (window.ApexSheetLock) window.ApexSheetLock.unlock();
     else document.body.style.overflow = '';
     if (state.sheetCloseTimer) clearTimeout(state.sheetCloseTimer);
@@ -674,10 +683,16 @@
     void el.confirmRoot.offsetWidth;
     el.confirmRoot.classList.add('is-open');
     setTimeout(function () { try { el.confirmCancel.focus(); } catch (e) {} }, 60);
+    if (window.ApexA11y) {
+      confirmTrap = window.ApexA11y.trapFocus(el.confirmRoot, {
+        autoFocus: false, restoreFocus: false
+      });
+    }
   }
   function closeConfirm() {
     if (!el.confirmRoot.classList.contains('is-open')) return;
     el.confirmRoot.classList.remove('is-open');
+    if (confirmTrap) { try { confirmTrap.release(); } catch (e) {} confirmTrap = null; }
     if (state.confirmCloseTimer) clearTimeout(state.confirmCloseTimer);
     state.confirmCloseTimer = setTimeout(function () {
       state.confirmCloseTimer = 0;
@@ -711,7 +726,12 @@
   }
 
   var toastEl = null, toastTimer = 0;
-  function toast(msg) {
+  function playAudio(name) {
+  if (audioBridge) { try { audioBridge.play(name); return; } catch (e) {} }
+  if (audio && audio.play) { try { audio.play(name); } catch (e) {} }
+}
+
+function toast(msg) {
     if (!toastEl) {
       toastEl = document.createElement('div');
       toastEl.style.cssText = 'position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(8px);background:#111;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2)';
@@ -736,7 +756,7 @@
       var b = e.target.closest('button');
       if (!b || b.disabled) return;
       if (audio && audio.play) {
-        try { audio.play('ui-tap'); } catch (err) {}
+        try { playAudio('ui-tap'); } catch (err) {}
       }
     }, true);
 
@@ -805,6 +825,7 @@
     cacheEl();
     runtime = initRuntime();
     if (window.ApexAudio) audio = window.ApexAudio.create();
+    if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     applyI18n();
     applyI18nDynamic();
