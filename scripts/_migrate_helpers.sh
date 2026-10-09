@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 迁移辅助函数（被 migrate.sh 引入）
-# 关键：--local 模式优先使用 sqlite3 直连本地 D1 sqlite 文件，绕开 Termux 下无法运行的 wrangler local。
+# 关键：--local 模式优先使用 sqlite3 直连本地 D1 sqlite 文件，绕开本地 wrangler local 不可用的情况。
 set -uo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -19,7 +19,7 @@ detect_local_sqlite() {
     fi
   fi
 
-  # 不存在则自动创建（Termux 下 wrangler local 不可用，需手动初始化）
+  # 不存在则自动创建（本地 wrangler local 不可用，需手动初始化）
   if command -v sqlite3 >/dev/null 2>&1; then
     mkdir -p "$d1dir/miniflare-D1DatabaseObject"
     if [ ! -f "$target" ]; then

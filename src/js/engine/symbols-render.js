@@ -1,4 +1,4 @@
-/* Apex · Candy Tumble · Symbol Renderer (v2)
+/* Apex · Symbol Renderer (v2)
  *
  * 11 个符号的内联 SVG 渲染器。
  * 使用新 symbols.js 的 ID（banana / grape / ...）作为 key，

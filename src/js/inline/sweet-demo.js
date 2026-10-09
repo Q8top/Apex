@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza Demo Game · Mobile HUD v1 */
+/* Apex · Demo Game · Mobile HUD v1 */
 (function () {
   'use strict';
 
@@ -70,12 +70,19 @@
   var GAME_MODE = getGameMode();
 
   function initRuntime() {
-    if (!window.ApexGameRuntime || !window.ApexDemoProvider) return null;
+    if (!window.ApexGameRuntime) return null;
     var bus = window.ApexEventBus();
-    var provider = window.ApexDemoProvider.create({
-      initialBalance: 1000000,
-      mode: GAME_MODE
-    });
+    var provider;
+    if (GAME_MODE === 'demo') {
+      if (!window.ApexDemoProvider) return null;
+      provider = window.ApexDemoProvider.create({ initialBalance: 1000000, mode: 'demo' });
+    } else {
+      if (!window.ApexServerProvider) {
+        console.error('[initRuntime] ApexServerProvider 未加载');
+        return null;
+      }
+      provider = window.ApexServerProvider.create({});
+    }
     var rt = window.ApexGameRuntime.create({ events: bus, provider: provider });
     bus.on('game:spin-result', onSpinResult);
     bus.on('game:error', function (e) {
@@ -281,6 +288,9 @@
       provider_spin(betMinor, true).then(function (r) {
         totalWinMinor += r.totalWin || 0;
         if (r.multiplierSum > 0 && r.totalWin > 0) {
+          if (audio && audio.play) {
+            try { audio.play('multiplier'); } catch (err) {}
+          }
           totalMult += r.multiplierSum;
           multEl.style.display = '';
           multValEl.textContent = '×' + totalMult;
@@ -335,6 +345,9 @@
     state.win = winMinor / 100;
     state.balance = result.balanceAfter / 100;
     playTumbleSequence(result).then(function () {
+    if (audio && audio.play) {
+      try { audio.play('spin-stop'); } catch (err) {}
+    }
     renderStats();
     if (window.ApexHistory) {
       window.ApexHistory.push({
@@ -370,14 +383,23 @@
       runBonusSequence(result.feature, betMinor, function (bonusWin) {
         state.bonusLock = false;
         var p = runtime && runtime.getProvider && runtime.getProvider();
+        var done = function () {
+          renderStats();
+          if (state.autoSpin) scheduleAuto();
+          pending = null;
+        };
         if (p && p.getBalance) {
-          state.balance = p.getBalance().minor / 100;
+          p.getBalance().then(function (bal) {
+            state.balance = bal.minor / 100;
+            done();
+          }).catch(function () {
+            state.balance += bonusWin / 100;
+            done();
+          });
         } else {
           state.balance += bonusWin / 100;
+          done();
         }
-        renderStats();
-        if (state.autoSpin) scheduleAuto();
-        pending = null;
       });
       return;
     }
@@ -668,16 +690,24 @@
   }
   function doReset() {
     var p = runtime && runtime.getProvider && runtime.getProvider();
+    var finish = function () {
+      state.win = 0;
+      renderStats();
+      closeConfirm();
+      toast('试玩余额已重置');
+    };
     if (p && p.resetBalance) {
-      var r = p.resetBalance(INITIAL_BALANCE * 100);
-      state.balance = (r.minor || INITIAL_BALANCE * 100) / 100;
+      p.resetBalance(INITIAL_BALANCE * 100).then(function (r) {
+        state.balance = (r.minor || INITIAL_BALANCE * 100) / 100;
+        finish();
+      }).catch(function () {
+        closeConfirm();
+        toast('正式模式不支持重置余额', 'info');
+      });
     } else {
       state.balance = INITIAL_BALANCE;
+      finish();
     }
-    state.win = 0;
-    renderStats();
-    closeConfirm();
-    toast('试玩余额已重置');
   }
 
   var toastEl = null, toastTimer = 0;
@@ -700,6 +730,16 @@
   }
 
   function bindEvents() {
+    // 全局按钮点击 → ui-tap 音效（事件委托，避免逐个绑定）
+    document.addEventListener('click', function (e) {
+      if (!e.target || !e.target.closest) return;
+      var b = e.target.closest('button');
+      if (!b || b.disabled) return;
+      if (audio && audio.play) {
+        try { audio.play('ui-tap'); } catch (err) {}
+      }
+    }, true);
+
     el.betMinus.addEventListener('click', decreaseBet);
     el.betPlus.addEventListener('click', increaseBet);
     // resetBtn 的行为由 applyModeUI() 根据 mode 决定
@@ -750,9 +790,13 @@
       case 'rules':   if (window.ApexRules) window.ApexRules.open(); else toast('即将上线'); break;
       case 'history': if (window.ApexHistory) window.ApexHistory.open(); else toast('即将上线'); break;
       case 'settings':if (window.ApexSettings) window.ApexSettings.open(); else toast('即将上线'); break;
-      case 'sound':   toast('音效设置 · 即将上线'); break;
-      case 'vibrate': toast('震动反馈 · 即将上线'); break;
-      case 'help':    toast('游戏帮助 · 即将上线'); break;
+      case 'sound':
+      case 'vibrate':
+        if (window.ApexSettings) window.ApexSettings.open(); else toast('即将上线');
+        break;
+      case 'help':
+        if (window.ApexRules) window.ApexRules.open(); else toast('即将上线');
+        break;
       default:        toast('功能开发中');
     }
   }
@@ -786,6 +830,20 @@
     renderFastBtn();
     applyModeUI();
     bindEvents();
+
+    // real 模式：异步拉服务端余额
+    if (runtime && GAME_MODE === 'real') {
+      var p0 = runtime.getProvider && runtime.getProvider();
+      if (p0 && p0.getBalance) {
+        p0.getBalance().then(function (bal) {
+          state.balance = bal.minor / 100;
+          renderStats();
+        }).catch(function () {
+          state.balance = 0;
+          renderStats();
+        });
+      }
+    }
   }
 
   // Step 2：根据 GAME_MODE 决定"重置/充值"按钮的文本与行为

@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza Demo Game · Mobile HUD v1
+/* Apex · Demo Game · Mobile HUD v1
    白为主 / 黑为骨 / 灰为辅 / 糖果色仅用于游戏 */
 
 :root{
@@ -454,3 +454,23 @@ a{color:inherit;text-decoration:none}
   width:22px;height:22px;margin-right:6px;vertical-align:middle;flex:0 0 auto}
 .sd-pt-ic svg{display:block;width:100%;height:100%;overflow:visible}
 .sd-pt-sym{display:flex;align-items:center}
+
+
+/* ── 记录 sheet：中奖分级标签 ────────────────────────── */
+.sd-hist-item{position:relative;padding-right:14px}
+.sd-hist-lv{position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:8px;height:8px;border-radius:50%}
+.sd-hist-lv--normal{background:#8A97A8}
+.sd-hist-lv--big{background:#5BD97B}
+.sd-hist-lv--mega{background:#4FA8FF;box-shadow:0 0 6px rgba(79,168,255,.6)}
+.sd-hist-lv--epic{background:#B47AFF;box-shadow:0 0 8px rgba(180,122,255,.7)}
+.sd-hist-lv--ultra{background:#FFD34D;box-shadow:0 0 10px rgba(255,211,77,.9)}
+
+/* ── 设置 sheet：关于段 ─────────────────────────────── */
+.sd-set-about{margin-top:18px;padding:14px 12px;border-radius:10px;
+  background:rgba(10,16,28,.55);border:1px solid rgba(120,160,220,.16)}
+.sd-set-about-title{font-size:11px;color:#8A97A8;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:10px}
+.sd-set-about-row{display:flex;justify-content:space-between;
+  font-size:13px;padding:6px 0;color:#A9B7CC}
+.sd-set-about-row b{color:#E6EDF6;font-family:ui-monospace,Menlo,monospace}

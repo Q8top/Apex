@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza Symbol Renderer
+/* Apex · Symbol Renderer
  * 用 DOM API 生成 <svg><use>，避免超长字符串拼接
  *
  * 不变量：

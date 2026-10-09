@@ -59,6 +59,18 @@
     return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
   }
 
+  // 中奖分级（与 sweet-win-feedback.js 5 档一致）
+  function levelOf(winMinor, betMinor) {
+    if (!betMinor) return null;
+    var r = winMinor / betMinor;
+    if (r >= 100) return 'ultra';
+    if (r >= 50)  return 'epic';
+    if (r >= 20)  return 'mega';
+    if (r >= 5)   return 'big';
+    if (winMinor > 0) return 'normal';
+    return null;
+  }
+
   function renderList() {
     if (!records.length) {
       return '<p class="sd-hist-empty">暂无记录</p>';
@@ -69,11 +81,13 @@
       var delta = r.winMinor - r.betMinor;
       var cls = delta >= 0 ? 'pos' : 'neg';
       var sign = delta >= 0 ? '+' : '';
+      var lv = levelOf(r.winMinor, r.betMinor);
       html += '<li class="sd-hist-item">';
       html += '<span class="sd-hist-time">' + fmtTime(r.ts) + '</span>';
       html += '<span class="sd-hist-bet">下注 ' + fmtMoney(r.betMinor) + '</span>';
       html += '<span class="sd-hist-win">中奖 ' + fmtMoney(r.winMinor) + '</span>';
       html += '<span class="sd-hist-delta ' + cls + '">' + sign + fmtMoney(delta) + '</span>';
+      if (lv) html += '<span class="sd-hist-lv sd-hist-lv--' + lv + '"></span>';
       html += '</li>';
     }
     html += '</ul>';

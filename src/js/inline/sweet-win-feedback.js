@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza 中奖反馈系统
+/* Apex · 中奖反馈系统
  *
  * 特性：
  *   - 4 级中奖（normal / big / mega / super）

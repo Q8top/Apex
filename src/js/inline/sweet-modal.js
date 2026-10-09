@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza 模式选择弹窗
+/* Apex · 模式选择弹窗
  *
  * 不变量：
  *   - 导出对象冻结
@@ -50,7 +50,7 @@
     +   '<button type="button" class="sweet-modal-close" aria-label="关闭" data-close="1"><i class="ri-close-line" aria-hidden="true"></i></button>'
     +   '<header class="sweet-modal-header">'
     +     '<div class="sweet-modal-cover"><img src="/assets/games/sweet.webp" alt="" draggable="false"></div>'
-    +     '<p class="sweet-modal-eyebrow">Sweet Bonanza</p>'
+    +     '<p class="sweet-modal-eyebrow">Apex</p>'
     +     '<h2 id="apex-sweet-modal-title" class="sweet-modal-title">糖果连连爆</h2>'
     +     '<p class="sweet-modal-subtitle">选择游戏模式</p>'
     +   '</header>'

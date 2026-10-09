@@ -52,7 +52,7 @@
       'bonus.claim':          '领取'
     },
     'en-US': {
-      'game.title':           'Candy Tumble',
+      'game.title':           'Apex',
       'game.demo':            'Demo Mode',
       'game.menu':            'Game Menu',
       'stat.balance':         'Balance',

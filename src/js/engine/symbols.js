@@ -1,4 +1,4 @@
-/* Apex · Candy Tumble · Symbol Registry · FINAL
+/* Apex · Symbol Registry · FINAL
  *
  * 11 个核心符号：
  *   01. banana            香蕉

@@ -1,4 +1,4 @@
-/* Apex · Sweet Bonanza Symbol Registry v4
+/* Apex · Symbol Registry v4
  * 只负责资产数据，不负责抽签概率
  *
  * 不变量：

@@ -35,6 +35,17 @@ jobs:
         #   必须修 lockfile，不能绕过可复现性
         run: npm ci --ignore-scripts
 
+      - name: Sync engine to functions/ (check consistency)
+        run: |
+          bash scripts/sync-engine.sh
+          if ! git diff --quiet -- functions/_engine functions/_config; then
+            echo "[FATAL] functions/_engine 或 functions/_config 与 src/ 不一致"
+            echo "  请在本地跑 bash scripts/sync-engine.sh 后一起提交"
+            git --no-pager diff --stat -- functions/_engine functions/_config
+            exit 1
+          fi
+          echo "[OK] functions/_engine 与 src/engine 一致"
+
       - name: Syntax check
         run: bash scripts/syntax-check.sh
 

@@ -103,6 +103,24 @@
     return snapshot();
   }
 
+  function aboutVersion() {
+    try {
+      return (window.ApexVersion && window.ApexVersion.VERSION && window.ApexVersion.VERSION.game) || '1.0.0';
+    } catch (e) { return '1.0.0'; }
+  }
+
+  function aboutSymbols() {
+    try {
+      if (window.ApexSymbolsLocked && window.ApexSymbolsLocked.list) {
+        return String(window.ApexSymbolsLocked.list().length);
+      }
+      if (window.ApexSymbolsV2 && window.ApexSymbolsV2.list) {
+        return String(window.ApexSymbolsV2.list().length);
+      }
+    } catch (e) {}
+    return '11';
+  }
+
   function build() {
     return ''
       + '<div class="sd-set-backdrop" data-set-close="1"></div>'
@@ -116,6 +134,11 @@
       +     '<label class="sd-set-row"><span>震动反馈</span><input type="checkbox" data-k="hapticsEnabled"></label>'
       +     '<label class="sd-set-row"><span>极速模式</span><input type="checkbox" data-k="fastMode"></label>'
       +     '<label class="sd-set-row"><span>动画效果</span><input type="checkbox" data-k="animationsEnabled"></label>'
+      +   '</div>'
+      +   '<div class="sd-set-about">'
+      +     '<div class="sd-set-about-title">关于</div>'
+      +     '<div class="sd-set-about-row"><span>版本</span><b>' + aboutVersion() + '</b></div>'
+      +     '<div class="sd-set-about-row"><span>符号</span><b>' + aboutSymbols() + '</b></div>'
       +   '</div>'
       + '</div>';
   }

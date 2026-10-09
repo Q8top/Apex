@@ -1,4 +1,4 @@
-/* Apex · Candy Tumble Paytable
+/* Apex Paytable
  * 8+ 相同符号中奖（Pay Anywhere）
  * 赔率为 bet 的倍数：实际支付 = bet * 倍数
  * 数值经模拟校准，目标 RTP 88%~93%

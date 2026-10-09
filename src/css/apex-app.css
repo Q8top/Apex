@@ -787,7 +787,7 @@
   pointer-events: none;
 }
 
-/* Sweet Bonanza 卡片可交互（其余 11 张保持占位） */
+/* 糖果游戏卡片可交互（其余 11 张保持占位） */
 .apex-game-card--live,.apex-game-card--live *{pointer-events:auto!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important}
 .apex-game-card--live{position:relative;transition:transform .2s,box-shadow .2s;border-radius:inherit}
 .apex-game-card--live:hover{transform:translateY(-2px)}
