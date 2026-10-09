@@ -236,11 +236,19 @@ export async function executeSpin(env, user, body) {
     ).bind(chainId).first();
     if (chainRow) {
       const capMinor = effectiveBetMinor * chainRow.max_win_multiplier;
+      // A-6b defensive: parameters must stay in Number safe range.
+      // Real limits: bet<=1e6, maxMult<=25000 -> capMinor<=2.5e10, well under 9e15.
+      if (!Number.isSafeInteger(capMinor) || capMinor < 0) {
+        throw new Error('cap_out_of_safe_range: ' + capMinor);
+      }
       const remaining = Math.max(0, capMinor - chainRow.chain_win_minor);
       if (theoreticalWinMinor > remaining) {
         actualWinMinor = remaining;
       }
       newChainWinMinor = chainRow.chain_win_minor + actualWinMinor;
+      if (!Number.isSafeInteger(newChainWinMinor)) {
+        throw new Error('chain_win_out_of_safe_range: ' + newChainWinMinor);
+      }
     }
   }
 
