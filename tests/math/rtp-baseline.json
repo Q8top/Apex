@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-08",
+  "generated_at": "2026-10-09",
   "math_version": "1.0.0",
-  "method": "tests/math/simulator-v2.cjs",
+  "method": "tests/math/simulator-v2.cjs (B-3 fixed: FS simulated)",
   "samples": {
     "real": {
       "spins": 1200000,
@@ -30,13 +30,13 @@
   },
   "results": {
     "real": {
-      "rtp_mean": 0.9109,
+      "rtp_mean": 0.9169,
       "rtp_range": [
-        0.9055,
-        0.9148
+        0.9111,
+        0.9207
       ],
-      "rtp_spread": 0.0093,
-      "hit_rate_mean": 0.3241,
+      "rtp_spread": 0.0095,
+      "hit_rate_mean": 0.3244,
       "target_rtp": [
         0.88,
         0.93
@@ -47,13 +47,13 @@
       ]
     },
     "demo": {
-      "rtp_mean": 1.566,
+      "rtp_mean": 2.0873,
       "rtp_range": [
-        1.559,
-        1.5745
+        2.0623,
+        2.1091
       ],
-      "rtp_spread": 0.0154,
-      "hit_rate_mean": 0.5401,
+      "rtp_spread": 0.0467,
+      "hit_rate_mean": 0.5487,
       "target_rtp": [
         1.3,
         2.5

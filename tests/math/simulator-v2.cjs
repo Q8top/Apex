@@ -1,12 +1,9 @@
 'use strict';
-/* Apex · Simulator V2（新引擎 + SeededRng）
- * Node CJS 模块，只用于本地/CI 模拟，不进产品代码。
- *
- * 用法：
- *   var sim = require('./simulator-v2.cjs');
- *   var r = sim.simulate({ mode:'real', spins:100000, betMinor:100, seed:'v1' });
+/* Apex · Simulator V2 (B-3 修正：base spin 触发 bonus 时，模拟 FS 期间派彩)
+ *  - FS spin 计入 paid，不计入 wagered
+ *  - FS 内触发 bonus -> remaining += retriggerSpins
+ *  - FS 不嵌套（与 reference-sim 一致）
  */
-
 var ROOT = require('path').resolve(__dirname, '../..');
 
 if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues){
@@ -14,7 +11,6 @@ if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValu
 }
 if (typeof global.window === 'undefined') global.window = {};
 
-// 加载引擎（顺序敏感）
 [
   '/src/config/version.js',
   '/src/config/math-profile.js',
@@ -36,6 +32,9 @@ var MP = global.window.ApexMathProfile;
 var GE = global.window.ApexEngineGameEngine;
 var EV = global.window.ApexEngineEvaluator;
 var SL = global.window.ApexSymbolsLocked;
+var BONUS = global.window.ApexEngineBonus;
+var FS_RETRIGGER = (BONUS && BONUS.BONUS_RULES && BONUS.BONUS_RULES.retriggerSpins) || 10;
+var FS_GUARD = 1000;
 
 function injectPity(grid, symbol, minCount){
   var g = grid.slice();
@@ -47,6 +46,20 @@ function injectPity(grid, symbol, minCount){
     if (g[j] !== symbol){ g[j] = symbol; need--; }
   }
   return g;
+}
+
+function runFreeSpins(engine, mode, betMinor, baseIdx, initialSpins){
+  var remaining = initialSpins, fsCount = 0, fsMultSum = 0, guard = 0;
+  while (remaining > 0 && guard < FS_GUARD){
+    remaining--; fsCount++; guard++;
+    var fs = engine.spin({
+      mode: mode, betMinor: betMinor,
+      spinId: 'sim-' + String(baseIdx).padStart(12, '0') + '-fs-' + fsCount
+    });
+    fsMultSum += fs.totalMultiplier;
+    if (fs.bonus.triggered) remaining += FS_RETRIGGER;
+  }
+  return { fsCount: fsCount, fsMultSum: fsMultSum };
 }
 
 function simulate(opts){
@@ -70,6 +83,7 @@ function simulate(opts){
 
   var wagered = 0, paid = 0, hits = 0, bonusTriggers = 0;
   var cappedRounds = 0, totalTumbles = 0;
+  var totalFsSpins = 0, totalFsMultiplier = 0;
   var wins = new Array(spins);
   var maxWinUnits = 0;
 
@@ -85,15 +99,26 @@ function simulate(opts){
       }
     }
     var res = engine.spin({
-      mode: mode, betMinor: betMinor, spinId: 'sim-' + String(i).padStart(12, '0'),
+      mode: mode, betMinor: betMinor,
+      spinId: 'sim-' + String(i).padStart(12, '0'),
       gridOverride: gridOverride
     });
+
     wagered += betMinor;
-    var winMinor = Math.floor(betMinor * res.totalMultiplier * payScale);
+    var totalMult = res.totalMultiplier;
+
+    if (res.bonus.triggered){
+      bonusTriggers++;
+      var fs = runFreeSpins(engine, mode, betMinor, i, res.bonus.awardedSpins || 10);
+      totalFsSpins += fs.fsCount;
+      totalFsMultiplier += fs.fsMultSum;
+      totalMult += fs.fsMultSum;
+    }
+
+    var winMinor = Math.floor(betMinor * totalMult * payScale);
     paid += winMinor;
     wins[i] = winMinor / betMinor;
     if (winMinor > 0) hits++;
-    if (res.bonus.triggered) bonusTriggers++;
     if (res.diagnostics.terminatedBySafetyLimit) cappedRounds++;
     totalTumbles += res.diagnostics.tumbleCount;
     if (wins[i] > maxWinUnits) maxWinUnits = wins[i];
@@ -103,15 +128,13 @@ function simulate(opts){
   function q(p){ return wins.length ? wins[Math.floor(p * (wins.length - 1))] : 0; }
 
   return {
-    mode: mode, spins: spins, seed: seed,
-    betMinor: betMinor,
-    wagered: wagered, paid: paid,
-    rtp: paid / wagered,
-    hitRate: hits / spins,
-    bonusRate: bonusTriggers / spins,
+    mode: mode, spins: spins, seed: seed, betMinor: betMinor,
+    wagered: wagered, paid: paid, rtp: paid / wagered,
+    hitRate: hits / spins, bonusRate: bonusTriggers / spins,
     avgTumbles: totalTumbles / spins,
-    cappedRounds: cappedRounds,
-    maxWinUnits: maxWinUnits,
+    avgFsSpins: totalFsSpins / spins,
+    avgFsMultiplier: totalFsMultiplier / spins,
+    cappedRounds: cappedRounds, maxWinUnits: maxWinUnits,
     median: q(0.5), p95: q(0.95), p99: q(0.99)
   };
 }
