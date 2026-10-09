@@ -34,7 +34,7 @@
     "test:rtp:full": "RTP_GATE_SPINS=200000 node tests/math/rtp-gate.cjs",
     "test:engine": "node tests/engine/all.test.cjs",
     "test:e2e": "node tests/e2e/spin-sql.cjs && node tests/e2e/spin-api.cjs",
-    "test:fault": "node tests/fault/run-all.sh",
+    "test:fault": "bash tests/fault/run-all.sh",
     "test:monitoring": "node tests/monitoring/probes.cjs && node tests/monitoring/metrics.cjs && node tests/monitoring/error-reporter.cjs",
     "test:rollout": "node tests/rollout/rollout.cjs",
     "test:settlement": "node tests/settlement/guard-10.cjs && node tests/settlement/a2-runtime-isolation.cjs && node tests/settlement/a4-idempotency.cjs && node tests/settlement/a5-fs-concurrency.cjs && node tests/settlement/a6-reward-chain.cjs && node tests/settlement/a6b-cap-guard.cjs && node tests/settlement/a7-ledger-recon.cjs && node tests/settlement/a8-backup-restore.cjs && node tests/settlement/a9-session-limit.cjs",
