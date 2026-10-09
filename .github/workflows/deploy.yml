@@ -109,11 +109,11 @@ jobs:
         if: success()
         env:
           CF_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          CF_TOKEN: ${{ secrets.CLOUDFLARE_CACHE_TOKEN }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           set -e
           if [ -z "$CF_ZONE_ID" ] || [ -z "$CF_TOKEN" ]; then
-            echo "[SKIP] 未配置 CLOUDFLARE_ZONE_ID 或 CLOUDFLARE_CACHE_TOKEN"
+            echo "[SKIP] 未配置 CLOUDFLARE_ZONE_ID 或 CLOUDFLARE_API_TOKEN"
             exit 0
           fi
           echo "[PURGE] 清空 CDN 缓存..."
