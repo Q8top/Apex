@@ -64,6 +64,32 @@ jobs:
           node tests/webauthn.test.js
           node tests/password-length.test.js
 
+      - name: Engine tests
+        run: |
+          node tests/engine/all.test.cjs
+
+      - name: E2E tests (SQL + API)
+        run: |
+          node tests/e2e/spin-sql.cjs
+          node tests/e2e/spin-api.cjs
+
+      - name: Fault injection (D-2)
+        run: |
+          node tests/fault/d1-fault.cjs
+          node tests/fault/rate-limit-fault.cjs
+          node tests/fault/concurrency-fault.cjs
+          node tests/fault/config-fault.cjs
+
+      - name: Monitoring probes + metrics (D-3)
+        run: |
+          node tests/monitoring/probes.cjs
+          node tests/monitoring/metrics.cjs
+          node tests/monitoring/error-reporter.cjs
+
+      - name: Rollout bucketing (D-4)
+        run: |
+          node tests/rollout/rollout.cjs
+
       - name: Settlement tests
         run: |
           node tests/settlement/guard-10.cjs
@@ -74,6 +100,10 @@ jobs:
           node tests/settlement/a7-ledger-recon.cjs
           node tests/settlement/a8-backup-restore.cjs
           node tests/settlement/a9-session-limit.cjs
+
+      - name: Settlement cap guard (A-6b)
+        run: |
+          node tests/settlement/a6b-cap-guard.cjs
 
       - name: Security Scan
         run: node tests/security-scan.js
