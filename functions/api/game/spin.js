@@ -17,6 +17,36 @@ const MAX_RETRIGGERS = 10;
 const RETRIGGER_ADD = 10;
 const FS_TTL_MS = 24 * 60 * 60 * 1000;
 
+// A-6 BigInt 定点化：10^6 精度
+// 赔率（totalMultiplier）和 payScale 都是"带 6 位小数的十进制数"，
+// 乘以 1e6 后都是整数，无精度损失。
+// 派彩计算 = floor(bet * totalMult * payScale)，避免浮点误差少派 1 分。
+const PRECISION_SCALE = 1000000;
+const PRECISION_SCALE_BIG = 1000000n;
+const PRECISION_DIVISOR = 1000000000000n; // 1e6 * 1e6
+
+function toFixedBig(x) {
+  if (!Number.isFinite(x) || x < 0) {
+    throw new Error('toFixedBig: invalid input');
+  }
+  var scaled = Math.round(x * PRECISION_SCALE);
+  if (!Number.isSafeInteger(scaled)) {
+    throw new Error('toFixedBig: out of safe integer range');
+  }
+  return BigInt(scaled);
+}
+
+function calcWinMinorFixed(betMinor, totalMultiplier, payScale) {
+  if (!Number.isSafeInteger(betMinor) || betMinor < 0) {
+    throw new Error('calcWinMinorFixed: betMinor invalid');
+  }
+  var totalFixed = toFixedBig(totalMultiplier);
+  var payScaleFixed = toFixedBig(payScale);
+  var product = BigInt(betMinor) * totalFixed * payScaleFixed;
+  var minor = product / PRECISION_DIVISOR; // 向下取整（保守）
+  return Number(minor);
+}
+
 function validateRequest(body) {
   if (!body || typeof body !== 'object') return 'body_invalid';
   const { spinId, betMinor, mode } = body;
@@ -187,7 +217,12 @@ export async function executeSpin(env, user, body) {
   }
 
   const payScale = profile.payScale;
-  const theoreticalWinMinor = Math.floor(effectiveBetMinor * spinResult.totalMultiplier * payScale);
+  // A-6 BigInt 定点计算（避免浮点少派 1 分）
+  const theoreticalWinMinor = calcWinMinorFixed(
+    effectiveBetMinor,
+    spinResult.totalMultiplier,
+    payScale
+  );
 
   let actualWinMinor = theoreticalWinMinor;
   let chainId = null;
