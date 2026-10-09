@@ -6,6 +6,40 @@ function lg(id,x1,y1,x2,y2,st){var s='<linearGradient id="'+id+'" x1="'+x1+'" y1
 function rg(id,cx,cy,r,st){var s='<radialGradient id="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';for(var i=0;i<st.length;i++){var t=st[i];s+='<stop offset="'+t[0]+'" stop-color="'+t[1]+'"'+(t[2]!==undefined?' stop-opacity="'+t[2]+'"':'')+'/>';}return s+'</radialGradient>';}
 /* 双层阴影：近 + 远 */
 function shd2(id){return '';/*C4-OPT: filter removed*/}
+var _defsSpriteReady=false;
+function _buildDefsCache(){
+  var keys=Object.keys(S);var out='';var k,i,m;
+  for(i=0;i<keys.length;i++){k=keys[i];
+    var full=S[k];if(!full)continue;
+    m=String(full).match(/<defs>([\s\S]*?)<\/defs>/);
+    if(m)out+=m[1];
+  }
+  return out;
+}
+function _ensureDefsSprite(){
+  if(_defsSpriteReady)return;
+  _defsSpriteReady=true;
+  if(typeof document==='undefined'||!document.body)return;
+  if(document.getElementById('apex-sym-defs'))return;
+  var NS='http://www.w3.org/2000/svg';
+  var sprite=document.createElementNS(NS,'svg');
+  sprite.setAttribute('id','apex-sym-defs');
+  sprite.setAttribute('width','0');
+  sprite.setAttribute('height','0');
+  sprite.setAttribute('style','position:absolute;overflow:hidden;width:0;height:0');
+  sprite.setAttribute('aria-hidden','true');
+  sprite.setAttribute('focusable','false');
+  var defs=document.createElementNS(NS,'defs');
+  defs.innerHTML=_buildDefsCache();
+  sprite.appendChild(defs);
+  document.body.appendChild(sprite);
+}
+function _stripDefs(svgStr){
+  if(!svgStr)return svgStr;
+  var m=String(svgStr).match(/^<svg\s[^>]*><defs>[\s\S]*?<\/defs>([\s\S]*)<\/svg>\s*$/);
+  if(!m)return svgStr;
+  return '<svg '+H+'>'+m[1]+'</svg>';
+}
 function svg(d,b){b=String(b).replace(/\s*filter="url\(#[^)]+\)"/g,'');return '<svg '+H+'><defs>'+d+'</defs>'+b+'</svg>';}
 
 /* ==================== 5 水果 ==================== */
@@ -219,7 +253,7 @@ var A = {
 };
 function sc(svg,uid){if(!uid)return svg;var re=/id="([^"]+)"/g,ids=[],m,seen={};while((m=re.exec(svg))!==null)ids.push(m[1]);for(var i=0;i<ids.length;i++){var r=ids[i];if(seen[r])continue;seen[r]=true;var e=r.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');svg=svg.replace(new RegExp('id="'+e+'"','g'),'id="'+r+'-'+uid+'"');svg=svg.replace(new RegExp('url\\(#'+e+'\\)','g'),'url(#'+r+'-'+uid+')');}return svg;}
 function rs(id){if(Object.prototype.hasOwnProperty.call(S,id))return id;if(Object.prototype.hasOwnProperty.call(A,id))return A[id];return null;}
-function get(id,uid){var k=rs(id);if(!k)return '';return sc(S[k],uid||nid('s'));}
+function get(id,uid){var k=rs(id);if(!k)return '';_ensureDefsSprite();return _stripDefs(S[k]);}
 function has(id){return rs(id)!==null;}
 function list(){return Object.keys(S);}
 window.ApexSymbolsV2 = Object.freeze({get:get,has:has,list:list,VIEWBOX:'0 0 100 100',SVGS:Object.freeze(S),ALIASES:Object.freeze(A)});
