@@ -205,6 +205,10 @@
   }
   function resumeCtx() { resume(); }
 
+  function isRunning() {
+    return !!(ctx && ctx.state === 'running');
+  }
+
   function getVolumes() {
     return Object.freeze({
       enabled: vols.enabled,
@@ -223,6 +227,7 @@
     setEnabled: setEnabled,
     suspend: suspend,
     resume: resumeCtx,
+    isRunning: isRunning,
     getVolumes: getVolumes,
     hasSupport: function () { return !!(window.AudioContext || window.webkitAudioContext); }
   });
