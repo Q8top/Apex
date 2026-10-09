@@ -38,7 +38,6 @@ var state = {
     fastMode: false,
     spinning: false,
     bonusLock: false,
-    autoTimer: 0,
     tumbleTimers: [],
     sheetCloseTimer: 0,
     confirmCloseTimer: 0,
@@ -617,10 +616,6 @@ var state = {
     }, duration);
   }
 
-  function scheduleAuto() {
-    /* compat shim */
-  }
-
   function resolveAutoDone(outcome) {
     if (pendingAutoResolve) {
       var r = pendingAutoResolve;
@@ -682,8 +677,6 @@ var state = {
     }
     state.autoSpin = false;
     pendingAutoResolve = null;
-    clearTimeout(state.autoTimer);
-    state.autoTimer = 0;
     renderAutoBtn();
     renderSpinBtn();
   }
