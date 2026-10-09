@@ -1,41 +1,89 @@
 {
   "generated_at": "2026-10-09",
   "math_version": "1.0.0",
-  "method": "tests/math/simulator-v2.cjs (B-3 fixed: FS simulated)",
+  "method": "tests/math/simulator-v2.cjs (B-3 fixed, 30 seeds, bootstrap CI)",
   "samples": {
     "real": {
-      "spins": 1200000,
-      "seeds": 6,
+      "spins": 6000000,
+      "seeds": 30,
       "seed_names": [
         "r1",
         "r2",
         "r3",
         "r4",
         "r5",
-        "r6"
+        "r6",
+        "r7",
+        "r8",
+        "r9",
+        "r10",
+        "r11",
+        "r12",
+        "r13",
+        "r14",
+        "r15",
+        "r16",
+        "r17",
+        "r18",
+        "r19",
+        "r20",
+        "r21",
+        "r22",
+        "r23",
+        "r24",
+        "r25",
+        "r26",
+        "r27",
+        "r28",
+        "r29",
+        "r30"
       ]
     },
     "demo": {
-      "spins": 1200000,
-      "seeds": 6,
+      "spins": 6000000,
+      "seeds": 30,
       "seed_names": [
         "d1",
         "d2",
         "d3",
         "d4",
         "d5",
-        "d6"
+        "d6",
+        "d7",
+        "d8",
+        "d9",
+        "d10",
+        "d11",
+        "d12",
+        "d13",
+        "d14",
+        "d15",
+        "d16",
+        "d17",
+        "d18",
+        "d19",
+        "d20",
+        "d21",
+        "d22",
+        "d23",
+        "d24",
+        "d25",
+        "d26",
+        "d27",
+        "d28",
+        "d29",
+        "d30"
       ]
     }
   },
   "results": {
     "real": {
-      "rtp_mean": 0.9169,
+      "rtp_mean": 0.9178,
       "rtp_range": [
-        0.9111,
-        0.9207
+        0.9074,
+        0.9255
       ],
-      "rtp_spread": 0.0095,
+      "rtp_spread": 0.0181,
       "hit_rate_mean": 0.3244,
       "target_rtp": [
         0.88,
@@ -44,16 +92,21 @@
       "target_hit_rate": [
         0.2,
         0.35
-      ]
+      ],
+      "rtp_ci95": [
+        0.9162,
+        0.9195
+      ],
+      "rtp_ci95_method": "bootstrap-seed-level-10000-crypto-rng"
     },
     "demo": {
-      "rtp_mean": 2.0873,
+      "rtp_mean": 2.0821,
       "rtp_range": [
-        2.0623,
-        2.1091
+        2.046,
+        2.1196
       ],
-      "rtp_spread": 0.0467,
-      "hit_rate_mean": 0.5487,
+      "rtp_spread": 0.0736,
+      "hit_rate_mean": 0.5488,
       "target_rtp": [
         1.3,
         2.5
@@ -61,7 +114,12 @@
       "target_hit_rate": [
         0.45,
         0.6
-      ]
+      ],
+      "rtp_ci95": [
+        2.0752,
+        2.0892
+      ],
+      "rtp_ci95_method": "bootstrap-seed-level-10000-crypto-rng"
     }
   },
   "params": {
