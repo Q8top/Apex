@@ -111,3 +111,50 @@ iPhone 级丝滑不可达（硬件差 3~5x），但游戏体验已正常。
 ---
 
 C 阶段完成。
+
+---
+
+## 9. C 阶段全量回归证据（2026-10-09）
+
+cat > ~/apex-peek-winthreshold.sh << 'OUTER'
+#!/bin/bash
+set -eu
+cd /root/projects/Apex
+
+echo "═══ sweet-demo.js 里音频阈值 ═══"
+sed -n '/if (state.win > 0) {/,/^    }/p' src/js/inline/sweet-demo.js | head -25
+
+echo ""
+echo "═══ audio-synth.js 里的 win 音效名 ═══"
+grep -n "'win-\|'big-win'\|'mega-win'\|'super-win'" src/js/presentation/audio-synth.js
+
+echo ""
+echo "═══ haptics.winPulse 的阈值 ═══"
+sed -n '/function winPulse/,/^  }/p' src/js/presentation/haptics.js
+
+echo "==PEEK-DONE=="
+OUTER
+`bash /tmp/apex-regress.sh`（本地一次性跑）
+
+| 项 | 结果 | 耗时 |
+|---|---|---|
+| syntax-check | checked=145 failed=0 | 8s |
+| config-sync | passed | <1s |
+| engine-tests | 127/127 | 1s |
+| settlement-guard-10 | 32/32 | <1s |
+| settlement-a2-runtime-isolation | 13/13 | 3s |
+| settlement-a4-idempotency | 26/26 | <1s |
+| settlement-a5-fs-concurrency | 21/21 | <1s |
+| settlement-a6-reward-chain | 12/12 | <1s |
+| settlement-a7-ledger-recon | 25/25 | <1s |
+| settlement-a8-backup-restore | 18/18 | 1s |
+| settlement-a9-session-limit | 13/13 | <1s |
+| e2e-spin-sql | 24/24 | <1s |
+| e2e-spin-api | 30/30 | <1s |
+| security-scan | 0 issues / 186 files | 1s |
+| rtp-gate-50k | PASS (2 modes) | 6s |
+
+**PASS: 15 / FAIL: 0**
+
+> 注：settlement 8 项用 node:sqlite 模拟，不完全等价 D1；
+> 真实 D1 验证见 .github/workflows/d1-integration.yml（手动触发）。
