@@ -143,7 +143,7 @@ export async function sendEmail(env, to, subject, text, html, idempotencyKey) {
       attemptsLog.push({ provider, attempt, ok: result.ok, reason: result.reason || null });
 
       if (result.ok) {
-        console.log(JSON.stringify({
+        console.info(JSON.stringify({
           tag: 'email_sent',
           provider,
           attempt,

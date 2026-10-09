@@ -603,5 +603,4 @@
     if (br) br.addEventListener('click', register);
   });
 
-  console.log('[Apex] Passkey 前端已加载');
 })();
