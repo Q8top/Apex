@@ -5,10 +5,8 @@ var _u=0;function nid(p){_u+=1;return p+_u.toString(36);}
 function lg(id,x1,y1,x2,y2,st){var s='<linearGradient id="'+id+'" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'">';for(var i=0;i<st.length;i++){var t=st[i];s+='<stop offset="'+t[0]+'" stop-color="'+t[1]+'"'+(t[2]!==undefined?' stop-opacity="'+t[2]+'"':'')+'/>';}return s+'</linearGradient>';}
 function rg(id,cx,cy,r,st){var s='<radialGradient id="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';for(var i=0;i<st.length;i++){var t=st[i];s+='<stop offset="'+t[0]+'" stop-color="'+t[1]+'"'+(t[2]!==undefined?' stop-opacity="'+t[2]+'"':'')+'/>';}return s+'</radialGradient>';}
 /* 双层阴影：近 + 远 */
-function shd2(id){return '<filter id="'+id+'" x="-40%" y="-40%" width="180%" height="180%">'
-  +'<feDropShadow dx="0" dy="1.2" stdDeviation="0.8" flood-color="#000" flood-opacity="0.45"/>'
-  +'<feDropShadow dx="0" dy="3.5" stdDeviation="2.2" flood-color="#000" flood-opacity="0.28"/></filter>';}
-function svg(d,b){return '<svg '+H+'><defs>'+d+'</defs>'+b+'</svg>';}
+function shd2(id){return '';/*C4-OPT: filter removed*/}
+function svg(d,b){b=String(b).replace(/\s*filter="url\(#[^)]+\)"/g,'');return '<svg '+H+'><defs>'+d+'</defs>'+b+'</svg>';}
 
 /* ==================== 5 水果 ==================== */
 var BANANA = svg(
