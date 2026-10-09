@@ -25,6 +25,8 @@
   var audioBridge = null;
 var sheetTrap = null;
 var confirmTrap = null;
+var perfBoard = null;
+var announcer = null;
 var autoSpinCtl = null;
 var pendingAutoResolve = null;
 var animator = null;
@@ -372,6 +374,12 @@ var state = {
     }
     if (state.win > 0) {
       var ratio = state.win / (betMinor / 100);
+      try {
+        if (announcer) {
+          var lvl = ratio >= 100 ? "ultra" : ratio >= 50 ? "epic" : ratio >= 20 ? "mega" : ratio >= 5 ? "big" : "";
+          announcer.polite(lvl ? (lvl + " win: " + state.win.toFixed(2)) : ("Win: " + state.win.toFixed(2)));
+        }
+      } catch (e) {}
       if (audio) {
         if (ratio >= 100) playAudio('ultra-win');
         else if (ratio >= 50) playAudio('epic-win');
@@ -457,7 +465,13 @@ var state = {
     var ids = [];
     for (var i = 0; i < CELLS; i++) ids.push(randomSymbol());
     if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderBoard) {
-      window.ApexSymbolRenderer.renderBoard(el.board, ids);
+      if (window.ApexPerf && perfBoard) {
+        perfBoard.timeIt("board", function () {
+          window.ApexSymbolRenderer.renderBoard(el.board, ids);
+        });
+      } else {
+        window.ApexSymbolRenderer.renderBoard(el.board, ids);
+      }
     } else {
       var html = '';
       for (var j = 0; j < CELLS; j++) {
@@ -886,6 +900,8 @@ function toast(msg) {
     runtime = initRuntime();
     if (window.ApexAudio) audio = window.ApexAudio.create();
     if (window.ApexAnimator) animator = window.ApexAnimator.create();
+    if (window.ApexPerf) perfBoard = window.ApexPerf.create({ cap: 100 });
+    if (window.ApexA11y) { try { announcer = window.ApexA11y.createAnnouncer(); } catch (e) {} }
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     applyI18n();
@@ -912,6 +928,15 @@ function toast(msg) {
     renderFastBtn();
     applyModeUI();
     bindEvents();
+
+    // C-3 wiring: boot self-check (console only)
+    try {
+      if (window.ApexRenderer && typeof window.ApexRenderer.bootCheck === "function") {
+        var bc = window.ApexRenderer.bootCheck();
+        if (!bc.ok) console.warn("[renderer] bootCheck not ok:", bc.missing);
+        else if (window.console && console.info) console.info("[renderer] bootCheck ok: " + bc.totalChecked + " symbols");
+      }
+    } catch (e) {}
 
     // real 模式：异步拉服务端余额
     if (runtime && GAME_MODE === 'real') {
