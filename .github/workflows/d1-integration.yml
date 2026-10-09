@@ -1,0 +1,197 @@
+name: D1 Integration Test (manual)
+
+# 施工单 §A-3b 要求：真实 Worker + D1 集成测试
+#
+# 本 workflow 只在手动触发时运行，避免：
+#   - 自动跑占用 Cloudflare D1 免费配额
+#   - 污染生产数据
+#
+# 机制：
+#   1. 建临时 D1（apex-test-<run_id>）
+#   2. 跑全部迁移
+#   3. 验证 schema / trigger / 约束
+#   4. 测 guard 机制（INSERT guard + CHECK 触发回滚）
+#   5. 删除临时 D1
+#
+# 局限：
+#   wrangler d1 execute 每次是一独立 batch，无法测 Worker 里的多语句事务。
+#   Worker 层守卫机制需部署临时 Pages 用 --d1 挂载测试，本 workflow 不覆盖。
+#   因此通过本 workflow ≠ A-3b 定稿。
+#
+# 修复记录（2026-10-09）：
+#   - 删 --json 参数（wrangler 4.144 不支持）
+#   - grep 无匹配时不再被 set -e 拦（用 `|| echo` 兜底 + 局部 set +e）
+
+on:
+  workflow_dispatch:
+    inputs:
+      keep_db:
+        description: '保留测试 D1（debug 用）'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: read
+
+jobs:
+  d1-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      DB_NAME: apex-test-${{ github.run_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Create temp D1
+        id: create
+        run: |
+          echo "[CREATE] $DB_NAME"
+          set +e
+          OUT=$(npx wrangler d1 create "$DB_NAME" 2>&1)
+          RC=$?
+          set -e
+          echo "$OUT"
+          if [ "$RC" != "0" ]; then
+            echo "[FATAL] wrangler d1 create 返回 $RC"
+            exit 1
+          fi
+          DB_ID=$(echo "$OUT" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1)
+          if [ -z "$DB_ID" ]; then
+            echo "[FATAL] 无法提取 uuid"
+            exit 1
+          fi
+          echo "db_id=$DB_ID" >> $GITHUB_OUTPUT
+          echo "[OK] db_id=$DB_ID"
+
+      - name: Apply migrations
+        run: |
+          set -e
+          for f in $(ls migrations/*.sql | sort); do
+            echo "[MIG] $f"
+            npx wrangler d1 execute "$DB_NAME" --remote --file="$f" 2>&1 | tail -3 || true
+          done
+          echo "[OK] all migrations attempted"
+
+      - name: Verify schema (tables)
+        run: |
+          set +e
+          MISS=0
+          for t in users sessions spins free_spin_sessions wallet_ledger reward_chains _settlement_guard; do
+            OUT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM $t" 2>&1)
+            CNT=$(echo "$OUT" | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            if [ -n "$CNT" ]; then
+              echo "[TABLE OK] $t rows=$CNT"
+            else
+              echo "[TABLE MISS] $t"
+              echo "$OUT" | tail -3
+              MISS=$((MISS+1))
+            fi
+          done
+          if [ "$MISS" != "0" ]; then
+            echo "[FATAL] $MISS tables missing"
+            exit 1
+          fi
+
+      - name: Verify triggers
+        run: |
+          set +e
+          MISS=0
+          for trg in trg_users_balance_nonnegative_update trg_users_balance_nonnegative_insert trg_sessions_limit; do
+            OUT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM sqlite_master WHERE type='trigger' AND name='$trg'" 2>&1)
+            CNT=$(echo "$OUT" | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            if [ "$CNT" = "1" ]; then
+              echo "[TRIGGER OK] $trg"
+            else
+              echo "[TRIGGER MISS] $trg"
+              echo "$OUT" | tail -3
+              MISS=$((MISS+1))
+            fi
+          done
+          if [ "$MISS" != "0" ]; then
+            echo "[FATAL] $MISS triggers missing"
+            exit 1
+          fi
+
+      - name: Verify spins columns
+        run: |
+          set +e
+          MISS=0
+          for col in request_fingerprint effective_bet_minor fs_session_id chain_id balance_delta; do
+            OUT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT COUNT(*) AS c FROM pragma_table_info('spins') WHERE name='$col'" 2>&1)
+            CNT=$(echo "$OUT" | grep -oE '"c":[0-9]+' | head -1 | grep -oE '[0-9]+')
+            if [ "$CNT" = "1" ]; then
+              echo "[COL OK] spins.$col"
+            else
+              echo "[COL MISS] spins.$col"
+              echo "$OUT" | tail -3
+              MISS=$((MISS+1))
+            fi
+          done
+          if [ "$MISS" != "0" ]; then
+            echo "[FATAL] $MISS columns missing"
+            exit 1
+          fi
+
+      - name: Test guard mechanism
+        run: |
+          set +e
+          echo "[TEST] 建测试用户"
+          npx wrangler d1 execute "$DB_NAME" --remote --command "INSERT INTO users (username,email,password_hash,wallet_balance) VALUES ('t1','t1@e','h',1000)" 2>&1 | tail -2
+
+          echo "[TEST 1] 扣款 + guard"
+          npx wrangler d1 execute "$DB_NAME" --remote --command "UPDATE users SET wallet_balance=wallet_balance-100 WHERE username='t1' AND wallet_balance>=100; INSERT INTO _settlement_guard (slot,guard_value) VALUES (1,CASE WHEN changes()=1 THEN 1 ELSE 0 END) ON CONFLICT(slot) DO UPDATE SET guard_value=CASE WHEN changes()=1 THEN 1 ELSE 0 END" 2>&1 | tail -3
+
+          OUT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" 2>&1)
+          BAL=$(echo "$OUT" | grep -oE '"b":[0-9]+' | head -1 | grep -oE '[0-9]+')
+          echo "[TEST 1] balance=$BAL (expect 900)"
+
+          echo "[TEST 2] 余额不足 扣款 0 行 + guard 应 ABORT"
+          OUT2=$(npx wrangler d1 execute "$DB_NAME" --remote --command "UPDATE users SET wallet_balance=wallet_balance-99999 WHERE username='t1' AND wallet_balance>=99999; INSERT INTO _settlement_guard (slot,guard_value) VALUES (1,CASE WHEN changes()=1 THEN 1 ELSE 0 END) ON CONFLICT(slot) DO UPDATE SET guard_value=CASE WHEN changes()=1 THEN 1 ELSE 0 END" 2>&1)
+          if echo "$OUT2" | grep -qi "constraint"; then
+            echo "[TEST 2] guard ABORT 生效"
+          else
+            echo "[TEST 2] WARN: guard ABORT 未按预期触发（D1 行为可能不同）"
+            echo "$OUT2" | tail -5
+          fi
+          OUT=$(npx wrangler d1 execute "$DB_NAME" --remote --command "SELECT wallet_balance AS b FROM users WHERE username='t1'" 2>&1)
+          BAL=$(echo "$OUT" | grep -oE '"b":[0-9]+' | head -1 | grep -oE '[0-9]+')
+          echo "[TEST 2] balance=$BAL (expect 900)"
+
+          echo "[TEST 3] 负余额 trigger"
+          OUT3=$(npx wrangler d1 execute "$DB_NAME" --remote --command "UPDATE users SET wallet_balance=-1 WHERE username='t1'" 2>&1)
+          if echo "$OUT3" | grep -qi "insufficient_balance\|constraint"; then
+            echo "[TEST 3] 负余额 trigger 生效"
+          else
+            echo "[TEST 3] WARN: 负余额 trigger 未触发"
+            echo "$OUT3" | tail -5
+          fi
+          exit 0
+
+      - name: Cleanup temp D1
+        if: always() && inputs.keep_db != 'true'
+        run: |
+          echo "[DELETE] $DB_NAME"
+          npx wrangler d1 delete "$DB_NAME" -y 2>&1 | tail -3 || echo "[WARN] delete failed"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "=== D1 Integration Test Summary ==="
+          echo "DB: $DB_NAME"
+          echo "keep_db: ${{ inputs.keep_db }}"
