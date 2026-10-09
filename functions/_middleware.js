@@ -128,7 +128,7 @@ export async function onRequest(context) {
       headers: newHeaders,
     });
   } catch (err) {
-    console.error('[Apex][middleware]', requestId, err && err.stack ? err.stack : err);
+    console.error('[Apex][middleware]', requestId, context.request.method, new URL(context.request.url).pathname, err && err.stack ? err.stack : err);
     return jsonError(500, '服务器内部错误', requestId);
   }
 }
