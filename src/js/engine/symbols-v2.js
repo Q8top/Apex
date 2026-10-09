@@ -127,6 +127,39 @@ var BLUE_CANDY = svg(
   +'<path d="M26,52 Q42,44 58,48 Q74,52 74,52" stroke="#FFF" stroke-width="2.6" fill="none" opacity="0.6" stroke-linecap="round"/>'
   +'<path d="M32,62 Q50,66 68,62" stroke="#032A66" stroke-width="2" fill="none" opacity="0.4"/>'
 )
+function candy(p,light,mid,dark,deep,shape){
+var b=p+'-b',h=p+'-h',n=p+'-n',sfx=p+'-s';
+var defs=lg(b,'0','0','0.4','1',[['0%',light],['35%',mid],['75%',dark],['100%',deep]])
+  +rg(h,'30%','26%','42%',[['0%','#FFF','0.95'],['100%','#FFF','0']])
+  +rg(n,'50%','50%','75%',[['60%','#000','0'],['100%','#000','0.32']])
+  +shd2(sfx);
+var shadow='<ellipse cx="50" cy="68" rx="38" ry="10" fill="'+deep+'" opacity="0.55"/>';
+var body='';
+if(shape==='pent'){
+body='<path d="M50,14 L86,38 L74,80 L26,80 L14,38 Z" fill="url(#'+b+')" stroke="'+deep+'" stroke-width="2.6" filter="url(#'+sfx+')"/>';
+}else if(shape==='square'){
+body='<rect x="14" y="18" width="72" height="64" rx="14" fill="url(#'+b+')" stroke="'+deep+'" stroke-width="2.6" filter="url(#'+sfx+')"/>';
+}else if(shape==='heart'){
+body='<path d="M50,82 C22,58 14,42 22,30 C30,20 46,22 50,36 C54,22 70,20 78,30 C86,42 78,58 50,82 Z" fill="url(#'+b+')" stroke="'+deep+'" stroke-width="2.6" filter="url(#'+sfx+')"/>';
+}
+var inner='';
+if(shape==='pent'){
+inner='<path d="M50,20 L80,40 L70,74 L30,74 L20,40 Z" fill="url(#'+n+')" opacity="0.65"/>';
+}else if(shape==='square'){
+inner='<rect x="20" y="24" width="60" height="52" rx="10" fill="url(#'+n+')" opacity="0.65"/>';
+}else if(shape==='heart'){
+inner='<path d="M50,74 C28,56 22,44 28,36 C34,30 44,32 50,42 C56,32 66,30 72,36 C78,44 72,56 50,74 Z" fill="url(#'+n+')" opacity="0.65"/>';
+}
+var hi='';
+if(shape==='pent'){
+hi='<path d="M28,44 L50,30 L72,44" stroke="#FFF" stroke-width="2.8" fill="none" opacity="0.7" stroke-linecap="round"/>';
+}else if(shape==='square'){
+hi='<path d="M26,44 L74,44" stroke="#FFF" stroke-width="2.8" fill="none" opacity="0.6" stroke-linecap="round"/>';
+}else if(shape==='heart'){
+hi='<path d="M32,42 Q40,36 50,42" stroke="#FFF" stroke-width="2.8" fill="none" opacity="0.7" stroke-linecap="round"/>';
+}
+return svg(defs,shadow+body+inner+hi+'<ellipse cx="36" cy="34" rx="9" ry="5" fill="url(#'+h+')" transform="rotate(-25 36 34)"/>');
+}
 var GREEN_CANDY = candy('gc','#D0F8B0','#52C430','#0E5418','#083A10','pent');
 var PURPLE_CANDY = candy('pc','#F0C0FF','#B040E0','#5A0A6A','#3A0548','square');
 var RED_HEART_CANDY = candy('rh','#FFC0C0','#E82838','#8A0A1A','#4A0505','heart');
