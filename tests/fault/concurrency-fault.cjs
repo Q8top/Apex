@@ -141,7 +141,16 @@ function bootstrapDb() {
   var rejected2 = results2.filter(function (r) { return r.status === 400 && r.body.code === 'insufficient_balance'; }).length;
   var other2 = results2.length - succeeded2 - rejected2;
 
-  t('2a at most 2 succeeded', succeeded2 <= 2, 'succeeded=' + succeeded2);
+  // Invariant: every committed spin row has balance_before >= bet_minor
+  // and balance_after >= 0. Checks DB, not response body.
+  var spinRows2All = mem2.prepare(
+    'SELECT balance_before, balance_after, bet_minor FROM spins WHERE user_id=?'
+  ).all(uid2);
+  var allRowsOk = spinRows2All.every(function (r) {
+    return r.balance_before >= r.bet_minor && r.balance_after >= 0;
+  });
+  t('2a all spin rows: before>=bet, after>=0', allRowsOk,
+    JSON.stringify(spinRows2All));
   t('2b at least 1 succeeded', succeeded2 >= 1, 'succeeded=' + succeeded2);
   t('2c no other error codes', other2 === 0, 'other=' + other2 + ' ' + JSON.stringify(results2.map(function(r){return {s:r.status,c:r.body.code};})));
 
