@@ -23,7 +23,8 @@ var state = {
   balanceMinor: START_BALANCE_MINOR,
   betIndex: DEFAULT_BET_INDEX,
   spinning: false,
-  fastMode: false,
+  fastMode: false,           // P2f: user toggle (persists across spins)
+  // skipRequested below: single-spin override, orthogonal to fastMode
   autoSpinning: false,
   autoRemaining: 0,
   tumbleTimers: [],
@@ -647,8 +648,15 @@ function wireA11y(){
 function wirePerf(){
   if (!window.ApexPerf) return;
   if (typeof window.ApexPerf.create !== 'function') return;
-  try { perfInst = window.ApexPerf.create({ cap: 200 }); }
-  catch (e) { perfInst = null; }
+  try {
+    perfInst = window.ApexPerf.create({ cap: 200 });
+    window.__apexPerfReport = function(){
+      return perfInst ? perfInst.reportAll() : {};
+    };
+    window.__apexPerfClear = function(){
+      if (perfInst) perfInst.clear();
+    };
+  } catch (e) { perfInst = null; }
 }
 
 function wireHaptics(){
