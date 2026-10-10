@@ -1,6 +1,9 @@
-/* Apex · Bonus Engine
+/* Apex · Bonus Engine (frontend adapter)
  * 定义：Scatter 触发 / 免费旋转次数 / Retrigger 规则
  * 只负责规则数据，不涉及动画与 UI
+ *
+ * P0-3: 数值从 ApexEngineBonus.BONUS_RULES 单源读取（引擎权威），
+ * 避免前后端再次分叉。加载顺序保证 engine/bonus.js 先于本脚本。
  *
  * 接口约定（P0-1）：
  *   调用方（game-provider-demo.js）在 Bonus 免费旋转中产出的中奖，
@@ -11,19 +14,36 @@
   'use strict';
 
   var RAND_BUF = new Uint32Array(1);   // 复用，避免热路径反复分配
+
+  // P0-3: 从引擎读取权威值（engine/bonus.js 已先加载）
+  var ENG = (typeof window !== 'undefined'
+    && window.ApexEngineBonus
+    && window.ApexEngineBonus.BONUS_RULES) || {};
+
   var BONUS_CONFIG = Object.freeze({
     scatterSymbol: 'LOLLIPOP',
-    triggerMin: 4,
+    triggerMin: (ENG.triggerScatterCount != null) ? ENG.triggerScatterCount : 4,
     triggerMax: 6,
+    // freeSpins4/5/6 保留前端定义（引擎暂只暴露 initialSpins=10）
+    // TODO: 待引擎支持 4/5/6 -> 10/12/15 后改为单源
     freeSpins4: 10,
     freeSpins5: 12,
     freeSpins6: 15,
-    retriggerMin: 4,
-    retriggerAdd: 2,
+    retriggerMin: (ENG.retriggerScatterCount != null) ? ENG.retriggerScatterCount : 4,
+    retriggerAdd: (ENG.retriggerSpins != null) ? ENG.retriggerSpins : 2,
     maxFreeSpins: 200,
     multiplierSymbol: 'MULTIPLIER',
     multiplierValues: Object.freeze([2, 3, 5, 10, 25, 50, 100])
   });
+
+  // 一致性断言：数值一旦分叉立即报警（开发期）
+  try {
+    if (typeof console !== 'undefined' && console.assert) {
+      console.assert(BONUS_CONFIG.triggerMin === 4, 'P0-3: triggerMin mismatch');
+      console.assert(BONUS_CONFIG.retriggerMin === 4, 'P0-3: retriggerMin mismatch');
+      console.assert(BONUS_CONFIG.retriggerAdd === 2, 'P0-3: retriggerAdd mismatch');
+    }
+  } catch (e) {}
 
   function countScatter(grid) {
     var n = 0;
