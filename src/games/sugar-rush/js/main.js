@@ -617,11 +617,15 @@ function wireAudioBridge(){
 }
 
 function playAudio(name){
-  if (audioBridgeInst && typeof audioBridgeInst.play === 'function'){
-    try { if (audioBridgeInst.play(name)) return; } catch (e) {}
-  }
+  // P3e-1 hotfix: SR audio.js owns correct per-game asset paths
+  // (sfx/sugar-rush/*). Prefer it. audio-bridge is ONLY a synth
+  // fallback for names SR does not ship (win-mega, win-super,
+  // win-epic, win-ultra, bonus, tumble).
   if (Audio && typeof Audio.play === 'function'){
-    try { Audio.play(name); } catch (e) {}
+    try { Audio.play(name); return; } catch (e) {}
+  }
+  if (audioBridgeInst && typeof audioBridgeInst.play === 'function'){
+    try { audioBridgeInst.play(name); } catch (e) {}
   }
 }
 function wireAnimator(){
