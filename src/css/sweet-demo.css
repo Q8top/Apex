@@ -511,3 +511,32 @@ a{color:inherit;text-decoration:none}
               0 0 12px rgba(255, 215, 0, 0.45);
   transition: box-shadow 0.3s ease;
 }
+
+
+/* P2-5: tumble chain counter (x2 / x3 ...) */
+.sd-tumble-counter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  font-size: 48px;
+  font-weight: 900;
+  color: #F5D020;
+  text-shadow:
+    0 0 8px rgba(245, 208, 32, 0.9),
+    0 0 20px rgba(245, 208, 32, 0.5),
+    2px 2px 0 #8A4600;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.2s cubic-bezier(.2,.9,.3,1.3);
+  letter-spacing: -2px;
+}
+.sd-tumble-counter.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sd-tumble-counter[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .sd-tumble-counter { transition: none; transform: translate(-50%, -50%) scale(1); }
+}

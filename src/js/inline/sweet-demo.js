@@ -185,6 +185,24 @@ var state = {
     return { entering: entering, falling: falling };
   }
 
+  function updateTumbleCounter(step) {
+    // P2-5: 显示当前连消次数（step = 0 是首次，不显示；>=1 显示 x2..）
+    var el2 = document.getElementById('sd-tumble-counter');
+    if (!el2) return;
+    if (step >= 1) {
+      el2.textContent = 'x' + (step + 1);
+      el2.hidden = false;
+      // 触发入场动画：移除再加
+      el2.classList.remove('is-visible');
+      void el2.offsetWidth;
+      el2.classList.add('is-visible');
+    } else {
+      el2.classList.remove('is-visible');
+      el2.hidden = true;
+      el2.textContent = '';
+    }
+  }
+
   function playTumbleSequence(result) {
     clearTumbleTimers();
     return new Promise(function (resolve) {
@@ -208,6 +226,7 @@ var state = {
         resolved = true;
         clearTumbleTimers();
         renderGridAt(result.finalGrid);
+        try { updateTumbleCounter(-1); } catch (e) {}
         if (skipBtn) {
           skipBtn.hidden = true;
           if (skipHandler) skipBtn.removeEventListener('click', skipHandler);
@@ -235,6 +254,8 @@ var state = {
         if (i >= tumbles.length) {
           renderGridAt(result.finalGrid);
           detachSkip();
+          // P2-5: 序列结束隐藏计数
+          try { updateTumbleCounter(-1); } catch (e) {}
           tumbleSetTimeout(function () {
             if (resolved) return;
             resolved = true;
@@ -244,6 +265,9 @@ var state = {
         }
         var t = tumbles[i];
         var anim = computeTumbleAnimations(t);
+
+        // P2-5: 每步更新连消计数（i=0 是首次消除，显示 x1 无意义 -> 跳过）
+        try { updateTumbleCounter(i); } catch (e) {}
 
         var tWin    = (state.fastMode ? 180 : 500) * speed;
         var tRemove = (state.fastMode ? 120 : 300) * speed;
