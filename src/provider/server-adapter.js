@@ -35,7 +35,8 @@ function uuid(){
   return hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);
 }
 
-function toLegacy(result, betMinor, balanceBefore, balanceAfter, winMinor){
+function toLegacy(result, betMinor, balanceBefore, balanceAfter, winMinor, resp){
+  resp = resp || {};
   var cascades = result.cascades || [];
   var tumbles = [];
   for (var n = 0; n < cascades.length; n++){
@@ -74,7 +75,9 @@ function toLegacy(result, betMinor, balanceBefore, balanceAfter, winMinor){
     totalWin: winMinor,
     feature: feature,
     multipliers: [],
-    multiplierSum: 0
+    multiplierSum: 0,
+    freeSpin: resp.freeSpin || null,
+    fsAwarded: resp.fsAwarded || 0
   };
 }
 
@@ -128,7 +131,7 @@ ServerProvider.prototype.spin = function(req){
     r.spinId = r.spinId || spinId;
     r.mode = 'real';
     self.lastBalance = resp.balanceAfter;
-    return toLegacy(r, betMinor, resp.balanceBefore, resp.balanceAfter, resp.winMinor);
+    return toLegacy(r, betMinor, resp.balanceBefore, resp.balanceAfter, resp.winMinor, resp);
   });
 };
 

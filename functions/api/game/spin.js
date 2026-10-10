@@ -14,7 +14,7 @@ const MIN_BET_MINOR = 1;
 const SPIN_ID_MIN = 10;
 const SPIN_ID_MAX = 64;
 const MAX_RETRIGGERS = 10;
-const RETRIGGER_ADD = 10;
+const RETRIGGER_ADD = 2;
 const FS_TTL_MS = 24 * 60 * 60 * 1000;
 
 // A-6 BigInt 定点化：10^6 精度
@@ -383,6 +383,30 @@ export async function executeSpin(env, user, body) {
     return { status: 500, body: { success: false, code: 'internal_error' } };
   }
 
+  // P0-1: 回读 FS 权威状态（客户端 nextFree 依赖它）
+  let freeSpinOut = null;
+  let fsAwardedOut = 0;
+
+  if (isFree && fsSession) {
+    const fsAfter = await env.apex_db.prepare(
+      "SELECT remaining_spins, total_spins, retrigger_count, status " +
+      "FROM free_spin_sessions WHERE id = ? LIMIT 1"
+    ).bind(fsSession.id).first();
+    if (fsAfter) {
+      freeSpinOut = {
+        sessionId: fsSession.id,
+        remaining: Math.max(0, fsAfter.remaining_spins),
+        totalSpins: fsAfter.total_spins,
+        retriggerCount: fsAfter.retrigger_count,
+        status: fsAfter.status
+      };
+    }
+  }
+
+  if (!isFree && spinResult.bonus && spinResult.bonus.triggered) {
+    fsAwardedOut = spinResult.bonus.awardedSpins || 10;
+  }
+
   return {
     status: 200,
     body: {
@@ -391,7 +415,9 @@ export async function executeSpin(env, user, body) {
       result: spinResult,
       winMinor: actualWinMinor,
       balanceBefore: balanceBefore,
-      balanceAfter: balanceAfter
+      balanceAfter: balanceAfter,
+      freeSpin: freeSpinOut,
+      fsAwarded: fsAwardedOut
     }
   };
 }

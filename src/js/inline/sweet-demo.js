@@ -310,10 +310,21 @@ var state = {
           multEl.style.display = '';
           multValEl.textContent = '×' + totalMult;
         }
-        if (r.feature && r.feature.triggered && window.ApexBonus) {
-          remaining += window.ApexBonus.CONFIG.retriggerAdd;
+        // P0-1: 服务端权威 FS 状态优先（real 模式）
+        if (r.freeSpin && typeof r.freeSpin.remaining === 'number') {
+          remaining = r.freeSpin.remaining;
+          if (r.freeSpin.status === 'completed' || remaining <= 0) {
+            leftEl.textContent = 0;
+            totalEl.textContent = fmt(totalWinMinor / 100);
+            return finish();
+          }
+        } else {
+          // 回退路径（demo 模式或旧接口）：前端自行推进
+          if (r.feature && r.feature.triggered && window.ApexBonus) {
+            remaining += window.ApexBonus.CONFIG.retriggerAdd;
+          }
+          remaining--;
         }
-        remaining--;
         leftEl.textContent = remaining;
         totalEl.textContent = fmt(totalWinMinor / 100);
         setTimeout(nextFree, 300);

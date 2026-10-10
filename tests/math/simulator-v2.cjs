@@ -33,7 +33,7 @@ var GE = global.window.ApexEngineGameEngine;
 var EV = global.window.ApexEngineEvaluator;
 var SL = global.window.ApexSymbolsLocked;
 var BONUS = global.window.ApexEngineBonus;
-var FS_RETRIGGER = (BONUS && BONUS.BONUS_RULES && BONUS.BONUS_RULES.retriggerSpins) || 10;
+var FS_RETRIGGER = (BONUS && BONUS.BONUS_RULES && BONUS.BONUS_RULES.retriggerSpins) || 2;
 var FS_GUARD = 1000;
 
 function injectPity(grid, symbol, minCount){

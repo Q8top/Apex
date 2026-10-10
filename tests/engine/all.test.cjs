@@ -184,7 +184,7 @@ if (typeof globalThis.window === 'undefined') globalThis.window = globalThis;
   t('trigger(3) false', B.resolveBonusTrigger(3) === false);
   t('trigger(4) true', B.resolveBonusTrigger(4) === true);
   t('retrigger(3)=0', B.resolveRetrigger(3) === 0);
-  t('retrigger(4)=10', B.resolveRetrigger(4) === 10);
+  t('retrigger(4)=2', B.resolveRetrigger(4) === 2);
   t('bomb(2) ok', B.validateBombValue(2) === true);
   t('bomb(100) ok', B.validateBombValue(100) === true);
   throws('bomb(1) throws', function(){ B.validateBombValue(1); });

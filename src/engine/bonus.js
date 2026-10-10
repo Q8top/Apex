@@ -6,7 +6,7 @@ var BONUS_RULES = Object.freeze({
   triggerScatterCount: 4,
   initialSpins: 10,
   retriggerScatterCount: 4,
-  retriggerSpins: 10,
+  retriggerSpins: 2,
   scatterPayouts: Object.freeze({ 4: 3, 5: 5, 6: 100 }),
   bombMin: 2,
   bombMax: 100

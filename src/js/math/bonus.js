@@ -18,8 +18,8 @@
     freeSpins4: 10,
     freeSpins5: 12,
     freeSpins6: 15,
-    retriggerMin: 3,
-    retriggerAdd: 5,
+    retriggerMin: 4,
+    retriggerAdd: 2,
     maxFreeSpins: 200,
     multiplierSymbol: 'MULTIPLIER',
     multiplierValues: Object.freeze([2, 3, 5, 10, 25, 50, 100])
