@@ -28,7 +28,7 @@ function makeRng(mode, opts) {
     entries.push([k, spec.baseWeights[k]]);
     total += spec.baseWeights[k];
   }
-  const scatterW = inFs ? knobs.fsScatterWeight || 0 : knobs.scatterWeight;
+  const scatterW = knobs.scatterWeight;
   if (scatterW > 0) {
     entries.push([spec.symbols.scatter, scatterW]);
     total += scatterW;
