@@ -86,6 +86,8 @@ jobs:
           node tests/monitoring/metrics.cjs
           node tests/monitoring/error-reporter.cjs
           node tests/monitoring/reconnection.cjs
+          node tests/monitoring/near-miss.cjs
+          node tests/monitoring/metrics-window.cjs
 
       - name: Rollout bucketing (D-4)
         run: |

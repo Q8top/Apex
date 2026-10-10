@@ -25,11 +25,21 @@ function timingSafeEqual(a, b) {
 }
 
 function parseWindow(url) {
+  // P2-12: prefer ?minutes=N for short (realtime) windows;
+  //         fall back to ?hours=N for existing callers.
+  const rawMin = url.searchParams.get('minutes');
+  if (rawMin != null) {
+    const m = Number(rawMin);
+    if (!Number.isFinite(m) || m <= 0) return { hours: 1, minutes: 60 };
+    const capMin = MAX_WINDOW_HOURS * 60;
+    const minutes = Math.min(Math.floor(m), capMin);
+    return { hours: minutes / 60, minutes };
+  }
   const raw = url.searchParams.get('hours');
   const n = Number(raw);
-  if (!Number.isFinite(n) || n <= 0) return 24;
-  if (n > MAX_WINDOW_HOURS) return MAX_WINDOW_HOURS;
-  return Math.floor(n);
+  if (!Number.isFinite(n) || n <= 0) return { hours: 24, minutes: 24 * 60 };
+  const hours = n > MAX_WINDOW_HOURS ? MAX_WINDOW_HOURS : Math.floor(n);
+  return { hours, minutes: hours * 60 };
 }
 
 export async function onRequestGet(context) {
@@ -56,9 +66,9 @@ export async function onRequestGet(context) {
 
   // ---- window ----
   const url = new URL(request.url);
-  const hours = parseWindow(url);
+  const win = parseWindow(url);
   const now = Date.now();
-  const since = new Date(now - hours * HOUR_MS).toISOString();
+  const since = new Date(now - win.minutes * 60 * 1000).toISOString();
   const until = new Date(now).toISOString();
 
   try {
@@ -116,7 +126,7 @@ export async function onRequestGet(context) {
 
     const body = {
       success: true,
-      window: { since, until, hours },
+      window: { since, until, hours: win.hours, minutes: win.minutes },
       totals: {
         spins: Number(totals.spins || 0),
         paid_spins: Number(totals.paid_spins || 0),
