@@ -35,8 +35,18 @@
   function AudioManager(opts) {
     opts = opts || {};
 
+    // P1-6: 优先使用持久化的静音状态
+    var persistedEnabled = null;
+    try {
+      if (typeof localStorage !== 'undefined') {
+        var raw = localStorage.getItem('apex.audio.enabled');
+        if (raw === '0') persistedEnabled = false;
+        else if (raw === '1') persistedEnabled = true;
+      }
+    } catch (e) {}
+
     var state = {
-      enabled: opts.enabled !== false,
+      enabled: persistedEnabled !== null ? persistedEnabled : (opts.enabled !== false),
       masterVolume: clamp01(opts.masterVolume, 0.8),
       musicVolume:  clamp01(opts.musicVolume,  0.6),
       sfxVolume:    clamp01(opts.sfxVolume,    0.9),
@@ -59,6 +69,12 @@
       state.enabled = next;
       if (!next && state.currentBgm) stop(state.currentBgm);
       notifySynth('enabled', next);
+      // P1-6: 静音持久化
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('apex.audio.enabled', next ? '1' : '0');
+        }
+      } catch (e) {}
       return state.enabled;
     }
 

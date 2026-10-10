@@ -161,7 +161,26 @@
         tone({ freq: f, dur: 200, type: 'triangle', gain: 0.13, delay: i * 0.10 });
       });
     },
-    'multiplier':  function () { tone({ freq: 1400, dur: 100, type: 'square', gain: 0.10 }); }
+    'multiplier':  function () { tone({ freq: 1400, dur: 100, type: 'square', gain: 0.10 }); },
+    'bomb-explode': function (opts) {
+      // P1-6: FS 炸弹爆炸音效；强度随炸弹值变化
+      var intensity = Math.min(100, Math.max(2, (opts && opts.value) || 2));
+      var dur = 300 + intensity * 2;
+      tone({ freq: 120, freqTo: 30, dur: dur, type: 'sawtooth', gain: 0.18 });
+      tone({ freq: 80, freqTo: 40, dur: 200, type: 'sine', gain: 0.25, delay: 0.05 });
+    },
+    'fs-enter':    function () {
+      // P1-6: 进入免费旋转序列
+      [523, 659, 784, 1047].forEach(function (f, i) {
+        tone({ freq: f, dur: 250, type: 'triangle', gain: 0.16, delay: i * 0.12 });
+      });
+    },
+    'fs-loop':     function () {
+      // P1-6: 免费旋转进行中的循环提示音
+      [784, 880, 1047].forEach(function (f, i) {
+        tone({ freq: f, dur: 150, type: 'sine', gain: 0.10, delay: i * 0.08 });
+      });
+    }
   };
 
   var PRESETS_FROZEN = Object.freeze(PRESETS);
