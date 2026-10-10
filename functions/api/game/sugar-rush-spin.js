@@ -1,11 +1,10 @@
-// Apex · POST /api/game/spin
+// Apex - POST /api/game/sugar-rush-spin (isolated)
 // 服务端权威 spin（real 模式唯一入口）
 // 设计详见 docs/settlement/settlement-transaction-design.md
 
 import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
 import { getCurrentUser } from '../../_auth.js';
-import { loadServerEngine } from '../../_game-bridge.js';
-import { loadConfig } from '../../_config-bridge.js';
+import { loadSugarRushEngine, loadSugarRushConfig } from '../../_sugar-rush-bridge.js';
 import { enforceKeyRateLimit } from '../../_rateLimit.js';
 import { sha256Hex } from '../../_security.js';
 
@@ -71,7 +70,7 @@ async function computeRequestFingerprint(input) {
     'v1',
     String(input.userId),
     String(input.spinId),
-    'sweet',
+    'sugar-rush',
     input.betMinor.toString(10),
   ]);
   return await sha256Hex(canonical);
@@ -179,7 +178,7 @@ export async function executeSpin(env, user, body) {
   const fsSession = await env.apex_db.prepare(
     "SELECT id, remaining_spins, total_spins, bet_minor, version, retrigger_count, chain_id, chain_win_minor " +
     "FROM free_spin_sessions " +
-    "WHERE user_id = ? AND game_id = 'sweet' AND status = 'active' AND remaining_spins > 0 AND expires_at > ? " +
+    "WHERE user_id = ? AND game_id = 'sugar-rush' AND status = 'active' AND remaining_spins > 0 AND expires_at > ? " +
     "ORDER BY id DESC LIMIT 1"
   ).bind(userId, nowIso).first();
 
@@ -201,28 +200,21 @@ export async function executeSpin(env, user, body) {
     };
   }
 
-  const cfg = await loadConfig();
-  const engineModules = await loadServerEngine();
+  const cfg = await loadSugarRushConfig();
+  const engineModules = await loadSugarRushEngine();
   const mp = engineModules.MathProfile;
   const profile = mp.getProfile(mode);
-  const weights = mp.buildRngWeights(mode, { fsMode: isFree });
-  const rng = new engineModules.Rng(weights);
-  const engine = new engineModules.GameEngine({ rng, maxTumbleSteps: 20 });
 
   let spinResult;
   try {
-    spinResult = engine.spin({ mode, betMinor: effectiveBetMinor, spinId, isFree });
+    spinResult = engineModules.Engine.spin(mode, effectiveBetMinor);
   } catch (e) {
     return { status: 500, body: { success: false, code: 'engine_error' } };
   }
 
   const payScale = profile.payScale;
-  // A-6 BigInt 定点计算（避免浮点少派 1 分）
-  const theoreticalWinMinor = calcWinMinorFixed(
-    effectiveBetMinor,
-    spinResult.totalMultiplier,
-    payScale
-  );
+  // sugar-rush engine already applies payScale + max-win cap internally
+  const theoreticalWinMinor = spinResult.winMinor;
 
   let actualWinMinor = theoreticalWinMinor;
   let chainId = null;
@@ -300,7 +292,7 @@ export async function executeSpin(env, user, body) {
   }
 
   if (isFree) {
-    const retriggerAwarded = spinResult.bonus && spinResult.bonus.triggered &&
+    const retriggerAwarded = spinResult.fsTriggered &&
       fsSession.retrigger_count < MAX_RETRIGGERS;
     const retriggerAdd = retriggerAwarded ? RETRIGGER_ADD : 0;
     const retriggerInc = retriggerAwarded ? 1 : 0;
@@ -329,9 +321,9 @@ export async function executeSpin(env, user, body) {
   }
 
   let newChainId = null;
-  if (!isFree && spinResult.bonus && spinResult.bonus.triggered) {
-    newChainId = 'ch-' + spinId.slice(0, 20);
-    const fsAwarded = spinResult.bonus.awardedSpins || 10;
+  if (!isFree && spinResult.fsTriggered) {
+    newChainId = 'srg-' + spinId.slice(0, 20);
+    const fsAwarded = spinResult.fsSpinsPlayed || 10;
     const maxWinMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
     const expiresAt = new Date(Date.now() + FS_TTL_MS).toISOString();
     stmts.push(env.apex_db.prepare(
@@ -342,8 +334,8 @@ export async function executeSpin(env, user, body) {
     stmts.push(env.apex_db.prepare(
       "INSERT INTO free_spin_sessions " +
       "(user_id, trigger_spin_id, chain_id, mode, bet_minor, pay_scale, " +
-      " total_spins, remaining_spins, chain_win_minor, expires_at) " +
-      "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?)"
+      " total_spins, remaining_spins, chain_win_minor, expires_at, game_id) " +
+      "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, 'sugar-rush')"
     ).bind(userId, spinId, newChainId, effectiveBetMinor, payScale,
            fsAwarded, fsAwarded, actualWinMinor, expiresAt));
   }
@@ -420,8 +412,8 @@ export async function executeSpin(env, user, body) {
     }
   }
 
-  if (!isFree && spinResult.bonus && spinResult.bonus.triggered) {
-    fsAwardedOut = spinResult.bonus.awardedSpins || 10;
+  if (!isFree && spinResult.fsTriggered) {
+    fsAwardedOut = spinResult.fsSpinsPlayed || 10;
   }
 
   return {

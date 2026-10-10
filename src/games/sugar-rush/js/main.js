@@ -7,6 +7,7 @@ var Lock = window.ApexSugarRushSymbolsLocked;
 var Payout = window.ApexSugarRushPayout;
 var Multiplier = window.ApexSugarRushMultiplier;
 var Bonus = window.ApexSugarRushBonus;
+var Audio = window.ApexSugarRushAudio;
 
 var BET_OPTIONS = [100, 200, 500, 1000, 2000, 5000, 10000];
 var DEFAULT_BET_INDEX = 0;
@@ -21,7 +22,10 @@ var state = {
   autoSpinning: false,
   autoRemaining: 0,
   tumbleTimers: [],
-  currentSpinId: null
+  currentSpinId: null,
+  skipRequested: false,
+  currentBetMinor: 100,
+  currentPayScale: 1
 };
 
 var el = {};
@@ -46,13 +50,16 @@ function cacheEls(){
 /* ---------- format + UI ---------- */
 function fmt(minor){ return Payout.formatMinor(minor, "\u00a5"); }
 
-function updateBalance(){ el.balance.textContent = fmt(state.balanceMinor); }
+function updateBalance(){ el.balance.textContent = fmt(state.balanceMinor); if (el.spinBtn && !state.spinning) updateBetDisplay(); }
 function updateBetDisplay(){
   var b = BET_OPTIONS[state.betIndex];
   el.bet.textContent = fmt(b);
   el.betDisplay.textContent = fmt(b);
   el.betMinus.disabled = state.betIndex <= 0 || state.spinning;
   el.betPlus.disabled = state.betIndex >= BET_OPTIONS.length - 1 || state.spinning;
+  var canAfford = state.balanceMinor >= b;
+  if (!state.autoSpinning) el.spinBtn.disabled = state.spinning || !canAfford;
+  el.autoBtn.disabled = !canAfford && !state.autoSpinning;
 }
 function updateWin(minor){ el.win.textContent = fmt(minor); }
 
@@ -95,7 +102,7 @@ function clearTimers(){
   for (var i = 0; i < state.tumbleTimers.length; i++) clearTimeout(state.tumbleTimers[i]);
   state.tumbleTimers.length = 0;
 }
-function delay(ms){ return new Promise(function(res){ pushTimer(setTimeout(res, ms)); }); }
+function delay(ms){ return new Promise(function(res){ pushTimer(setTimeout(res, state.skipRequested ? Math.min(ms, 30) : ms)); }); }
 
 function applyDropIn(){
   var cells = el.board.children;
@@ -108,11 +115,12 @@ function applyDropIn(){
   return delay((state.fastMode ? 120 : 200) + 7 * stagger + 100);
 }
 
-function showWinFlash(text){
+function showWinFlash(text, tier){
   var old = el.board.querySelector(".sr-win-flash");
   if (old) old.remove();
   var div = document.createElement("div");
   div.className = "sr-win-flash";
+  if (tier) div.classList.add("is-" + tier);
   div.textContent = text;
   el.board.appendChild(div);
   requestAnimationFrame(function(){ div.classList.add("is-show"); });
@@ -136,6 +144,18 @@ function markRemoving(positions){
     if (c){ c.classList.remove("is-winning"); c.classList.add("is-removing"); }
   }
 }
+function showFloatWin(positions, amountMinor){
+  if (!positions || !positions.length) return;
+  var cells = el.board.children;
+  var anchor = cells[positions[0]];
+  if (!anchor) return;
+  var div = document.createElement('div');
+  div.className = 'sr-float-win';
+  div.textContent = '+' + fmt(amountMinor);
+  anchor.appendChild(div);
+  setTimeout(function(){ if (div.parentNode) div.parentNode.removeChild(div); }, 1200);
+}
+
 function updateTumbleCounter(step){
   if (step <= 1){ el.tumbleCounter.hidden = true; return; }
   el.tumbleCounter.hidden = false;
@@ -143,27 +163,65 @@ function updateTumbleCounter(step){
 }
 
 /* ---------- tumble playback ---------- */
-function playBaseCascades(detail){
-  var steps = detail.baseSteps || [];
-  if (steps.length === 0) return Promise.resolve();
+function playSteps(steps, finalGrid, opts){
+  opts = opts || {};
+  if (!steps || steps.length === 0){
+    if (finalGrid) renderGrid(finalGrid);
+    return Promise.resolve();
+  }
   var p = Promise.resolve();
   steps.forEach(function(step, i){
     p = p.then(function(){
-      updateTumbleCounter(i + 1);
+      if (!opts.noCounter) updateTumbleCounter(i + 1);
       markWinning(step.winningPositions);
+      if (step.wins && step.wins.length){
+        for (var k = 0; k < step.wins.length; k++){
+          var w = step.wins[k];
+          var amt = Math.floor(state.currentBetMinor * w.payoutMultiplier * state.currentPayScale);
+          if (amt > 0) showFloatWin(w.positions, amt);
+        }
+      }
       return delay(state.fastMode ? 200 : 400);
     }).then(function(){
       markRemoving(step.winningPositions);
       return delay(state.fastMode ? 120 : 250);
     }).then(function(){
       renderGrid(step.gridAfter);
+      if (Audio) Audio.play("tumble-land");
       return applyDropIn();
     });
-  })
+  });
   return p.then(function(){
-    renderGrid(detail.baseFinalGrid);
-    el.tumbleCounter.hidden = true;
+    if (finalGrid) renderGrid(finalGrid);
+    if (!opts.keepCounter) el.tumbleCounter.hidden = true;
     clearCellAnim();
+  });
+}
+
+function playBaseCascades(detail){
+  return playSteps(detail.baseSteps || [], detail.baseFinalGrid);
+}
+
+function playFsSequence(fsDetail){
+  if (!fsDetail || fsDetail.length === 0) return Promise.resolve();
+  var overlay = document.getElementById("sr-fs-overlay");
+  if (overlay) overlay.hidden = false;
+  var total = fsDetail.length;
+  var countEl = document.getElementById("sr-fs-count");
+  var p = Promise.resolve();
+  fsDetail.forEach(function(d, idx){
+    p = p.then(function(){
+      if (countEl) countEl.textContent = "\u5269\u4f59 " + (total - idx);
+      var bombs = [];
+      for (var i = 0; i < d.initialGrid.length; i++){
+        if (window.ApexSugarRushSymbolsLocked.kindOf(d.initialGrid[i]) === 'multiplier') bombs.push(i);
+      }
+      if (bombs.length && Audio) Audio.play("multiplier");
+      return playSteps(d.steps || [], d.finalGrid, { keepCounter: true, noCounter: true });
+    });
+  });
+  return p.then(function(){
+    if (overlay) overlay.hidden = true;
   });
 }
 
@@ -176,16 +234,74 @@ function makeSpinId(){
   return "sr-" + Date.now().toString(36) + "-" + s;
 }
 
+function doRealSpin(betMinor, opts){
+  var client = window.apiClient;
+  if (!client || typeof client.post !== 'function'){
+    state.spinning = false;
+    if (el.skipBtn) el.skipBtn.hidden = true;
+    el.board.removeAttribute('data-spinning');
+    updateBetDisplay();
+    if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t('sr.toast.loginRequired') : '\u767b\u5f55\u540e\u624d\u80fd\u8fdb\u5165\u6b63\u5f0f\u6e38\u620f');
+    return Promise.resolve();
+  }
+  var spinId = makeSpinId();
+  el.board.setAttribute('data-spinning', '1');
+  return client.post('/api/game/sugar-rush-spin', {
+    spinId: spinId, betMinor: betMinor, mode: 'real'
+  }).then(function(resp){
+    if (!resp || !resp.success){
+      var code = resp && resp.code ? resp.code : 'unknown';
+      if (code === 'unauthenticated'){
+        if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t('sr.toast.loginRequired') : '\u8bf7\u5148\u767b\u5f55');
+        location.href = '/?login=1';
+      } else if (code === 'insufficient_balance'){
+        if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t('sr.toast.insufficient') : '\u4f59\u989d\u4e0d\u8db3');
+      } else {
+        if (!opts.silent) alert((window.ApexI18n ? window.ApexI18n.t('sr.toast.realSpinFailed') : '\u65cb\u8f6c\u5931\u8d25') + ': ' + code);
+      }
+      throw new Error('real_spin_failed:' + code);
+    }
+    var r = resp.result || {};
+    var finalGrid = r.finalGrid || [];
+    if (finalGrid.length === 49) renderGrid(finalGrid);
+    if (resp.balanceAfter != null) { state.balanceMinor = resp.balanceAfter; updateBalance(); }
+    var winMinor = resp.winMinor || 0;
+    updateWin(winMinor);
+    if (winMinor > 0){
+      var ratio = winMinor / betMinor;
+      var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
+      if (Audio) Audio.play(ratio >= 20 ? 'win-big' : 'win-normal');
+      return showWinFlash('+' + fmt(winMinor), tier);
+    }
+  }).then(function(){
+    state.spinning = false;
+    state.skipRequested = false;
+    if (el.skipBtn) el.skipBtn.hidden = true;
+    el.board.removeAttribute('data-spinning');
+    updateBetDisplay();
+  }).catch(function(err){
+    state.spinning = false;
+    state.skipRequested = false;
+    if (el.skipBtn) el.skipBtn.hidden = true;
+    el.board.removeAttribute('data-spinning');
+    updateBetDisplay();
+    console.error('[sugar-rush] real spin error', err);
+  });
+}
+
 function doSpin(opts){
   opts = opts || {};
   if (state.spinning) return Promise.resolve();
   var betMinor = BET_OPTIONS[state.betIndex];
   if (state.balanceMinor < betMinor){
-    if (!opts.silent) alert("\u4f59\u989d\u4e0d\u8db3");
+    if (Audio) Audio.play("ui-tap");
+    if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t("sr.toast.insufficient") : "\u4f59\u989d\u4e0d\u8db3");
     stopAuto();
     return Promise.resolve();
   }
-  state.spinning = true;
+state.spinning = true;
+  state.skipRequested = false;
+  if (el.skipBtn) el.skipBtn.hidden = false;
   state.currentSpinId = makeSpinId();
   state.balanceMinor -= betMinor;
   updateBalance();
@@ -196,27 +312,44 @@ function doSpin(opts){
   clearCellAnim();
   el.board.setAttribute("data-spinning", "1");
 
+  if (state.mode === 'real'){
+    return doRealSpin(betMinor, opts);
+  }
+
   return Promise.resolve().then(function(){
     var result = Engine.spin(state.mode, betMinor, { detail: true });
     var d = result.detail;
+    state.currentPayScale = d.payScale || 1;
     renderGrid(d.initialGrid);
     return applyDropIn().then(function(){
       return playBaseCascades(d);
     }).then(function(){
+      if (result.fsTriggered){
+        if (Audio) Audio.play("scatter");
+        return delay(250).then(function(){ return playFsSequence(d.fsDetail); });
+      }
       state.balanceMinor += result.winMinor;
       updateBalance();
       updateWin(result.winMinor);
-      if (result.winMinor > 0) return showWinFlash("+" + fmt(result.winMinor));
+      if (result.winMinor > 0) {
+        var ratio = result.winMinor / betMinor;
+        var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
+        if (Audio) Audio.play(ratio >= 20 ? "win-big" : "win-normal");
+        return showWinFlash("+" + fmt(result.winMinor), tier);
+      }
     }).then(function(){
       state.spinning = false;
-      el.spinBtn.disabled = false;
+      state.skipRequested = false;
+      if (el.skipBtn) el.skipBtn.hidden = true;
       el.board.removeAttribute("data-spinning");
       updateBetDisplay();
       return result;
     }).catch(function(err){
       state.spinning = false;
-      el.spinBtn.disabled = false;
+      state.skipRequested = false;
+      if (el.skipBtn) el.skipBtn.hidden = true;
       el.board.removeAttribute("data-spinning");
+      updateBetDisplay();
       console.error("[sugar-rush] spin error", err);
     });
   });
@@ -250,10 +383,12 @@ function autoLoop(){
 /* ---------- events ---------- */
 function bindEvents(){
   el.betMinus.addEventListener("click", function(){
+    if (Audio) Audio.play("ui-tap");
     if (state.spinning) return;
     if (state.betIndex > 0){ state.betIndex--; updateBetDisplay(); }
   });
   el.betPlus.addEventListener("click", function(){
+    if (Audio) Audio.play("ui-tap");
     if (state.spinning) return;
     if (state.betIndex < BET_OPTIONS.length - 1){ state.betIndex++; updateBetDisplay(); }
   });
@@ -266,10 +401,30 @@ function bindEvents(){
     else startAuto(20);
   });
   el.fastBtn.addEventListener("click", function(){
+    if (Audio) Audio.play("ui-tap");
     state.fastMode = !state.fastMode;
     el.board.setAttribute("data-fast", state.fastMode ? "1" : "0")
     if (state.fastMode) el.fastBtn.setAttribute("data-active", "1")
     else el.fastBtn.removeAttribute("data-active")
+  });
+  if (el.menuBtn) el.menuBtn.addEventListener("click", function(){ openSheet(); });
+  var sfxBtn = document.getElementById("sr-sfx-toggle");
+  var sfxState = document.getElementById("sr-sfx-state");
+  if (sfxBtn && sfxState){
+    var stored = null;
+    try { stored = localStorage.getItem("sr.audio.enabled"); } catch (e) {}
+    if (stored === "0"){ if (Audio) Audio.setEnabled(false); sfxState.textContent = "\u5173"; }
+    sfxBtn.addEventListener("click", function(){
+      var on = !(Audio && Audio.isEnabled());
+      if (Audio) Audio.setEnabled(on);
+      sfxState.textContent = on ? "\u5f00" : "\u5173";
+      try { localStorage.setItem("sr.audio.enabled", on ? "1" : "0"); } catch (e) {}
+      if (Audio) Audio.play("ui-tap");
+    });
+  }
+  if (el.skipBtn) el.skipBtn.addEventListener("click", function(){
+    state.skipRequested = true;
+    clearTimers();
   });
   el.resetBtn.addEventListener("click", function(){
     if (state.spinning) return;
@@ -280,6 +435,34 @@ function bindEvents(){
 }
 
 /* ---------- init ---------- */
+function applyI18n(){
+  if (!window.ApexI18n || typeof window.ApexI18n.t !== 'function') return;
+  var t = window.ApexI18n.t;
+  var els = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < els.length; i++){
+    var el = els[i];
+    var key = el.getAttribute('data-i18n');
+    if (!key) continue;
+    var v = t(key);
+    if (v && v !== key) el.textContent = v;
+  }
+  var attrs = document.querySelectorAll('[data-i18n-attr]');
+  for (var j = 0; j < attrs.length; j++){
+    var el2 = attrs[j];
+    var spec = el2.getAttribute('data-i18n-attr');
+    if (!spec) continue;
+    var parts = spec.split(':');
+    if (parts.length !== 2) continue;
+    var v2 = t(parts[1]);
+    if (v2 && v2 !== parts[1]) el2.setAttribute(parts[0], v2);
+  }
+  var titleEl = document.querySelector('title[data-i18n]');
+  if (titleEl){
+    var v3 = t('sr.title');
+    if (v3 && v3 !== 'sr.title') document.title = v3 + ' \u00b7 Sugar Rush';
+  }
+}
+
 function readModeFromUrl(){
   try {
     var params = new URLSearchParams(window.location.search);
@@ -289,8 +472,51 @@ function readModeFromUrl(){
   return 'demo';
 }
 
+function buildSheetBody(){
+  var t = (window.ApexI18n && window.ApexI18n.t) ? window.ApexI18n.t : function(k){ return k; };
+  return '<h3>' + t('sr.rules.tumble.title') + '</h3>'
+       + '<p>' + t('sr.rules.intro') + '</p>'
+       + '<p>' + t('sr.rules.tumble.body') + '</p>'
+       + '<h3>' + t('sr.rules.fs.title') + '</h3>'
+       + '<p>' + t('sr.rules.fs.body') + '</p>'
+       + '<h3>' + t('sr.rules.bomb.title') + '</h3>'
+       + '<p>' + t('sr.rules.bomb.body') + '</p>'
+       + '<h3>' + t('sr.rules.notice.title') + '</h3>'
+       + '<ul><li>' + t('sr.rules.notice.item1') + '</li>'
+       + '<li>' + t('sr.rules.notice.item2') + '</li></ul>';
+}
+
+function openSheet(){
+  var sh = document.getElementById("sr-sheet");
+  if (!sh) return;
+  var bodyEl = document.getElementById("sr-sheet-body");
+  if (bodyEl && !bodyEl.innerHTML) bodyEl.innerHTML = buildSheetBody();
+  sh.hidden = false;
+  requestAnimationFrame(function(){ sh.classList.add("is-open"); });
+}
+function closeSheet(){
+  var sh = document.getElementById("sr-sheet");
+  if (!sh) return;
+  sh.classList.remove("is-open");
+  setTimeout(function(){ sh.hidden = true; }, 220);
+}
+function bindSheet(){
+  var sh = document.getElementById("sr-sheet");
+  if (!sh) return;
+  sh.addEventListener("click", function(e){
+    var t = e.target;
+    if (t.closest && t.closest("[data-sr-close]")){ e.preventDefault(); closeSheet(); }
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && !sh.hidden) closeSheet();
+  });
+}
+
 function init(){
   cacheEls();
+  applyI18n();
+  if (Audio) try { Audio.load(); } catch (e) {}
+  bindSheet();
   state.mode = readModeFromUrl();
   var modeLabel = $('sr-mode-label');
   if (modeLabel) modeLabel.textContent = (state.mode === 'real') ? '\u6b63\u5f0f\u6e38\u620f' : '\u8bd5\u73a9\u6a21\u5f0f';

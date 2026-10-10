@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0b10">
-<title>甜蜜爆奖 · Sugar Rush</title>
+<title data-i18n="sr.title">甜蜜爆奖 · Sugar Rush</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/src/css/main.css">
@@ -13,11 +13,11 @@
 </head>
 <body class="sr-root">
 <header class="sr-header">
-  <a class="sr-header-btn" href="/" aria-label="返回大厅">
+  <a class="sr-header-btn" href="/" data-i18n-attr="aria-label:sr.back" aria-label="返回大厅">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M15 18l-6-6 6-6"/></svg>
   </a>
   <div class="sr-header-title">
-    <span class="sr-header-main">甜蜜爆奖</span>
+    <span class="sr-header-main" data-i18n="sr.title">甜蜜爆奖</span>
     <span class="sr-header-sub" id="sr-mode-label">试玩模式</span>
   </div>
   <button type="button" class="sr-header-btn" id="sr-menu-btn" aria-label="打开菜单">
@@ -28,28 +28,35 @@
 <main class="sr-main">
   <section class="sr-stage" aria-label="游戏区域">
     <div class="sr-board" id="sr-board" role="grid" aria-label="7 列 7 行游戏盘面"></div>
+    <div class="sr-fs-overlay" id="sr-fs-overlay" hidden>
+      <div class="sr-fs-panel">
+        <div class="sr-fs-title" data-i18n="sr.fs.title">免费旋转</div>
+        <div class="sr-fs-sub">FREE SPINS</div>
+        <div class="sr-fs-count" id="sr-fs-count">剩余 10</div>
+      </div>
+    </div>
     <div class="sr-tumble-counter" id="sr-tumble-counter" aria-hidden="true" hidden></div>
-    <button type="button" class="sr-skip-btn" id="sr-skip-btn" hidden>跳过</button>
+    <button type="button" class="sr-skip-btn" id="sr-skip-btn" hidden data-i18n="sr.btn.skip">跳过</button>
   </section>
 
   <section class="sr-stats" aria-live="polite" aria-atomic="true">
     <div class="sr-stat">
-      <span class="sr-stat-label" id="sr-balance-label">试玩余额</span>
+      <span class="sr-stat-label" id="sr-balance-label" data-i18n="sr.balance">试玩余额</span>
       <span class="sr-stat-value" id="sr-balance">¥10,000.00</span>
     </div>
     <div class="sr-stat">
-      <span class="sr-stat-label" id="sr-bet-label">投注金额</span>
+      <span class="sr-stat-label" id="sr-bet-label" data-i18n="sr.bet">投注金额</span>
       <span class="sr-stat-value" id="sr-bet">¥100.00</span>
     </div>
     <div class="sr-stat">
-      <span class="sr-stat-label" id="sr-win-label">本局赢得</span>
+      <span class="sr-stat-label" id="sr-win-label" data-i18n="sr.win">本局赢得</span>
       <span class="sr-stat-value" id="sr-win">¥0.00</span>
     </div>
   </section>
 
   <button type="button" class="sr-reset" id="sr-reset-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
-    <span>重置余额</span>
+    <span data-i18n="sr.btn.reset">重置余额</span>
   </button>
 
   <section class="sr-bet" aria-label="投注金额调整">
@@ -65,18 +72,46 @@
   <section class="sr-controls">
     <button type="button" class="sr-ctrl sr-ctrl--auto" id="sr-auto-btn" aria-label="自动旋转">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
-      <span>自动</span>
+      <span data-i18n="sr.btn.auto">自动</span>
     </button>
     <button type="button" class="sr-ctrl sr-ctrl--spin" id="sr-spin-btn" aria-label="旋转">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-      <span>旋转</span>
+      <span data-i18n="sr.btn.spin">旋转</span>
     </button>
     <button type="button" class="sr-ctrl sr-ctrl--fast" id="sr-fast-btn" aria-label="极速">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
-      <span>极速</span>
+      <span data-i18n="sr.btn.fast">极速</span>
     </button>
   </section>
 </main>
+<div class="sr-sheet" id="sr-sheet" hidden>
+  <div class="sr-sheet-backdrop" data-sr-close="1"></div>
+  <div class="sr-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sr-sheet-title">
+    <div class="sr-sheet-head">
+      <h2 class="sr-sheet-title" id="sr-sheet-title" data-i18n="sr.sheet.rules">游戏规则</h2>
+      <button type="button" class="sr-sheet-close" aria-label="关闭" data-sr-close="1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sr-sheet-body" id="sr-sheet-body"></div>
+    <div class="sr-sheet-menu" id="sr-sheet-menu">
+      <button type="button" class="sr-sheet-item" id="sr-sfx-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+        <span data-i18n="sr.sheet.sfx">音效</span>
+        <span class="sr-sheet-val" id="sr-sfx-state">开</span>
+      </button>
+      <a class="sr-sheet-item" href="/privacy" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/></svg>
+        <span data-i18n="sr.sheet.privacy">隐私政策</span>
+      </a>
+      <a class="sr-sheet-item" href="/terms" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span data-i18n="sr.sheet.terms">用户协议</span>
+      </a>
+    </div>
+  </div>
+</div>
+
 
 <script src="/src/config/version.js"></script>
 <script src="/src/games/sugar-rush/config/symbols.locked.js"></script>
@@ -91,7 +126,10 @@
 <script src="/src/games/sugar-rush/engine/tumble.js"></script>
 <script src="/src/games/sugar-rush/engine/bonus.js"></script>
 <script src="/src/games/sugar-rush/engine/game-engine.js"></script>
+<script src="/src/games/sugar-rush/js/audio.js"></script>
 <script src="/src/games/sugar-rush/js/symbols-v2.js"></script>
+<script src="/src/js/platform/i18n.js"></script>
+<script src="/src/js/apiClient.js"></script>
 <script src="/src/games/sugar-rush/js/main.js" defer></script>
 </body>
 </html>
