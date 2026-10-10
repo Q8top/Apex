@@ -72,6 +72,29 @@ jobs:
           fi
           echo "[OK] 部署前安全检查通过"
 
+      - name: Pre-deploy D1 backup (safety net before migrations)
+        run: |
+          set -e
+          mkdir -p backups
+          TS=$(date -u +%Y%m%d-%H%M%S)
+          OUT="backups/pre-deploy-${TS}.sql"
+          echo "[BACKUP] exporting apex-db -> $OUT"
+          npx wrangler d1 export apex-db --remote --output="$OUT"
+          BYTES=$(wc -c < "$OUT")
+          if [ "$BYTES" -lt 100 ]; then
+            echo "[FATAL] backup too small ($BYTES bytes) - abort deploy"
+            exit 1
+          fi
+          echo "[OK] backup saved ($BYTES bytes)"
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: pre-deploy-d1-backup
+          path: backups/*.sql
+          retention-days: 30
+          if-no-files-found: error
+
       - name: Apply D1 migrations (remote)
         run: bash scripts/migrate.sh --remote
 
