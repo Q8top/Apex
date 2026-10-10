@@ -153,25 +153,12 @@ function renderCatContent(content, catKey){
     content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
     return;
   }
-  var GAMES=[
-    {n:"奥林匹斯",   src:"/assets/games/olympus.webp"},
-    {n:"糖果连连爆", src:"/assets/games/sweet.webp"},
-    {n:"甜蜜爆奖",   src:"/assets/games/sugar.webp"},
-    {n:"巨型鲈鱼",   src:"/assets/games/bass.webp"},
-    {n:"狗狗之家",   src:"/assets/games/dog.webp"},
-    {n:"死亡之书",   src:"/assets/games/book.webp"},
-    {n:"星爆",       src:"/assets/games/starburst.webp"},
-    {n:"刚果探险",   src:"/assets/games/gonzo.webp"},
-    {n:"水牛之王",   src:"/assets/games/buffalo.webp"},
-    {n:"狼黄金",     src:"/assets/games/wolf.webp"},
-    {n:"水果派对",   src:"/assets/games/fruit.webp"},
-    {n:"大富翁",     src:"/assets/games/megaways.webp"}
-  ];
+  var GAMES = (window.ApexGamesRegistry && window.ApexGamesRegistry.GAMES) || [];
   var html='<div class="apex-game-grid apex-game-placeholder">';
   GAMES.forEach(function(g){
-    var isSweet = g.n === '糖果连连爆';
-    var cls = isSweet ? ' apex-game-card--live' : '';
-    var attr = isSweet ? ' role="button" tabindex="0" aria-label="'+g.n+' 打开模式选择" data-game="sweet"' : '';
+    var isLive = !!g.live;
+    var cls = isLive ? ' apex-game-card--live' : '';
+    var attr = isLive ? ' role="button" tabindex="0" aria-label="'+g.n+'" data-game="'+g.id+'"' : '';
     html+='<div class="apex-game-card'+cls+'"'+attr+'>'
       +'<span class="apex-game-card-icon"><img src="'+g.src+'" alt="" loading="lazy" draggable="false"></span>'
       +'<span class="apex-game-card-name">'+g.n+'</span>'
@@ -186,8 +173,13 @@ function renderCatContent(content, catKey){
   });
   content.querySelectorAll(".apex-game-card--live").forEach(function(el){
     function go(){
-      if (window.ApexSweetModal && typeof window.ApexSweetModal.open === "function") {
+      var gid = el.dataset.game;
+      var g = window.ApexGamesRegistry && window.ApexGamesRegistry.getById(gid);
+      if (!g) return;
+      if (g.entry === 'modal' && window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
         window.ApexSweetModal.open();
+      } else if (g.entry === 'page' && g.url) {
+        location.href = g.url;
       }
     }
     el.addEventListener("click", go);
