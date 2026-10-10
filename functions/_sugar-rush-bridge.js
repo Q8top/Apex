@@ -72,7 +72,7 @@ export async function loadSugarRushConfig() {
     getProfile: _getProfile
   });
   _configLoaded = {
-    Version: { VERSION: { game: '0.1.0', math: '0.1.0' } },
+    Version: { VERSION: { game: demo.VERSION, math: demo.VERSION } },
     MathProfile: merged,
     SymbolsLocked: w.ApexSugarRushSymbolsLocked,
     PaytableLocked: w.ApexSugarRushPaytableLocked

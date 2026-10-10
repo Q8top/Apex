@@ -4,7 +4,7 @@
  * P0-3: real parameters physically isolated to math-profile.real.js
  *       (server-only). Do NOT re-add real block here.
  */
-var VERSION = '0.1.0';
+var VERSION = '0.2.0';
 var PROFILES = Object.freeze({
   demo: Object.freeze({
     baseWeights: Object.freeze({

@@ -62,6 +62,7 @@ function DemoProvider(opts){
     profile: profile
   });
   this.payScale = profile.payScale;
+  this.maxWinMultiplier = profile.maxWinMultiplier != null ? profile.maxWinMultiplier : 5000;
   this.pityRate = profile.pityRate;
   this.pitySymbol = profile.pitySymbol ? profile.pitySymbol.toLowerCase() : null;
   this.pityMinCount = profile.pityMinCount || 8;
@@ -97,6 +98,10 @@ DemoProvider.prototype.spin = function(req){
 
     // 应用 payScale（与 simulator-v2 一致）
     var winMinor = Math.floor(betMinor * res.totalMultiplier * this.payScale);
+    var _maxWinMinor = betMinor * this.maxWinMultiplier;
+    if (Number.isSafeInteger(_maxWinMinor) && _maxWinMinor > 0 && winMinor > _maxWinMinor) {
+      winMinor = _maxWinMinor;
+    }
 
     // 免费旋转倍率炸弹（对齐老 provider：1~3 个，总倍率乘在 win 上）
     var multipliers = [];

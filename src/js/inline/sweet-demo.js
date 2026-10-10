@@ -66,7 +66,8 @@ var state = {
     return '¥' + num.toFixed(2);
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }
-  function randomSymbol() {
+  // P1d: display-only symbol picker. NEVER used for settlement.
+  function displayRandomSymbol() {
     if (window.ApexSymbols && typeof window.ApexSymbols.pickSymbol === 'function') {
       var t = window.ApexSymbols.pickSymbol();
       var id = window.ApexSymbols.getSymbolId(t);
@@ -658,7 +659,7 @@ var state = {
 
   function renderBoard(initial) {
     var ids = [];
-    for (var i = 0; i < CELLS; i++) ids.push(randomSymbol());
+    for (var i = 0; i < CELLS; i++) ids.push(displayRandomSymbol());
     if (window.ApexSymbolRenderer && window.ApexSymbolRenderer.renderBoard) {
       if (window.ApexPerf && perfBoard) {
         perfBoard.timeIt("board", function () {

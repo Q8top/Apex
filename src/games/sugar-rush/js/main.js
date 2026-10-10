@@ -8,6 +8,11 @@ var Payout = window.ApexSugarRushPayout;
 var Multiplier = window.ApexSugarRushMultiplier;
 var Bonus = window.ApexSugarRushBonus;
 var Audio = window.ApexSugarRushAudio;
+var perfInst = null;
+var autospinCtl = null;
+var animatorInst = null;
+var audioBridgeInst = null;
+var hapticsInst = null;
 
 var BET_OPTIONS = [100, 200, 500, 1000, 2000, 5000, 10000];
 var DEFAULT_BET_INDEX = 0;
@@ -102,13 +107,24 @@ function clearTimers(){
   for (var i = 0; i < state.tumbleTimers.length; i++) clearTimeout(state.tumbleTimers[i]);
   state.tumbleTimers.length = 0;
 }
-function delay(ms){ return new Promise(function(res){ pushTimer(setTimeout(res, state.skipRequested ? Math.min(ms, 30) : ms)); }); }
+function delay(ms){
+  var effective = state.skipRequested ? Math.min(ms, 30) : ms;
+  return new Promise(function(res){
+    if (animatorInst && typeof animatorInst.delay === 'function'){
+      try {
+        animatorInst.delay(effective, res);
+        return;
+      } catch (e) { /* fall through */ }
+    }
+    pushTimer(setTimeout(res, effective));
+  });
+}
 
 function applyDropIn(){
   var cells = el.board.children;
   var stagger = state.fastMode ? 8 : 16;
   for (var i = 0; i < cells.length; i++){
-    var col = i % 7;
+    var col = i % window.ApexSugarRushGrid.GRID.columns;
     cells[i].style.setProperty("--sr-drop-delay", (col * stagger) + "ms");
     cells[i].classList.add("is-dropping-in");
   }
@@ -188,7 +204,7 @@ function playSteps(steps, finalGrid, opts){
       return delay(state.fastMode ? 120 : 250);
     }).then(function(){
       renderGrid(step.gridAfter);
-      if (Audio) Audio.play("tumble-land");
+      if (Audio) playAudio("tumble-land");
       return applyDropIn();
     });
   });
@@ -217,7 +233,7 @@ function playFsSequence(fsDetail){
       for (var i = 0; i < d.initialGrid.length; i++){
         if (window.ApexSugarRushSymbolsLocked.kindOf(d.initialGrid[i]) === 'multiplier') bombs.push(i);
       }
-      if (bombs.length && Audio) Audio.play("multiplier");
+      if (bombs.length && Audio) playAudio("multiplier");
       return playSteps(d.steps || [], d.finalGrid, { keepCounter: true, noCounter: true });
     });
   });
@@ -271,7 +287,7 @@ function doRealSpin(betMinor, opts){
     if (winMinor > 0){
       var ratio = winMinor / betMinor;
       var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
-      if (Audio) Audio.play(ratio >= 20 ? 'win-big' : 'win-normal');
+      if (Audio) playAudio(ratio >= 20 ? 'win-big' : 'win-normal');
       return showWinFlash('+' + fmt(winMinor), tier);
     }
   }).then(function(){
@@ -295,7 +311,7 @@ function doSpin(opts){
   if (state.spinning) return Promise.resolve();
   var betMinor = BET_OPTIONS[state.betIndex];
   if (state.balanceMinor < betMinor){
-    if (Audio) Audio.play("ui-tap");
+    if (Audio) playAudio("ui-tap");
     if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t("sr.toast.insufficient") : "\u4f59\u989d\u4e0d\u8db3");
     stopAuto();
     return Promise.resolve();
@@ -326,7 +342,7 @@ state.spinning = true;
       return playBaseCascades(d);
     }).then(function(){
       if (result.fsTriggered){
-        if (Audio) Audio.play("scatter");
+        if (Audio) playAudio("scatter");
         return delay(250).then(function(){ return playFsSequence(d.fsDetail); });
       }
       state.balanceMinor += result.winMinor;
@@ -335,7 +351,7 @@ state.spinning = true;
       if (result.winMinor > 0) {
         var ratio = result.winMinor / betMinor;
         var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
-        if (Audio) Audio.play(ratio >= 20 ? "win-big" : "win-normal");
+        if (Audio) playAudio(ratio >= 20 ? "win-big" : "win-normal");
         return showWinFlash("+" + fmt(result.winMinor), tier);
       }
     }).then(function(){
@@ -357,13 +373,63 @@ state.spinning = true;
 }
 
 /* ---------- auto spin ---------- */
+function autoSpinFn(){
+  return doSpin({ silent: true }).then(function(){
+    if (state.balanceMinor < BET_OPTIONS[state.betIndex]){
+      return { stop: true, stopReason: 'insufficient' };
+    }
+    return { stop: false };
+  }).catch(function(){
+    return { stop: true, stopReason: 'spin_error' };
+  });
+}
+
+function startAutoViaCtl(n){
+  if (autospinCtl && autospinCtl.isRunning()) return;
+  try {
+    autospinCtl = window.ApexAutoSpin.create({
+      delay: state.fastMode ? 100 : 400,
+      maxSpins: n,
+      spinFn: autoSpinFn,
+      onState: function(st){
+        var running = (st === 'spinning' || st === 'waiting');
+        state.autoSpinning = running;
+        var lbl = el.autoBtn.querySelector("span");
+        if (lbl) lbl.textContent = running ? 'STOP' : 'AUTO';
+      },
+      onFinish: function(reason){
+        state.autoSpinning = false;
+        state.autoRemaining = 0;
+        el.autoBtn.removeAttribute('data-active');
+        var lbl = el.autoBtn.querySelector("span");
+        if (lbl) lbl.textContent = 'AUTO';
+        autospinCtl = null;
+      }
+    });
+    el.autoBtn.setAttribute('data-active', '1');
+    var lbl2 = el.autoBtn.querySelector("span");
+    if (lbl2) lbl2.textContent = 'x' + n;
+    autospinCtl.start();
+  } catch (e) {
+    autospinCtl = null;
+  }
+}
+
 function stopAuto(){
+  if (autospinCtl){
+    try { autospinCtl.stop(); } catch (e) {}
+    autospinCtl = null;
+  }
   state.autoSpinning = false;
   state.autoRemaining = 0;
   el.autoBtn.removeAttribute("data-active");
   el.autoBtn.querySelector("span").textContent = "\u81ea\u52a8";
 }
 function startAuto(n){
+  if (window.ApexAutoSpin && typeof window.ApexAutoSpin.create === 'function'){
+    startAutoViaCtl(n);
+    return;
+  }
   state.autoSpinning = true;
   state.autoRemaining = n;
   el.autoBtn.setAttribute("data-active", "1");
@@ -384,12 +450,12 @@ function autoLoop(){
 /* ---------- events ---------- */
 function bindEvents(){
   el.betMinus.addEventListener("click", function(){
-    if (Audio) Audio.play("ui-tap");
+    if (Audio) playAudio("ui-tap");
     if (state.spinning) return;
     if (state.betIndex > 0){ state.betIndex--; updateBetDisplay(); }
   });
   el.betPlus.addEventListener("click", function(){
-    if (Audio) Audio.play("ui-tap");
+    if (Audio) playAudio("ui-tap");
     if (state.spinning) return;
     if (state.betIndex < BET_OPTIONS.length - 1){ state.betIndex++; updateBetDisplay(); }
   });
@@ -402,7 +468,7 @@ function bindEvents(){
     else startAuto(20);
   });
   el.fastBtn.addEventListener("click", function(){
-    if (Audio) Audio.play("ui-tap");
+    if (Audio) playAudio("ui-tap");
     state.fastMode = !state.fastMode;
     el.board.setAttribute("data-fast", state.fastMode ? "1" : "0")
     if (state.fastMode) el.fastBtn.setAttribute("data-active", "1")
@@ -420,7 +486,7 @@ function bindEvents(){
       if (Audio) Audio.setEnabled(on);
       sfxState.textContent = on ? "\u5f00" : "\u5173";
       try { localStorage.setItem("sr.audio.enabled", on ? "1" : "0"); } catch (e) {}
-      if (Audio) Audio.play("ui-tap");
+      if (Audio) playAudio("ui-tap");
     });
   }
   if (el.skipBtn) el.skipBtn.addEventListener("click", function(){
@@ -542,6 +608,79 @@ function bindSheet(){
   });
 }
 
+function wireAudioBridge(){
+  if (!window.ApexAudioBridge) return;
+  if (typeof window.ApexAudioBridge.create !== 'function') return;
+  try { audioBridgeInst = window.ApexAudioBridge.create(); }
+  catch (e) { audioBridgeInst = null; }
+}
+
+function playAudio(name){
+  if (audioBridgeInst && typeof audioBridgeInst.play === 'function'){
+    try { if (audioBridgeInst.play(name)) return; } catch (e) {}
+  }
+  if (Audio && typeof Audio.play === 'function'){
+    try { Audio.play(name); } catch (e) {}
+  }
+}
+function wireAnimator(){
+  if (!window.ApexAnimator) return;
+  if (typeof window.ApexAnimator.create !== 'function') return;
+  try { animatorInst = window.ApexAnimator.create(); }
+  catch (e) { animatorInst = null; }
+}
+function wireA11y(){
+  if (!window.ApexA11y) return;
+  var board = document.getElementById('sr-board');
+  if (board && !board.getAttribute('role')){
+    board.setAttribute('role', 'grid');
+  }
+  var btns = document.querySelectorAll('button.sr-header-btn, button.sr-ctrl, button.sr-bet-btn');
+  for (var i = 0; i < btns.length; i++){
+    if (!btns[i].getAttribute('aria-label')){
+      var lbl = btns[i].querySelector('.sr-ctrl-label');
+      if (lbl && lbl.textContent) btns[i].setAttribute('aria-label', lbl.textContent);
+    }
+  }
+}
+
+function wirePerf(){
+  if (!window.ApexPerf) return;
+  if (typeof window.ApexPerf.create !== 'function') return;
+  try { perfInst = window.ApexPerf.create({ cap: 200 }); }
+  catch (e) { perfInst = null; }
+}
+
+function wireHaptics(){
+  if (!window.ApexHaptics) return;
+  if (typeof window.ApexHaptics.create !== 'function') return;
+  try { hapticsInst = window.ApexHaptics.create(); }
+  catch (e) { hapticsInst = null; }
+}
+function wireErrorReporter(){
+  if (!window.ApexErrorReporter) return;
+  if (typeof window.ApexErrorReporter.install !== 'function') return;
+  try { window.ApexErrorReporter.install({ mode: GAME_MODE }); }
+  catch (e) {}
+}
+
+function wireReconnection(){
+  if (state.mode !== 'real') return;
+  if (!window.ApexReconnection) return;
+  if (typeof window.ApexReconnection.create !== 'function') return;
+  try {
+    var rc = window.ApexReconnection.create();
+    rc.onChange(function(online){
+      var i18n = window.ApexI18n;
+      var t = (i18n && typeof i18n.t === 'function') ? i18n.t : function(k){ return k; };
+      try {
+        if (online) toast(t('net.online') || 'online');
+        else toast(t('net.offline') || 'offline');
+      } catch (e) {}
+    });
+  } catch (e) {}
+}
+
 function init(){
   cacheEls();
   applyI18n();
@@ -558,6 +697,13 @@ function init(){
   renderGrid(genDisplayGrid());
   // P0-6: real mode pulls authoritative balance from server
   if (state.mode === 'real') loadServerBalance();
+  wireErrorReporter();
+  wireReconnection();
+  wireA11y();
+  wirePerf();
+  wireHaptics();
+  wireAnimator();
+  wireAudioBridge();
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init)

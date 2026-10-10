@@ -26,6 +26,9 @@ function Rng(symbolWeights){
       throw _err.ApexError(_err.CODES.INVALID_WEIGHTS,
         'weight must be positive safe integer (got ' + w + ' for ' + keys[i] + ')');
     }
+    if (!Number.isSafeInteger(total + w)){
+      throw _err.ApexError(_err.CODES.INVALID_WEIGHTS, "total overflow");
+    }
     entries.push([keys[i], w]);
     total += w;
   }

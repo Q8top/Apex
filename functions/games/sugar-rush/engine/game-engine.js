@@ -6,7 +6,7 @@ var _bn = window.ApexSugarRushBonus;
 var _mp = window.ApexSugarRushMathProfile;
 var _rng = window.ApexSugarRushRng;
 var _cap = window.ApexSugarRushCap;
-var MAX_CASCADES = 60;
+var MAX_CASCADES = 100;
 var MAX_FS_SPINS = 500;
 
 function buildRngForMode(mode, fsMode){
