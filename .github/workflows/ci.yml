@@ -108,6 +108,9 @@ jobs:
         run: |
           node tests/settlement/a6b-cap-guard.cjs
 
+      - name: Check no math leak (P3-2)
+        run: node scripts/check-no-math-leak.cjs
+
       - name: Security Scan
         run: node tests/security-scan.js
 
