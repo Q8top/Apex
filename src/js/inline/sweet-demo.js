@@ -416,6 +416,28 @@ var state = {
       try { playAudio('spin-stop'); } catch (err) {}
     }
     renderStats();
+    // P2-4: 差 1 个中奖微光（仅视觉，无逻辑影响）
+    try {
+      if (window.ApexNearMiss) {
+        window.ApexNearMiss.clearHighlight(el.board);
+        var nmOpts = {};
+        if (window.ApexSymbols && typeof window.ApexSymbols.getSymbolId === 'function'
+            && window.ApexSymbolsLocked && typeof window.ApexSymbolsLocked.kindOf === 'function') {
+          nmOpts.isRegular = function (t) {
+            try {
+              var id = window.ApexSymbols.getSymbolId(t);
+              return window.ApexSymbolsLocked.kindOf(id) === 'regular';
+            } catch (e) { return false; }
+          };
+        }
+        var n = window.ApexNearMiss.applyHighlight(el.board, result.finalGrid, nmOpts);
+        if (n > 0) {
+          window.setTimeout(function () {
+            try { window.ApexNearMiss.clearHighlight(el.board); } catch (e) {}
+          }, 800);
+        }
+      }
+    } catch (e) {}
     if (window.ApexHistory) {
       window.ApexHistory.push({
         ts: Date.now(),

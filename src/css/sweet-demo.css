@@ -503,3 +503,11 @@ a{color:inherit;text-decoration:none}
 .sd-skip-btn:active { transform: scale(0.96); }
 .sd-skip-btn:focus-visible { outline: 2px solid #F5D020; outline-offset: 2px; }
 .sd-skip-btn[hidden] { display: none !important; }
+
+
+/* P2-4: near-miss soft glow (regular symbol, 7 of 8) */
+.sd-sym.is-near-miss {
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.65),
+              0 0 12px rgba(255, 215, 0, 0.45);
+  transition: box-shadow 0.3s ease;
+}
