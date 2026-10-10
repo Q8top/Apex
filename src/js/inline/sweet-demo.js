@@ -46,8 +46,26 @@ var state = {
   };
 
   function $(id) { return document.getElementById(id); }
+  var _fmtCache = {};
+  function _getFmt(locale, currency) {
+    var key = locale + '|' + currency;
+    if (_fmtCache[key]) return _fmtCache[key];
+    try {
+      _fmtCache[key] = new Intl.NumberFormat(locale, {
+        style: 'currency', currency: currency,
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+      });
+    } catch (e) { _fmtCache[key] = null; }
+    return _fmtCache[key];
+  }
   function fmt(n) {
-    return '¥' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var num = Number(n);
+    if (!Number.isFinite(num)) num = 0;
+    var locale = (window.ApexI18n && typeof window.ApexI18n.get === 'function')
+      ? window.ApexI18n.get() : 'zh-CN';
+    var inst = _getFmt(locale, 'CNY');
+    if (inst) { try { return inst.format(num); } catch (e) {} }
+    return '¥' + num.toFixed(2);
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }
   function randomSymbol() {

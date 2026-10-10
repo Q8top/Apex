@@ -45,9 +45,16 @@
     var n = Number(minor);
     if (!Number.isFinite(n)) return PLACEHOLDER;
     var yuan = n / 100;
-    return '¥' + yuan.toLocaleString('en-US', {
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
+    var locale = (window.ApexI18n && typeof window.ApexI18n.get === 'function')
+      ? window.ApexI18n.get() : 'zh-CN';
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency', currency: 'CNY',
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+      }).format(yuan);
+    } catch (e) {
+      return '¥' + Number(yuan).toFixed(2);
+    }
   }
 
   function fmtTime(ts) {

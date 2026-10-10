@@ -53,10 +53,19 @@
     return Number.isFinite(n) ? n : fallback;
   }
 
-  function fmt(n) {
-    var x = Number(n);
-    if (!Number.isFinite(x)) x = 0;
-    return '¥' + nf.format(x);
+  function fmt(x) {
+    var num = Number(x);
+    if (!Number.isFinite(num)) num = 0;
+    var locale = (window.ApexI18n && typeof window.ApexI18n.get === 'function')
+      ? window.ApexI18n.get() : 'zh-CN';
+    try {
+      return new Intl.NumberFormat(locale, {
+        style: 'currency', currency: 'CNY',
+        minimumFractionDigits: 2, maximumFractionDigits: 2
+      }).format(num);
+    } catch (e) {
+      return '¥' + num.toFixed(2);
+    }
   }
 
   function classify(win, bet) {
