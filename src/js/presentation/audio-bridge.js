@@ -129,11 +129,22 @@
 
     function installGestureUnlock() {
       if (typeof window === 'undefined' || !window.addEventListener) return;
-      var fn = function () { tryUnlock(); };
+      // P1-5: do NOT use { once: true }.
+      // iOS Safari may reject the first resume() if AudioContext was
+      // constructed outside the gesture callback; isRunning() will
+      // then report false. Retry on every gesture until it reports
+      // true, then remove all listeners manually.
+      var fn = function () {
+        if (tryUnlock()) {
+          try { window.removeEventListener('pointerdown', fn, true); } catch (e) {}
+          try { window.removeEventListener('keydown', fn, true); } catch (e) {}
+          try { window.removeEventListener('touchstart', fn, true); } catch (e) {}
+        }
+      };
       try {
-        window.addEventListener('pointerdown', fn, { once: true, capture: true, passive: true });
-        window.addEventListener('keydown', fn, { once: true, capture: true });
-        window.addEventListener('touchstart', fn, { once: true, capture: true, passive: true });
+        window.addEventListener('pointerdown', fn, { capture: true, passive: true });
+        window.addEventListener('keydown', fn, { capture: true });
+        window.addEventListener('touchstart', fn, { capture: true, passive: true });
       } catch (e) {}
     }
 
