@@ -27,6 +27,7 @@ const CURATED_MIGRATIONS = [
   '0030_spins_ext.sql',
   '0031_free_spin_sessions_ext.sql',
   '0034_spins_max_win.sql',
+  '0035_fs_sessions_game_id.sql',
 ];
 
 function applyCuratedMigrations(db, rootDir) {
