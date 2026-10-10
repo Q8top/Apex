@@ -108,6 +108,9 @@
 /src/js/*
   Cache-Control: public, max-age=31536000, immutable
 
+/sfx/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /i18n/*
   Cache-Control: public, max-age=3600
 # === APEX-CACHE-END ===

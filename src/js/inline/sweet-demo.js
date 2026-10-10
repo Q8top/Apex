@@ -1112,6 +1112,9 @@ function toast(msg) {
     } catch (e) {}
     if (window.ApexA11y) { try { announcer = window.ApexA11y.createAnnouncer(); } catch (e) {} }
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
+    if (window.ApexAudioSynth && typeof window.ApexAudioSynth.preloadSamples === 'function') {
+      try { window.ApexAudioSynth.preloadSamples(); } catch (e) {}
+    }
     if (window.ApexReconnection) {
       try {
         var rc = window.ApexReconnection.create();

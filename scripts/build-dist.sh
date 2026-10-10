@@ -49,6 +49,12 @@ if [ -d "$ROOT/fonts" ]; then
   echo "  [COPY] fonts/"
 fi
 
+# 6.7 sfx/ 目录（CC0 采样音效）
+if [ -d "$ROOT/sfx" ]; then
+  cp -r "$ROOT/sfx" "$DIST/sfx"
+  echo "  [COPY] sfx/"
+fi
+
 # 6.9 assets/ 目录（游戏封面图等）
 if [ -d "$ROOT/assets" ]; then
   cp -r "$ROOT/assets" "$DIST/assets"

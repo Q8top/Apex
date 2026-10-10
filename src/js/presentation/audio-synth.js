@@ -24,7 +24,7 @@
     enabled: true,
     master: 0.8,
     music: 0.6,
-    sfx: 0.9
+    sfx: 0.7
   };
 
   function clamp01(v, fallback) {
@@ -54,6 +54,60 @@
     masterGain.connect(ctx.destination);
     applyGains();
     return ctx;
+  }
+
+  // 采样音缓存（CC0 from Kenney.nl）
+  var samples = {};        // name -> AudioBuffer
+  var samplesLoading = {}; // name -> Promise
+  var SAMPLES_BASE = '/sfx/';
+
+  function preloadOne(name) {
+    if (samples[name]) return Promise.resolve(samples[name]);
+    if (samplesLoading[name]) return samplesLoading[name];
+    var c = ensureCtx();
+    if (!c) return Promise.resolve(null);
+    if (typeof fetch !== 'function') return Promise.resolve(null);
+    samplesLoading[name] = fetch(SAMPLES_BASE + name + '.wav')
+      .then(function (r) {
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.arrayBuffer();
+      })
+      .then(function (ab) { return c.decodeAudioData(ab); })
+      .then(function (buf) {
+        samples[name] = buf;
+        delete samplesLoading[name];
+        return buf;
+      })
+      .catch(function () {
+        delete samplesLoading[name];
+        return null;
+      });
+    return samplesLoading[name];
+  }
+
+  function preloadSamples() {
+    var names = Object.keys(PRESETS_FROZEN);
+    var tasks = [];
+    for (var i = 0; i < names.length; i++) tasks.push(preloadOne(names[i]));
+    return Promise.all(tasks);
+  }
+
+  function playBuffer(buf, opts) {
+    var c = ensureCtx();
+    if (!c) return false;
+    var o = opts || {};
+    var gainVal = Number.isFinite(o.gain) && o.gain >= 0 ? o.gain : 1;
+    var src = c.createBufferSource();
+    src.buffer = buf;
+    var g = c.createGain();
+    g.gain.value = Math.min(1, gainVal);
+    src.connect(g);
+    g.connect(sfxGain);
+    src.onended = function () {
+      try { src.disconnect(); } catch (e) {}
+      try { g.disconnect(); } catch (e) {}
+    };
+    try { src.start(0); return true; } catch (e) { return false; }
   }
 
   function resume() {
@@ -91,16 +145,29 @@
     var bus = (o.bus === 'music') ? musicGain : sfxGain;
 
     var now = c.currentTime + delay;
+    var durSec = dur / 1000;
+    var attackSec = 0.020;             // 20ms attack（防咔哒）
+    var releaseSec = 0.035;            // 35ms release
+    if (attackSec + releaseSec > durSec * 0.9) {
+      attackSec = durSec * 0.3;
+      releaseSec = durSec * 0.3;
+    }
+    var sustainEnd = now + durSec - releaseSec;
+    var peak = gain;
+
     var osc = c.createOscillator();
     var g = c.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, now);
     if (freqTo !== freq) {
-      osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqTo), now + dur / 1000);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, freqTo), now + durSec);
     }
-    g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(gain, now + 0.01);
-    g.gain.exponentialRampToValueAtTime(0.001, now + dur / 1000);
+    // ADSR 包络：0 → peak(20ms) → peak(sustain) → 0.15*peak → 0(35ms)
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(peak, now + attackSec);
+    g.gain.linearRampToValueAtTime(peak, sustainEnd);
+    g.gain.linearRampToValueAtTime(Math.max(0.0001, peak * 0.15), sustainEnd + releaseSec * 0.5);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + durSec);
 
     osc.connect(g);
     g.connect(bus);
@@ -117,73 +184,80 @@
   }
 
   var PRESETS = {
-    'ui-tap':      function () { tone({ freq: 800, dur: 60, type: 'square', gain: 0.10 }); },
-    'spin-start':  function () { tone({ freq: 400, freqTo: 700, dur: 140, type: 'triangle', gain: 0.14 }); },
-    'spin-stop':   function () { tone({ freq: 700, freqTo: 400, dur: 120, type: 'triangle', gain: 0.12 }); },
-    'tumble':      function () { tone({ freq: 320, freqTo: 180, dur: 90, type: 'sawtooth', gain: 0.09 }); },
+    // UI：柔和的三角波"点"（原为 square 刺耳）
+    'ui-tap':      function () { tone({ freq: 900, dur: 60, type: 'triangle', gain: 0.06 }); },
+    // Spin：温和上升
+    'spin-start':  function () { tone({ freq: 380, freqTo: 620, dur: 160, type: 'triangle', gain: 0.09 }); },
+    'spin-stop':   function () { tone({ freq: 620, freqTo: 380, dur: 130, type: 'triangle', gain: 0.08 }); },
+    // Tumble：低沉轻"呼"（原为 sawtooth）
+    'tumble':      function () { tone({ freq: 260, freqTo: 160, dur: 110, type: 'triangle', gain: 0.07 }); },
+
+    // 中奖：由低到高的 2~3 音
     'win-normal':  function () {
-      tone({ freq: 800, dur: 120, type: 'sine', gain: 0.14 });
-      tone({ freq: 1200, dur: 140, type: 'sine', gain: 0.12, delay: 0.10 });
+      tone({ freq: 660, dur: 140, type: 'sine', gain: 0.10 });
+      tone({ freq: 990, dur: 180, type: 'sine', gain: 0.09, delay: 0.10 });
     },
     'big-win':     function () {
-      [660, 880, 1100].forEach(function (f, i) {
-        tone({ freq: f, dur: 160, type: 'sine', gain: 0.14, delay: i * 0.09 });
+      [523, 659, 784].forEach(function (f, i) {
+        tone({ freq: f, dur: 180, type: 'sine', gain: 0.10, delay: i * 0.10 });
       });
     },
     'mega-win':    function () {
-      [660, 880, 1100, 1320].forEach(function (f, i) {
-        tone({ freq: f, dur: 180, type: 'sine', gain: 0.15, delay: i * 0.08 });
+      [523, 659, 784, 1047].forEach(function (f, i) {
+        tone({ freq: f, dur: 200, type: 'sine', gain: 0.11, delay: i * 0.09 });
       });
     },
     'super-win':   function () {
-      [523, 659, 784, 1047, 1319].forEach(function (f, i) {
-        tone({ freq: f, dur: 220, type: 'sine', gain: 0.16, delay: i * 0.07 });
+      [523, 659, 784, 1047].forEach(function (f, i) {
+        tone({ freq: f, dur: 240, type: 'sine', gain: 0.11, delay: i * 0.08 });
       });
-      tone({ freq: 1568, dur: 600, type: 'sine', gain: 0.10, delay: 0.4 });
+      tone({ freq: 1318, dur: 500, type: 'sine', gain: 0.08, delay: 0.42 });
     },
     'epic-win':    function () {
-      [523, 659, 784, 1047, 1319, 1568].forEach(function (f, i) {
-        tone({ freq: f, dur: 240, type: 'sine', gain: 0.17, delay: i * 0.06 });
+      // 4 音琶音 + 1 收尾（原为 8 音，太噪）
+      [523, 659, 784, 1047].forEach(function (f, i) {
+        tone({ freq: f, dur: 260, type: 'sine', gain: 0.12, delay: i * 0.07 });
       });
-      tone({ freq: 2093, dur: 800, type: 'sine', gain: 0.12, delay: 0.42 });
-      tone({ freq: 1047, dur: 400, type: 'triangle', gain: 0.10, delay: 0.6 });
+      tone({ freq: 1568, dur: 700, type: 'sine', gain: 0.09, delay: 0.40 });
     },
     'ultra-win':   function () {
-      [523, 659, 784, 1047, 1319, 1568, 2093].forEach(function (f, i) {
-        tone({ freq: f, dur: 260, type: 'sine', gain: 0.18, delay: i * 0.055 });
+      // 5 音琶音 + 2 长尾（原为 10 音）
+      [523, 659, 784, 1047, 1318].forEach(function (f, i) {
+        tone({ freq: f, dur: 280, type: 'sine', gain: 0.12, delay: i * 0.06 });
       });
-      tone({ freq: 2637, dur: 1000, type: 'sine', gain: 0.13, delay: 0.42 });
-      tone({ freq: 1568, dur: 600, type: 'triangle', gain: 0.12, delay: 0.7 });
-      tone({ freq: 2093, dur: 800, type: 'triangle', gain: 0.10, delay: 0.9 });
+      tone({ freq: 1568, dur: 900, type: 'sine', gain: 0.09, delay: 0.42 });
+      tone({ freq: 1047, dur: 600, type: 'triangle', gain: 0.07, delay: 0.75 });
     },
+
+    // Bonus / FS
     'bonus':       function () {
-      [440, 554, 659, 880].forEach(function (f, i) {
-        tone({ freq: f, dur: 200, type: 'triangle', gain: 0.13, delay: i * 0.10 });
+      [440, 554, 659].forEach(function (f, i) {
+        tone({ freq: f, dur: 220, type: 'triangle', gain: 0.09, delay: i * 0.11 });
       });
     },
-    'multiplier':  function () { tone({ freq: 1400, dur: 100, type: 'square', gain: 0.10 }); },
+    // 倍率：轻点（原为 square 1400Hz 尖啸）
+    'multiplier':  function () { tone({ freq: 1180, dur: 80, type: 'triangle', gain: 0.05 }); },
+
+    // Tumble 落点：木质"嗒"（去掉 square 900 的尖）
     'tumble-land': function () {
-      // 落点"嗒"声（轻微木质敲击）
-      tone({ freq: 180, freqTo: 120, dur: 60, type: 'triangle', gain: 0.11 });
-      tone({ freq: 900, dur: 30, type: 'square', gain: 0.05, delay: 0.005 });
+      tone({ freq: 170, freqTo: 120, dur: 70, type: 'triangle', gain: 0.08 });
     },
+
+    // FS 炸弹爆炸：低频 + 轻体感（原为 sawtooth 0.18 + sine 0.25 爆音）
     'bomb-explode': function (opts) {
-      // P1-6: FS 炸弹爆炸音效；强度随炸弹值变化
       var intensity = Math.min(100, Math.max(2, (opts && opts.value) || 2));
-      var dur = 300 + intensity * 2;
-      tone({ freq: 120, freqTo: 30, dur: dur, type: 'sawtooth', gain: 0.18 });
-      tone({ freq: 80, freqTo: 40, dur: 200, type: 'sine', gain: 0.25, delay: 0.05 });
+      var dur = 220 + intensity * 1.2;
+      tone({ freq: 140, freqTo: 55, dur: dur, type: 'triangle', gain: 0.12 });
+      tone({ freq: 90, freqTo: 50, dur: Math.max(120, dur * 0.6), type: 'sine', gain: 0.10, delay: 0.04 });
     },
     'fs-enter':    function () {
-      // P1-6: 进入免费旋转序列
-      [523, 659, 784, 1047].forEach(function (f, i) {
-        tone({ freq: f, dur: 250, type: 'triangle', gain: 0.16, delay: i * 0.12 });
+      [523, 659, 784].forEach(function (f, i) {
+        tone({ freq: f, dur: 260, type: 'triangle', gain: 0.10, delay: i * 0.13 });
       });
     },
     'fs-loop':     function () {
-      // P1-6: 免费旋转进行中的循环提示音
-      [784, 880, 1047].forEach(function (f, i) {
-        tone({ freq: f, dur: 150, type: 'sine', gain: 0.10, delay: i * 0.08 });
+      [784, 988].forEach(function (f, i) {
+        tone({ freq: f, dur: 160, type: 'sine', gain: 0.06, delay: i * 0.09 });
       });
     }
   };
@@ -192,6 +266,15 @@
 
   function play(name, opts) {
     resume();
+    // 采样音优先（有则用），否则回退合成音
+    var buf = samples[name];
+    if (buf) {
+      var ok = playBuffer(buf, opts);
+      if (ok) return true;
+    } else {
+      // 后台预加载
+      try { preloadOne(name); } catch (e) {}
+    }
     var fn = PRESETS_FROZEN[name];
     if (!fn) return false;
     try { fn(opts); return true; }
@@ -245,6 +328,7 @@
   window.ApexAudioSynth = Object.freeze({
     PRESETS: PRESETS_FROZEN,
     play: play,
+    preloadSamples: preloadSamples,
     setMasterVolume: setMasterVolume,
     setMusicVolume: setMusicVolume,
     setSfxVolume: setSfxVolume,
