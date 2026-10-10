@@ -109,12 +109,26 @@ jobs:
       - name: Security Scan
         run: node tests/security-scan.js
 
-      - name: API Smoke Test
-        env:
-          BASE_URL: ${{ vars.DEPLOY_BASE_URL }}
+      - name: API Smoke Test (local wrangler pages dev)
         run: |
-          if [ -z "$BASE_URL" ]; then
-            echo "[SKIP] DEPLOY_BASE_URL 未配置，跳过 API 冒烟测试"
-            exit 0
-          fi
-          node tests/api-smoke.test.js
+          # P2-6: run smoke test against a local wrangler pages dev.
+          # Uses fake secrets (no real keys needed for HTTP behavior tests).
+          cat > .dev.vars << 'DEVVARS'
+          ENVIRONMENT=production
+          PUBLIC_BASE_URL=https://smoke.local
+          ALLOWED_ORIGINS=
+          CAPTCHA_SECRET=0000000000000000000000000000000000000000000000000000000000000000
+          CAPTCHA_SALT=smoke-salt
+          EMAIL_PROVIDER=resend
+          EMAIL_FROM=Apex Smoke <smoke@example.com>
+          EMAIL_REPLY_TO=
+          RESEND_API_KEY=re_smoke_test_only
+          AGENTMAIL_API_KEY=
+          AGENTMAIL_INBOX_ID=
+          DEV_SHOW_RESET_CODE=0
+          SESSION_SALT=smoke-session-salt
+          AUDIT_SALT=smoke-audit-salt
+          RATE_LIMIT_SALT=smoke-ratelimit-salt
+          DEVVARS
+          bash scripts/run-smoke.sh
+          rm -f .dev.vars
