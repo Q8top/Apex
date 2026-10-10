@@ -195,19 +195,59 @@ var state = {
         return;
       }
       renderGridAt(result.grid);
+
+      // P1-7: 长链加速 + 跳过按钮
+      var isLongChain = tumbles.length > 8;
+      var speed = isLongChain ? 0.6 : 1;
+      var resolved = false;
+      var skipBtn = document.getElementById('sd-skip-btn');
+      var skipHandler = null;
+
+      function finishNow() {
+        if (resolved) return;
+        resolved = true;
+        clearTumbleTimers();
+        renderGridAt(result.finalGrid);
+        if (skipBtn) {
+          skipBtn.hidden = true;
+          if (skipHandler) skipBtn.removeEventListener('click', skipHandler);
+        }
+        resolve();
+      }
+      function detachSkip() {
+        if (!skipBtn) return;
+        skipBtn.hidden = true;
+        if (skipHandler) {
+          skipBtn.removeEventListener('click', skipHandler);
+          skipHandler = null;
+        }
+      }
+
+      if (isLongChain && skipBtn) {
+        skipBtn.hidden = false;
+        skipHandler = function () { finishNow(); };
+        skipBtn.addEventListener('click', skipHandler);
+      }
+
       var i = 0;
       function playOne() {
+        if (resolved) return;
         if (i >= tumbles.length) {
           renderGridAt(result.finalGrid);
-          tumbleSetTimeout(resolve, 200);
+          detachSkip();
+          tumbleSetTimeout(function () {
+            if (resolved) return;
+            resolved = true;
+            resolve();
+          }, 200);
           return;
         }
         var t = tumbles[i];
         var anim = computeTumbleAnimations(t);
 
-        var tWin    = state.fastMode ? 180 : 500;
-        var tRemove = state.fastMode ? 120 : 300;
-        var tIn     = state.fastMode ? 180 : 400;
+        var tWin    = (state.fastMode ? 180 : 500) * speed;
+        var tRemove = (state.fastMode ? 120 : 300) * speed;
+        var tIn     = (state.fastMode ? 180 : 400) * speed;
 
         // Phase 1: 中奖格弹跳
         for (var a = 0; a < t.removedPositions.length; a++) {

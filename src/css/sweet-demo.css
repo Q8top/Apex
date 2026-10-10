@@ -480,3 +480,26 @@ a{color:inherit;text-decoration:none}
 .sd-set-about-row{display:flex;justify-content:space-between;
   font-size:13px;padding:6px 0;color:#A9B7CC}
 .sd-set-about-row b{color:#E6EDF6;font-family:ui-monospace,Menlo,monospace}
+
+
+/* P1-7: tumble long-chain skip button */
+.sd-skip-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100;
+  touch-action: manipulation;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.sd-skip-btn:hover { background: rgba(0, 0, 0, 0.85); }
+.sd-skip-btn:active { transform: scale(0.96); }
+.sd-skip-btn:focus-visible { outline: 2px solid #F5D020; outline-offset: 2px; }
+.sd-skip-btn[hidden] { display: none !important; }
