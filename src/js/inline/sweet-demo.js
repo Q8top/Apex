@@ -46,25 +46,23 @@ var state = {
   };
 
   function $(id) { return document.getElementById(id); }
-  var _fmtCache = {};
-  function _getFmt(locale, currency) {
-    var key = locale + '|' + currency;
-    if (_fmtCache[key]) return _fmtCache[key];
+  // P2-1: 游戏币统一显示 ¥，所有 locale 一致。
+  // 数字部分走 Intl 千分位，符号固定 ¥。
+  var _numFmt = null;
+  function _getNumFmt() {
+    if (_numFmt !== null) return _numFmt;
     try {
-      _fmtCache[key] = new Intl.NumberFormat(locale, {
-        style: 'currency', currency: currency,
+      _numFmt = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2, maximumFractionDigits: 2
       });
-    } catch (e) { _fmtCache[key] = null; }
-    return _fmtCache[key];
+    } catch (e) { _numFmt = false; }
+    return _numFmt;
   }
   function fmt(n) {
     var num = Number(n);
     if (!Number.isFinite(num)) num = 0;
-    var locale = (window.ApexI18n && typeof window.ApexI18n.get === 'function')
-      ? window.ApexI18n.get() : 'zh-CN';
-    var inst = _getFmt(locale, 'CNY');
-    if (inst) { try { return inst.format(num); } catch (e) {} }
+    var inst = _getNumFmt();
+    if (inst) { try { return '¥' + inst.format(num); } catch (e) {} }
     return '¥' + num.toFixed(2);
   }
   function getBet() { return BET_OPTIONS[state.betIndex]; }

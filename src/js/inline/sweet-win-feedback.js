@@ -56,11 +56,8 @@
   function fmt(x) {
     var num = Number(x);
     if (!Number.isFinite(num)) num = 0;
-    var locale = (window.ApexI18n && typeof window.ApexI18n.get === 'function')
-      ? window.ApexI18n.get() : 'zh-CN';
     try {
-      return new Intl.NumberFormat(locale, {
-        style: 'currency', currency: 'CNY',
+      return '¥' + new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2, maximumFractionDigits: 2
       }).format(num);
     } catch (e) {
