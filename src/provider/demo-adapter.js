@@ -58,7 +58,8 @@ function DemoProvider(opts){
   var weights = MP.buildRngWeights(this.mode);
   this.engine = new GE.GameEngine({
     rng: new RG.Rng(weights),
-    maxTumbleSteps: 20
+    maxTumbleSteps: 20,
+    profile: profile
   });
   this.payScale = profile.payScale;
   this.pityRate = profile.pityRate;
@@ -86,25 +87,13 @@ DemoProvider.prototype.spin = function(req){
 
   var payload;
   try {
-    var gridSmall = this.engine.rng.generateGrid();
-
-    // demo 保底注入（与老 provider 语义一致）
-    if (this.pityRate > 0 && this.pitySymbol){
-      var pre = EV.evaluate(gridSmall);
-      if (pre.winningPositions.length === 0){
-        var roll = randInt(1000000) / 1000000;
-        if (roll < this.pityRate){
-          gridSmall = injectPity(gridSmall, this.pitySymbol, this.pityMinCount);
-        }
-      }
-    }
-
+    // P0-2: pity 已内聚到 engine；engine 会自己在本地生成盘面时按 profile 注入
     var res = this.engine.spin({
       mode: mode,
       betMinor: betMinor,
-      spinId: 'demo_' + Date.now() + '_' + (++SPIN_COUNTER) + '_' + randInt(100000),
-      gridOverride: gridSmall
+      spinId: 'demo_' + Date.now() + '_' + (++SPIN_COUNTER) + '_' + randInt(100000)
     });
+    var gridSmall = res.grid;
 
     // 应用 payScale（与 simulator-v2 一致）
     var winMinor = Math.floor(betMinor * res.totalMultiplier * this.payScale);

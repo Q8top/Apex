@@ -17,7 +17,7 @@ console.log('[RTP-GATE] n=' + N);
 ['real','demo'].forEach(function(mode){
   var r = runSim(mode, N);
   var p = M.getProfile(mode);
-  var TOL=0.015; var rtpOk = r.rtp >= p.targetRtp.min - TOL && r.rtp <= p.targetRtp.max + TOL;
+  var TOL=0.0; var rtpOk = r.rtp >= p.targetRtp.min - TOL && r.rtp <= p.targetRtp.max + TOL;
   var hitOk = r.hitRate >= p.targetHitRate.min && r.hitRate <= p.targetHitRate.max;
   console.log('  ' + mode + ' rtp=' + r.rtp.toFixed(4) + ' [' + p.targetRtp.min + ',' + p.targetRtp.max + '] ' + (rtpOk ? 'PASS' : 'FAIL'));
   console.log('  ' + mode + ' hit=' + r.hitRate.toFixed(4) + ' [' + p.targetHitRate.min + ',' + p.targetHitRate.max + '] ' + (hitOk ? 'PASS' : 'FAIL'));

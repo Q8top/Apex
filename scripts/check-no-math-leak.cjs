@@ -29,8 +29,11 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const EXACT_VALUES = [
-  '0.9049', '1.7842',   // targetRtp.target (real / demo)
-  '2.55', '3.60',       // payScale (real / demo)
+  '0.9049', '1.7842',   // sweet targetRtp.target (real / demo)
+  '2.48', '3.60',       // sweet payScale (real / demo)
+  '5.50', '1.37',       // SR old (pre-P0-7)
+  '6.20', '0.80',       // SR interim
+  '5.80', '1.16',       // SR current (P0-7 A2e)
 ];
 const EXACT_WEIGHT_HINTS = [
   'baseWeights:', 'scatterWeight:', 'fsMultiplierWeight:', 'pityRate:',
@@ -53,6 +56,10 @@ function scanFile(p) {
     // Allow the source of truth files themselves
     if (rel === 'src/config/math-profile.js') continue;
     if (rel === 'functions/_config/math-profile.js') continue;
+    if (rel === 'src/games/sugar-rush/config/math-profile.js') continue;
+    if (rel === 'src/games/sugar-rush/config/math-profile.real.js') continue;
+    if (rel === 'functions/games/sugar-rush/config/math-profile.js') continue;
+    if (rel === 'functions/games/sugar-rush/config/math-profile.real.js') continue;
     // Allow checks file itself
     if (rel === 'scripts/check-no-math-leak.js') continue;
     if (rel === 'scripts/check-no-math-leak.cjs') continue;

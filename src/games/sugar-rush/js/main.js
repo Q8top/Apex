@@ -25,7 +25,7 @@ var state = {
   currentSpinId: null,
   skipRequested: false,
   currentBetMinor: 100,
-  currentPayScale: 1
+  payScaleDemo: 1
 };
 
 var el = {};
@@ -174,10 +174,11 @@ function playSteps(steps, finalGrid, opts){
     p = p.then(function(){
       if (!opts.noCounter) updateTumbleCounter(i + 1);
       markWinning(step.winningPositions);
-      if (step.wins && step.wins.length){
+      if (step.wins && step.wins.length && state.mode === 'demo'){
+        // P0-3b: only demo mode shows float estimates; real gets authoritative values from server
         for (var k = 0; k < step.wins.length; k++){
           var w = step.wins[k];
-          var amt = Math.floor(state.currentBetMinor * w.payoutMultiplier * state.currentPayScale);
+          var amt = Math.floor(state.currentBetMinor * w.payoutMultiplier * state.payScaleDemo);
           if (amt > 0) showFloatWin(w.positions, amt);
         }
       }
@@ -319,7 +320,7 @@ state.spinning = true;
   return Promise.resolve().then(function(){
     var result = Engine.spin(state.mode, betMinor, { detail: true });
     var d = result.detail;
-    state.currentPayScale = d.payScale || 1;
+    if (state.mode === 'demo'){ state.payScaleDemo = d.payScale || 1; }
     renderGrid(d.initialGrid);
     return applyDropIn().then(function(){
       return playBaseCascades(d);
@@ -472,6 +473,35 @@ function readModeFromUrl(){
   return 'demo';
 }
 
+function genDisplayGrid(){
+  // P0-6: static display board, never invokes the engine
+  var ids = Lock.list();
+  var regs = [];
+  for (var i = 0; i < ids.length; i++){
+    if (Lock.kindOf(ids[i]) === 'regular') regs.push(ids[i]);
+  }
+  if (regs.length === 0) return new Array(49).fill('blue_candy');
+  var out = new Array(49);
+  var buf = new Uint32Array(1);
+  for (var j = 0; j < 49; j++){
+    crypto.getRandomValues(buf);
+    out[j] = regs[buf[0] % regs.length];
+  }
+  return out;
+}
+
+function loadServerBalance(){
+  // P0-6: real mode pulls authoritative balance from server
+  var client = window.apiClient;
+  if (!client || typeof client.get !== 'function') return;
+  client.get('/api/me').then(function(resp){
+    if (resp && resp.success && resp.user &&
+        typeof resp.user.walletBalance === 'number'){
+      state.balanceMinor = resp.user.walletBalance;
+      updateBalance();
+    }
+  }).catch(function(){});
+}
 function buildSheetBody(){
   var t = (window.ApexI18n && window.ApexI18n.t) ? window.ApexI18n.t : function(k){ return k; };
   return '<h3>' + t('sr.rules.tumble.title') + '</h3>'
@@ -524,8 +554,10 @@ function init(){
   updateBalance();
   updateBetDisplay();
   updateWin(0);
-  var result = Engine.spin(state.mode, BET_OPTIONS[state.betIndex], { detail: false });
-  renderGrid(result.finalGrid);
+  // P0-6: display-only initial board (no engine spin, no RNG consumption)
+  renderGrid(genDisplayGrid());
+  // P0-6: real mode pulls authoritative balance from server
+  if (state.mode === 'real') loadServerBalance();
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init)

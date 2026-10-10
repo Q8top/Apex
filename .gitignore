@@ -89,3 +89,6 @@ apex-game-*.tar.gz
 *.tgz
 APEX_FULL_CODE*
 apex-game-v1*.tar.gz
+
+# ===== P0 phase artifacts =====
+audit-logs/

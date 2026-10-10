@@ -13,6 +13,7 @@ const MIN_BET_MINOR = 1;
 const SPIN_ID_MIN = 10;
 const SPIN_ID_MAX = 64;
 const MAX_RETRIGGERS = 10;
+const ENGINE_VERSION = '2.0.0';
 const RETRIGGER_ADD = 2;
 const FS_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -176,7 +177,7 @@ export async function executeSpin(env, user, body) {
 
   const nowIso = new Date().toISOString();
   const fsSession = await env.apex_db.prepare(
-    "SELECT id, remaining_spins, total_spins, bet_minor, version, retrigger_count, chain_id, chain_win_minor " +
+    "SELECT id, remaining_spins, total_spins, bet_minor, version, retrigger_count, chain_id, chain_win_minor, marks_json " +
     "FROM free_spin_sessions " +
     "WHERE user_id = ? AND game_id = 'sugar-rush' AND status = 'active' AND remaining_spins > 0 AND expires_at > ? " +
     "ORDER BY id DESC LIMIT 1"
@@ -206,8 +207,20 @@ export async function executeSpin(env, user, body) {
   const profile = mp.getProfile(mode);
 
   let spinResult;
+  // P0-7 A2d: use layer-scoped engine API (spinBase / spinFree)
+  let marksIn = null;
+  if (isFree && fsSession.marks_json) {
+    try {
+      const parsed = JSON.parse(fsSession.marks_json);
+      if (Array.isArray(parsed)) marksIn = parsed;
+    } catch (e) { /* tolerate malformed marks_json */ }
+  }
   try {
-    spinResult = engineModules.Engine.spin(mode, effectiveBetMinor);
+    if (isFree) {
+      spinResult = engineModules.Engine.spinFree(mode, effectiveBetMinor, { marks: marksIn });
+    } else {
+      spinResult = engineModules.Engine.spinBase(mode, effectiveBetMinor);
+    }
   } catch (e) {
     return { status: 500, body: { success: false, code: 'engine_error' } };
   }
@@ -291,6 +304,11 @@ export async function executeSpin(env, user, body) {
     ).bind(genEventId('win'), userId, spinId, actualWinMinor, mathVersion));
   }
 
+  let marksJsonNext = null;
+  if (isFree && spinResult.marksAfter) {
+    marksJsonNext = JSON.stringify(spinResult.marksAfter);
+  }
+
   if (isFree) {
     const retriggerAwarded = spinResult.fsTriggered &&
       fsSession.retrigger_count < MAX_RETRIGGERS;
@@ -303,10 +321,13 @@ export async function executeSpin(env, user, body) {
       "    total_win_minor = total_win_minor + ?, " +
       "    chain_win_minor = chain_win_minor + ?, " +
       "    status = CASE WHEN remaining_spins - 1 + ? <= 0 THEN 'completed' ELSE status END, " +
+      "    marks_json = ?, " +
+      "    engine_version = ?, " +
       "    version = version + 1, updated_at = CURRENT_TIMESTAMP " +
       "WHERE id = ? AND status = 'active' AND remaining_spins > 0 " +
       "  AND expires_at > ? AND version = ?"
     ).bind(retriggerAdd, retriggerInc, actualWinMinor, actualWinMinor, retriggerAdd,
+           marksJsonNext, ENGINE_VERSION,
            fsSession.id, nowIso, fsSession.version));
     stmts.push(guardStmt(env));
     if (newChainWinMinor !== null) {
@@ -323,7 +344,7 @@ export async function executeSpin(env, user, body) {
   let newChainId = null;
   if (!isFree && spinResult.fsTriggered) {
     newChainId = 'srg-' + spinId.slice(0, 20);
-    const fsAwarded = spinResult.fsSpinsPlayed || 10;
+    const fsAwarded = spinResult.fsSpinsAwarded || 10;
     const maxWinMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
     const expiresAt = new Date(Date.now() + FS_TTL_MS).toISOString();
     stmts.push(env.apex_db.prepare(
@@ -413,7 +434,7 @@ export async function executeSpin(env, user, body) {
   }
 
   if (!isFree && spinResult.fsTriggered) {
-    fsAwardedOut = spinResult.fsSpinsPlayed || 10;
+    fsAwardedOut = spinResult.fsSpinsAwarded || 10;
   }
 
   return {

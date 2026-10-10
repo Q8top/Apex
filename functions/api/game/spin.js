@@ -207,7 +207,7 @@ export async function executeSpin(env, user, body) {
   const profile = mp.getProfile(mode);
   const weights = mp.buildRngWeights(mode, { fsMode: isFree });
   const rng = new engineModules.Rng(weights);
-  const engine = new engineModules.GameEngine({ rng, maxTumbleSteps: 20 });
+  const engine = new engineModules.GameEngine({ rng, maxTumbleSteps: 20, profile });
 
   let spinResult;
   try {

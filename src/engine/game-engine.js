@@ -12,6 +12,7 @@ function GameEngine(opts){
   if (!opts.rng) throw _err.ApexError(_err.CODES.INVALID_WEIGHTS, 'rng required');
   this.rng = opts.rng;
   this.maxTumbleSteps = opts.maxTumbleSteps == null ? 100 : opts.maxTumbleSteps;
+  this.profile = opts.profile || null;   // P0-2: pity/maxWin per-mode profile
 }
 
 GameEngine.prototype.spin = function(request){
@@ -39,6 +40,19 @@ GameEngine.prototype.spin = function(request){
     grid = request.gridOverride.slice();
   } else {
     grid = this.rng.generateGrid();
+    // P0-2: pity 内聚 (demo profile 专用，非 FS 局)
+    if (!isFree && this.profile &&
+        this.profile.pityRate > 0 && this.profile.pitySymbol){
+      var preEval = _eval.evaluate(grid);
+      if (preEval.winningPositions.length === 0){
+        var pityRoll = this.rng.randomInt(1000000) / 1000000;
+        if (pityRoll < this.profile.pityRate){
+          grid = _injectPity(grid,
+            String(this.profile.pitySymbol).toLowerCase(),
+            this.profile.pityMinCount || 8, this.rng);
+        }
+      }
+    }
   }
   var cascades = [];
   var totalMultiplier = 0;
@@ -122,6 +136,21 @@ GameEngine.prototype.spin = function(request){
     }
   };
 };
+
+function _injectPity(grid, symbol, targetCount, rng){
+  var out = grid.slice();
+  var cur = 0;
+  for (var i = 0; i < out.length; i++) if (out[i] === symbol) cur++;
+  var need = targetCount - cur;
+  if (need <= 0) return out;
+  var guard = 0;
+  while (need > 0 && guard < 500){
+    var idx = rng.randomInt(out.length);
+    if (out[idx] !== symbol){ out[idx] = symbol; need--; }
+    guard++;
+  }
+  return out;
+}
 
 function _uuid(){
   if (typeof crypto === 'undefined'){
