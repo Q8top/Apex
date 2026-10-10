@@ -420,15 +420,20 @@ var state = {
           resolveAutoDone({ stop: false });
           pending = null;
         };
+        // P0-4: real 模式服务端权威，getBalance 失败绝不本地加钱（防双重记账）。
+        // demo 模式 provider 无 getBalance -> 走保守本地路径（demo 是本地钱包）。
         if (p && p.getBalance) {
           p.getBalance().then(function (bal) {
             state.balance = bal.minor / 100;
             done();
           }).catch(function () {
-            state.balance += bonusWin / 100;
+            if (window.console && console.warn) {
+              console.warn('[sweet-demo] getBalance failed after bonus; UI balance may be stale until next spin');
+            }
             done();
           });
         } else {
+          // 无 getBalance 的 provider（demo 本地钱包）才本地加
           state.balance += bonusWin / 100;
           done();
         }
