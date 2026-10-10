@@ -33,7 +33,7 @@
   ]);
 
   var VOICE_WINDOW_MS = 150;
-  var MAX_VOICES_IN_WINDOW = 6;
+  var MAX_VOICES_IN_WINDOW = 12;
 
   function AudioBridge(opts) {
     opts = opts || {};

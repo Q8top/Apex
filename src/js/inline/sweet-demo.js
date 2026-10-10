@@ -134,6 +134,46 @@ var state = {
     }
   }
 
+  // Spin 下落-替换动画（Moment A）
+  function playSpinDrop(board, done) {
+    var cells = board.querySelectorAll('.sd-sym');
+    if (!cells.length) { done(); return; }
+    var staggerMs = state.fastMode ? 10 : 18;
+    var baseMs = state.fastMode ? 120 : 200;
+    for (var i = 0; i < cells.length; i++) {
+      var col = i % 6;
+      cells[i].style.setProperty('--drop-delay', (col * staggerMs) + 'ms');
+      cells[i].classList.add('is-dropping-out');
+    }
+    var totalMs = baseMs + 6 * staggerMs + 20;
+    setTimeout(function () {
+      var cs = board.querySelectorAll('.sd-sym');
+      for (var j = 0; j < cs.length; j++) {
+        cs[j].classList.remove('is-dropping-out');
+        cs[j].style.removeProperty('--drop-delay');
+      }
+      done();
+    }, totalMs);
+  }
+
+  function applyDropIn(board) {
+    var cells = board.querySelectorAll('.sd-sym');
+    if (!cells.length) return;
+    var staggerMs = state.fastMode ? 10 : 18;
+    for (var i = 0; i < cells.length; i++) {
+      var col = i % 6;
+      cells[i].style.setProperty('--drop-delay', (col * staggerMs) + 'ms');
+      cells[i].classList.add('is-dropping-in');
+    }
+    setTimeout(function () {
+      var cs = board.querySelectorAll('.sd-sym');
+      for (var j = 0; j < cs.length; j++) {
+        cs[j].classList.remove('is-dropping-in');
+        cs[j].style.removeProperty('--drop-delay');
+      }
+    }, 420);
+  }
+
   function clearTumbleTimers() {
     if (animator && animator.cancelAll) {
       try { animator.cancelAll(); } catch (e) {}
@@ -219,16 +259,18 @@ var state = {
     }
   }
 
-  function playTumbleSequence(result) {
+  function playTumbleSequence(result, animate) {
     clearTumbleTimers();
     return new Promise(function (resolve) {
       var tumbles = result.tumbles || [];
       if (!tumbles.length) {
         renderGridAt(result.finalGrid);
+        if (animate) applyDropIn(el.board);
         tumbleSetTimeout(resolve, 200);
         return;
       }
       renderGridAt(result.grid);
+      if (animate) applyDropIn(el.board);
 
       // P1-7: 长链加速 + 跳过按钮
       var isLongChain = tumbles.length > 8;
@@ -457,7 +499,8 @@ var state = {
     var winMinor = result.totalWin;
     state.win = winMinor / 100;
     state.balance = result.balanceAfter / 100;
-    playTumbleSequence(result).then(function () {
+    playSpinDrop(el.board, function () {
+    playTumbleSequence(result, true).then(function () {
     if (audio && audio.play) {
       try { playAudio('spin-stop'); } catch (err) {}
     }
@@ -587,6 +630,7 @@ var state = {
       if (el.board) el.board.dataset.spinning = '0';
       renderSpinBtn();
       resolveAutoDone({ stop: true, stopReason: 'spin_error' });
+    });
     });
   }
 
@@ -934,7 +978,7 @@ var state = {
     var container = document.createElement('div');
     container.id = 'sd-fs-particles';
     container.className = 'sd-fs-particles';
-    var COUNT = 30;
+    var COUNT = 15;
     for (var i = 0; i < COUNT; i++) {
       var p = document.createElement('div');
       p.className = 'sd-fs-particle';

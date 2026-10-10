@@ -115,11 +115,46 @@
       return false;
     }
 
+    // 性能优化：若容器已有同数量 .sd-sym，复用 div，只替换变化的 svg
+    var existing = container.querySelectorAll('.sd-sym');
+    if (existing.length === symbolTypes.length) {
+      for (var k = 0; k < symbolTypes.length; k++) {
+        var newId = window.ApexSymbols.getSymbolId(symbolTypes[k]);
+        var cell = existing[k];
+        if (!cell) continue;
+        var prevId = cell.dataset.sid || null;
+        if (prevId === newId) continue;   // 未变，跳过
+        // 清残留动画 class
+        cell.classList.remove('is-winning', 'is-removing', 'is-entering', 'is-falling', 'is-dropping-out', 'is-dropping-in');
+        cell.style.removeProperty('--fall-rows');
+        cell.style.removeProperty('--drop-delay');
+        // 替换内部 svg
+        var oldSvg = cell.firstChild;
+        var newSvg = createSymbol(newId);
+        if (!newSvg) continue;
+        newSvg.style.setProperty('--sd-sym-delay', stagger(k));
+        if (window.ApexSymbols && typeof window.ApexSymbols.getScaleById === 'function') {
+          var sc = window.ApexSymbols.getScaleById(newId);
+          if (typeof sc === 'number' && Number.isFinite(sc)) {
+            newSvg.style.setProperty('--symbol-scale', String(sc));
+          }
+        }
+        if (oldSvg) cell.replaceChild(newSvg, oldSvg);
+        else cell.appendChild(newSvg);
+        cell.dataset.sid = newId;
+      }
+      return true;
+    }
+
+    // 数量不匹配 → 全量重建
     var frag = document.createDocumentFragment();
     for (var i = 0; i < symbolTypes.length; i++) {
-      var id = window.ApexSymbols.getSymbolId(symbolTypes[i]);
-      var cell = createCell(id, i);
-      if (cell) frag.appendChild(cell);
+      var id2 = window.ApexSymbols.getSymbolId(symbolTypes[i]);
+      var cell2 = createCell(id2, i);
+      if (cell2) {
+        cell2.dataset.sid = id2;
+        frag.appendChild(cell2);
+      }
     }
     container.replaceChildren(frag);
     return true;

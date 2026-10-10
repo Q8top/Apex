@@ -622,3 +622,43 @@ a{color:inherit;text-decoration:none}
   20%  { opacity: 1; transform: translate3d(calc(var(--dx) * 0.25), calc(var(--dy) * 0.25), 0) scale(1); }
   100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) scale(0.6); }
 }
+
+
+/* Spin 启动：整盘下落-替换（原版 Moment A） */
+.sd-sym.is-dropping-out {
+  animation: sdCellDropOut 200ms cubic-bezier(.5, 0, .9, .35) both;
+  animation-delay: var(--drop-delay, 0ms);
+}
+@keyframes sdCellDropOut {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: translate3d(0, 130%, 0); }
+}
+
+/* 新符号从上方掉入 */
+.sd-sym.is-dropping-in {
+  animation: sdCellDropIn 280ms cubic-bezier(.34, 1.4, .64, 1) both;
+  animation-delay: var(--drop-delay, 0ms);
+}
+@keyframes sdCellDropIn {
+  0%   { opacity: 0; transform: translate3d(0, -220%, 0) scale(.88); }
+  70%  { opacity: 1; transform: translate3d(0, 4%, 0) scale(1.03); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* fast 模式：时长压缩 */
+.sd-board[data-fast="1"] .sd-sym.is-dropping-out {
+  animation-duration: 160ms;
+}
+.sd-board[data-fast="1"] .sd-sym.is-dropping-in {
+  animation-duration: 200ms;
+}
+
+/* reduced-motion：直接跳过 */
+@media (prefers-reduced-motion: reduce) {
+  .sd-sym.is-dropping-out,
+  .sd-sym.is-dropping-in {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
