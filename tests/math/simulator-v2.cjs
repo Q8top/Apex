@@ -48,13 +48,16 @@ function injectPity(grid, symbol, minCount){
   return g;
 }
 
-function runFreeSpins(engine, mode, betMinor, baseIdx, initialSpins){
+function runFreeSpins(mode, betMinor, baseIdx, initialSpins, rngFactory){
   var remaining = initialSpins, fsCount = 0, fsMultSum = 0, guard = 0;
+  // P0-6b: FS 使用 FS 权重（含炸弹），每次 FS 会话用独立 engine
+  var fsEngine = rngFactory();
   while (remaining > 0 && guard < FS_GUARD){
     remaining--; fsCount++; guard++;
-    var fs = engine.spin({
+    var fs = fsEngine.spin({
       mode: mode, betMinor: betMinor,
-      spinId: 'sim-' + String(baseIdx).padStart(12, '0') + '-fs-' + fsCount
+      spinId: 'sim-' + String(baseIdx).padStart(12, '0') + '-fs-' + fsCount,
+      isFree: true
     });
     fsMultSum += fs.totalMultiplier;
     if (fs.bonus.triggered) remaining += FS_RETRIGGER;
@@ -109,7 +112,10 @@ function simulate(opts){
 
     if (res.bonus.triggered){
       bonusTriggers++;
-      var fs = runFreeSpins(engine, mode, betMinor, i, res.bonus.awardedSpins || 10);
+      var fs = runFreeSpins(mode, betMinor, i, res.bonus.awardedSpins || 10, function(){
+        var fsRng = new SeededRng(seed + '-fs-' + i, MP.buildRngWeights(mode, { fsMode: true }));
+        return new GE.GameEngine({ rng: fsRng, maxTumbleSteps: 100 });
+      });
       totalFsSpins += fs.fsCount;
       totalFsMultiplier += fs.fsMultSum;
       totalMult += fs.fsMultSum;

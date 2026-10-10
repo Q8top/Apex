@@ -32,6 +32,9 @@ function Rng(symbolWeights){
   this.entries = entries;
   this.totalWeight = total;
 }
+Rng.prototype.randomInt = function(max){
+  return randomInt(max);
+};
 Rng.prototype.pickSymbol = function(){
   var roll = randomInt(this.totalWeight);
   for (var i = 0; i < this.entries.length; i++){

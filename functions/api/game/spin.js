@@ -205,13 +205,13 @@ export async function executeSpin(env, user, body) {
   const engineModules = await loadServerEngine();
   const mp = engineModules.MathProfile;
   const profile = mp.getProfile(mode);
-  const weights = mp.buildRngWeights(mode);
+  const weights = mp.buildRngWeights(mode, { fsMode: isFree });
   const rng = new engineModules.Rng(weights);
   const engine = new engineModules.GameEngine({ rng, maxTumbleSteps: 20 });
 
   let spinResult;
   try {
-    spinResult = engine.spin({ mode, betMinor: effectiveBetMinor, spinId });
+    spinResult = engine.spin({ mode, betMinor: effectiveBetMinor, spinId, isFree });
   } catch (e) {
     return { status: 500, body: { success: false, code: 'engine_error' } };
   }

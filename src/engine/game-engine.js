@@ -19,6 +19,7 @@ GameEngine.prototype.spin = function(request){
   var mode = request.mode || 'demo';
   var betMinor = request.betMinor;
   var spinId = request.spinId || _uuid();
+  var isFree = !!request.isFree;
 
   if (mode !== 'demo' && mode !== 'real'){
     throw _err.ApexError(_err.CODES.INVALID_MODE, 'mode must be demo|real');
@@ -45,6 +46,7 @@ GameEngine.prototype.spin = function(request){
   var bonusScatterCount = 0;
   var bonusScatterPayout = 0;
   var terminatedBySafetyLimit = false;
+  var bombSum = 0;
 
   for (var step = 0; step < this.maxTumbleSteps; step++){
     var ev = _eval.evaluate(grid);
@@ -65,6 +67,7 @@ GameEngine.prototype.spin = function(request){
       bonusScatterPayout = _bonus.scatterPayout(ev.scatterCount);
     }
 
+
     if (ev.winningPositions.length === 0){
       break;
     }
@@ -79,6 +82,19 @@ GameEngine.prototype.spin = function(request){
   }
 
   totalMultiplier += bonusScatterPayout;
+
+  // P0-6b: 炸弹仅在 FS 中，每 spin 最多触发 1 次
+  // 1/33 ~= 3% 触发率，配合 rollBombValue 的 ~5.6 期望值
+  // 目标：avg bombFactor ~1.17，RTP +15% 以内
+  if (isFree) {
+    var BOMB_TRIGGER_DENOM = 33;
+    if (this.rng.randomInt(BOMB_TRIGGER_DENOM) === 0) {
+      bombSum = _bonus.rollBombValue(this.rng);
+    }
+  }
+
+  var bombFactor = (bombSum > 0) ? (1 + bombSum) : 1;
+  totalMultiplier = totalMultiplier * bombFactor;
 
   var totalWinMinor = _pay.calculatePayout(betMinor, totalMultiplier);
 
@@ -98,6 +114,8 @@ GameEngine.prototype.spin = function(request){
     },
     totalMultiplier: totalMultiplier,
     totalWinMinor: totalWinMinor,
+    bombSum: bombSum,
+    bombFactor: bombFactor,
     diagnostics: {
       tumbleCount: cascades.length,
       terminatedBySafetyLimit: terminatedBySafetyLimit
