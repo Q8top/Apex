@@ -320,6 +320,15 @@ var state = {
     return root;
   }
 
+  function provider_spin(betMinor, isFree) {
+    if (!runtime || !runtime.getProvider) {
+      return Promise.reject(new Error('no runtime'));
+    }
+    var p = runtime.getProvider();
+    if (!p) return Promise.reject(new Error('no provider'));
+    return p.spin({ bet: betMinor, free: !!isFree });
+  }
+
   function runBonusSequence(feature, betMinor, onDone) {
     var finished = false;
     var overlay = buildBonusOverlay();
@@ -389,14 +398,6 @@ var state = {
     nextFree();
   }
 
-  function provider_spin(betMinor, isFree) {
-    if (!runtime || !runtime.getProvider) {
-      return Promise.reject(new Error('no runtime'));
-    }
-    var p = runtime.getProvider();
-    if (!p) return Promise.reject(new Error('no provider'));
-    return p.spin({ bet: betMinor, free: !!isFree });
-  }
 
   function onSpinResult(result) {
     if (!pending) {
