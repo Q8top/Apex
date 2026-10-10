@@ -479,10 +479,24 @@ var state = {
       }
     } catch (e) {}
     if (window.ApexHistory) {
+      // 记录详细字段
+      var _ratio = (betMinor > 0) ? (winMinor / betMinor) : 0;
+      var _tumbleCount = (result.tumbles && result.tumbles.length) || 0;
+      var _fsTriggered = !!(result.feature && result.feature.triggered);
+      var _maxMult = 0;
+      try {
+        if (result.multiplierSum && result.multiplierSum > _maxMult) _maxMult = result.multiplierSum;
+      } catch (e) {}
       window.ApexHistory.push({
         ts: Date.now(),
         betMinor: betMinor,
-        winMinor: winMinor
+        winMinor: winMinor,
+        spinId: (typeof result.spinId === 'string') ? result.spinId : null,
+        ratio: _ratio,
+        tumbleCount: _tumbleCount,
+        fsTriggered: _fsTriggered,
+        maxMultiplier: _maxMult,
+        balanceAfter: (typeof result.balanceAfter === 'number') ? result.balanceAfter : null
       });
     }
     if (state.win > 0) {

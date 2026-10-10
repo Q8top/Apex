@@ -35,7 +35,13 @@
     records.unshift({
       ts: Number(rec.ts),
       betMinor: Math.floor(Number(rec.betMinor)),
-      winMinor: Math.floor(Number(rec.winMinor))
+      winMinor: Math.floor(Number(rec.winMinor)),
+      spinId: (typeof rec.spinId === 'string') ? rec.spinId.slice(0, 12) : null,
+      ratio: Number.isFinite(Number(rec.ratio)) ? Number(rec.ratio) : null,
+      tumbleCount: Number.isSafeInteger(rec.tumbleCount) ? rec.tumbleCount : 0,
+      fsTriggered: !!rec.fsTriggered,
+      maxMultiplier: Number.isFinite(Number(rec.maxMultiplier)) ? Number(rec.maxMultiplier) : 0,
+      balanceAfter: Number.isSafeInteger(rec.balanceAfter) ? rec.balanceAfter : null
     });
     if (records.length > MAX) records.length = MAX;
     return true;
@@ -92,6 +98,16 @@
       html += '<span class="sd-hist-win">中奖 ' + fmtMoney(r.winMinor) + '</span>';
       html += '<span class="sd-hist-delta ' + cls + '">' + sign + fmtMoney(delta) + '</span>';
       if (lv) html += '<span class="sd-hist-lv sd-hist-lv--' + lv + '"></span>';
+      // 扩展标签：倍率 / 连消 / FS / 余额
+      var extras = [];
+      if (Number.isFinite(r.ratio) && r.ratio > 0) extras.push('x' + r.ratio.toFixed(2));
+      if (r.tumbleCount >= 2) extras.push('连消 x' + r.tumbleCount);
+      if (r.maxMultiplier > 0) extras.push('倍率 ' + r.maxMultiplier.toFixed(2) + 'x');
+      if (r.fsTriggered) extras.push('FS');
+      if (Number.isSafeInteger(r.balanceAfter)) extras.push('余额 ' + fmtMoney(r.balanceAfter));
+      if (extras.length) {
+        html += '<span class="sd-hist-extras">' + extras.join(' · ') + '</span>';
+      }
       html += '</li>';
     }
     html += '</ul>';
