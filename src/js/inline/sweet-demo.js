@@ -495,8 +495,7 @@ var state = {
         ratio: _ratio,
         tumbleCount: _tumbleCount,
         fsTriggered: _fsTriggered,
-        maxMultiplier: _maxMult,
-        balanceAfter: (typeof result.balanceAfter === 'number') ? result.balanceAfter : null
+        maxMultiplier: _maxMult
       });
     }
     if (state.win > 0) {

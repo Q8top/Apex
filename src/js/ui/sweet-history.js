@@ -100,11 +100,11 @@
       if (lv) html += '<span class="sd-hist-lv sd-hist-lv--' + lv + '"></span>';
       // 扩展标签：倍率 / 连消 / FS / 余额
       var extras = [];
-      if (Number.isFinite(r.ratio) && r.ratio > 0) extras.push('x' + r.ratio.toFixed(2));
       if (r.tumbleCount >= 2) extras.push('连消 x' + r.tumbleCount);
-      if (r.maxMultiplier > 0) extras.push('倍率 ' + r.maxMultiplier.toFixed(2) + 'x');
       if (r.fsTriggered) extras.push('FS');
-      if (Number.isSafeInteger(r.balanceAfter)) extras.push('余额 ' + fmtMoney(r.balanceAfter));
+      if (Number.isFinite(r.maxMultiplier) && r.maxMultiplier > 0 && r.maxMultiplier !== 1) {
+        extras.push('倍率 ' + r.maxMultiplier.toFixed(2) + 'x');
+      }
       if (extras.length) {
         html += '<span class="sd-hist-extras">' + extras.join(' · ') + '</span>';
       }
