@@ -175,11 +175,13 @@ function renderCatContent(content, catKey){
     function go(){
       var gid = el.dataset.game;
       var g = window.ApexGamesRegistry && window.ApexGamesRegistry.getById(gid);
-      if (!g) return;
-      if (g.entry === 'modal' && window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
-        window.ApexSweetModal.open();
-      } else if (g.entry === 'page' && g.url) {
-        location.href = g.url;
+      if (!g || !g.live) return;
+      if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
+        window.ApexSweetModal.open({
+          cover: g.src,
+          title: g.n,
+          target: g.url || '/sweet-demo.html'
+        });
       }
     }
     el.addEventListener("click", go);

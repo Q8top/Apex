@@ -280,8 +280,20 @@ function bindEvents(){
 }
 
 /* ---------- init ---------- */
+function readModeFromUrl(){
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var m = params.get('mode');
+    if (m === 'real' || m === 'demo') return m;
+  } catch (e) {}
+  return 'demo';
+}
+
 function init(){
   cacheEls();
+  state.mode = readModeFromUrl();
+  var modeLabel = $('sr-mode-label');
+  if (modeLabel) modeLabel.textContent = (state.mode === 'real') ? '\u6b63\u5f0f\u6e38\u620f' : '\u8bd5\u73a9\u6a21\u5f0f';
   bindEvents();
   updateBalance();
   updateBetDisplay();

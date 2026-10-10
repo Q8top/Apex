@@ -17,7 +17,7 @@
 
   var ROOT_ID = 'apex-sweet-mode-modal';
   var MODE_WHITELIST = Object.freeze(['demo', 'real']);
-  var state = { isOpen: false, lastFocused: null, closeTimer: 0, focusTimer: 0 };
+  var state = { isOpen: false, lastFocused: null, closeTimer: 0, focusTimer: 0, currentTarget: '/sweet-demo.html' };
 
   var SVG_DEMO = ''
     + '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">'
@@ -100,7 +100,7 @@
         } catch (_) {}
         close();
         setTimeout(function () {
-          window.location.href = '/sweet-demo.html?mode=' + encodeURIComponent(mode);
+          window.location.href = (state.currentTarget || '/sweet-demo.html') + '?mode=' + encodeURIComponent(mode);
         }, 220);
       }
     });
@@ -138,9 +138,22 @@
     else if (!e.shiftKey && active === l) { e.preventDefault(); f.focus(); }
   }
 
-  function open() {
+  function applyContent(opts) {
+    opts = opts || {};
+    state.currentTarget = opts.target || '/sweet-demo.html';
+    if (!opts.cover && !opts.title) return;
+    var r = document.getElementById(ROOT_ID);
+    if (!r) return;
+    var img = r.querySelector('.sweet-modal-cover img');
+    if (img && opts.cover) img.setAttribute('src', opts.cover);
+    var h = r.querySelector('.sweet-modal-title');
+    if (h && opts.title) h.textContent = opts.title;
+  }
+
+  function open(opts) {
     if (state.isOpen) return;
     var r = ensureRoot();
+    applyContent(opts);
 
     if (state.closeTimer) { clearTimeout(state.closeTimer); state.closeTimer = 0; }
     if (state.focusTimer) { clearTimeout(state.focusTimer); state.focusTimer = 0; }
