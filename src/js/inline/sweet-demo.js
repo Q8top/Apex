@@ -1044,6 +1044,26 @@ function toast(msg) {
     applyModeUI();
     bindEvents();
 
+    // P2-8: bfcache 恢复时重新校验状态
+    // 浏览器后退/前进恢复页面时不重新执行 JS，服务端可能已经改状态。
+    // 简单策略：恢复时重新拉一次余额；若是 real 模式同步。
+    try {
+      window.addEventListener('pageshow', function (e) {
+        if (!e.persisted) return;
+        try {
+          if (runtime && runtime.getProvider && GAME_MODE === 'real') {
+            var p = runtime.getProvider();
+            if (p && p.getBalance) {
+              p.getBalance().then(function (bal) {
+                state.balance = bal.minor / 100;
+                renderStats();
+              }).catch(function () {});
+            }
+          }
+        } catch (er) {}
+      });
+    } catch (e) {}
+
     // C-3 wiring: boot self-check (console only)
     try {
       if (window.ApexRenderer && typeof window.ApexRenderer.bootCheck === "function") {

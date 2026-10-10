@@ -10,6 +10,7 @@ html, body {
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'PingFang SC', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 body {
   display: flex;

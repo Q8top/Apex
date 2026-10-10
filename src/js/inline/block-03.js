@@ -55,7 +55,7 @@
       var el = document.getElementById(id);
       if (!el) return;
       try {
-        var v = localStorage.getItem(_draftKeys[id]);
+        var v = null; try { v = localStorage.getItem(_draftKeys[id]); } catch (e) {}
         if (v && !el.value) el.value = v;
       } catch (e) {}
       el.addEventListener('input', function () {
@@ -65,7 +65,7 @@
   })();
   function clearDrafts() {
     try {
-      Object.keys(_draftKeys).forEach(function (id) { localStorage.removeItem(_draftKeys[id]); });
+      Object.keys(_draftKeys).forEach(function (id) { try { localStorage.removeItem(_draftKeys[id]); } catch (e) {} });
     } catch (e) {}
   }
   window.clearDrafts = clearDrafts;
