@@ -18,6 +18,7 @@ var PROFILES = Object.freeze({
     }),
     scatterWeight: 1,
     multiplierWeight: 0,
+    fsMultiplierWeight: 8,
     payScale: 2.55,
     maxWinMultiplier: 5000,
     pityRate: 0.0,
@@ -33,6 +34,7 @@ var PROFILES = Object.freeze({
     }),
     scatterWeight: 3,
     multiplierWeight: 0,
+    fsMultiplierWeight: 15,
     payScale: 3.60,
     maxWinMultiplier: 25000,
     pityRate: 0.35,
@@ -67,7 +69,8 @@ var ID_MAP = Object.freeze({
   MULTIPLIER_BOMB: 'multiplier_bomb'
 });
 
-function buildRngWeights(mode){
+function buildRngWeights(mode, opts){
+  opts = opts || {};
   var p = getProfile(mode);
   var out = {};
   var keys = Object.keys(p.baseWeights);
@@ -79,8 +82,9 @@ function buildRngWeights(mode){
   if (p.scatterWeight > 0){
     out.lollipop = p.scatterWeight;
   }
-  if (p.multiplierWeight > 0){
-    out.multiplier_bomb = p.multiplierWeight;
+  var mw = opts.fsMode ? (p.fsMultiplierWeight || 0) : (p.multiplierWeight || 0);
+  if (mw > 0){
+    out.multiplier_bomb = mw;
   }
   return out;
 }
@@ -106,6 +110,9 @@ function validate(){
     }
     if (!Number.isSafeInteger(p.multiplierWeight) || p.multiplierWeight < 0){
       throw new Error('MATH_PROFILE: ' + m + '.multiplierWeight 必须非负整数');
+    }
+    if (p.fsMultiplierWeight != null && (!Number.isSafeInteger(p.fsMultiplierWeight) || p.fsMultiplierWeight < 0)){
+      throw new Error('MATH_PROFILE: ' + m + '.fsMultiplierWeight invalid');
     }
     if (!p.targetRtp || p.targetRtp.min >= p.targetRtp.max){
       throw new Error('MATH_PROFILE: ' + m + '.targetRtp 区间非法');
