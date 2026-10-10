@@ -43,7 +43,7 @@
     "check:leak": "node scripts/check-no-math-leak.cjs"
   },
   "devDependencies": {
-    "wrangler": "^4.144.0"
+    "wrangler": "^4.148.0"
   },
   "overrides": {
     "sharp": "0.35.5"
