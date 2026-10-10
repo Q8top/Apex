@@ -162,6 +162,11 @@
       });
     },
     'multiplier':  function () { tone({ freq: 1400, dur: 100, type: 'square', gain: 0.10 }); },
+    'tumble-land': function () {
+      // 落点"嗒"声（轻微木质敲击）
+      tone({ freq: 180, freqTo: 120, dur: 60, type: 'triangle', gain: 0.11 });
+      tone({ freq: 900, dur: 30, type: 'square', gain: 0.05, delay: 0.005 });
+    },
     'bomb-explode': function (opts) {
       // P1-6: FS 炸弹爆炸音效；强度随炸弹值变化
       var intensity = Math.min(100, Math.max(2, (opts && opts.value) || 2));

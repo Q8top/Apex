@@ -305,6 +305,12 @@ var state = {
           tumbleSetTimeout(function () {
             // Phase 3: 换盘 + 分角色动画
             renderGridAt(t.gridAfter);
+            // 落点音效：连续 3 声轻"嗒"
+            if (audio) {
+              try { playAudio('tumble-land'); } catch (e) {}
+              setTimeout(function () { try { playAudio('tumble-land'); } catch (e) {} }, 60);
+              setTimeout(function () { try { playAudio('tumble-land'); } catch (e) {} }, 120);
+            }
             var cells = el.board.querySelectorAll('.sd-sym');
 
             // 新格子：从上方进入
@@ -527,6 +533,20 @@ var state = {
     renderSpinBtn();
     if (result.feature && result.feature.triggered) {
       if (window.ApexAudio) audio && playAudio('bonus');
+      // FS 进入：全屏金色闪光 + 粒子爆炸
+      try {
+        var flashEl = document.getElementById('sd-fs-flash');
+        if (flashEl) {
+          flashEl.classList.remove('is-on');
+          void flashEl.offsetWidth;
+          flashEl.classList.add('is-on');
+          setTimeout(function () {
+            try { flashEl.classList.remove('is-on'); } catch (e) {}
+          }, 800);
+        }
+      } catch (e) {}
+      try { spawnFsParticles(); } catch (e) {}
+      if (audio) playAudio('fs-enter');
       state.bonusLock = true;
       runBonusSequence(result.feature, betMinor, function (bonusWin) {
         state.bonusLock = false;
@@ -908,6 +928,37 @@ var state = {
   }
 
   var toastEl = null, toastTimer = 0;
+  function spawnFsParticles() {
+    var prev = document.getElementById('sd-fs-particles');
+    if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
+    var container = document.createElement('div');
+    container.id = 'sd-fs-particles';
+    container.className = 'sd-fs-particles';
+    var COUNT = 30;
+    for (var i = 0; i < COUNT; i++) {
+      var p = document.createElement('div');
+      p.className = 'sd-fs-particle';
+      var _r1 = new Uint32Array(1); crypto.getRandomValues(_r1);
+      var _r2 = new Uint32Array(1); crypto.getRandomValues(_r2);
+      var _r3 = new Uint32Array(1); crypto.getRandomValues(_r3);
+      var angle = (i / COUNT) * Math.PI * 2 + ((_r1[0] % 200) / 1000 - 0.1);
+      var dist = 140 + (_r2[0] % 120);
+      var dx = Math.cos(angle) * dist;
+      var dy = Math.sin(angle) * dist;
+      p.style.setProperty('--dx', dx.toFixed(1) + 'px');
+      p.style.setProperty('--dy', dy.toFixed(1) + 'px');
+      p.style.animationDelay = (_r3[0] % 60) + 'ms';
+      container.appendChild(p);
+    }
+    document.body.appendChild(container);
+    // 触发
+    void container.offsetWidth;
+    container.classList.add('is-on');
+    setTimeout(function () {
+      if (container.parentNode) container.parentNode.removeChild(container);
+    }, 1200);
+  }
+
   function playAudio(name) {
   if (audioBridge) { try { audioBridge.play(name); return; } catch (e) {} }
   if (audio && audio.play) { try { audio.play(name); } catch (e) {} }
