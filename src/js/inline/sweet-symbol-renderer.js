@@ -123,7 +123,7 @@
         var cell = existing[k];
         if (!cell) continue;
         var prevId = cell.dataset.sid || null;
-        if (prevId === newId) continue;   // 未变，跳过
+        if (prevId === newId) { cell.classList.remove("is-winning","is-removing","is-entering","is-falling","is-dropping-out","is-dropping-in"); cell.style.removeProperty("--fall-rows"); cell.style.removeProperty("--drop-delay"); continue; }   // 未变，跳过
         // 清残留动画 class
         cell.classList.remove('is-winning', 'is-removing', 'is-entering', 'is-falling', 'is-dropping-out', 'is-dropping-in');
         cell.style.removeProperty('--fall-rows');
