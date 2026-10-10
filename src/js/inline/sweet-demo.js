@@ -647,29 +647,12 @@ var state = {
       return;
     }
 
-    state.balance -= getBet();
-    state.win = 0;
-    renderStats();
-
-    var duration = state.fastMode ? 400 : 900;
-
-    window.setTimeout(function () {
-      renderBoard(false);
-      var r = new Uint32Array(1);
-      crypto.getRandomValues(r);
-      if ((r[0] % 100) < 30) {
-        var mult = ((r[0] % 20) + 1) / 10;
-        state.win = Math.round(getBet() * mult * 100) / 100;
-        state.balance += state.win;
-        if (window.ApexWinFeedback) {
-          window.ApexWinFeedback.show(state.win, getBet());
-        }
-      }
-      el.board.dataset.spinning = '0';
-      state.spinning = false;
-      renderStats();
-      renderSpinBtn();
-    }, duration);
+    // P1-10: runtime 是唯一结算源；旧随机 fallback 已删除
+    pending = null;
+    state.spinning = false;
+    el.board.dataset.spinning = '0';
+    renderSpinBtn();
+    toast('游戏初始化失败，请刷新页面');
   }
 
   function resolveAutoDone(outcome) {

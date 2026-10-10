@@ -9,7 +9,7 @@
  *
  * TODO(P2-1)：MARKUP 硬编码中文，待 UI 层接入 ApexI18n
  *             (game.demo / game.title / btn.spin 等已有键)
- * TODO(P2-2)：body 锁用 class（sweet-modal-locked）而非 ApexSheetLock，
+ * P1-10 review: body 锁保留 class-based 实现；index.html 不引入 sheet-lock.js，
  *             机制与三份 sheet 不统一。改 CSS 风险大，暂保留。
  */
 (function () {
