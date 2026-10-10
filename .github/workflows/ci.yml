@@ -88,6 +88,7 @@ jobs:
           node tests/monitoring/reconnection.cjs
           node tests/monitoring/near-miss.cjs
           node tests/monitoring/metrics-window.cjs
+          node tests/monitoring/wallet-stub.cjs
 
       - name: Rollout bucketing (D-4)
         run: |
