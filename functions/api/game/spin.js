@@ -228,6 +228,21 @@ export async function executeSpin(env, user, body) {
   let chainId = null;
   let newChainWinMinor = null;
 
+  // P0-2: base spin 硬截断（不受 chain cap 影响）
+  const maxWinMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
+  const maxWinMinor = effectiveBetMinor * maxWinMult;
+  if (!Number.isSafeInteger(maxWinMinor) || maxWinMinor < 0) {
+    throw new Error('max_win_out_of_safe_range: ' + maxWinMinor);
+  }
+  let cappedThisSpin = 0;
+  if (actualWinMinor > maxWinMinor) {
+    actualWinMinor = maxWinMinor;
+    cappedThisSpin = 1;
+    console.warn('[spin] max-win capped', {
+      spinId, theoretical: theoreticalWinMinor, actual: actualWinMinor, maxWinMinor
+    });
+  }
+
   if (isFree && fsSession.chain_id) {
     chainId = fsSession.chain_id;
     const chainRow = await env.apex_db.prepare(
@@ -338,15 +353,17 @@ export async function executeSpin(env, user, body) {
     "INSERT INTO spins " +
     "(spin_id, user_id, request_fingerprint, mode, is_free, free_round_total, " +
     " bet_minor, win_minor, effective_bet_minor, fs_session_id, chain_id, " +
-    " balance_before, balance_after, balance_delta, result_json, game_version, math_version) " +
-    "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    " balance_before, balance_after, balance_delta, result_json, game_version, math_version, " +
+    " max_win_applied, capped_this_spin) " +
+    "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   ).bind(
     spinId, userId, fingerprint, isFree ? 1 : 0,
     isFree ? fsSession.total_spins : null,
     effectiveBetMinor, actualWinMinor, effectiveBetMinor,
     isFree ? fsSession.id : null, isFree ? fsSession.chain_id : newChainId,
     balanceBefore, balanceAfter, balanceDelta,
-    JSON.stringify(spinResult), gameVersion, mathVersion
+    JSON.stringify(spinResult), gameVersion, mathVersion,
+    maxWinMinor, cappedThisSpin
   ));
 
   try {
@@ -417,7 +434,8 @@ export async function executeSpin(env, user, body) {
       balanceBefore: balanceBefore,
       balanceAfter: balanceAfter,
       freeSpin: freeSpinOut,
-      fsAwarded: fsAwardedOut
+      fsAwarded: fsAwardedOut,
+      cappedThisSpin: cappedThisSpin === 1
     }
   };
 }
