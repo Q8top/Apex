@@ -82,33 +82,54 @@
   }
 
   function renderList() {
-    if (!records.length) {
-      return '<p class="sd-hist-empty">暂无记录</p>';
+    // 统计汇总
+    var totalSpins = records.length;
+    var hitSpins = 0;
+    var totalBet = 0;
+    var totalWin = 0;
+    for (var k = 0; k < records.length; k++) {
+      totalBet += records[k].betMinor || 0;
+      totalWin += records[k].winMinor || 0;
+      if (records[k].winMinor > 0) hitSpins++;
     }
-    var html = '<ul class="sd-hist-list">';
+
+    var head = '<div class="sd-hist-summary">'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总局数</span><span class="sd-hist-cell-value">' + totalSpins + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">中奖次数</span><span class="sd-hist-cell-value">' + hitSpins + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总下注</span><span class="sd-hist-cell-value">' + fmtMoney(totalBet) + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总中奖</span><span class="sd-hist-cell-value">' + fmtMoney(totalWin) + '</span></div>'
+      + '</div>'
+      + '<h3 class="sd-hist-section">最近记录</h3>';
+
+    if (!records.length) {
+      return head + '<p class="sd-hist-empty">暂无记录</p>';
+    }
+
+    var html = head + '<ul class="sd-hist-list">';
     for (var i = 0; i < records.length; i++) {
       var r = records[i];
-      var delta = r.winMinor - r.betMinor;
+      var delta = (r.winMinor || 0) - (r.betMinor || 0);
       var cls = delta >= 0 ? 'pos' : 'neg';
-      var sign = delta >= 0 ? '+' : '';
-      var lv = levelOf(r.winMinor, r.betMinor);
-      html += '<li class="sd-hist-item">';
-      html += '<span class="sd-hist-time">' + fmtTime(r.ts) + '</span>';
-      html += '<span class="sd-hist-bet">下注 ' + fmtMoney(r.betMinor) + '</span>';
-      html += '<span class="sd-hist-win">中奖 ' + fmtMoney(r.winMinor) + '</span>';
-      html += '<span class="sd-hist-delta ' + cls + '">' + sign + fmtMoney(delta) + '</span>';
-      if (lv) html += '<span class="sd-hist-lv sd-hist-lv--' + lv + '"></span>';
-      // 扩展标签：倍率 / 连消 / FS / 余额
+      var sign = delta > 0 ? '+' : '';
+
       var extras = [];
       if (r.tumbleCount >= 2) extras.push('连消 x' + r.tumbleCount);
       if (r.fsTriggered) extras.push('FS');
       if (Number.isFinite(r.maxMultiplier) && r.maxMultiplier > 0 && r.maxMultiplier !== 1) {
         extras.push('倍率 ' + r.maxMultiplier.toFixed(2) + 'x');
       }
-      if (extras.length) {
-        html += '<span class="sd-hist-extras">' + extras.join(' · ') + '</span>';
-      }
-      html += '</li>';
+
+      html += '<li class="sd-hist-item">'
+        +   '<div class="sd-hist-row">'
+        +     '<span class="sd-hist-bet-big">下注 ' + fmtMoney(r.betMinor) + '</span>'
+        +     '<span class="sd-hist-delta ' + cls + '">' + sign + fmtMoney(delta) + '</span>'
+        +   '</div>'
+        +   '<div class="sd-hist-sub">'
+        +     '<span class="sd-hist-time">' + fmtTime(r.ts) + '</span>'
+        +     '<span class="sd-hist-win-sub">· 中奖 ' + fmtMoney(r.winMinor) + '</span>'
+        +     (extras.length ? '<span class="sd-hist-extra">· ' + extras.join(' · ') + '</span>' : '')
+        +   '</div>'
+        + '</li>';
     }
     html += '</ul>';
     return html;
