@@ -958,6 +958,20 @@ function toast(msg) {
     } catch (e) {}
     if (window.ApexA11y) { try { announcer = window.ApexA11y.createAnnouncer(); } catch (e) {} }
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
+    if (window.ApexReconnection) {
+      try {
+        var rc = window.ApexReconnection.create();
+        rc.onChange(function (online) {
+          try {
+            var i18n = window.ApexI18n;
+            var msg = online ? (i18n ? i18n.t('net.online') : 'Network restored')
+                             : (i18n ? i18n.t('net.offline') : 'Network disconnected');
+            toast(msg);
+            if (!online && window.console && console.warn) console.warn('[net] offline');
+          } catch (e) {}
+        });
+      } catch (e) {}
+    }
     if (window.ApexHaptics) haptics = window.ApexHaptics.create();
     applyI18n();
     applyI18nDynamic();

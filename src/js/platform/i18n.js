@@ -46,6 +46,8 @@
       'menu.home': '返回大厅',
       'toast.insufficient': '试玩余额不足', 'toast.reset.done': '试玩余额已重置',
       'toast.coming': '功能开发中',
+      'net.offline': '网络已断开',
+      'net.online': '网络已恢复',
       'bonus.title': 'Candy Storm', 'bonus.spinLeft': '剩余局数',
       'bonus.totalWin': '累计赢得', 'bonus.multiplier': '倍率合计', 'bonus.claim': '领取'
     },
@@ -63,6 +65,8 @@
       'menu.home': 'Home',
       'toast.insufficient': 'Insufficient balance', 'toast.reset.done': 'Balance reset',
       'toast.coming': 'Coming soon',
+      'net.offline': 'Network disconnected',
+      'net.online': 'Network restored',
       'bonus.title': 'Candy Storm', 'bonus.spinLeft': 'Spins Left',
       'bonus.totalWin': 'Total Win', 'bonus.multiplier': 'Multiplier', 'bonus.claim': 'Claim'
     }
