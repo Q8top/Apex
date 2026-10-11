@@ -161,7 +161,7 @@ jobs:
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci --ignore-scripts
       - name: Sweet Bonanza RTP (fast)
-        run: node tests/math/rtp-gate.cjs 50000
+        run: node tests/math/rtp-gate.cjs 200000
       - name: Sugar Rush RTP (fast, real)
         run: node tools/rtp-gate-v3.cjs
         env:
