@@ -165,11 +165,14 @@ var env = { apex_db: createD1(mem) };
   var balBefore = mem.prepare('SELECT wallet_balance FROM users WHERE id=?').get(uid1).wallet_balance;
   var r7a = await executeSpin(env, user1, { spinId: 'a4-test-000000004', betMinor: 200, mode: 'real' });
   t('新 spinId 200 成功', r7a.status === 200);
+  // S-FK-fix: 抓取第一次 spin 之后的余额（用于验证幂等不二次扣款）
+  var balMid = mem.prepare('SELECT wallet_balance FROM users WHERE id=?').get(uid1).wallet_balance;
   // 重复同 ID
   var r7b = await executeSpin(env, user1, { spinId: 'a4-test-000000004', betMinor: 200, mode: 'real' });
   t('重复 cached', r7b.body.cached === true);
   var balAfter = mem.prepare('SELECT wallet_balance FROM users WHERE id=?').get(uid1).wallet_balance;
-  t('重试不影响余额（除首次效果）', balAfter !== balBefore);
+  // 真正的幂等断言：重复调用不改变余额（首次调用可能进 FS 不扣款，所以对 balBefore 不可比）
+  t('重试不改变余额（幂等）', balAfter === balMid);
 
   console.log('\n=== 测试 8：不同用户不同 spinId 互不影响 ===');
   var r8a = await executeSpin(env, user2, { spinId: 'a4-test-user2-01', betMinor: 300, mode: 'real' });
