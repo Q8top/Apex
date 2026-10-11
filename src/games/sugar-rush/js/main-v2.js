@@ -116,17 +116,34 @@ function renderGrid(grid, opts){
     }, 700);
   }
 }
+function renderSpinBtn(){
+  var btn=document.getElementById('sr-spin-btn');
+  if(!btn)return;
+  var lbl=btn.querySelector('.sr-ctrl-label');
+  var text='旋转';
+  var disabled=false;
+  if(M.state.fsRunning){ text='\u514d\u8d39\u65cb\u8f6c\u4e2d'; disabled=true; }
+  else if(M.state.auto){ text='\u505c\u6b62'; }
+  else if(M.state.spinning){ text='\u65cb\u8f6c\u4e2d'; }
+  if(lbl)lbl.textContent=text;
+  btn.classList.toggle('spinning',!!M.state.spinning);
+  btn.disabled=disabled;
+}
 function toggleSpinBtn(on){
+  // 兼容旧调用：切换 spinning class + disabled
   var btn=document.getElementById('sr-spin-btn');
   if(!btn)return;
   btn.classList.toggle('spinning',!!on);
   btn.disabled=!!on;
+  renderSpinBtn();
 }
 function playSpinDropSR(done){
   var cs=M.cells;
   if(!cs.length){ if(done)done(); return; }
-  var staggerMs = M.state.fast ? 10 : 18;
-  var baseMs = M.state.fast ? 120 : 200;
+  // 连消深度感知：>=5 层时压缩时长，减轻 GPU 压力
+  var ANIM_DEEP_CHAIN = (M.state.tumbleDepth || 0) >= 5;
+  var staggerMs = ANIM_DEEP_CHAIN ? 6 : (M.state.fast ? 10 : 18);
+  var baseMs = ANIM_DEEP_CHAIN ? 80 : (M.state.fast ? 120 : 200);
   for(var i=0;i<cs.length;i++){
     var col = i % 7;
     cs[i].style.setProperty('--sr-out-delay', (col * staggerMs) + 'ms');
@@ -264,6 +281,23 @@ function clearCells(){
     cs[i].classList.remove('is-winning','is-anticipating','is-dropping','is-popping');
   }
 }
+function applyMultiplierMarks(res){
+  var marks = res && (res.marksAfter || res.marksVisual || []);
+  var cs = M.cells;
+  for (var i = 0; i < cs.length; i++) {
+    cs[i].classList.remove('has-multiplier');
+    cs[i].removeAttribute('data-mult');
+  }
+  for (var j = 0; j < marks.length; j++) {
+    var p = marks[j];
+    if (!Array.isArray(p) || p.length !== 2) continue;
+    var idx = p[0], val = p[1];
+    if (idx >= 0 && idx < cs.length && val >= 2) {
+      cs[idx].classList.add('has-multiplier');
+      cs[idx].setAttribute('data-mult', val + '\u00d7');
+    }
+  }
+}
 function markWinning(res){
   var pos=res&&(res.winPositions||res.winningPositions||res.lastWinPositions);
   if(!pos||!pos.length)return;
@@ -294,13 +328,7 @@ function doSpinV2(){
   var hold=win>0?620:0;
   setTimeout(function(){clearCells();M.state.spinning=false;},hold);
 }
-M.onBoot(function(){
-  var old=document.getElementById('sr-spin-btn');
-  if(!old)return;
-  var nb=old.cloneNode(true);
-  old.parentNode.replaceChild(nb,old);
-  nb.addEventListener('click',doSpinV2);
-});
+/* P6-B: IIFE 7 的 spin 绑定已移除（唯一点击入口 spinGateway） */
 window.ApexSRSpinV2=Object.freeze({doSpinV2:doSpinV2,markWinning:markWinning,clearCells:clearCells});
 })();
 
@@ -344,12 +372,17 @@ window.ApexSRFx2=Object.freeze({
 var M=window.ApexSRMain;if(!M)return;
 function A(){return window.ApexSRAudio;}
 function tierOf(x){return window.ApexSRFx?window.ApexSRFx.tierOf(x):0;}
-function spinWithAudio(){
-  // 对齐 SB：自动模式中点旋转=停止
+function onSpinClick(){
+  // 用户点击旋转按钮的专用入口
+  // 自动中点击 = 停止；否则走正常 spin
   if(M.state.auto){
     if(window.ApexSRAutoFast&&window.ApexSRAutoFast.stopAuto)window.ApexSRAutoFast.stopAuto();
     return;
   }
+  if(M.state.spinning)return;
+  if(window.ApexSRAudioBridge&&window.ApexSRAudioBridge.spinWithAudio)window.ApexSRAudioBridge.spinWithAudio();
+}
+function spinWithAudio(){
   if(M.state.spinning)return;
   var a=A();if(a&&a.sfxTap)a.sfxTap();
   var E=window.ApexSugarRushGameEngine,Fx2=window.ApexSRFx2;
@@ -378,7 +411,9 @@ function spinWithAudio(){
     if(w&&window.ApexSRFx)window.ApexSRFx.rollNumber(w,0,win,560);
     else if(w)w.textContent=M.fmtMinor(win);
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(res);
+    applyMultiplierMarks(res);
     var casc=res.cascades|0;
+  M.state.tumbleDepth = casc;
     if(casc>0){if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);else if(Fx2)Fx2.setTumble(casc);}
     if(casc>0&&a&&a.sfxLand)a.sfxLand(casc);
     if(win>0){
@@ -401,6 +436,7 @@ function spinWithAudio(){
       if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else if(Fx2)Fx2.setTumble(0);
       if(window.ApexBgm&&!res.fsTriggered)try{window.ApexBgm.toBase(1400);}catch(e){}
       M.state.spinning=false;
+      M.state.tumbleDepth=0;
       toggleSpinBtn(false);
     },hold);
     });   /* 闭合 playSpinDropSR 回调 */
@@ -426,9 +462,9 @@ function bind(){
   if(!old)return;
   var nb=old.cloneNode(true);
   old.parentNode.replaceChild(nb,old);
-  nb.addEventListener('click',spinWithAudio);
+  nb.addEventListener('click',onSpinClick);
 }
-M.onBoot(bind);
+/* P6-B: IIFE 9 的 bind 已由 spinGateway 覆盖 */
 // S3.4: BGM 首次手势后启动
 M.onBoot(function(){
   var _started = false;
@@ -898,7 +934,11 @@ function tap(){
 }
 function setAutoIcon(isStop){
   var use=document.getElementById('sr-auto-use');
-  if(use)use.setAttribute('href', isStop?'#ic-stop':'#ic-repeat');
+  if(!use)return;
+  var h = isStop ? '#ic-stop' : '#ic-repeat';
+  // 双写 href + xlink:href 兼容老 Safari
+  try{ use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', h); }catch(e){}
+  try{ use.setAttribute('href', h); }catch(e){}
 }
 function setAutoLabel(isStop){
   var lbl=document.getElementById('sr-auto-label');
@@ -911,6 +951,8 @@ function setAutoVisual(isStop){
   setAutoIcon(isStop);
   setAutoLabel(isStop);
   btn.setAttribute('aria-label',isStop?'\u505c\u6b62\u81ea\u52a8':'\u81ea\u52a8\u6295\u6ce8');
+  // 同步 spin 按钮（对齐 SB：auto 中 spin 显示"停止"）
+  if(window.ApexSRRenderSpin)window.ApexSRRenderSpin();
 }
 function isSpinning(){
   if(window.ApexSRAudioBridge)return M.state.spinning;
@@ -954,6 +996,7 @@ M.onBoot(function(){
   if(f)f.addEventListener('click',onFast);
 });
 window.ApexSRAutoFast=Object.freeze({onAuto:onAuto,onFast:onFast,startAuto:startAuto,stopAuto:stopAuto});
+window.ApexSRRenderSpin=function(){ try{ renderSpinBtn(); }catch(e){} };
 })();
 
 (function(){

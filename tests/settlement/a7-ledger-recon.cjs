@@ -150,7 +150,8 @@ function layer3_orphan(mem) {
 
   console.log('=== T10: 20 spin 后三层对账 ===');
   e = freshEnv();
-  for (var i = 0; i < 20; i++) {
+  // P-E: 40 局降低 FS 触发占比（<1% 概率触发 ≥3 局 FS）
+  for (var i = 0; i < 40; i++) {
     var sid = 'a7-multi-' + ('00000000' + i).slice(-10);
     await executeSpin(e.env, e.user, { spinId: sid, betMinor: 100, mode: 'real' });
   }
@@ -158,9 +159,14 @@ function layer3_orphan(mem) {
   t('T10 L3 付费空', layer3_paid(e.mem).length === 0);
   t('T10 L3 孤立空', layer3_orphan(e.mem).length === 0);
   var total = e.mem.prepare('SELECT COUNT(*) AS c FROM wallet_ledger').get().c;
-  // P-FS: FS 局 bet_minor=0 不写 bet ledger（正确语义）。
-  // 20 局含 opening(1) + 普通局 bet(≥18) + win(≥1) ≥ 20。
-  t('T10 ledger >= 20', total >= 20);
+  // P-E: 自适应下限 = opening + 普通局(40) - FS局估算
+  // FS 不写 bet ledger，每触发一局 FS 少 1 条 ledger
+  var fsCount = e.mem.prepare(
+    "SELECT COUNT(*) AS c FROM spins WHERE is_free = 1"
+  ).get().c;
+  var expectedMin = 1 + (40 - fsCount);   // opening + 普通局
+  t('T10 ledger >= ' + expectedMin + ' (fs=' + fsCount + ')',
+    total >= expectedMin);
 
   console.log('============================================');
   console.log('总计 ' + pass + ' 通过 / ' + fail + ' 失败');
