@@ -389,7 +389,7 @@ export async function executeSpin(env, user, body) {
   ).bind(
     spinId, userId, fingerprint, isFree ? 1 : 0,
     isFree ? fsSession.total_spins : null,
-    effectiveBetMinor, actualWinMinor, effectiveBetMinor,
+    isFree ? 0 : effectiveBetMinor, actualWinMinor, effectiveBetMinor,  // P-FS: FS 局 bet_minor=0
     isFree ? fsSession.id : null, isFree ? fsSession.chain_id : newChainId,
     balanceBefore, balanceAfter, balanceDelta,
     JSON.stringify(spinResult), gameVersion, mathVersion,

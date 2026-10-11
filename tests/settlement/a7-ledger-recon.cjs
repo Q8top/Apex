@@ -158,7 +158,9 @@ function layer3_orphan(mem) {
   t('T10 L3 付费空', layer3_paid(e.mem).length === 0);
   t('T10 L3 孤立空', layer3_orphan(e.mem).length === 0);
   var total = e.mem.prepare('SELECT COUNT(*) AS c FROM wallet_ledger').get().c;
-  t('T10 ledger > 20', total > 20);
+  // P-FS: FS 局 bet_minor=0 不写 bet ledger（正确语义）。
+  // 20 局含 opening(1) + 普通局 bet(≥18) + win(≥1) ≥ 20。
+  t('T10 ledger >= 20', total >= 20);
 
   console.log('============================================');
   console.log('总计 ' + pass + ' 通过 / ' + fail + ' 失败');
