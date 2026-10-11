@@ -1,5 +1,11 @@
 (function(){
 'use strict';
+/* crypto-backed random pool (visuals/audio only, no gameplay impact) */
+var _rb=new Uint32Array(64),_ri=0;
+function rnd(){
+  if(_ri>=_rb.length){crypto.getRandomValues(_rb);_ri=0;}
+  return _rb[_ri++]/0x100000000;
+}
 var ctx=null, master=null, sfxGain=null, musicGain=null;
 var enabled=true, musicOn=false;
 function ensureCtx(){
@@ -38,7 +44,7 @@ function noise(opts){
   var sr=ctx.sampleRate;
   var buf=ctx.createBuffer(1,Math.floor(sr*dur),sr);
   var data=buf.getChannelData(0);
-  for(var i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,opts.decay||1.6);
+  for(var i=0;i<data.length;i++)data[i]=(rnd()*2-1)*Math.pow(1-i/data.length,opts.decay||1.6);
   var src=ctx.createBufferSource();src.buffer=buf;
   var g=ctx.createGain();g.gain.value=opts.vol===undefined?0.25:opts.vol;
   var f=ctx.createBiquadFilter();f.type=opts.filter||'highpass';f.frequency.value=opts.cutoff||800;

@@ -1,5 +1,13 @@
 (function(){
 'use strict';
+var _rb=new Uint32Array(64),_ri=0;
+window.ApexSRRnd=function(){
+  if(_ri>=_rb.length){crypto.getRandomValues(_rb);_ri=0;}
+  return _rb[_ri++]/0x100000000;
+};
+})();
+(function(){
+'use strict';
 var BETS=[20,50,100,200,500,1000,2000,5000,10000];
 var BOARD_N=49;
 var state={mode:'demo',balance:1000000,betIndex:2,spinning:false,auto:false,fast:false,fs:null,last:null};
@@ -516,13 +524,13 @@ function spawnCandy(overlay,n){
     (function(idx){
       setTimeout(function(){
         var c=document.createElement('div');c.className='sr-fs-candy';
-        var sz=10+Math.random()*16;
+        var sz=10+window.ApexSRRnd()*16;
         c.style.width=sz+'px';c.style.height=sz+'px';
-        c.style.left=(Math.random()*100)+'%';
-        c.style.background=COLORS[Math.floor(Math.random()*COLORS.length)];
+        c.style.left=(window.ApexSRRnd()*100)+'%';
+        c.style.background=COLORS[Math.floor(window.ApexSRRnd()*COLORS.length)];
         c.style.boxShadow='0 2px 8px rgba(0,0,0,.3), inset 0 -3px 6px rgba(0,0,0,.25)';
-        c.style.animationDuration=(2.2+Math.random()*2.2)+'s';
-        c.style.animationDelay=(Math.random()*0.6)+'s';
+        c.style.animationDuration=(2.2+window.ApexSRRnd()*2.2)+'s';
+        c.style.animationDelay=(window.ApexSRRnd()*0.6)+'s';
         overlay.appendChild(c);
         setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},5200);
       },idx*22);
@@ -581,15 +589,15 @@ function spawn(n){
     (function(idx){
       setTimeout(function(){
         var p=document.createElement('div');p.className='sr-confetti-piece';
-        var dx=(Math.random()*2-1)*180;
-        var rot=(Math.random()*2-1)*1080;
-        p.style.left=(Math.random()*100)+'%';
-        p.style.background=COLORS[Math.floor(Math.random()*COLORS.length)];
+        var dx=(window.ApexSRRnd()*2-1)*180;
+        var rot=(window.ApexSRRnd()*2-1)*1080;
+        p.style.left=(window.ApexSRRnd()*100)+'%';
+        p.style.background=COLORS[Math.floor(window.ApexSRRnd()*COLORS.length)];
         p.style.setProperty('--dx', dx.toFixed(0)+'px');
         p.style.setProperty('--rot', rot.toFixed(0)+'deg');
-        p.style.animationDuration=(1.6+Math.random()*1.6)+'s';
-        p.style.animationDelay=(Math.random()*0.4)+'s';
-        if(Math.random()<0.3){p.style.width='6px';p.style.height='10px';}
+        p.style.animationDuration=(1.6+window.ApexSRRnd()*1.6)+'s';
+        p.style.animationDelay=(window.ApexSRRnd()*0.4)+'s';
+        if(window.ApexSRRnd()<0.3){p.style.width='6px';p.style.height='10px';}
         L.appendChild(p);
         setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},3800);
       },idx*12);
