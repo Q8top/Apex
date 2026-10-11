@@ -918,3 +918,22 @@
 /* 停用旧的 win-burst（保留选择器避免旧引用报错，但隐藏） */
 .sr-win-burst { display: none !important; }
 .sr-tier-ring { display: none !important; }
+
+/* ===== S3.3: 桌面/横屏/无障碍（SR 版） ===== */
+@media (min-width: 768px) {
+  .sr-app { max-width: 720px; }
+  .sr-board { max-width: 560px; margin: 0 auto; }
+}
+@media (orientation: landscape) and (max-height: 420px) {
+  .sr-app { max-width: 100%; }
+  .sr-board { max-width: 380px; margin: 0 auto; }
+  .sr-header { min-height: 40px; padding: 4px 8px; }
+  .sr-header-sub { display: none; }
+}
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+  border-radius: 6px;
+}

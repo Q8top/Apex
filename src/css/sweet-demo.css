@@ -669,3 +669,55 @@ html, body {
   overscroll-behavior: none;
   -webkit-touch-callout: none;
 }
+
+/* S3.2: 统一缓动 + 单格隔离 */
+:root {
+  --sd-ease-fall: cubic-bezier(.34, 1.2, .64, 1);
+}
+.sd-sym {
+  contain: layout style paint;
+}
+
+/* ===== S3.3: 桌面布局（≥768px） ===== */
+@media (min-width: 768px) {
+  .sd-main {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+    padding: 20px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .sd-stage { grid-column: 1; }
+  .sd-stats, .sd-bet, .sd-controls, .sd-win-area { grid-column: 2; }
+  .sd-board { max-width: 560px; margin: 0 auto; }
+}
+
+/* ===== S3.3: 横屏手机（max-height: 420px） ===== */
+@media (orientation: landscape) and (max-height: 420px) {
+  .sd-main {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 12px;
+    padding: 8px 12px;
+  }
+  .sd-board { max-width: 380px; }
+  .sd-header { min-height: 40px; padding: 4px 8px; }
+  .sd-header-title { font-size: 14px; }
+  .sd-header-sub { display: none; }
+}
+
+/* ===== S3.3: 无障碍焦点 ===== */
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ===== S3.3: 色盲可辨（shape 差异） ===== */
+.sd-sym[data-shape="curve"]   svg::after { content: ''; }
+.sd-sym[data-shape="cluster"] svg { outline: 1px dashed rgba(0,0,0,.06); border-radius: 8px; }
+.sd-sym[data-shape="star"]    svg { outline: 1px solid rgba(255,215,0,.12); border-radius: 8px; }
+.sd-sym[data-shape="heart"]   svg { outline: 1px solid rgba(255,0,80,.10); border-radius: 8px; }

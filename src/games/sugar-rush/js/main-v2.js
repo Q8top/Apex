@@ -326,6 +326,7 @@ function spinWithAudio(){
     if(res.fsTriggered){
       var spins=res.fsSpinsPlayed|0;
       if(!spins){var sc=res.scatterCount|0;spins=(sc>=6)?20:(sc===5)?15:(sc===4)?12:10;}
+      if(window.ApexBgm)try{window.ApexBgm.toFreeSpins(1200);}catch(e){}
       if(window.ApexSRFSEntry&&window.ApexSRFSEntry.playFSEntry)window.ApexSRFSEntry.playFSEntry(spins);
       else if(a&&a.sfxFSEntry)a.sfxFSEntry();
     }
@@ -334,6 +335,7 @@ function spinWithAudio(){
     setTimeout(function(){
       if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
       if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else if(Fx2)Fx2.setTumble(0);
+      if(window.ApexBgm&&!res.fsTriggered)try{window.ApexBgm.toBase(1400);}catch(e){}
       M.state.spinning=false;
     },hold);
   };
@@ -348,6 +350,22 @@ function bind(){
   nb.addEventListener('click',spinWithAudio);
 }
 M.onBoot(bind);
+// S3.4: BGM 首次手势后启动
+M.onBoot(function(){
+  var _started = false;
+  var _start = function(){
+    if(_started) return; _started = true;
+    try{ if(window.ApexBgm) window.ApexBgm.toBase(1400); }catch(e){}
+    try{ window.removeEventListener('pointerdown', _start, true); }catch(e){}
+    try{ window.removeEventListener('touchstart', _start, true); }catch(e){}
+    try{ window.removeEventListener('keydown', _start, true); }catch(e){}
+  };
+  try{
+    window.addEventListener('pointerdown', _start, { capture: true, passive: true });
+    window.addEventListener('touchstart', _start, { capture: true, passive: true });
+    window.addEventListener('keydown', _start, { capture: true });
+  }catch(e){}
+});
 window.ApexSRAudioBridge=Object.freeze({spinWithAudio:spinWithAudio,bind:bind});
 /* S4-1b: real/demo gateway dispatcher */
 (function(){

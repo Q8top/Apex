@@ -1213,9 +1213,22 @@ function toast(msg) {
         window.addEventListener('keydown', _bgmStart, { capture: true });
       } catch (e) {}
     }
-    if (window.ApexAudioSynth && typeof window.ApexAudioSynth.preloadSamples === 'function') {
-      try { window.ApexAudioSynth.preloadSamples(); } catch (e) {}
-    }
+    // S3.1: 音频预加载改到首次手势后（提升 LCP）
+    (function(){
+      var _pre = false;
+      function _preloadOnGesture(){
+        if (_pre) return; _pre = true;
+        try { if (window.ApexAudioSynth && typeof window.ApexAudioSynth.preloadSamples === 'function') window.ApexAudioSynth.preloadSamples(); } catch (e) {}
+        try { window.removeEventListener('pointerdown', _preloadOnGesture, true); } catch (e) {}
+        try { window.removeEventListener('touchstart', _preloadOnGesture, true); } catch (e) {}
+        try { window.removeEventListener('keydown', _preloadOnGesture, true); } catch (e) {}
+      }
+      try {
+        window.addEventListener('pointerdown', _preloadOnGesture, { capture: true, passive: true });
+        window.addEventListener('touchstart', _preloadOnGesture, { capture: true, passive: true });
+        window.addEventListener('keydown', _preloadOnGesture, { capture: true });
+      } catch (e) {}
+    })();
     if (window.ApexReconnection) {
       try {
         var rc = window.ApexReconnection.create();

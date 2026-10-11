@@ -81,6 +81,8 @@
 
     var cell = document.createElement('div');
     cell.className = 'sd-sym';
+    // S3.2: 隔离重排/重绘，避免单格动画触发整盘 layout
+    try { cell.style.contain = 'layout style paint'; } catch (e) {}
 
     svg.style.setProperty('--sd-sym-delay', stagger(index));
 

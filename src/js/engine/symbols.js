@@ -752,3 +752,18 @@
   /* 16. Export */
   window.ApexEngineSymbols = SYMBOL_API;
 })();
+
+/* S3.3: 色盲辅助 shape 分类（视觉可辨，不参与逻辑） */
+(function(){
+'use strict';
+var SHAPES = Object.freeze({
+  banana: 'curve', grape: 'cluster', watermelon: 'round', plum: 'round',
+  apple: 'round', blue_candy: 'round', green_candy: 'round',
+  purple_candy: 'round', red_heart_candy: 'heart',
+  lollipop: 'circle', multiplier_bomb: 'round'
+});
+window.ApexSymbolShapes = Object.freeze({
+  of: function(id){ return SHAPES[id] || 'round'; },
+  all: SHAPES
+});
+})();
