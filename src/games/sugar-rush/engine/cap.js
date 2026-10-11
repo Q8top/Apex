@@ -21,5 +21,22 @@ function applyCap(rawWin, payScale, maxWinMultiplier){
   return { rawWin: capped, capped: rawWin > rawCap, rawCap: rawCap };
 }
 
-window.ApexSugarRushCap = Object.freeze({ applyCap: applyCap });
+/* S1.2b: FS 整轮 cap — 累积所有 spin 的 rawWin，跨 spin 达顶立即结束整轮 */
+function applyRoundCap(mode, betMinor, accumulatedRawWin, deltaRawWin){
+  var _mp = window.ApexSugarRushMathProfile;
+  var knobs = _mp.getProfile(mode);
+  var rawCap = knobs.maxWinMultiplier / knobs.payScale;
+  var newTotal = accumulatedRawWin + deltaRawWin;
+  if (newTotal >= rawCap){
+    return {
+      rawWin: rawCap,
+      deltaWin: Math.max(0, rawCap - accumulatedRawWin),
+      capped: true,
+      roundEnded: true
+    };
+  }
+  return { rawWin: newTotal, deltaWin: deltaRawWin, capped: false, roundEnded: false };
+}
+
+window.ApexSugarRushCap = Object.freeze({ applyCap: applyCap, applyRoundCap: applyRoundCap });
 })();

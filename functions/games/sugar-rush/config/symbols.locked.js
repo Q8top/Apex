@@ -27,14 +27,15 @@ function list() { return Object.keys(LOCKED); }
 function kindOf(id) { var s = LOCKED[id]; return s ? s.kind : null; }
 
 
+/* S1.2c: id 语义对齐 */
 var LABELS = Object.freeze({
-  blue_candy:   '橙色软糖熊',
-  green_candy:  '紫色软糖熊',
-  purple_candy: '红色软糖熊',
-  red_candy:    '绿色星星糖',
-  strawberry:   '紫色果冻豆',
-  orange:       '橙色爱心糖',
-  mango:        '粉色圆形糖果',
+  blue_candy:   '蓝色软糖熊',
+  green_candy:  '绿色软糖熊',
+  purple_candy: '紫色软糖熊',
+  red_candy:    '红色软糖熊',
+  strawberry:   '草莓糖',
+  orange:       '橙色星星糖',
+  mango:        '芒果糖',
   lollipop:     '棒棒糖',
   candy_bomb:   '倍率炸弹'
 });

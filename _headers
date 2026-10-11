@@ -17,7 +17,7 @@
   Cache-Control: no-store
 
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=604800
 
 # HTML 页面（无缓存，保证用户看到最新版本）
 /
@@ -108,10 +108,10 @@
 
 # === APEX-CACHE-SRC ===
 /src/css/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /src/js/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /sfx/*
   Cache-Control: public, max-age=31536000, immutable

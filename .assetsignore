@@ -47,3 +47,5 @@ Apex_*.md
 _headers
 _routes.json
 .assetsignore
+
+tools/

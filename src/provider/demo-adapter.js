@@ -62,7 +62,8 @@ function DemoProvider(opts){
     profile: profile
   });
   this.payScale = profile.payScale;
-  this.maxWinMultiplier = profile.maxWinMultiplier != null ? profile.maxWinMultiplier : 5000;
+  // S1.6: 不用 real 值做 fallback；profile 缺 maxWinMultiplier 时保守用 demo 默认
+  this.maxWinMultiplier = profile.maxWinMultiplier != null ? profile.maxWinMultiplier : 25000;
   this.pityRate = profile.pityRate;
   this.pitySymbol = profile.pitySymbol ? profile.pitySymbol.toLowerCase() : null;
   this.pityMinCount = profile.pityMinCount || 8;

@@ -85,11 +85,31 @@ function bindSettings(){
   setSfx(S.get('sfx')===undefined?0.8:S.get('sfx'));
   setMusic(S.get('music')===undefined?0.7:S.get('music'));
 }
+function suspend(){
+  if(!ctx)return;
+  if(ctx.state==='running'&&typeof ctx.suspend==='function'){
+    try{ctx.suspend();}catch(e){}
+  }
+}
 function ready(){
   ready._done=true;
   bindSettings();
-  document.addEventListener('touchstart',resume,{once:true,passive:true});
-  document.addEventListener('click',resume,{once:true});
+  // S1.4-3: 不用 { once:true }（iOS 可能拒绝首次 resume，需每次手势重试）
+  var gestureEvents=['touchstart','pointerdown','keydown','click'];
+  for(var i=0;i<gestureEvents.length;i++){
+    document.addEventListener(gestureEvents[i],function(){if(enabled)resume();},{passive:true,capture:true});
+  }
+  // S1.4-3: visibilitychange 前后台 suspend/resume
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden)suspend();
+    else if(enabled)resume();
+  });
+  // S1.4-3: iOS 补 pagehide/pageshow/focus
+  if(typeof window!=='undefined'&&window.addEventListener){
+    window.addEventListener('pagehide',function(){suspend();});
+    window.addEventListener('pageshow',function(){if(enabled)resume();});
+    window.addEventListener('focus',function(){if(enabled)resume();});
+  }
 }
 if(document.readyState!=='loading')ready();
 else document.addEventListener('DOMContentLoaded',ready);
@@ -160,7 +180,7 @@ function sfxFSExit(){
 
 window.ApexSRAudio=Object.freeze({
   tone:tone,noise:noise,resume:resume,
-  setEnabled:setEnabled,setSfx:setSfx,setMusic:setMusic,
+  setEnabled:setEnabled,setSfx:setSfx,setMusic:setMusic,suspend:suspend,
   sfxTap:sfxTap,sfxSpin:sfxSpin,sfxLand:sfxLand,sfxWin:sfxWin,
   sfxScatter:sfxScatter,sfxMultiplier:sfxMultiplier,
   sfxFSEntry:sfxFSEntry,sfxFSExit:sfxFSExit,

@@ -1,0 +1,85 @@
+name: Nightly RTP Calibration
+
+on:
+  schedule:
+    - cron: '0 3 * * *'    # UTC 03:00 每天
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  deep-real-sweet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: Sweet real 2M × 6 seed
+        run: node tests/math/rtp-gate.cjs 2000000
+
+  deep-demo-sweet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: Sweet demo 2M
+        run: RTP_GATE_SPINS=2000000 node tests/math/rtp-gate.cjs 2000000
+
+  deep-real-sugar-rush:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: SR real 2M × 6 seed
+        run: node tools/rtp-gate-v3.cjs
+        env:
+          RTP_MODE: real
+          RTP_SPINS: '2000000'
+          RTP_SEEDS: '6'
+          RTP_THRESHOLD: '0.01'
+
+  deep-demo-sugar-rush:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: SR demo 2M × 6 seed
+        run: node tools/rtp-gate-v3.cjs
+        env:
+          RTP_MODE: demo
+          RTP_SPINS: '2000000'
+          RTP_SEEDS: '6'
+          RTP_THRESHOLD: '0.01'
+
+  report-failure:
+    needs: [deep-real-sweet, deep-demo-sweet, deep-real-sugar-rush, deep-demo-sugar-rush]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[Nightly RTP] 夜间校准失败 - ' + new Date().toISOString(),
+              body: '夜间 RTP 深度校准失败。请检查 Actions 页面：\n' +
+                    'https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId
+            });

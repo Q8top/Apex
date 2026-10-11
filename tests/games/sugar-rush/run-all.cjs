@@ -15,6 +15,9 @@ var files = [
   '12-client-server-parity.cjs',
   '13-long-run-stability.cjs',
   '14-performance-benchmark.cjs',
+  '15-base-marks.cjs',
+  '16-round-cap.cjs',
+  'symbols-audit.cjs',
 ];
 var totalPassed = 0, totalFailed = 0, exitCode = 0;
 files.forEach(function(f){

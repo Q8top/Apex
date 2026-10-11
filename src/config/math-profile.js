@@ -11,31 +11,15 @@
 var VERSION = '1.0.0';
 
 var PROFILES = Object.freeze({
-  real: Object.freeze({
-    baseWeights: Object.freeze({
-      BANANA: 14, GRAPE: 14, WATERMELON: 13, PLUM: 13, APPLE: 12,
-      BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
-    }),
-    scatterWeight: 1,
-    multiplierWeight: 0,
-    fsMultiplierWeight: 1,
-    payScale: 2.55,
-    maxWinMultiplier: 5000,
-    pityRate: 0.0,
-    pitySymbol: null,
-    pityMinCount: 8,
-    targetRtp: Object.freeze({ min: 0.88, max: 0.93, target: 0.9049 }),
-    targetHitRate: Object.freeze({ min: 0.20, max: 0.35 })
-  }),
   demo: Object.freeze({
     baseWeights: Object.freeze({
       BANANA: 14, GRAPE: 14, WATERMELON: 13, PLUM: 13, APPLE: 12,
       BLUE_CANDY: 6, GREEN_CANDY: 6, PURPLE_CANDY: 5, RED_HEART: 5
     }),
-    scatterWeight: 3,
+    scatterWeight: 4,
     multiplierWeight: 0,
     fsMultiplierWeight: 2,
-    payScale: 3.60,
+    payScale: 0.308,
     maxWinMultiplier: 25000,
     pityRate: 0.35,
     pitySymbol: 'BANANA',
@@ -46,10 +30,11 @@ var PROFILES = Object.freeze({
 });
 
 function getProfile(mode){
-  if (!Object.prototype.hasOwnProperty.call(PROFILES, mode)){
-    throw new Error('MATH_PROFILE: unknown mode ' + mode);
+  // S1.6: real 档物理隔离在 functions/_config/，客户端禁止读取
+  if (mode !== 'demo'){
+    throw new Error('MATH_PROFILE: real 参数不可在客户端读取');
   }
-  return PROFILES[mode];
+  return PROFILES.demo;
 }
 
 /* 给新引擎 Rng 用：合并 baseWeights + scatter + multiplier

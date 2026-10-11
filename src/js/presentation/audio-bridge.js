@@ -37,7 +37,19 @@
 
   function AudioBridge(opts) {
     opts = opts || {};
-    var enabled = opts.enabled !== false;
+    // S1.4-1: 静音状态与 audio.js / synth 同源（localStorage.apex.audio.enabled）
+    var persisted = null;
+    try {
+      var rawE = localStorage.getItem('apex.audio.enabled');
+      if (rawE === '0') persisted = false;
+      else if (rawE === '1') persisted = true;
+    } catch (e) {}
+    var enabled = persisted !== null ? persisted : (opts.enabled !== false);
+    // 首次同步到 synth
+    try {
+      var s0 = window.ApexAudioSynth;
+      if (s0 && typeof s0.setEnabled === 'function') s0.setEnabled(enabled);
+    } catch (e) {}
     var unlocked = false;
     var reducedMotion = false;
     var voiceTimes = [];
@@ -148,17 +160,31 @@
       } catch (e) {}
     }
 
+    function onHidden() {
+      var s = getSynth();
+      if (s && typeof s.suspend === 'function') {
+        try { s.suspend(); } catch (e) {}
+      }
+    }
+    function onVisible() {
+      if (!enabled) return;   // S1.4-1: 尊重用户静音选择
+      var s = getSynth();
+      if (s && typeof s.resume === 'function') {
+        try { s.resume(); } catch (e) {}
+      }
+    }
     function installVisibilityHandler() {
       if (typeof document === 'undefined' || !document.addEventListener) return;
       try {
         document.addEventListener('visibilitychange', function () {
-          if (document.hidden) {
-            var s = getSynth();
-            if (s && typeof s.suspend === 'function') {
-              try { s.suspend(); } catch (e) {}
-            }
-          }
+          if (document.hidden) onHidden(); else onVisible();
         });
+        // S1.4-1: iOS 不总触发 visibilitychange；补 pagehide/pageshow/focus
+        if (typeof window !== 'undefined' && window.addEventListener) {
+          window.addEventListener('pagehide', onHidden);
+          window.addEventListener('pageshow', function () { onVisible(); });
+          window.addEventListener('focus', onVisible);
+        }
       } catch (e) {}
     }
 
@@ -174,7 +200,16 @@
       } catch (e) {}
     }
 
-    function setEnabled(v) { enabled = !!v; return enabled; }
+    function setEnabled(v) {
+      enabled = !!v;
+      try { localStorage.setItem('apex.audio.enabled', enabled ? '1' : '0'); } catch (e) {}
+      try {
+        var s = getSynth();
+        if (s && typeof s.setEnabled === 'function') s.setEnabled(enabled);
+        if (s && enabled && typeof s.resume === 'function') s.resume();
+      } catch (e) {}
+      return enabled;
+    }
     function isEnabled() { return enabled; }
 
     function getState() {

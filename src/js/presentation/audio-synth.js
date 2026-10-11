@@ -113,7 +113,8 @@
   function resume() {
     var c = ensureCtx();
     if (!c) return;
-    if (c.state === 'suspended' && typeof c.resume === 'function') {
+    // S1.4-2: iOS AudioContext 'interrupted' 状态也需尝试 resume
+    if (c.state !== 'running' && typeof c.resume === 'function') {
       try {
         var p = c.resume();
         if (p && typeof p.catch === 'function') p.catch(function () {});

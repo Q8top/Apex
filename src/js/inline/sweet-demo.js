@@ -472,6 +472,7 @@ var state = {
     function finish() {
       if (finished) return;
       finished = true;
+      if (window.ApexBgm) { try { window.ApexBgm.toBase(1400); } catch (e) {} }
       okBtn.style.display = '';
       okBtn.textContent = '领取 ' + fmt(totalWinMinor / 100);
       okBtn.addEventListener('click', function () {
@@ -577,6 +578,7 @@ var state = {
     renderSpinBtn();
     if (result.feature && result.feature.triggered) {
       if (window.ApexAudio) audio && playAudio('bonus');
+      if (window.ApexBgm) { try { window.ApexBgm.toFreeSpins(1200); } catch (e) {} }
       // FS 进入：全屏金色闪光 + 粒子爆炸
       try {
         var flashEl = document.getElementById('sd-fs-flash');
@@ -1113,6 +1115,23 @@ function toast(msg) {
     } catch (e) {}
     if (window.ApexA11y) { try { announcer = window.ApexA11y.createAnnouncer(); } catch (e) {} }
     if (window.ApexAudioBridge) audioBridge = window.ApexAudioBridge.create();
+    // S1.4-5: BGM 首次手势后启动 base 轨
+    if (window.ApexBgm) {
+      var _bgmStarted = false;
+      var _bgmStart = function () {
+        if (_bgmStarted) return;
+        _bgmStarted = true;
+        try { window.ApexBgm.toBase(1400); } catch (e) {}
+        try { window.removeEventListener('pointerdown', _bgmStart, true); } catch (e) {}
+        try { window.removeEventListener('touchstart', _bgmStart, true); } catch (e) {}
+        try { window.removeEventListener('keydown', _bgmStart, true); } catch (e) {}
+      };
+      try {
+        window.addEventListener('pointerdown', _bgmStart, { capture: true, passive: true });
+        window.addEventListener('touchstart', _bgmStart, { capture: true, passive: true });
+        window.addEventListener('keydown', _bgmStart, { capture: true });
+      } catch (e) {}
+    }
     if (window.ApexAudioSynth && typeof window.ApexAudioSynth.preloadSamples === 'function') {
       try { window.ApexAudioSynth.preloadSamples(); } catch (e) {}
     }
@@ -1230,6 +1249,17 @@ function toast(msg) {
     init();
   }
 
-  // P0-1：暴露当前 mode（调试 / 自动化测试用）
-  window.__APEX_GAME_MODE = GAME_MODE;
+  // S1.6: 仅本地调试环境暴露 mode（生产不可枚举、不可改写）
+  try {
+    var _h = (typeof location !== 'undefined') ? location.hostname : '';
+    var _isLocal = (_h === 'localhost' || _h === '127.0.0.1' || /\.pages\.dev$/.test(_h));
+    if (_isLocal) {
+      Object.defineProperty(window, '__APEX_GAME_MODE', {
+        get: function () { return GAME_MODE; },
+        set: function () { /* no-op */ },
+        enumerable: false,
+        configurable: false
+      });
+    }
+  } catch (e) {}
 })();

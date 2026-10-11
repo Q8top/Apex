@@ -10,7 +10,7 @@
  *   RTP_GATE_SPINS=10000 node tests/math/rtp-gate.cjs
  */
 
-var sim = require(__dirname + '/simulator-v2.cjs');
+var sim;
 var MP  = (function(){
   if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.getRandomValues){
     globalThis.crypto = require('crypto').webcrypto;
@@ -31,8 +31,34 @@ var MP  = (function(){
     '/src/engine/payout.js',
     '/src/engine/game-engine.js'
   ].forEach(function(p){ require(require('path').resolve(__dirname, '../..') + p); });
-  return global.window.ApexMathProfile;
+  // S1.6: 客户端 profile 已不含 real；加载服务端 profile 并合并（模拟服务端）
+  var ROOT2 = require('path').resolve(__dirname, '../..');
+  require(ROOT2 + '/functions/_config/math-profile.js');
+  var serverMP = global.window.ApexMathProfile;
+  require(ROOT2 + '/src/config/math-profile.js');
+  var clientMP = global.window.ApexMathProfile;
+  // 用服务端的 PROFILES 重建
+  var _merged = Object.freeze({
+    VERSION: serverMP.VERSION,
+    PROFILES: serverMP.PROFILES,
+    ID_MAP: clientMP.ID_MAP,
+    validate: serverMP.validate,
+    totalWeight: serverMP.totalWeight,
+    checkSimResult: serverMP.checkSimResult,
+    getProfile: function(m){
+      if (!Object.prototype.hasOwnProperty.call(serverMP.PROFILES, m)){
+        throw new Error('MATH_PROFILE: unknown mode ' + m);
+      }
+      return serverMP.PROFILES[m];
+    },
+    buildRngWeights: serverMP.buildRngWeights
+  });
+  global.window.ApexMathProfile = _merged;
+  return _merged;
 })();
+
+// S1.6-fix: sim 必须在 merged 之后加载（sim 内部闭包捕获 MP）
+sim = require(__dirname + '/simulator-v2.cjs');
 
 var argSpins = process.argv[2] ? parseInt(process.argv[2], 10) : null;
 var envSpins = process.env.RTP_GATE_SPINS ? parseInt(process.env.RTP_GATE_SPINS, 10) : null;

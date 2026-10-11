@@ -35,29 +35,6 @@ function runCascades(grid, rng, detail){
   return { grid: cur, rawWin: rawWin, cascades: cascades, steps: steps };
 }
 
-function fsSpin(fsRng, detail){
-  var grid = fsRng.generateGrid();
-  var scatterCount = 0;
-  var bombSum = 0;
-  var bombPositions = [];
-  for (var i = 0; i < grid.length; i++){
-    if (isScatter(grid[i])) scatterCount++;
-    else if (isMultiplier(grid[i])){ bombSum += _bn.rollBombValue(fsRng); bombPositions.push(i); }
-  }
-  var r = runCascades(grid, fsRng, detail);
-  var mult = bombSum > 0 ? bombSum : 1;
-  return {
-    winMult: r.rawWin * mult,
-    rawWin: r.rawWin,
-    scatterCount: scatterCount,
-    cascades: r.cascades,
-    bombSum: bombSum,
-    bombPositions: bombPositions,
-    finalGrid: r.grid,
-    detail: detail ? { initialGrid: grid.slice(), steps: r.steps, finalGrid: r.grid.slice() } : undefined
-  };
-}
-
 function playSpin(mode, betMinor, opts){
   opts = opts || {};
   var detail = !!opts.detail;
@@ -124,11 +101,34 @@ function spinBase(mode, betMinor, opts){
   var detail = !!opts.detail;
   var knobs = _mp.getProfile(mode);
   var rng = buildRngForMode(mode, false);
+  var MS = window.ApexSugarRushMultiplier.MarkState;
+  var marks = new MS();   // S1.2a: 本 spin 局部标记，结束即弃
   var g0 = rng.generateGrid();
   var baseScatter = 0;
   for (var i = 0; i < g0.length; i++){ if (isScatter(g0[i])) baseScatter++; }
-  var base = runCascades(g0, rng, detail);
-  var rawWin = base.rawWin;
+  // S1.2a: 内联 tumble 循环，与原版语义一致（先用标记结算，再更新）
+  var cur = g0;
+  var rawWin = 0;
+  var cascades = 0;
+  var steps = detail ? [] : null;
+  var _safety = 0;
+  while (_safety++ < MAX_CASCADES){
+    var _ev0 = _ev.evaluate(cur);
+    if (_ev0.winningPositions.length === 0) break;
+    var _stepMult = 0;
+    for (var _k = 0; _k < _ev0.wins.length; _k++){
+      var _w = _ev0.wins[_k];
+      var _markSum = marks.sumInCluster(_w.positions);
+      _stepMult += _w.payoutMultiplier * Math.max(1, _markSum);
+    }
+    marks.updateAfterWin(_ev0.winningPositions);
+    rawWin += _stepMult;
+    cascades++;
+    var _next = _tb.tumble(cur, _ev0.winningPositions, rng);
+    if (detail) steps.push({ winningPositions: _ev0.winningPositions.slice(), wins: _ev0.wins.slice(), gridAfter: _next.slice(), stepMult: _stepMult });
+    cur = _next;
+  }
+  var base = { grid: cur, rawWin: rawWin, cascades: cascades, steps: steps };
   var scatterBonus = 0;
   var fsTriggered = false;
   if (_bn.resolveBonusTrigger(baseScatter)){
@@ -149,6 +149,7 @@ function spinBase(mode, betMinor, opts){
     mode: mode,
     baseOnly: true,
     finalGrid: base.grid,
+    marksVisual: marks.visual(),   // S1.2a: 本 spin 的临时标记
     totalMultiplier: totalMult,
     winMinor: winMinor,
     cascades: base.cascades,
@@ -247,11 +248,37 @@ function spinFree(mode, betMinor, opts){
   return result;
 }
 
+/* S1.2b: FS 会话封装 — 整轮累积 rawWin，达顶结束 */
+function FsSession(mode, betMinor, opts){
+  opts = opts || {};
+  this.mode = mode;
+  this.betMinor = betMinor;
+  this.roundWinRaw = 0;
+  var MS = window.ApexSugarRushMultiplier.MarkState;
+  this.marks = new MS();
+  this.spinsPlayed = 0;
+  this.ended = false;
+}
+
+FsSession.prototype.step = function(){
+  if (this.ended) return { ended: true, reason: 'already_ended' };
+  var r = spinFree(this.mode, this.betMinor, { marks: this.marks.snapshot() });
+  var capResult = _cap.applyRoundCap(this.mode, this.betMinor, this.roundWinRaw, r.rawWinBeforeCap);
+  this.marks.restore(r.marksAfter);
+  this.roundWinRaw = capResult.rawWin;
+  this.spinsPlayed++;
+  if (capResult.roundEnded){
+    this.ended = true;
+    r.endedByMaxWin = true;
+  }
+  return { result: r, ended: this.ended };
+};
+
 window.ApexSugarRushGameEngine = Object.freeze({
   spin: playSpin,
-  fsSpin: fsSpin,
   spinBase: spinBase,
   spinFree: spinFree,
+  FsSession: FsSession,
   buildRngForMode: buildRngForMode
 });
 })();

@@ -7,6 +7,13 @@ var _tumble = window.ApexEngineTumble;
 var _bonus = window.ApexEngineBonus;
 var _pay = window.ApexEnginePayout;
 
+/* S1.7: 客户端生产禁用 gridOverride；real 模式由服务端处理 */
+var ALLOW_GRID_OVERRIDE = (typeof location !== 'undefined') &&
+  (location.hostname === 'localhost' ||
+   location.hostname === '127.0.0.1' ||
+   /\.pages\.dev$/.test(location.hostname) ||
+   /[?&]__test=1/.test(location.search || ''));
+
 function GameEngine(opts){
   opts = opts || {};
   if (!opts.rng) throw _err.ApexError(_err.CODES.INVALID_WEIGHTS, 'rng required');
@@ -62,8 +69,14 @@ GameEngine.prototype.spin = function(request){
   var terminatedBySafetyLimit = false;
   var bombSum = 0;
 
+  var bombPositionsAll = [];
   for (var step = 0; step < this.maxTumbleSteps; step++){
     var ev = _eval.evaluate(grid);
+    // S1.1: 收集本步真实落在盘面的炸弹（原版语义：炸弹是符号，不是概率）
+    for (var b = 0; b < ev.multiplierPositions.length; b++){
+      bombSum += _bonus.rollBombValue(this.rng);
+      bombPositionsAll.push(ev.multiplierPositions[b]);
+    }
     var cascade = {
       index: step,
       grid: grid.slice(),
@@ -75,7 +88,7 @@ GameEngine.prototype.spin = function(request){
     };
     cascades.push(cascade);
 
-    if (step === 0 && _bonus.resolveBonusTrigger(ev.scatterCount)){
+    if (!bonusTriggered && _bonus.resolveBonusTrigger(ev.scatterCount)){
       bonusTriggered = true;
       bonusScatterCount = ev.scatterCount;
       bonusScatterPayout = _bonus.scatterPayout(ev.scatterCount);
@@ -97,17 +110,8 @@ GameEngine.prototype.spin = function(request){
 
   totalMultiplier += bonusScatterPayout;
 
-  // P0-6b: 炸弹仅在 FS 中，每 spin 最多触发 1 次
-  // 1/33 ~= 3% 触发率，配合 rollBombValue 的 ~5.6 期望值
-  // 目标：avg bombFactor ~1.17，RTP +15% 以内
-  if (isFree) {
-    var BOMB_TRIGGER_DENOM = 33;
-    if (this.rng.randomInt(BOMB_TRIGGER_DENOM) === 0) {
-      bombSum = _bonus.rollBombValue(this.rng);
-    }
-  }
-
-  var bombFactor = (bombSum > 0) ? (1 + bombSum) : 1;
+  // S1.1: 原版语义 — bombSum 直接作为乘数
+  var bombFactor = (bombSum > 0) ? bombSum : 1;
   totalMultiplier = totalMultiplier * bombFactor;
 
   var totalWinMinor = _pay.calculatePayout(betMinor, totalMultiplier);
@@ -130,6 +134,8 @@ GameEngine.prototype.spin = function(request){
     totalWinMinor: totalWinMinor,
     bombSum: bombSum,
     bombFactor: bombFactor,
+    bombPositions: bombPositionsAll,
+    rawMultiplier: totalMultiplier,
     diagnostics: {
       tumbleCount: cascades.length,
       terminatedBySafetyLimit: terminatedBySafetyLimit

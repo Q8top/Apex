@@ -5,8 +5,8 @@ var _err = window.ApexEngineErrors;
 var BONUS_RULES = Object.freeze({
   triggerScatterCount: 4,
   initialSpins: 10,
-  retriggerScatterCount: 4,
-  retriggerSpins: 2,
+  retriggerScatterCount: 3,
+  retriggerSpins: 5,
   scatterPayouts: Object.freeze({ 4: 3, 5: 5, 6: 100 }),
   bombMin: 2,
   bombMax: 100
@@ -30,10 +30,11 @@ function resolveRetrigger(scatterCount){
 }
 
 var BOMB_VALUE_DIST = Object.freeze([
-  { v: 2, w: 300 }, { v: 3, w: 200 }, { v: 4, w: 150 },
-  { v: 5, w: 120 }, { v: 8, w: 80 },  { v: 10, w: 60 },
-  { v: 12, w: 40 }, { v: 15, w: 20 }, { v: 20, w: 10 },
-  { v: 25, w: 10 }, { v: 50, w: 5 },  { v: 100, w: 5 }
+  Object.freeze({ v: 2,   w: 300 }), Object.freeze({ v: 3,   w: 200 }),
+  Object.freeze({ v: 5,   w: 150 }), Object.freeze({ v: 8,   w: 120 }),
+  Object.freeze({ v: 10,  w: 80  }), Object.freeze({ v: 15,  w: 60  }),
+  Object.freeze({ v: 20,  w: 40  }), Object.freeze({ v: 25,  w: 20  }),
+  Object.freeze({ v: 50,  w: 10  }), Object.freeze({ v: 100, w: 5   })
 ]);
 var BOMB_TOTAL_WEIGHT = BOMB_VALUE_DIST.reduce(function (a, b) { return a + b.w; }, 0);
 

@@ -6,7 +6,6 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 PAIRS=(
-  "src/config/math-profile.js:functions/_config/math-profile.js"
   "src/config/paytable.locked.js:functions/_config/paytable.locked.js"
   "src/config/symbols.locked.js:functions/_config/symbols.locked.js"
   "src/config/version.js:functions/_config/version.js"
@@ -18,7 +17,7 @@ PAIRS=(
   "src/engine/tumble.js:functions/_engine/tumble.js"
   "src/engine/bonus.js:functions/_engine/bonus.js"
   "src/engine/payout.js:functions/_engine/payout.js"
-  "src/engine/game-engine.js:functions/_engine/game-engine.js"
+  # game-engine.js 客户端/服务端有差异（S1.7），不做 hash 对比
   # Sugar Rush 专属（物理隔离，独立镜像）
   "src/games/sugar-rush/config/symbols.locked.js:functions/games/sugar-rush/config/symbols.locked.js"
   "src/games/sugar-rush/config/paytable.locked.js:functions/games/sugar-rush/config/paytable.locked.js"
@@ -51,6 +50,18 @@ for p in "${PAIRS[@]}"; do
     echo "[OK]   $A"
   fi
 done
+
+# B-1: 单向断言 —— 前端 src/config/math-profile.js 不得含 real 参数
+# S1.6 精神：客户端与服务端数学隔离，real 只允许在 functions/_config/
+if [ -f "src/config/math-profile.js" ]; then
+  if grep -qE 'real[[:space:]]*:[[:space:]]*Object\.freeze' src/config/math-profile.js; then
+    echo "[FATAL] src/config/math-profile.js 含 real 块，前后端隔离被破坏"
+    echo "         real 参数只允许存在于 functions/_config/math-profile.js"
+    FAIL=1
+  else
+    echo "[OK]   src/config/math-profile.js 不含 real 块（隔离正常）"
+  fi
+fi
 
 echo ""
 if [ "$FAIL" = "0" ]; then

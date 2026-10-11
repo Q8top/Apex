@@ -138,3 +138,80 @@ jobs:
           DEVVARS
           bash scripts/run-smoke.sh
           rm -f .dev.vars
+
+  # ============================================================
+  # S1.8-B4: 门禁 1-5（快速版）
+  # ============================================================
+  rtp-gate-fast:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: Sweet Bonanza RTP (fast)
+        run: node tests/math/rtp-gate.cjs 50000
+      - name: Sugar Rush RTP (fast, real)
+        run: node tools/rtp-gate-v3.cjs
+        env:
+          RTP_MODE: real
+          RTP_SPINS: '50000'
+          RTP_SEEDS: '1'
+          RTP_THRESHOLD: '0.05'
+      - name: Sugar Rush RTP (fast, demo)
+        run: node tools/rtp-gate-v3.cjs
+        env:
+          RTP_MODE: demo
+          RTP_SPINS: '50000'
+          RTP_SEEDS: '1'
+          RTP_THRESHOLD: '0.05'
+
+  cap-enforcement-gate:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: Cap enforcement (SR)
+        run: node tools/cap-enforcement-gate.cjs
+        env:
+          CAP_GATE_GAME: sugar-rush
+          CAP_GATE_SPINS: '30000'
+
+  secret-leak-gate:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci --ignore-scripts
+      - name: Build dist
+        run: bash scripts/build-dist.sh
+      - name: Scan secret leak
+        run: node scripts/check-no-secret-leak.cjs
+
+  backup-leak-gate:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with: { persist-credentials: false }
+      - name: Check no .audit-backup-* in repo root
+        run: |
+          if ls -d .audit-backup-* 2>/dev/null | grep -q .; then
+            echo "[FATAL] repo 根目录含 .audit-backup-*，禁止提交/部署"
+            ls -d .audit-backup-*
+            exit 1
+          fi
+          echo "[OK] no backup dirs at root"

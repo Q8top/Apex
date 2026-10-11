@@ -7,7 +7,7 @@ var E = window.ApexSugarRushGameEngine;
 ok(typeof E.spinBase === 'function', 'spinBase exists');
 ok(typeof E.spinFree === 'function', 'spinFree exists');
 ok(typeof E.spin === 'function', 'legacy spin still exists');
-ok(typeof E.fsSpin === 'function', 'legacy fsSpin still exists');
+ok(typeof E.FsSession === 'function', 'FsSession exists');
 
 // ---- spinBase contract ----
 console.log('');
