@@ -368,24 +368,10 @@ export async function executeSpin(env, user, body) {
     }
   }
 
+  // S-FK: 先算 newChainId（不插入），等 spins 插入后再插 reward_chains
   let newChainId = null;
   if (!isFree && spinResult.fsTriggered) {
     newChainId = 'srg-' + spinId.slice(0, 20);
-    const fsAwarded = spinResult.fsSpinsAwarded || 10;
-    const maxWinMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
-    const expiresAt = new Date(Date.now() + FS_TTL_MS).toISOString();
-    stmts.push(env.apex_db.prepare(
-      "INSERT INTO reward_chains " +
-      "(chain_id, user_id, base_spin_id, effective_bet_minor, max_win_multiplier, chain_win_minor, math_version) " +
-      "VALUES (?, ?, ?, ?, ?, ?, ?)"
-    ).bind(newChainId, userId, spinId, effectiveBetMinor, maxWinMult, actualWinMinor, mathVersion));
-    stmts.push(env.apex_db.prepare(
-      "INSERT INTO free_spin_sessions " +
-      "(user_id, trigger_spin_id, chain_id, mode, bet_minor, pay_scale, " +
-      " total_spins, remaining_spins, chain_win_minor, expires_at, game_id) " +
-      "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, 'sugar-rush')"
-    ).bind(userId, spinId, newChainId, effectiveBetMinor, payScale,
-           fsAwarded, fsAwarded, actualWinMinor, expiresAt));
   }
 
   // S3-5b: Provably Fair context (seed commit + nonce)
@@ -410,6 +396,25 @@ export async function executeSpin(env, user, body) {
     maxWinMinor, cappedThisSpin,
     pf.serverSeedHash, pf.clientSeed, pf.nonce
   ));
+
+  // S-FK: reward_chains 的 base_spin_id FK 指向 spins.spin_id，必须后插
+  if (newChainId) {
+    const fsAwarded = spinResult.fsSpinsAwarded || 10;
+    const maxWinMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
+    const expiresAt = new Date(Date.now() + FS_TTL_MS).toISOString();
+    stmts.push(env.apex_db.prepare(
+      "INSERT INTO reward_chains " +
+      "(chain_id, user_id, base_spin_id, effective_bet_minor, max_win_multiplier, chain_win_minor, math_version) " +
+      "VALUES (?, ?, ?, ?, ?, ?, ?)"
+    ).bind(newChainId, userId, spinId, effectiveBetMinor, maxWinMult, actualWinMinor, mathVersion));
+    stmts.push(env.apex_db.prepare(
+      "INSERT INTO free_spin_sessions " +
+      "(user_id, trigger_spin_id, chain_id, mode, bet_minor, pay_scale, " +
+      " total_spins, remaining_spins, chain_win_minor, expires_at, game_id) " +
+      "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, 'sugar-rush')"
+    ).bind(userId, spinId, newChainId, effectiveBetMinor, payScale,
+           fsAwarded, fsAwarded, actualWinMinor, expiresAt));
+  }
 
   try {
     await env.apex_db.batch(stmts);
