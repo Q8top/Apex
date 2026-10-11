@@ -39,9 +39,10 @@
   // 一致性断言：数值一旦分叉立即报警（开发期）
   try {
     if (typeof console !== 'undefined' && console.assert) {
+      // S1.1: 引擎 BONUS_RULES 已改为 trigger=4/retriggerMin=3/retriggerAdd=5
       console.assert(BONUS_CONFIG.triggerMin === 4, 'P0-3: triggerMin mismatch');
-      console.assert(BONUS_CONFIG.retriggerMin === 4, 'P0-3: retriggerMin mismatch');
-      console.assert(BONUS_CONFIG.retriggerAdd === 2, 'P0-3: retriggerAdd mismatch');
+      console.assert(BONUS_CONFIG.retriggerMin === 3, 'P0-3: retriggerMin mismatch');
+      console.assert(BONUS_CONFIG.retriggerAdd === 5, 'P0-3: retriggerAdd mismatch');
     }
   } catch (e) {}
 
