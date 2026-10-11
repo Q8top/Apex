@@ -387,8 +387,7 @@ function spinWithAudio(){
     if(casc>0&&a&&a.sfxLand)a.sfxLand(casc);
     if(win>0){
       if(Fx2)Fx2.haptic(30);
-      if(window.ApexSRWinTier)window.ApexSRWinTier.showWinTiered(win);
-      else if(window.ApexSRFx)window.ApexSRFx.showWin(win);
+      if(window.ApexSRWinTierV2)window.ApexSRWinTierV2.showWinInline(win);
       var mult=win/bet;
       if(a&&a.sfxWin)a.sfxWin(tierOf(mult));
     }
@@ -680,4 +679,196 @@ function paintBalanceAnimated(newBal){
   lastBal=newBal;
 }
 window.ApexSRBalance=Object.freeze({paintBalanceAnimated:paintBalanceAnimated,fmtThousands:fmtThousands,rollBalance:rollBalance,getLast:function(){return lastBal;}});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+function isDemo(){return (M.state.mode||'demo')==='demo';}
+function toast(msg){
+  var t=document.getElementById('sr-toast');
+  if(!t)return;
+  t.textContent=msg;t.hidden=false;
+  void t.offsetWidth;t.classList.add('is-visible');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){t.classList.remove('is-visible');
+    setTimeout(function(){t.hidden=true;},220);},1600);
+}
+function resetDemoBalance(){
+  M.state.balance=1000000;
+  if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
+  else M.paintStats();
+  toast('\u4f59\u989d\u5df2\u91cd\u7f6e\u4e3a \u00a510,000.00');
+}
+function goRecharge(){
+  toast('\u5373\u5c06\u8fdb\u5165\u5145\u503c\u9875\u9762...');
+  setTimeout(function(){window.location.href='/wallet.html?from=sr';},700);
+}
+function paintModeUI(){
+  var lbl=document.getElementById('sr-reset-label');
+  var btn=document.getElementById('sr-reset-btn');
+  if(!lbl||!btn)return;
+  if(isDemo()){lbl.textContent='\u91cd\u7f6e\u4f59\u989d';btn.dataset.act='reset';}
+  else{lbl.textContent='\u5145\u503c';btn.dataset.act='recharge';}
+}
+function onResetClick(){
+  var btn=document.getElementById('sr-reset-btn');
+  var act=(btn&&btn.dataset.act)||'reset';
+  if(act==='reset')resetDemoBalance();
+  else goRecharge();
+  if(window.ApexSRAudio&&window.ApexSRAudio.sfxTap)window.ApexSRAudio.sfxTap();
+  if(window.ApexSRFx2&&window.ApexSRFx2.haptic)window.ApexSRFx2.haptic(15);
+}
+M.onBoot(function(){
+  var b=document.getElementById('sr-reset-btn');
+  if(b)b.addEventListener('click',onResetClick);
+  paintModeUI();
+});
+window.ApexSRWallet=Object.freeze({resetDemoBalance:resetDemoBalance,goRecharge:goRecharge,paintModeUI:paintModeUI,isDemo:isDemo});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+function paintHeaderSub(){
+  var el=document.querySelector('.sr-header-sub');
+  if(!el)return;
+  var m=(M.state.mode||'demo');
+  el.textContent=(m==='demo')?'\u8bd5\u73a9\u6a21\u5f0f':'\u6b63\u5f0f\u6a21\u5f0f';
+}
+M.onBoot(paintHeaderSub);
+window.ApexSRHeaderMode=Object.freeze({paint:paintHeaderSub});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var autoTimer=null;
+var Fx=function(){return window.ApexSRFx2;};
+function tap(){
+  if(window.ApexSRAudio&&window.ApexSRAudio.sfxTap)window.ApexSRAudio.sfxTap();
+  var f=Fx();if(f&&f.haptic)f.haptic(12);
+}
+function setAutoIcon(isStop){
+  var use=document.getElementById('sr-auto-use');
+  if(use)use.setAttribute('href', isStop?'#ic-stop':'#ic-repeat');
+}
+function setAutoLabel(isStop){
+  var lbl=document.getElementById('sr-auto-label');
+  if(lbl)lbl.textContent=isStop?'\u505c\u6b62':'\u81ea\u52a8';
+}
+function setAutoVisual(isStop){
+  var btn=document.getElementById('sr-auto-btn');
+  if(!btn)return;
+  btn.classList.toggle('sr-ctrl--stop',isStop);
+  setAutoIcon(isStop);
+  setAutoLabel(isStop);
+  btn.setAttribute('aria-label',isStop?'\u505c\u6b62\u81ea\u52a8':'\u81ea\u52a8\u6295\u6ce8');
+}
+function isSpinning(){
+  if(window.ApexSRAudioBridge)return M.state.spinning;
+  return !!M.state.spinning;
+}
+function tick(){
+  if(!M.state.auto)return;
+  if(!isSpinning()){
+    if(window.ApexSRAudioBridge)window.ApexSRAudioBridge.spinWithAudio();
+  }
+  autoTimer=setTimeout(tick,M.state.fast?420:1100);
+}
+function startAuto(){
+  M.state.auto=true;
+  setAutoVisual(true);
+  tap();
+  tick();
+}
+function stopAuto(){
+  M.state.auto=false;
+  setAutoVisual(false);
+  tap();
+  if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+}
+function onAuto(){
+  if(M.state.auto)stopAuto();else startAuto();
+}
+function onFast(){
+  M.state.fast=!M.state.fast;
+  var btn=document.getElementById('sr-fast-btn');
+  if(btn){
+    btn.classList.toggle('is-active',M.state.fast);
+    btn.setAttribute('aria-pressed',M.state.fast?'true':'false');
+  }
+  tap();
+}
+M.onBoot(function(){
+  var a=document.getElementById('sr-auto-btn');
+  if(a)a.addEventListener('click',onAuto);
+  var f=document.getElementById('sr-fast-btn');
+  if(f)f.addEventListener('click',onFast);
+});
+window.ApexSRAutoFast=Object.freeze({onAuto:onAuto,onFast:onFast,startAuto:startAuto,stopAuto:stopAuto});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var lastTag=null;
+function tierClass(mult){
+  if(mult>=500)return 'is-tier-epic';
+  if(mult>=100)return 'is-tier-mega';
+  if(mult>=20) return 'is-tier-big';
+  if(mult>=5)  return 'is-tier-nice';
+  return '';
+}
+function tierTag(mult){
+  if(mult>=500)return 'EPIC WIN';
+  if(mult>=100)return 'MEGA WIN';
+  if(mult>=20) return 'BIG WIN';
+  if(mult>=5)  return 'NICE';
+  return '';
+}
+function showWinInline(amountMinor){
+  var wrap=document.getElementById('sr-winline');
+  var val=document.getElementById('sr-win');
+  var tag=document.getElementById('sr-winline-tag');
+  if(!val)return;
+  var bet=M.BETS[M.state.betIndex]||100;
+  var mult=amountMinor/bet;
+  var cls=tierClass(mult);
+  var tg=tierTag(mult);
+
+  /* 清旧态 */
+  val.classList.remove('is-win','is-lose','is-tier-nice','is-tier-big','is-tier-mega','is-tier-epic');
+  if(wrap)wrap.classList.remove('has-big');
+  void val.offsetWidth;
+
+  if(amountMinor<=0){
+    val.classList.add('is-lose');
+    if(tag){tag.classList.remove('is-open');}
+    return;
+  }
+
+  val.classList.add('is-win');
+  if(cls)val.classList.add(cls);
+  if(tg&&tag){tag.textContent=tg;tag.classList.add('is-open');}
+
+  if(cls==='is-tier-big'||cls==='is-tier-mega'||cls==='is-tier-epic'){
+    if(wrap)wrap.classList.add('has-big');
+    var C=window.ApexSRConfetti;
+    if(C){var t=(cls==='is-tier-epic')?4:(cls==='is-tier-mega')?3:2;C.burst(t);}
+  }
+  if(cls==='is-tier-mega'||cls==='is-tier-epic'){
+    var Fx2=window.ApexSRFx2;
+    if(Fx2&&Fx2.haptic)Fx2.haptic([30,40,30]);
+  }
+  /* 3.5s 后收起 tag */
+  clearTimeout(lastTag);
+  if(tg&&tag){
+    lastTag=setTimeout(function(){
+      tag.classList.remove('is-open');
+      if(wrap)wrap.classList.remove('has-big');
+    },3500);
+  }
+}
+window.ApexSRWinTierV2=Object.freeze({showWinInline:showWinInline,tierClass:tierClass});
 })();
