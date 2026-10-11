@@ -15,7 +15,15 @@ var refs={};
 var cells=[];
 var bootQueue=[];
 function $(id){return document.getElementById(id);}
-function fmtMinor(m){return '\u00a5'+(m/100).toFixed(2);}
+var _nfSR=null,_nfSROK=true;
+function fmtMinor(m){
+  var v=(Number(m)||0)/100;
+  if(_nfSROK&&!_nfSR){try{_nfSR=new Intl.NumberFormat('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});}catch(e){_nfSROK=false;}}
+  if(_nfSR){try{return '\u00a5'+_nfSR.format(v);}catch(e){}}
+  var neg=v<0;var s=Math.abs(v).toFixed(2).split('.');
+  s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return (neg?'-\u00a5':'\u00a5')+s.join('.');
+}
 function ready(fn){if(document.readyState!=='loading')fn();else document.addEventListener('DOMContentLoaded',fn);}
 function onBoot(fn){
   if(document.readyState!=='loading'){try{fn();}catch(e){console.error('[SR boot]',e);}}

@@ -82,7 +82,7 @@ function simulate(opts){
   var weights = opts.weights || MP.buildRngWeights(mode);
 
   var rng = new SeededRng(seed, weights);
-  var engine = new GE.GameEngine({ rng: rng, maxTumbleSteps: 100 });
+  var engine = new GE.GameEngine({ rng: rng, maxTumbleSteps: 100, profile: profile });
 
   var wagered = 0, paid = 0, hits = 0, bonusTriggers = 0;
   var cappedRounds = 0, totalTumbles = 0;
@@ -114,14 +114,15 @@ function simulate(opts){
       bonusTriggers++;
       var fs = runFreeSpins(mode, betMinor, i, res.bonus.awardedSpins || 10, function(){
         var fsRng = new SeededRng(seed + '-fs-' + i, MP.buildRngWeights(mode, { fsMode: true }));
-        return new GE.GameEngine({ rng: fsRng, maxTumbleSteps: 100 });
+        return new GE.GameEngine({ rng: fsRng, maxTumbleSteps: 100, profile: profile });
       });
       totalFsSpins += fs.fsCount;
       totalFsMultiplier += fs.fsMultSum;
       totalMult += fs.fsMultSum;
     }
 
-    var winMinor = Math.floor(betMinor * totalMult * payScale);
+    // P0-1 接线后：engine 的 totalMultiplier 已包含 payScale+cap，不再额外乘
+    var winMinor = Math.floor(betMinor * totalMult);
     paid += winMinor;
     wins[i] = winMinor / betMinor;
     if (winMinor > 0) hits++;

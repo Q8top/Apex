@@ -490,9 +490,9 @@
 }
 .sr-cell.is-dropping {
   animation: sr-drop .28s cubic-bezier(.22,.7,.36,1);
-95}
+}
 @keyframes sr-drop {
-),  from { transform: translateY(-40px); opacity: 0; }
+  from { transform: translateY(-40px); opacity: 0; }
   to   { transform: translateY(0);     opacity: 1; }
 }
 .sr-win-burst {

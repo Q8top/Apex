@@ -20,6 +20,13 @@ function GameEngine(opts){
   this.rng = opts.rng;
   this.maxTumbleSteps = opts.maxTumbleSteps == null ? 100 : opts.maxTumbleSteps;
   this.profile = opts.profile || null;   // P0-2: pity/maxWin per-mode profile
+
+  /* P0-1 接线：payScale / maxWinMultiplier（施工单终版） */
+  var p = this.profile || {};
+  this.payScale = (typeof p.payScale === 'number' && isFinite(p.payScale) && p.payScale > 0)
+    ? p.payScale : 1;
+  this.maxWinMultiplier = (Number.isSafeInteger(p.maxWinMultiplier) && p.maxWinMultiplier > 0)
+    ? p.maxWinMultiplier : 0;
 }
 
 GameEngine.prototype.spin = function(request){
@@ -128,7 +135,15 @@ GameEngine.prototype.spin = function(request){
   var bombFactor = (bombSum > 0) ? bombSum : 1;
   totalMultiplier = totalMultiplier * bombFactor;
 
-  var totalWinMinor = _pay.calculatePayout(betMinor, totalMultiplier);
+  /* P0-1：Max Win 硬截断（在 payScale 之前截断，与 SR cap.js 语义一致） */
+  var rawMultiplier = totalMultiplier;
+  var cappedByMaxWin = false;
+  if (this.maxWinMultiplier > 0) {
+    var rawCap = this.maxWinMultiplier / this.payScale;
+    if (rawMultiplier > rawCap) { rawMultiplier = rawCap; cappedByMaxWin = true; }
+  }
+  var scaledMultiplier = rawMultiplier * this.payScale;
+  var totalWinMinor = _pay.calculatePayout(betMinor, scaledMultiplier);
 
   return {
     version: 1,
@@ -144,7 +159,10 @@ GameEngine.prototype.spin = function(request){
       awardedSpins: bonusTriggered ? _bonus.BONUS_RULES.initialSpins : 0,
       retriggered: false
     },
-    totalMultiplier: totalMultiplier,
+    totalMultiplier: scaledMultiplier,
+    rawMultiplier: rawMultiplier,
+    payScale: this.payScale,
+    cappedByMaxWin: cappedByMaxWin,
     totalWinMinor: totalWinMinor,
     bombSum: bombSum,
     bombFactor: bombFactor,
