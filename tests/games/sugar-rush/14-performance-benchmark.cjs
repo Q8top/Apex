@@ -41,7 +41,7 @@ var r2 = bench('spinFree throughput', function(){
 // evaluator throughput
 // =====================================================
 var grid = [];
-for (var k = 0; k < 49; k++) grid[k] = ['blue_candy','grape','mango','strawberry','orange'][k % 5];
+for (var k = 0; k < 49; k++) grid[k] = ['blue_candy','mango','mango','strawberry','orange'][k % 5];
 var N_EVAL = 50000;
 var r3 = bench('evaluator throughput', function(){
   for (var m = 0; m < N_EVAL; m++) Ev.evaluate(grid);
@@ -53,7 +53,7 @@ var r3 = bench('evaluator throughput', function(){
 // =====================================================
 var g2 = [];
 for (var n = 0; n < 49; n++) g2[n] = 'blue_candy';
-g2[0] = 'grape'; g2[1] = 'grape'; g2[2] = 'grape'; g2[3] = 'grape'; g2[4] = 'grape';
+g2[0] = 'mango'; g2[1] = 'mango'; g2[2] = 'mango'; g2[3] = 'mango'; g2[4] = 'mango';
 var mockRng = {
   randomInt: function(max){ return (12345 * (max + 1)) % max; },
   pickSymbol: function(){ return 'blue_candy'; }
@@ -63,7 +63,7 @@ var r4 = bench('tumble throughput', function(){
   for (var p = 0; p < N_TB; p++){
     var tmp = [];
     for (var q = 0; q < 49; q++) tmp[q] = 'blue_candy';
-    tmp[0] = 'grape'; tmp[1] = 'grape'; tmp[2] = 'grape'; tmp[3] = 'grape'; tmp[4] = 'grape';
+    tmp[0] = 'mango'; tmp[1] = 'mango'; tmp[2] = 'mango'; tmp[3] = 'mango'; tmp[4] = 'mango';
     Tb.tumble(tmp, [0, 1, 2, 3, 4], mockRng);
   }
   return N_TB;

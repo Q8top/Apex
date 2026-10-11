@@ -86,7 +86,9 @@ var rtp = total / (20000 * 100);
 var hitRate = hits / 20000;
 // P0-7A1: engine now returns ONE layer only (no nested FS).
   // The loose bound below reflects base-only RTP x payScale.
-  ok(rtp > 0.55 && rtp < 1.10, 'real rtp loose bound 20k [0.55,1.10] (base-only): ' + rtp.toFixed(4));
+  // Part 8: payScale calibrated. Pool is 7 regular + scatter + bomb.
+  // Bound reflects demo engine running with demo payScale (1.55).
+  ok(rtp > 0.86 && rtp < 0.95, 'real rtp bound [0.86,0.95] (Part8 calibrated): ' + rtp.toFixed(4));
 ok(hitRate > 0.18 && hitRate < 0.40, 'real hitRate in [0.18,0.40]: ' + hitRate.toFixed(4));
 
 console.log('[tumble+engine] passed='+passed+' failed='+failed+' rtp='+rtp.toFixed(4)+' hitRate='+hitRate.toFixed(4));

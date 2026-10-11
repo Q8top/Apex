@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SR Symbols v3 Preview</title>
+<style>
+  body{margin:0;padding:16px;background:#0e0e14;color:#fff;font-family:-apple-system,sans-serif}
+  h1{font-size:16px;margin:0 0 12px;font-weight:600;text-align:center}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:540px;margin:0 auto}
+  .cell{aspect-ratio:1;background:#fff;border-radius:16px;display:grid;place-items:center;padding:10px;position:relative}
+  .cell svg{width:100%;height:100%;display:block}
+  .label{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:10px;color:#333;font-weight:600}
+</style>
+</head><body>
+<h1>Sugar Rush Symbols v3</h1>
+<div class="grid" id="g"></div>
+<script src="/src/games/sugar-rush/js/symbols-v3.js"></script>
+<script>
+var ids=["blue_candy","green_candy","purple_candy","red_candy","strawberry","orange","mango","lollipop","candy_bomb"];
+var names={blue_candy:"\u6a59\u8272\u8f6f\u7cd6\u718a",green_candy:"\u7d2b\u8272\u8f6f\u7cd6\u718a",purple_candy:"\u7ea2\u8272\u8f6f\u7cd6\u718a",red_candy:"\u7eff\u8272\u661f\u661f\u7cd6",strawberry:"\u7d2b\u8272\u679c\u51bb\u8c46",orange:"\u6a59\u8272\u7231\u5fc3\u7cd6",mango:"\u7c89\u8272\u5706\u7403\u7cd6",lollipop:"Scatter",candy_bomb:"\u500d\u7387\u70b8\u5f39"};
+var g=document.getElementById("g");
+var S=window.ApexSRSymbolsV3;
+for(var i=0;i<ids.length;i++){
+  var c=document.createElement("div");c.className="cell";
+  var svg=S.get(ids[i]);
+  if(svg){c.innerHTML=svg;}else{c.textContent="MISS";}
+  var l=document.createElement("div");l.className="label";l.textContent=names[ids[i]]||ids[i];
+  c.appendChild(l);
+  g.appendChild(c);
+}
+</script></body></html>

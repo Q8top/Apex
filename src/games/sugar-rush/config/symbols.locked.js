@@ -11,8 +11,6 @@ var LOCKED = Object.freeze({
   red_candy:    Object.freeze({ id:'red_candy',    kind:'regular',    paytableKey:'RED_CANDY' }),
   strawberry:   Object.freeze({ id:'strawberry',   kind:'regular',    paytableKey:'STRAWBERRY' }),
   orange:       Object.freeze({ id:'orange',       kind:'regular',    paytableKey:'ORANGE' }),
-  cherry:       Object.freeze({ id:'cherry',       kind:'regular',    paytableKey:'CHERRY' }),
-  grape:        Object.freeze({ id:'grape',        kind:'regular',    paytableKey:'GRAPE' }),
   mango:        Object.freeze({ id:'mango',        kind:'regular',    paytableKey:'MANGO' }),
   lollipop:     Object.freeze({ id:'lollipop',     kind:'scatter',    paytableKey:null }),
   candy_bomb:   Object.freeze({ id:'candy_bomb',   kind:'multiplier', paytableKey:null })
@@ -36,8 +34,6 @@ var LABELS = Object.freeze({
   red_candy:    '绿色星星糖',
   strawberry:   '紫色果冻豆',
   orange:       '橙色爱心糖',
-  cherry:       '红色爱心糖',
-  grape:        '紫色圆形糖',
   mango:        '粉色圆形糖果',
   lollipop:     '棒棒糖',
   candy_bomb:   '倍率炸弹'

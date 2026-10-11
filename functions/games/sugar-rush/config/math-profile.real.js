@@ -9,12 +9,12 @@ var REAL_PROFILE = Object.freeze({
   real: Object.freeze({
     baseWeights: Object.freeze({
       BLUE_CANDY: 22, GREEN_CANDY: 20, PURPLE_CANDY: 18, RED_CANDY: 16,
-      STRAWBERRY: 14, ORANGE: 12, CHERRY: 10, GRAPE: 8, MANGO: 5
+      STRAWBERRY: 14, ORANGE: 12, MANGO: 5
     }),
     scatterWeight: 1,
     multiplierWeight: 0,
     fsMultiplierWeight: 1,
-    payScale: 6.50,
+    payScale: 3.55,
     maxWinMultiplier: 5000,
     pityRate: 0.0,
     pityMin: 0,

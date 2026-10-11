@@ -9,7 +9,7 @@ var PROFILES = Object.freeze({
   demo: Object.freeze({
     baseWeights: Object.freeze({
       BLUE_CANDY: 22, GREEN_CANDY: 20, PURPLE_CANDY: 18, RED_CANDY: 16,
-      STRAWBERRY: 14, ORANGE: 12, CHERRY: 10, GRAPE: 8, MANGO: 5
+      STRAWBERRY: 14, ORANGE: 12, MANGO: 5
     }),
     scatterWeight: 3,
     multiplierWeight: 0,
@@ -53,7 +53,7 @@ function buildRngWeights(mode, opts){
 function validate(){
   var p = PROFILES.demo;
   var keys = Object.keys(p.baseWeights);
-  if (keys.length !== 9) throw new Error('SUGAR_MATH_PROFILE: 9 regular required');
+  if (keys.length !== 7) throw new Error('SUGAR_MATH_PROFILE: 7 regular required');
   if (!Number.isSafeInteger(p.scatterWeight) || p.scatterWeight < 0) throw new Error('scatterWeight invalid');
   if (!Number.isFinite(p.payScale) || p.payScale <= 0) throw new Error('payScale invalid');
   if (!p.targetRtp || p.targetRtp.min >= p.targetRtp.max) throw new Error('targetRtp invalid');

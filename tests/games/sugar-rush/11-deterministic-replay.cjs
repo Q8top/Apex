@@ -12,7 +12,7 @@ var E = window.ApexSugarRushGameEngine;
 // =====================================================
 var grid = [];
 for (var i = 0; i < 49; i++) grid[i] = 'blue_candy';
-grid[0] = 'grape'; grid[1] = 'grape'; grid[2] = 'grape'; grid[3] = 'grape'; grid[4] = 'grape';
+grid[0] = 'mango'; grid[1] = 'mango'; grid[2] = 'mango'; grid[3] = 'mango'; grid[4] = 'mango';
 var r1 = Ev.evaluate(grid);
 var r2 = Ev.evaluate(grid);
 ok(JSON.stringify(r1) === JSON.stringify(r2), 'evaluator same input same output');
@@ -31,14 +31,14 @@ function makeMockRng(seed){
       return s % max;
     },
     pickSymbol: function(){
-      var vals = ['blue_candy','green_candy','purple_candy','red_candy','strawberry','orange','cherry','grape','mango'];
+      var vals = ['blue_candy','green_candy','purple_candy','red_candy','strawberry','orange','strawberry','mango','mango'];
       return vals[this.randomInt(9)];
     }
   };
 }
 var g0 = [];
 for (var j = 0; j < 49; j++) g0[j] = 'blue_candy';
-g0[0] = 'grape'; g0[1] = 'grape'; g0[2] = 'grape'; g0[3] = 'grape'; g0[4] = 'grape';
+g0[0] = 'mango'; g0[1] = 'mango'; g0[2] = 'mango'; g0[3] = 'mango'; g0[4] = 'mango';
 var rngA = makeMockRng(12345);
 var rngB = makeMockRng(12345);
 var t1 = Tb.tumble(g0, [0, 1, 2, 3, 4], rngA);
@@ -54,7 +54,7 @@ ok(JSON.stringify(t1) !== JSON.stringify(t3), 'tumble different seed different g
 for (var trial = 0; trial < 50; trial++){
   var g = [];
   for (var k = 0; k < 49; k++){
-    g[k] = ['blue_candy','grape','mango','strawberry','orange'][k % 5];
+    g[k] = ['blue_candy','mango','mango','strawberry','orange'][k % 5];
   }
   var r = Ev.evaluate(g);
   var totalFromWins = 0;

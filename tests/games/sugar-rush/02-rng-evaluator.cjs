@@ -45,7 +45,7 @@ ok(r.payoutMultiplier > 0, 'payout > 0');
 
 // 空盘：所有位置都不一样，不成簇
 var g2 = [];
-var syms = ['blue_candy','green_candy','purple_candy','red_candy','strawberry','orange','cherry','grape','mango'];
+var syms = ['blue_candy','green_candy','purple_candy','red_candy','strawberry','orange','mango'];
 for (var j=0; j<49; j++) g2[j] = syms[j % 9];
 var r2 = Ev.evaluate(g2);
 ok(r2.payoutMultiplier === 0, 'checkerboard no wins');
