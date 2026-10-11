@@ -1,3 +1,28 @@
+/* Fix: 跨 IIFE 安全 wrapper（5 个函数需要） */
+function ApexSRCallApplyMultiplierMarks(a){
+  try{ if(window.ApexSRApplyMultiplierMarks) window.ApexSRApplyMultiplierMarks(a); }catch(e){}
+}
+function ApexSRCallPlaySpinDropSR(d){
+  try{ if(window.ApexSRPlaySpinDropSR) window.ApexSRPlaySpinDropSR(d); else if(d) d(); }catch(e){ if(d) d(); }
+}
+function ApexSRCallRenderSpinBtn(){
+  try{ if(window.ApexSRRenderSpinBtn) window.ApexSRRenderSpinBtn(); }catch(e){}
+}
+function ApexSRCallTierClass(m){
+  try{ if(window.ApexSRTierClassFn) return window.ApexSRTierClassFn(m); }catch(e){}
+  return '';
+}
+function ApexSRCallTierOf(m){
+  try{ if(window.ApexSRTierOfFn) return window.ApexSRTierOfFn(m); }catch(e){}
+  return '';
+}
+/* Fix: 跨 IIFE 调用 toggleSpinBtn 的安全 wrapper */
+function ApexSRCallToggleSpinBtn(on){
+  try{ if(window.ApexSRToggleSpinBtn) window.ApexSRToggleSpinBtn(on); }catch(e){}
+}
+function ApexSRCallRenderSpin(){
+  try{ if(window.ApexSRRenderSpinBtn) window.ApexSRRenderSpinBtn(); }catch(e){}
+}
 (function(){
 'use strict';
 var _rb=new Uint32Array(64),_ri=0;
@@ -129,14 +154,18 @@ function renderSpinBtn(){
   btn.classList.toggle('spinning',!!M.state.spinning);
   btn.disabled=disabled;
 }
+window.ApexSRRenderSpinBtn = renderSpinBtn;
 function toggleSpinBtn(on){
   // 兼容旧调用：切换 spinning class + disabled
   var btn=document.getElementById('sr-spin-btn');
   if(!btn)return;
   btn.classList.toggle('spinning',!!on);
   btn.disabled=!!on;
-  renderSpinBtn();
+  ApexSRCallRenderSpinBtn();
 }
+/* Fix: 跨 IIFE 导出（toggleSpinBtn 定义在 IIFE L86，调用方在 L277+） */
+window.ApexSRToggleSpinBtn = toggleSpinBtn;
+window.ApexSRRenderSpinBtn = renderSpinBtn;
 function playSpinDropSR(done){
   var cs=M.cells;
   if(!cs.length){ if(done)done(); return; }
@@ -158,6 +187,7 @@ function playSpinDropSR(done){
     if(done)done();
   }, totalMs);
 }
+window.ApexSRPlaySpinDropSR = playSpinDropSR;
 function runDemoSpin(){
   var E=window.ApexSugarRushGameEngine;
   if(!E||typeof E.spin!=='function')return null;
@@ -229,6 +259,7 @@ var TIERS=[
   {min:500, cls:'is-huge',label:'EPIC WIN'}
 ];
 function tierOf(x){var r=TIERS[0];for(var i=0;i<TIERS.length;i++)if(x>=TIERS[i].min)r=TIERS[i];return r;}
+window.ApexSRTierOfFn = tierOf;
 function rollNumber(el,from,to,dur){
   if(!el)return;
   var t0=performance.now();
@@ -261,7 +292,7 @@ function showWin(amountMinor){
   var lb=b.querySelector('.sr-win-burst-label');
   var vl=b.querySelector('.sr-win-burst-value');
   var mult=amountMinor/(M.BETS[M.state.betIndex]||100);
-  var t=tierOf(mult);
+  var t=ApexSRCallTierOf(mult);
   inner.className='sr-win-burst-inner'+(t.cls?' '+t.cls:'');
   lb.textContent=t.label;
   vl.textContent=M.fmtMinor(0);
@@ -298,6 +329,7 @@ function applyMultiplierMarks(res){
     }
   }
 }
+window.ApexSRApplyMultiplierMarks = applyMultiplierMarks;
 function markWinning(res){
   var pos=res&&(res.winPositions||res.winningPositions||res.lastWinPositions);
   if(!pos||!pos.length)return;
@@ -313,7 +345,7 @@ function doSpinV2(){
   var bet=M.BETS[M.state.betIndex];
   var res=null;
   try{res=window.ApexSugarRushGameEngine.spin('demo',bet);}catch(e){console.error('[spinV2]',e);M.state.spinning=false;return;}
-  if(!res){M.state.spinning=false;toggleSpinBtn(false);return;}
+  if(!res){M.state.spinning=false;ApexSRCallToggleSpinBtn(false);return;}
   M.state.last=res;
   window.ApexSRRender.renderGrid(res.finalGrid||[]);
   M.state.balance+=(res.winMinor||0)-bet;
@@ -389,10 +421,10 @@ function spinWithAudio(){
   if(!E){return;}
   if(a&&a.sfxSpin)a.sfxSpin();
   M.state.spinning=true;
-  toggleSpinBtn(true);
+  ApexSRCallToggleSpinBtn(true);
   var bet=M.BETS[M.state.betIndex];
   var res=null;
-  try{res=E.spin('demo',bet);}catch(e){console.error('[spinAud]',e);M.state.spinning=false;toggleSpinBtn(false);return;}
+  try{res=E.spin('demo',bet);}catch(e){console.error('[spinAud]',e);M.state.spinning=false;ApexSRCallToggleSpinBtn(false);return;}
   if(!res){M.state.spinning=false;return;}
   M.state.last=res;
   var grid=res.finalGrid||[];
@@ -402,7 +434,7 @@ function spinWithAudio(){
   var run=function(){
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
     // P3-1: 先出场动画再入场
-    playSpinDropSR(function(){
+    ApexSRCallPlaySpinDropSR(function(){
     if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid,{dropIn:true});
     M.state.balance+=(res.winMinor||0)-bet;
     M.paintStats();
@@ -411,7 +443,7 @@ function spinWithAudio(){
     if(w&&window.ApexSRFx)window.ApexSRFx.rollNumber(w,0,win,560);
     else if(w)w.textContent=M.fmtMinor(win);
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(res);
-    applyMultiplierMarks(res);
+    ApexSRCallApplyMultiplierMarks(res);
     var casc=res.cascades|0;
   M.state.tumbleDepth = casc;
     if(casc>0){if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);else if(Fx2)Fx2.setTumble(casc);}
@@ -420,7 +452,7 @@ function spinWithAudio(){
       if(Fx2)Fx2.haptic(30);
       if(window.ApexSRWinTierV2)window.ApexSRWinTierV2.showWinInline(win);
       var mult=win/bet;
-      if(a&&a.sfxWin)a.sfxWin(tierOf(mult));
+      if(a&&a.sfxWin)a.sfxWin(ApexSRCallTierOf(mult));
     }
     if(res.fsTriggered){
       var spins=res.fsSpinsPlayed|0;
@@ -437,7 +469,7 @@ function spinWithAudio(){
       if(window.ApexBgm&&!res.fsTriggered)try{window.ApexBgm.toBase(1400);}catch(e){}
       M.state.spinning=false;
       M.state.tumbleDepth=0;
-      toggleSpinBtn(false);
+      ApexSRCallToggleSpinBtn(false);
     },hold);
     });   /* 闭合 playSpinDropSR 回调 */
   };
@@ -452,7 +484,7 @@ function spinWithAudio(){
       if(stillSpinning && _spinKey){
         console.warn('[SR] watchdog: force release spin lock');
         M.state.spinning=false;
-        toggleSpinBtn(false);
+        ApexSRCallToggleSpinBtn(false);
       }
     }
   }, 6000);
@@ -528,7 +560,7 @@ function spinGateway(){
   var a=window.ApexSRAudio;
   if(a&&a.sfxTap)a.sfxTap();
   M.state.spinning=true;
-  toggleSpinBtn(true);
+  ApexSRCallToggleSpinBtn(true);
   M.state.balance-=bet;
   if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
   if(a&&a.sfxSpin)a.sfxSpin();
@@ -566,14 +598,14 @@ function spinGateway(){
       if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
       if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);
       M.state.spinning=false;
-      toggleSpinBtn(false);
+      ApexSRCallToggleSpinBtn(false);
     },win>0?680:200);
   }).catch(function(err){
     console.error('[gateway]',err&&err.message);
     M.state.balance+=bet;
     if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
     M.state.spinning=false;
-    toggleSpinBtn(false);
+    ApexSRCallToggleSpinBtn(false);
     var t2=document.getElementById('sr-toast');
     if(t2){t2.textContent='\u65cb\u8f6c\u5931\u8d25\uff0c\u5df2\u9000\u8fd8\u6295\u6ce8';t2.hidden=false;
       void t2.offsetWidth;t2.classList.add('is-visible');
@@ -609,6 +641,7 @@ function tierClass(mult){
   if(mult>=5)  return 'sr-tier-nice';
   return '';
 }
+window.ApexSRTierClassFn = tierClass;
 function tierLabel(mult){
   if(mult>=500)return 'EPIC WIN';
   if(mult>=100)return 'MEGA WIN';
@@ -634,7 +667,7 @@ function showWinTiered(amountMinor){
   var vl=b.querySelector('.sr-win-burst-value');
   var bet=M.BETS[M.state.betIndex]||100;
   var mult=amountMinor/bet;
-  var cls=tierClass(mult);
+  var cls=ApexSRCallTierClass(mult);
   inner.className='sr-win-burst-inner'+(cls?' '+cls:'');
   lb.textContent=tierLabel(mult);
   vl.textContent=M.fmtMinor(0);
@@ -678,7 +711,7 @@ function setTumbleTiered(n){
   n=n|0;
   if(n<=0){el.hidden=true;el.className='sr-tumble-counter';lastN=0;return;}
   el.className='sr-tumble-counter';
-  var t=tierOf(n);
+  var t=ApexSRCallTierOf(n);
   el.classList.add('sr-tc-'+t);
   el.textContent='x'+n;
   el.hidden=false;
@@ -952,7 +985,7 @@ function setAutoVisual(isStop){
   setAutoLabel(isStop);
   btn.setAttribute('aria-label',isStop?'\u505c\u6b62\u81ea\u52a8':'\u81ea\u52a8\u6295\u6ce8');
   // 同步 spin 按钮（对齐 SB：auto 中 spin 显示"停止"）
-  if(window.ApexSRRenderSpin)window.ApexSRRenderSpin();
+  if(window.ApexSRRenderSpinBtn)window.ApexSRRenderSpinBtn();
 }
 function isSpinning(){
   if(window.ApexSRAudioBridge)return M.state.spinning;
@@ -996,7 +1029,7 @@ M.onBoot(function(){
   if(f)f.addEventListener('click',onFast);
 });
 window.ApexSRAutoFast=Object.freeze({onAuto:onAuto,onFast:onFast,startAuto:startAuto,stopAuto:stopAuto});
-window.ApexSRRenderSpin=function(){ try{ renderSpinBtn(); }catch(e){} };
+window.ApexSRRenderSpin=function(){ try{ ApexSRCallRenderSpinBtn(); }catch(e){} };
 })();
 
 (function(){
@@ -1024,7 +1057,7 @@ function showWinInline(amountMinor){
   if(!val)return;
   var bet=M.BETS[M.state.betIndex]||100;
   var mult=amountMinor/bet;
-  var cls=tierClass(mult);
+  var cls=ApexSRCallTierClass(mult);
   var tg=tierTag(mult);
 
   /* 清旧态 */

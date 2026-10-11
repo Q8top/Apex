@@ -131,3 +131,14 @@
 
 /sweet-demo
   Cache-Control: no-store
+
+# sugar-rush 页面：不缓存（对齐 sweet-demo）
+/sugar-rush.html
+  Cache-Control: no-store
+
+/sugar-rush
+  Cache-Control: no-store
+
+/sugar-rush-v2.html
+  Cache-Control: no-store
+
