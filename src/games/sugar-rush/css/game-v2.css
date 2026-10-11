@@ -532,3 +532,209 @@
   background: #2a2a30; color: #ffffff;
 }
 .sr-ctrl.is-active .sr-ic { color: #ffd24a; }
+
+/* ===== B2: 5-tier win cinematics ===== */
+.sr-win-burst-inner.sr-tier-nice {
+  background: linear-gradient(145deg, #ffe9b0, #ffb14a);
+  color: #3a1a00;
+}
+.sr-win-burst-inner.sr-tier-big {
+  background: linear-gradient(145deg, #ffd24a, #ff7a1e);
+  color: #2a0f00;
+  animation: sr-burst-in .42s cubic-bezier(.22,1.4,.36,1), sr-tier-pulse 1.2s ease-in-out .3s infinite;
+}
+.sr-win-burst-inner.sr-tier-mega {
+  background: linear-gradient(145deg, #ff5ea8, #7c2fff);
+  color: #ffffff;
+  animation: sr-burst-in .5s cubic-bezier(.22,1.6,.36,1), sr-tier-pulse 0.9s ease-in-out .3s infinite;
+  box-shadow: 0 16px 60px rgba(124,47,255,.55), inset 0 0 32px rgba(255,255,255,.35);
+}
+.sr-win-burst-inner.sr-tier-epic {
+  background: linear-gradient(145deg, #ffd24a 0%, #ff4a9e 40%, #7c2fff 100%);
+  color: #ffffff;
+  animation: sr-burst-in .6s cubic-bezier(.22,1.8,.36,1),
+             sr-tier-pulse 0.7s ease-in-out .35s infinite,
+             sr-tier-shake 0.5s ease-in-out .3s 2;
+  box-shadow: 0 20px 80px rgba(255,74,158,.6), 0 0 100px rgba(124,47,255,.5), inset 0 0 40px rgba(255,255,255,.45);
+}
+@keyframes sr-tier-pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.06); }
+}
+@keyframes sr-tier-shake {
+  0%,100% { transform: translateX(0) scale(1.06); }
+  25%     { transform: translateX(-4px) scale(1.06); }
+  75%     { transform: translateX(4px) scale(1.06); }
+}
+.sr-tier-ring {
+  position: absolute; inset: 0; pointer-events: none;
+  display: grid; place-items: center; z-index: 6;
+}
+.sr-tier-ring::before, .sr-tier-ring::after {
+  content: ''; position: absolute;
+  width: 200px; height: 200px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.6);
+  animation: sr-ring-out 1.1s ease-out forwards;
+}
+.sr-tier-ring::after { animation-delay: .25s; }
+@keyframes sr-ring-out {
+  0%   { transform: scale(.4); opacity: 0; }
+  30%  { opacity: .9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ===== B3: tumble tiers (cascade-based) ===== */
+.sr-tumble-counter.sr-tc-1 { background: rgba(23,23,27,.85); }
+.sr-tumble-counter.sr-tc-2 {
+  background: linear-gradient(135deg,#ffd24a,#ff8a1e); color: #2a0f00;
+  animation: sr-tc-in .22s ease, sr-tc-pop .35s cubic cubic-bezier(.22,1.5,.36,1);
+}
+.sr-tumble-counter.sr-tc-3 {
+  background: linear-gradient(-b135deg,#ff8a1e,#ezier(.e5397e); color: #fff;
+  animation: sr-tc-in .22s ease, sr-tc-pop .35s cubic-bezier(.22,1.6,.36,1),
+             sr-tc-jitter .5s ease-in-out .35s infinite;
+}
+.sr-tumble-counter.sr-tc-4 {
+  background: linear-gradient(135deg,#ffd24a,#e5397e,#7c2fff); color: #fff;
+  animation: sr-tc-in .22s ease, sr-tc-pop .4s22,1.8,.36,1),
+             sr-tc-jitter .4s ease-in-out .4s infinite,
+             sr-tc-glow .8s ease-in-out .4s infinite;
+  font-size: 14px;
+  padding: 6px 16px;
+}
+@keyframes sr-tc-pop {
+  0%   { transform: translateX(-50%) scale(1); }
+  50%  { transform: translateX(-50%) scale(1.35); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+@keyframes sr-tc-jitter {
+  0%,100% { transform: translateX(-50%) scale(1); }
+  25%     { transform: translateX(calc(-50% - 2px)) scale(1.02); }
+  75%     { transform: translateX(calc(-50% + 2px)) scale(1.02); }
+}
+@keyframes sr-tc-glow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,180,80,.6); }
+  50%     { box-shadow: 0 0 24px 8px rgba(255,180,80,.75); }
+}
+
+/* ===== B4: FS entry overlay ===== */
+.sr-fs-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 40%, rgba(124,47,255,.92) 0%, rgba(20,8,40,.96) 70%);
+  opacity: 0; transition: opacity .35s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+.sr-fs-overlay.is-open { opacity: 1; pointer-events: auto; }
+.sr-fs-overlay[hidden] { display: none; }
+.sr-fs-core {
+  position: relative; z-index: 2;
+  text-align: center; color: #fff;
+  animation: sr-fs-core-in .7s cubic-bezier(.22,1.4,.36,1);
+}
+.sr-fs-pre { font-size: 13px; letter-spacing: .32em; opacity: .85; margin-bottom: 6px; }
+.sr-fs-title {
+  font-size: 42px; font-weight: 900; letter-spacing: .02em; line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, #ffd24a 45%, #ff7a1e 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 4px 24px rgba(255,200,80,.6));
+}
+.sr-fs-count {
+  font-size: 64px; font-weight: 900; color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 6px 32px rgba(255,180,80,.7);
+  margin-top: 4px;
+  animation: sr-fs-count-pop .5s cubic-bezier(.22,1.6,.36,1) .35s both;
+}
+.sr-fs-sub { font-size: 12px; letter-spacing: .18em; opacity: .8; margin-top: 10px; }
+@keyframes sr-fs-core-in {
+  0%   { transform: scale(.5) rotate(-4deg); opacity: 0; }
+  60%  { transform: scale(1.08) rotate(1deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes sr-fs-count-pop {
+  0%   { transform: scale(.3); opacity: 0; }
+  60%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.sr-fs-candy {
+  position: absolute; top: -40px;
+  width: 18px; height: 18px; border-radius: 50%;
+  pointer-events: none;
+  animation: sr-fs-fall linear forwards;
+}
+@keyframes sr-fs-fall {
+  0%   { transform: translateY(0) rotate(0); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: .2; }
+}
+.sr-fs-rays {
+  position: absolute; inset: -50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255,220,120,.18) 30deg, transparent 60deg,
+                              transparent 90deg, rgba(255,220,120,.12) 120deg, transparent 150deg,
+                              transparent 180deg, rgba(255,220,120,.18) 210deg, transparent 240deg,
+                              transparent 270deg, rgba(255,220,120,.12) 300deg, transparent 330deg);
+  animation: sr-fs-rays-spin 8s linear infinite;
+  z-index: 1; pointer-events: none;
+}
+@keyframes sr-fs-rays-spin { to { transform: rotate(360deg); } }
+
+/* ===== B5: confetti ===== */
+.sr-confetti-layer {
+  position: fixed; inset: 0; z-index: 450;
+  pointer-events: none; overflow: hidden;
+}
+.sr-confetti-piece {
+  position: absolute; top: -20px;
+  width: 10px; height: 14px;
+  border-radius: 2px;
+  animation: sr-confetti-fall linear forwards;
+  will-change: transform;
+}
+@keyframes sr-confetti-fall {
+  0%   { transform: translate3d(0,0,0) rotate(0); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translate3d(var(--dx,0), 108vh, 0) rotate(var(--rot,720deg)); opacity: .2; }
+}
+
+/* ===== B6: multiplier badge + FS glow ===== */
+.sr-mult-badge {
+  position: fixed; top: 70px; right: 12px; z-index: 90;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 14px; border-radius: 14px;
+  background: linear-gradient(145deg, #ffd24a 0%, #ff8a1e 45%, #e5397e 100%);
+  color: #fff; font-weight: 900;
+  box-shadow: 0 8px 28px rgba(229,57,126,.5), inset 0 0 20px rgba(255,255,255,.35);
+  opacity: 0; transform: scale(.4) translateY(-20px);
+  transition: opacity .28s ease, transform .35s cubic-bezier(.22,1.5,.36,1);
+  pointer-events: none;
+}
+.sr-mult-badge.is-open { opacity: 1; transform: scale(1) translateY(0); }
+.sr-mult-badge[hidden] { display: none; }
+.sr-mult-label { font-size: 9px; letter-spacing: .18em; opacity: .85; }
+.sr-mult-value {
+  font-size: 28px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.sr-mult-badge.is-bump { animation: sr-mult-bump .42s cubic-bezier(.22,1.7,.36,1); }
+@keyframes sr-mult-bump {
+  0%   { transform: scale(1) translateY(0); }
+  45%  { transform: scale(1.28) translateY(-6px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* FS 期全局呼吸光环 */
+.sr-app.is-fs .sr-stage::before {
+  content: ''; position: absolute; inset: -6px;
+  border-radius: 26px; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(229,57,126,.35) 80%, rgba(124,47,255,.5) 100%);
+  animation: sr-fs-breathe 2.2s ease-in-out infinite;
+  z-index: 0;
+}
+@keyframes sr-fs-breathe {
+  0%,100% { opacity: .55; transform: scale(1); }
+  50%     { opacity: 1; transform: scale(1.03); }
+}
+.sr-app.is-fs .sr-board { position: relative; z-index: 1; }

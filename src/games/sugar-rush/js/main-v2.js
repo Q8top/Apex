@@ -311,20 +311,25 @@ function spinWithAnticipation(){
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
     if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid);
     M.state.balance+=(res.winMinor||0)-bet;
-    M.paintStats();
+    if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
+    else M.paintStats();
     var win=res.winMinor||0;
     var w=document.getElementById('sr-win');
     if(w&&window.ApexSRFx)window.ApexSRFx.rollNumber(w,0,win,560);
     else if(w)w.textContent=M.fmtMinor(win);
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(res);
     var casc=res.cascades|0;
-    if(casc>0)Fx2.setTumble(casc);
+    if(casc>0){if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);else Fx2.setTumble(casc);}
     if(win>0){Fx2.haptic(30);if(window.ApexSRFx)window.ApexSRFx.showWin(win);}
     if(window.ApexSRHistory)window.ApexSRHistory.push({bet:bet,win:win,fs:!!res.fsTriggered});
+    if(window.ApexSRMultiplier){
+      window.ApexSRMultiplier.setMultiplier(res.totalMultiplier||0);
+      window.ApexSRMultiplier.setFSMode(!!res.fsTriggered);
+    }
     var hold=win>0?680:0;
     setTimeout(function(){
       if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
-      Fx2.setTumble(0);
+      if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else Fx2.setTumble(0);
       M.state.spinning=false;
     },hold);
   });
@@ -370,20 +375,26 @@ function spinWithAudio(){
     else if(w)w.textContent=M.fmtMinor(win);
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(res);
     var casc=res.cascades|0;
-    if(casc>0&&Fx2)Fx2.setTumble(casc);
+    if(casc>0){if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);else if(Fx2)Fx2.setTumble(casc);}
     if(casc>0&&a&&a.sfxLand)a.sfxLand(casc);
     if(win>0){
       if(Fx2)Fx2.haptic(30);
-      if(window.ApexSRFx)window.ApexSRFx.showWin(win);
+      if(window.ApexSRWinTier)window.ApexSRWinTier.showWinTiered(win);
+      else if(window.ApexSRFx)window.ApexSRFx.showWin(win);
       var mult=win/bet;
       if(a&&a.sfxWin)a.sfxWin(tierOf(mult));
     }
-    if(res.fsTriggered&&a&&a.sfxFSEntry)a.sfxFSEntry();
+    if(res.fsTriggered){
+      var spins=res.fsSpinsPlayed|0;
+      if(!spins){var sc=res.scatterCount|0;spins=(sc>=6)?20:(sc===5)?15:(sc===4)?12:10;}
+      if(window.ApexSRFSEntry&&window.ApexSRFSEntry.playFSEntry)window.ApexSRFSEntry.playFSEntry(spins);
+      else if(a&&a.sfxFSEntry)a.sfxFSEntry();
+    }
     if(window.ApexSRHistory)window.ApexSRHistory.push({bet:bet,win:win,fs:!!res.fsTriggered});
     var hold=win>0?680:0;
     setTimeout(function(){
       if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
-      if(Fx2)Fx2.setTumble(0);
+      if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else if(Fx2)Fx2.setTumble(0);
       M.state.spinning=false;
     },hold);
   };
@@ -399,4 +410,266 @@ function bind(){
 }
 M.onBoot(bind);
 window.ApexSRAudioBridge=Object.freeze({spinWithAudio:spinWithAudio,bind:bind});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+function tierClass(mult){
+  if(mult>=500)return 'sr-tier-epic';
+  if(mult>=100)return 'sr-tier-mega';
+  if(mult>=20) return 'sr-tier-big';
+  if(mult>=5)  return 'sr-tier-nice';
+  return '';
+}
+function tierLabel(mult){
+  if(mult>=500)return 'EPIC WIN';
+  if(mult>=100)return 'MEGA WIN';
+  if(mult>=20) return 'BIG WIN';
+  if(mult>=5)  return 'NICE';
+  return 'WIN';
+}
+function showWinTiered(amountMinor){
+  var b=document.getElementById('sr-win-burst');
+  if(!b){
+    var stage=document.getElementById('sr-stage');
+    if(!stage)return;
+    b=document.createElement('div');
+    b.className='sr-win-burst';b.id='sr-win-burst';b.hidden=true;
+    var inner=document.createElement('div');inner.className='sr-win-burst-inner';
+    var lb=document.createElement('div');lb.className='sr-win-burst-label';
+    var vl=document.createElement('div');vl.className='sr-win-burst-value';
+    inner.appendChild(lb);inner.appendChild(vl);b.appendChild(inner);
+    stage.appendChild(b);
+  }
+  var inner=b.querySelector('.sr-win-burst-inner');
+  var lb=b.querySelector('.sr-win-burst-label');
+  var vl=b.querySelector('.sr-win-burst-value');
+  var bet=M.BETS[M.state.betIndex]||100;
+  var mult=amountMinor/bet;
+  var cls=tierClass(mult);
+  inner.className='sr-win-burst-inner'+(cls?' '+cls:'');
+  lb.textContent=tierLabel(mult);
+  vl.textContent=M.fmtMinor(0);
+  b.hidden=false;
+
+  var Fx=window.ApexSRFx;
+  if(Fx&&Fx.rollNumber)Fx.rollNumber(vl,0,amountMinor,660);
+  else vl.textContent=M.fmtMinor(amountMinor);
+
+  if(cls==='sr-tier-big'||cls==='sr-tier-mega'||cls==='sr-tier-epic'){
+    var C=window.ApexSRConfetti;
+    if(C){var tier=cls==='sr-tier-epic'?4:cls==='sr-tier-mega'?3:2;C.burst(tier);}
+  }
+  if(cls==='sr-tier-mega'||cls==='sr-tier-epic'){
+    var ring=document.createElement('div');ring.className='sr-tier-ring';
+    b.appendChild(ring);
+    setTimeout(function(){if(ring.parentNode)ring.parentNode.removeChild(ring);},1500);
+    var Fx2=window.ApexSRFx2;
+    if(Fx2&&Fx2.haptic)Fx2.haptic([30,40,30,40,30]);
+  }
+  var dur=(cls==='sr-tier-epic')?2400:(cls==='sr-tier-mega')?2000:1400;
+  setTimeout(function(){b.hidden=true;},dur);
+}
+window.ApexSRWinTier=Object.freeze({showWinTiered:showWinTiered,tierClass:tierClass,tierLabel:tierLabel});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var lastN=0;
+function tierOf(n){
+  if(n>=4)return 4;
+  if(n===3)return 3;
+  if(n===2)return 2;
+  if(n===1)return 1;
+  return 0;
+}
+function setTumbleTiered(n){
+  var el=document.getElementById('sr-tumble-counter');
+  if(!el)return;
+  n=n|0;
+  if(n<=0){el.hidden=true;el.className='sr-tumble-counter';lastN=0;return;}
+  el.className='sr-tumble-counter';
+  var t=tierOf(n);
+  el.classList.add('sr-tc-'+t);
+  el.textContent='x'+n;
+  el.hidden=false;
+  if(n!==lastN){
+    var a=window.ApexSRAudio;
+    if(a&&a.sfxLand)a.sfxLand(n);
+    var Fx2=window.ApexSRFx2;
+    if(t>=3&&Fx2&&Fx2.haptic)Fx2.haptic([15,25,15]);
+    if(t>=4&&a&&a.sfxMultiplier)a.sfxMultiplier(4);
+  }
+  lastN=n;
+}
+window.ApexSRTumbleTier=Object.freeze({setTumbleTiered:setTumbleTiered,tierOf:tierOf});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var COLORS=['#ff8a1e','#ffd24a','#e5397e','#7c2fff','#5ac8fa','#7ed957','#ff5ea8'];
+function spawnCandy(overlay,n){
+  for(var i=0;i<n;i++){
+    (function(idx){
+      setTimeout(function(){
+        var c=document.createElement('div');c.className='sr-fs-candy';
+        var sz=10+Math.random()*16;
+        c.style.width=sz+'px';c.style.height=sz+'px';
+        c.style.left=(Math.random()*100)+'%';
+        c.style.background=COLORS[Math.floor(Math.random()*COLORS.length)];
+        c.style.boxShadow='0 2px 8px rgba(0,0,0,.3), inset 0 -3px 6px rgba(0,0,0,.25)';
+        c.style.animationDuration=(2.2+Math.random()*2.2)+'s';
+        c.style.animationDelay=(Math.random()*0.6)+'s';
+        overlay.appendChild(c);
+        setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c);},5200);
+      },idx*22);
+    })(i);
+  }
+}
+function ensureOverlay(){
+  var o=document.getElementById('sr-fs-overlay');
+  if(o)return o;
+  o=document.createElement('div');o.className='sr-fs-overlay';o.id='sr-fs-overlay';o.hidden=true;
+  var rays=document.createElement('div');rays.className='sr-fs-rays';
+  var core=document.createElement('div');core.className='sr-fs-core';
+  var pre=document.createElement('div');pre.className='sr-fs-pre';pre.textContent='SWEET BONANZA';
+  var title=document.createElement('div');title.className='sr-fs-title';title.textContent='FREE SPINS';
+  var count=document.createElement('div');count.className='sr-fs-count';count.textContent='+0';
+  var sub=document.createElement('div');sub.className='sr-fs-sub';sub.textContent='TRIGGERED';
+  core.appendChild(pre);core.appendChild(title);core.appendChild(count);core.appendChild(sub);
+  o.appendChild(rays);o.appendChild(core);
+  document.body.appendChild(o);
+  return o;
+}
+function playFSEntry(spins){
+  var o=ensureOverlay();
+  var count=o.querySelector('.sr-fs-count');
+  count.textContent='+'+spins;
+  o.hidden=false;
+  void o.offsetWidth;
+  o.classList.add('is-open');
+  spawnCandy(o,64);
+  if(window.ApexSRAudio&&window.ApexSRAudio.sfxFSEntry)window.ApexSRAudio.sfxFSEntry();
+  var Fx2=window.ApexSRFx2;
+  if(Fx2&&Fx2.haptic)Fx2.haptic([40,30,40,30,40,30,60]);
+  var hold=(spins>=15)?2600:2000;
+  setTimeout(function(){
+    o.classList.remove('is-open');
+    setTimeout(function(){o.hidden=true;},400);
+  },hold);
+}
+window.ApexSRFSEntry=Object.freeze({playFSEntry:playFSEntry});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var COLORS=['#ff8a1e','#ffd24a','#e5397e','#7c2fff','#5ac8fa','#7ed957','#ff5ea8','#ff3a3a'];
+var layer=null;
+function ensureLayer(){
+  if(layer&&layer.parentNode)return layer;
+  layer=document.createElement('div');layer.className='sr-confetti-layer';
+  document.body.appendChild(layer);
+  return layer;
+}
+function spawn(n){
+  var L=ensureLayer();
+  for(var i=0;i<n;i++){
+    (function(idx){
+      setTimeout(function(){
+        var p=document.createElement('div');p.className='sr-confetti-piece';
+        var dx=(Math.random()*2-1)*180;
+        var rot=(Math.random()*2-1)*1080;
+        p.style.left=(Math.random()*100)+'%';
+        p.style.background=COLORS[Math.floor(Math.random()*COLORS.length)];
+        p.style.setProperty('--dx', dx.toFixed(0)+'px');
+        p.style.setProperty('--rot', rot.toFixed(0)+'deg');
+        p.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+        p.style.animationDelay=(Math.random()*0.4)+'s';
+        if(Math.random()<0.3){p.style.width='6px';p.style.height='10px';}
+        L.appendChild(p);
+        setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},3800);
+      },idx*12);
+    })(i);
+  }
+}
+function burst(tier){
+  var n = tier>=4 ? 140 : tier>=3 ? 90 : tier>=2 ? 45 : 0;
+  if(n>0)spawn(n);
+}
+window.ApexSRConfetti=Object.freeze({burst:burst,spawn:spawn});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+var badge=null,lastVal=0;
+function ensureBadge(){
+  if(badge&&badge.parentNode)return badge;
+  badge=document.createElement('div');badge.className='sr-mult-badge';badge.id='sr-mult-badge';badge.hidden=true;
+  var lb=document.createElement('div');lb.className='sr-mult-label';lb.textContent='TOTAL';
+  var vl=document.createElement('div');vl.className='sr-mult-value';vl.textContent='0x';
+  badge.appendChild(lb);badge.appendChild(vl);
+  document.body.appendChild(badge);
+  return badge;
+}
+function setMultiplier(v){
+  v=(typeof v==='number')?v:0;
+  var b=ensureBadge();
+  var vl=b.querySelector('.sr-mult-value');
+  if(v<=0){b.classList.remove('is-open');setTimeout(function(){b.hidden=true;},320);lastVal=0;return;}
+  vl.textContent=v.toFixed(2)+'x';
+  b.hidden=false;
+  void b.offsetWidth;
+  b.classList.add('is-open');
+  if(v!==lastVal){
+    b.classList.remove('is-bump');
+    void b.offsetWidth;
+    b.classList.add('is-bump');
+    var a=window.ApexSRAudio;
+    if(a&&a.sfxMultiplier){var lvl=Math.min(7,Math.floor(Math.log(Math.max(1,v))/Math.log(1.6)));a.sfxMultiplier(lvl);}
+  }
+  lastVal=v;
+}
+function setFSMode(on){
+  var app=document.getElementById('sr-app')||document.body;
+  if(on)app.classList.add('is-fs');
+  else app.classList.remove('is-fs');
+}
+window.ApexSRMultiplier=Object.freeze({setMultiplier:setMultiplier,setFSMode:setFSMode});
+})();
+
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+function fmtThousands(minor){
+  var v=(minor/100).toFixed(2);
+  var parts=v.split('.');
+  var intPart=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return '\u00a5'+intPart+'.'+parts[1];
+}
+function rollBalance(el,from,to,dur){
+  if(!el)return;
+  var t0=performance.now();
+  function frame(now){
+    var p=Math.min(1,(now-t0)/dur);
+    var e=1-Math.pow(1-p,3);
+    var v=Math.round(from+(to-from)*e);
+    el.textContent=fmtThousands(v);
+    if(p<1)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+var lastBal=0;
+function paintBalanceAnimated(newBal){
+  var el=document.getElementById('sr-balance');
+  if(!el){lastBal=newBal;return;}
+  if(lastBal===0)lastBal=newBal;
+  rollBalance(el,lastBal,newBal,540);
+  lastBal=newBal;
+}
+window.ApexSRBalance=Object.freeze({paintBalanceAnimated:paintBalanceAnimated,fmtThousands:fmtThousands,rollBalance:rollBalance,getLast:function(){return lastBal;}});
 })();
