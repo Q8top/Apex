@@ -8,15 +8,16 @@ var VERSION = '0.2.0';
 var PROFILES = Object.freeze({
   demo: Object.freeze({
     baseWeights: Object.freeze({
-      BLUE_CANDY: 22, GREEN_CANDY: 20, PURPLE_CANDY: 18, RED_CANDY: 16,
+      BLUE_CANDY: 17, GREEN_CANDY: 15, PURPLE_CANDY: 13, RED_CANDY: 16,
       STRAWBERRY: 14, ORANGE: 12, MANGO: 5
     }),
     scatterWeight: 3,
+    fsScatterWeight: 1,
     multiplierWeight: 0,
     fsMultiplierWeight: 2,
-    payScale: 1.55,
+    payScale: 0.73,
     maxWinMultiplier: 25000,
-    pityRate: 0.35,
+    pityRate: 0.65,
     pityMin: 0.5,
     pityRange: 150,
     targetRtp: Object.freeze({ min: 1.30, max: 2.50, target: 1.78 }),
@@ -45,7 +46,9 @@ function buildRngWeights(mode, opts){
     var id = ID_MAP[keys[i]] || keys[i].toLowerCase();
     out[id] = p.baseWeights[keys[i]];
   }
-  if (p.scatterWeight > 0) out.lollipop = p.scatterWeight;
+  var sw = (opts.fsMode && typeof p.fsScatterWeight === 'number')
+    ? p.fsScatterWeight : p.scatterWeight;
+  if (sw > 0) out.lollipop = sw;
   var mw = opts.fsMode ? p.fsMultiplierWeight : p.multiplierWeight;
   if (mw > 0) out.candy_bomb = mw;
   return out;

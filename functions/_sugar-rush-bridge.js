@@ -40,7 +40,9 @@ export async function loadSugarRushConfig() {
       for (let i = 0; i < keys.length; i++) {
         out[_idMap[keys[i]] || keys[i].toLowerCase()] = p.baseWeights[keys[i]];
       }
-      if (p.scatterWeight > 0) out.lollipop = p.scatterWeight;
+      const sw = (opts.fsMode && typeof p.fsScatterWeight === 'number')
+        ? p.fsScatterWeight : p.scatterWeight;
+      if (sw > 0) out.lollipop = sw;
       const mw = opts.fsMode ? p.fsMultiplierWeight : p.multiplierWeight;
       if (mw > 0) out.candy_bomb = mw;
       return out;

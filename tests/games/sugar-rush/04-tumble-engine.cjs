@@ -88,7 +88,9 @@ var hitRate = hits / 20000;
   // The loose bound below reflects base-only RTP x payScale.
   // Part 8: payScale calibrated. Pool is 7 regular + scatter + bomb.
   // Bound reflects demo engine running with demo payScale (1.55).
-  ok(rtp > 0.86 && rtp < 0.95, 'real rtp bound [0.86,0.95] (Part8 calibrated): ' + rtp.toFixed(4));
+  // Day2: 04 measures base-only spin (no FS session). FS contribution is validated
+  // by tools/rtp-gate-v3.cjs (full session). base real RTP ~0.73 at payScale=2.73.
+  ok(rtp > 0.65 && rtp < 0.82, 'real base-only rtp [0.65,0.82]: ' + rtp.toFixed(4));
 ok(hitRate > 0.18 && hitRate < 0.40, 'real hitRate in [0.18,0.40]: ' + hitRate.toFixed(4));
 
 console.log('[tumble+engine] passed='+passed+' failed='+failed+' rtp='+rtp.toFixed(4)+' hitRate='+hitRate.toFixed(4));

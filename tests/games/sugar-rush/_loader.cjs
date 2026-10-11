@@ -29,7 +29,9 @@ require('../../../functions/games/sugar-rush/config/math-profile.real.js');
         var id = _idMap[keys[i]] || keys[i].toLowerCase();
         out[id] = p.baseWeights[keys[i]];
       }
-      if (p.scatterWeight > 0) out.lollipop = p.scatterWeight;
+      var sw = (opts.fsMode && typeof p.fsScatterWeight === 'number')
+        ? p.fsScatterWeight : p.scatterWeight;
+      if (sw > 0) out.lollipop = sw;
       var mw = opts.fsMode ? p.fsMultiplierWeight : p.multiplierWeight;
       if (mw > 0) out.candy_bomb = mw;
       return out;
