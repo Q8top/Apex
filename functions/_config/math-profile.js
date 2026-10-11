@@ -19,7 +19,7 @@ var PROFILES = Object.freeze({
     scatterWeight: 2,
     multiplierWeight: 0,
     fsMultiplierWeight: 1,
-    payScale: 1.659,
+    payScale: 1.7128,
     maxWinMultiplier: 5000,
     pityRate: 0.0,
     pitySymbol: null,
