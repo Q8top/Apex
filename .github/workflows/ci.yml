@@ -37,14 +37,22 @@ jobs:
 
       - name: Sync engine to functions/ (check consistency)
         run: |
+          set -e
           bash scripts/sync-engine.sh
-          if ! git diff --quiet -- functions/_engine functions/_config; then
-            echo "[FATAL] functions/_engine 或 functions/_config 与 src/ 不一致"
-            echo "  请在本地跑 bash scripts/sync-engine.sh 后一起提交"
-            git --no-pager diff --stat -- functions/_engine functions/_config
+          # 有意差异文件（客户端/服务端隔离）
+          # - functions/_engine/game-engine.js   ← 服务端无客户端守卫
+          # - functions/_config/math-profile.js  ← 服务端含 real 块
+          DIFF=$(git diff --name-only -- functions/_engine functions/_config || true)
+          UNEXPECTED=$(echo "$DIFF" | grep -vE '^functions/(_engine/game-engine\.js|_config/math-profile\.js)$' || true)
+          if [ -n "$UNEXPECTED" ]; then
+            echo "[FATAL] 除 game-engine.js / math-profile.js 外，其余镜像文件不一致："
+            echo "$UNEXPECTED"
             exit 1
           fi
-          echo "[OK] functions/_engine 与 src/engine 一致"
+          echo "[OK] 其余镜像文件与 src/ 一致（game-engine / math-profile 按隔离规则跳过）"
+
+      - name: Assert client/server separation
+        run: bash scripts/check-client-server-separation.sh
 
       - name: Check config sync (src ↔ functions)
         run: bash scripts/check-config-sync.sh
