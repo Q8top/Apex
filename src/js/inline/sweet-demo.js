@@ -407,8 +407,8 @@ var state = {
       +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">剩余局数</span><span class="sd-bonus-stat-value" id="sd-bonus-left">-</span></div>'
       +     '<div class="sd-bonus-stat"><span class="sd-bonus-stat-label">累计赢得</span><span class="sd-bonus-stat-value" id="sd-bonus-total">¥0.00</span></div>'
       +   '</div>'
-      +   '<div class="sd-bonus-mult" id="sd-bonus-mult" style="display:none"><span class="sd-bonus-stat-label">倍率合计</span><span class="sd-bonus-mult-val" id="sd-bonus-mult-val">×0</span></div>'
-      +   '<button type="button" class="sd-bonus-btn" id="sd-bonus-ok" style="display:none">完成</button>'
+      +   '<div class="sd-bonus-mult sd-hidden" id="sd-bonus-mult"><span class="sd-bonus-stat-label">倍率合计</span><span class="sd-bonus-mult-val" id="sd-bonus-mult-val">×0</span></div>'
+      +   '<button type="button" class="sd-bonus-btn sd-hidden" id="sd-bonus-ok">完成</button>'
       + '</div>';
     var root = document.createElement('div');
     root.id = 'sd-bonus-root';
@@ -711,7 +711,8 @@ var state = {
       var html = '';
       for (var j = 0; j < CELLS; j++) {
         var delay = ((j * 137) % 36) / 10;
-        html += '<div class="sd-sym"><svg viewBox="0 0 160 160" aria-hidden="true" style="--sd-sym-delay:' + delay.toFixed(2) + 's"><use href="#' + ids[j] + '"/></svg></div>';
+        // S4.1: --sd-sym-delay 改用 class 变体（CSP 禁止内联 style）
+        html += '<div class="sd-sym sd-delay-' + (j * 137 % 36) + '"><svg viewBox="0 0 160 160" aria-hidden="true"><use href="#' + ids[j] + '"/></svg></div>';
       }
       el.board.innerHTML = html;
     }

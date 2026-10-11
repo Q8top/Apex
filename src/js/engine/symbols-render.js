@@ -469,9 +469,8 @@
     if (window.ApexSymbolsV2 && window.ApexSymbolsV2.has(symbolId)) {
       var svg2 = window.ApexSymbolsV2.get(symbolId, u);
       if (svg2) {
-        var styleAttr2 = ' class="' + cls
-          + '" aria-hidden="true" style="width:' + size
-          + ';height:' + size + ';" ';
+        // S4.1: 不使用内联 style（CSP style-src-attr 'none'）；宽度由 .slot-symbol 控制
+        var styleAttr2 = ' class="' + cls + '" aria-hidden="true" ';
         var out2 = svg2.replace(/<svg\s/, '<svg ' + styleAttr2);
         return out2;
       }
@@ -483,7 +482,8 @@
       if (svg) {
         // 注入 class 与 style
         // 兼容两种写法：'<svg ' (单行) 和 '<svg\n' (多行)
-        var styleAttr = ' class="' + cls + '" aria-hidden="true" style="width:' + size + ';height:' + size + ';" ';
+        // S4.1: 不使用内联 style（CSP）
+        var styleAttr = ' class="' + cls + '" aria-hidden="true" ';
         var replaced = svg.replace(/<svg(\s|>)/, '<svg' + styleAttr + '$1');
         // 若 style 已注入成功就返回，否则回退原样
         return replaced;

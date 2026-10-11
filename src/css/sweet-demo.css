@@ -721,3 +721,55 @@ button:focus-visible,
 .sd-sym[data-shape="cluster"] svg { outline: 1px dashed rgba(0,0,0,.06); border-radius: 8px; }
 .sd-sym[data-shape="star"]    svg { outline: 1px solid rgba(255,215,0,.12); border-radius: 8px; }
 .sd-sym[data-shape="heart"]   svg { outline: 1px solid rgba(255,0,80,.10); border-radius: 8px; }
+
+/* ===== S4.1: 内联 style 外部化（CSP 收紧） ===== */
+.sb-mult-bomb-label {
+  paint-order: stroke;
+  stroke: rgba(120, 53, 15, .4);
+  stroke-width: 2;
+}
+.slot-symbol {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ===== S4.1: 隐藏/定位辅助（替代内联 style） ===== */
+.sd-defs-hidden { position: absolute; width: 0; height: 0; }
+.sd-hidden      { display: none; }
+.sd-delay-0  { --sd-sym-delay: 0s; }
+.sd-delay-1  { --sd-sym-delay: 0.1s; }
+.sd-delay-2  { --sd-sym-delay: 0.2s; }
+.sd-delay-3  { --sd-sym-delay: 0.3s; }
+.sd-delay-4  { --sd-sym-delay: 0.4s; }
+.sd-delay-5  { --sd-sym-delay: 0.5s; }
+.sd-delay-6  { --sd-sym-delay: 0.6s; }
+.sd-delay-7  { --sd-sym-delay: 0.7s; }
+.sd-delay-8  { --sd-sym-delay: 0.8s; }
+.sd-delay-9  { --sd-sym-delay: 0.9s; }
+.sd-delay-10 { --sd-sym-delay: 1s; }
+.sd-delay-11 { --sd-sym-delay: 1.1s; }
+.sd-delay-12 { --sd-sym-delay: 1.2s; }
+.sd-delay-13 { --sd-sym-delay: 1.3s; }
+.sd-delay-14 { --sd-sym-delay: 1.4s; }
+.sd-delay-15 { --sd-sym-delay: 1.5s; }
+.sd-delay-16 { --sd-sym-delay: 1.6s; }
+.sd-delay-17 { --sd-sym-delay: 1.7s; }
+.sd-delay-18 { --sd-sym-delay: 1.8s; }
+.sd-delay-19 { --sd-sym-delay: 1.9s; }
+.sd-delay-20 { --sd-sym-delay: 2s; }
+.sd-delay-21 { --sd-sym-delay: 2.1s; }
+.sd-delay-22 { --sd-sym-delay: 2.2s; }
+.sd-delay-23 { --sd-sym-delay: 2.3s; }
+.sd-delay-24 { --sd-sym-delay: 2.4s; }
+.sd-delay-25 { --sd-sym-delay: 2.5s; }
+.sd-delay-26 { --sd-sym-delay: 2.6s; }
+.sd-delay-27 { --sd-sym-delay: 2.7s; }
+.sd-delay-28 { --sd-sym-delay: 2.8s; }
+.sd-delay-29 { --sd-sym-delay: 2.9s; }
+.sd-delay-30 { --sd-sym-delay: 3s; }
+.sd-delay-31 { --sd-sym-delay: 3.1s; }
+.sd-delay-32 { --sd-sym-delay: 3.2s; }
+.sd-delay-33 { --sd-sym-delay: 3.3s; }
+.sd-delay-34 { --sd-sym-delay: 3.4s; }
+.sd-delay-35 { --sd-sym-delay: 3.5s; }

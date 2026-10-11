@@ -42,8 +42,7 @@
     if (!svg || svg.indexOf('<svg') < 0) return svg;
     // 已经带 class="slot-symbol 的，不重复注入
     if (svg.indexOf('class="slot-symbol') >= 0) return svg;
-    var styleAttr = ' class="' + buildClass(opts) + '" aria-hidden="true"'
-      + ' style="width:' + sizeOf(opts) + ';height:' + sizeOf(opts) + ';" ';
+    var styleAttr = ' class="' + buildClass(opts) + '" aria-hidden="true" ';
     return svg.replace(/<svg(\s|>)/, '<svg' + styleAttr + '$1');
   }
 
