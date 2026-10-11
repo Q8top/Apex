@@ -10,7 +10,6 @@ function load(){
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
   if(window.ApexSRSettingsBus)window.ApexSRSettingsBus.emit(S);
-  if(window.ApexAudioBridge&&window.ApexAudioBridge.setVolume)window.ApexAudioBridge.setVolume(S.sfx);
 }
 function buildSwitch(k){
   var b=document.createElement('button');b.type='button';b.className='sr-set-switch';

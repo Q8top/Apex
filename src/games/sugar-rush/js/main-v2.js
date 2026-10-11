@@ -38,14 +38,30 @@ function buildBoard(){
     refs.board.appendChild(c);cells.push(c);
   }
 }
+var _BAL_KEY='apex.sr.balance.v1';
+function persistBalance(v){
+  try{localStorage.setItem(_BAL_KEY,JSON.stringify({balance:v,t:Date.now()}));}catch(e){}
+}
 function paintStats(){
   if(refs.bal)refs.bal.textContent=fmtMinor(state.balance);
   var b=BETS[state.betIndex];
   if(refs.bet)refs.bet.textContent=fmtMinor(b);
   if(refs.betDisplay)refs.betDisplay.textContent=fmtMinor(b);
+  persistBalance(state.balance);
 }
 function init(){
-  cacheRefs();buildBoard();paintStats();
+  cacheRefs();buildBoard();
+  try{
+    var raw=localStorage.getItem(_BAL_KEY);
+    if(raw){
+      var p=JSON.parse(raw);
+      if(p&&typeof p.balance==='number'&&p.balance>=0){
+        state.balance=p.balance;
+        if(window.ApexSRBalance&&window.ApexSRBalance._sync)window.ApexSRBalance._sync(p.balance);
+      }
+    }
+  }catch(e){}
+  paintStats();
   for(var i=0;i<bootQueue.length;i++){try{bootQueue[i]();}catch(e){console.error(e);}}
   bootQueue=[];
 }
@@ -75,21 +91,6 @@ function runDemoSpin(){
   try{return E.spin('demo',M.BETS[M.state.betIndex]);}
   catch(e){console.error('[SR spin]',e);return null;}
 }
-function doSpin(){
-  if(M.state.spinning)return;
-  M.state.spinning=true;
-  var bet=M.BETS[M.state.betIndex];
-  var res=runDemoSpin();
-  if(!res){M.state.spinning=false;return;}
-  M.state.last=res;
-  renderGrid(res.finalGrid||[]);
-  M.state.balance+=(res.winMinor||0)-bet;
-  M.paintStats();
-  var w=document.getElementById('sr-win');
-  if(w)w.textContent=M.fmtMinor(res.winMinor||0);
-  if(window.ApexSRHistory)window.ApexSRHistory.push({bet:bet,win:res.winMinor||0,fs:!!res.fsTriggered});
-  M.state.spinning=false;
-}
 M.onBoot(function(){
   var res=runDemoSpin();
   if(res&&res.finalGrid)renderGrid(res.finalGrid);
@@ -98,41 +99,21 @@ M.onBoot(function(){
     for(var i=0;i<49;i++)g.push(ids[i%ids.length]||null);
     renderGrid(g);
   }
-  var sp=document.getElementById('sr-spin-btn');
-  if(sp)sp.addEventListener('click',doSpin);
+  /* S1-5: 点击绑定移交 ApexSRAudioBridge（唯一点击入口） */
 });
-window.ApexSRRender=Object.freeze({renderGrid:renderGrid,doSpin:doSpin});
+window.ApexSRRender=Object.freeze({renderGrid:renderGrid});
 })();
 
 (function(){
 var M=window.ApexSRMain;if(!M)return;
 function onMinus(){if(M.state.spinning)return;if(M.state.betIndex>0)M.state.betIndex--;M.paintStats();}
 function onPlus(){if(M.state.spinning)return;if(M.state.betIndex<M.BETS.length-1)M.state.betIndex++;M.paintStats();}
-var autoTimer=null;
-function autoTick(){
-  if(!M.state.auto)return;
-  if(!M.state.spinning&&window.ApexSRRender)window.ApexSRRender.doSpin();
-  autoTimer=setTimeout(autoTick,M.state.fast?450:1100);
-}
-function onAuto(){
-  M.state.auto=!M.state.auto;
-  var b=document.getElementById('sr-auto-btn');
-  if(b)b.classList.toggle('is-active',M.state.auto);
-  if(M.state.auto)autoTick();
-  else if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
-}
-function onFast(){
-  M.state.fast=!M.state.fast;
-  var b=document.getElementById('sr-fast-btn');
-  if(b)b.classList.toggle('is-active',M.state.fast);
-}
+/* S1-3: onAuto/onFast 已移交 ApexSRAutoFast（S6 实现，含 变停止/图标切换） */
 M.onBoot(function(){
   var m=document.getElementById('sr-bet-minus');if(m)m.addEventListener('click',onMinus);
   var p=document.getElementById('sr-bet-plus');if(p)p.addEventListener('click',onPlus);
-  var a=document.getElementById('sr-auto-btn');if(a)a.addEventListener('click',onAuto);
-  var f=document.getElementById('sr-fast-btn');if(f)f.addEventListener('click',onFast);
 });
-window.ApexSRControls=Object.freeze({onMinus:onMinus,onPlus:onPlus,onAuto:onAuto,onFast:onFast});
+window.ApexSRControls=Object.freeze({onMinus:onMinus,onPlus:onPlus});
 })();
 
 (function(){
@@ -301,56 +282,7 @@ window.ApexSRFx2=Object.freeze({
 });
 })();
 
-(function(){
-var M=window.ApexSRMain;if(!M)return;
-function spinWithAnticipation(){
-  if(M.state.spinning)return;
-  var E=window.ApexSugarRushGameEngine;
-  var Fx2=window.ApexSRFx2;
-  if(!E||!Fx2){if(window.ApexSRSpinV2)window.ApexSRSpinV2.doSpinV2();return;}
-  M.state.spinning=true;
-  var bet=M.BETS[M.state.betIndex];
-  var res=null;
-  try{res=E.spin('demo',bet);}catch(e){console.error('[spinAnt]',e);M.state.spinning=false;return;}
-  if(!res){M.state.spinning=false;return;}
-  M.state.last=res;
-  var grid=res.finalGrid||[];
-  Fx2.anticipateScatter(grid,function(){
-    if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
-    if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid);
-    M.state.balance+=(res.winMinor||0)-bet;
-    if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
-    else M.paintStats();
-    var win=res.winMinor||0;
-    var w=document.getElementById('sr-win');
-    if(w&&window.ApexSRFx)window.ApexSRFx.rollNumber(w,0,win,560);
-    else if(w)w.textContent=M.fmtMinor(win);
-    if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(res);
-    var casc=res.cascades|0;
-    if(casc>0){if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);else Fx2.setTumble(casc);}
-    if(win>0){Fx2.haptic(30);if(window.ApexSRFx)window.ApexSRFx.showWin(win);}
-    if(window.ApexSRHistory)window.ApexSRHistory.push({bet:bet,win:win,fs:!!res.fsTriggered});
-    if(window.ApexSRMultiplier){
-      window.ApexSRMultiplier.setMultiplier(res.totalMultiplier||0);
-      window.ApexSRMultiplier.setFSMode(!!res.fsTriggered);
-    }
-    var hold=win>0?680:0;
-    setTimeout(function(){
-      if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
-      if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else Fx2.setTumble(0);
-      M.state.spinning=false;
-    },hold);
-  });
-}
-M.onBoot(function(){
-  var old=document.getElementById('sr-spin-btn');
-  if(!old)return;
-  var nb=old.cloneNode(true);
-  old.parentNode.replaceChild(nb,old);
-  nb.addEventListener('click',spinWithAnticipation);
-});
-window.ApexSRSpinAnt=Object.freeze({spinWithAnticipation:spinWithAnticipation});
-})();
+/* S1-5: ApexSRSpinAnt 已合并进 ApexSRAudioBridge */
 (function(){
 'use strict';
 var M=window.ApexSRMain;if(!M)return;
@@ -673,12 +605,14 @@ function rollBalance(el,from,to,dur){
 var lastBal=0;
 function paintBalanceAnimated(newBal){
   var el=document.getElementById('sr-balance');
-  if(!el){lastBal=newBal;return;}
+  if(!el){lastBal=newBal;try{localStorage.setItem('apex.sr.balance.v1',JSON.stringify({balance:newBal,t:Date.now()}));}catch(e){}return;}
   if(lastBal===0)lastBal=newBal;
   rollBalance(el,lastBal,newBal,540);
   lastBal=newBal;
+  try{localStorage.setItem('apex.sr.balance.v1',JSON.stringify({balance:newBal,t:Date.now()}));}catch(e){}
 }
-window.ApexSRBalance=Object.freeze({paintBalanceAnimated:paintBalanceAnimated,fmtThousands:fmtThousands,rollBalance:rollBalance,getLast:function(){return lastBal;}});
+function _sync(v){lastBal=v;}
+window.ApexSRBalance=Object.freeze({paintBalanceAnimated:paintBalanceAnimated,fmtThousands:fmtThousands,rollBalance:rollBalance,getLast:function(){return lastBal;},_sync:_sync});
 })();
 
 (function(){
@@ -698,6 +632,7 @@ function resetDemoBalance(){
   M.state.balance=1000000;
   if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
   else M.paintStats();
+  try{localStorage.setItem('apex.sr.balance.v1',JSON.stringify({balance:M.state.balance,t:Date.now()}));}catch(e){}
   toast('\u4f59\u989d\u5df2\u91cd\u7f6e\u4e3a \u00a510,000.00');
 }
 function goRecharge(){

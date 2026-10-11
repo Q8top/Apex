@@ -6,6 +6,14 @@ function rnd(){
   if(_ri>=_rb.length){crypto.getRandomValues(_rb);_ri=0;}
   return _rb[_ri++]/0x100000000;
 }
+/* S1-4: SettingsBus for cross-module settings propagation */
+window.ApexSRSettingsBus = window.ApexSRSettingsBus || (function(){
+  var subs=[];
+  return {
+    on:function(fn){subs.push(fn);return function(){var i=subs.indexOf(fn);if(i>=0)subs.splice(i,1);};},
+    emit:function(S){for(var i=0;i<subs.length;i++)try{subs[i](S);}catch(e){}}
+  };
+})();
 var ctx=null, master=null, sfxGain=null, musicGain=null;
 var enabled=true, musicOn=false;
 function ensureCtx(){
@@ -136,6 +144,20 @@ function sfxFSExit(){
   tone({type:'triangle',freq:880,freqEnd:330,dur:0.55,vol:0.22});
   noise({dur:0.40,vol:0.10,filter:'lowpass',cutoff:900,decay:1.4});
 }
+/* S1-4: subscribe to settings changes */
+(function(){
+  function apply(S){
+    setEnabled(S&&S.sound!==false);
+    setSfx((S&&typeof S.sfx==='number')?S.sfx:0.8);
+    setMusic((S&&typeof S.music==='number')?S.music:0.7);
+  }
+  window.ApexSRSettingsBus.on(apply);
+  try{
+    var raw=localStorage.getItem('apex.sr.settings.v2');
+    apply(raw?JSON.parse(raw):{sound:true,sfx:0.8,music:0.7});
+  }catch(e){apply({sound:true,sfx:0.8,music:0.7});}
+})();
+
 window.ApexSRAudio=Object.freeze({
   tone:tone,noise:noise,resume:resume,
   setEnabled:setEnabled,setSfx:setSfx,setMusic:setMusic,
