@@ -1107,3 +1107,13 @@ button:focus-visible,
   from { opacity: 1; transform: translateY(0) scale(1); }
   to   { opacity: 0; transform: translateY(20px) scale(.9); }
 }
+
+/* ============================================================
+   P4-2: stats 3 栏（对齐 SB）
+   ============================================================ */
+.sr-stats {
+  grid-template-columns: 1fr 1fr 1fr !important;
+}
+@media (max-width: 340px) {
+  .sr-stats { grid-template-columns: 1fr 1fr !important; }
+}

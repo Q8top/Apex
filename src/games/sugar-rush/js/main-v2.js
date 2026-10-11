@@ -55,6 +55,9 @@ function paintStats(){
   var b=BETS[state.betIndex];
   if(refs.bet)refs.bet.textContent=fmtMinor(b);
   if(refs.betDisplay)refs.betDisplay.textContent=fmtMinor(b);
+  // P4-2b: 3 栏第 3 列同步（对齐 SB）
+  var ws=document.getElementById('sr-win-stat');
+  if(ws)ws.textContent=fmtMinor(state.win||0);
   persistBalance(state.balance);
 }
 function init(){
@@ -276,7 +279,7 @@ function doSpinV2(){
   var bet=M.BETS[M.state.betIndex];
   var res=null;
   try{res=window.ApexSugarRushGameEngine.spin('demo',bet);}catch(e){console.error('[spinV2]',e);M.state.spinning=false;return;}
-  if(!res){M.state.spinning=false;return;}
+  if(!res){M.state.spinning=false;toggleSpinBtn(false);return;}
   M.state.last=res;
   window.ApexSRRender.renderGrid(res.finalGrid||[]);
   M.state.balance+=(res.winMinor||0)-bet;
@@ -356,7 +359,7 @@ function spinWithAudio(){
   toggleSpinBtn(true);
   var bet=M.BETS[M.state.betIndex];
   var res=null;
-  try{res=E.spin('demo',bet);}catch(e){console.error('[spinAud]',e);M.state.spinning=false;return;}
+  try{res=E.spin('demo',bet);}catch(e){console.error('[spinAud]',e);M.state.spinning=false;toggleSpinBtn(false);return;}
   if(!res){M.state.spinning=false;return;}
   M.state.last=res;
   var grid=res.finalGrid||[];
@@ -404,6 +407,19 @@ function spinWithAudio(){
   };
   if(Fx2&&nScatter>=2)Fx2.anticipateScatter(grid,run);
   else run();
+  // P4-1 看门狗：6 秒后强制解锁（防未来路径漏 toggle(false)）
+  var _spinKey = (M.state.spinning) ? Date.now() : 0;
+  setTimeout(function(){
+    if(M.state.spinning && M.state.spinning !== false){
+      // 只有状态仍在 spinning 才强制解锁
+      var stillSpinning = !!M.state.spinning;
+      if(stillSpinning && _spinKey){
+        console.warn('[SR] watchdog: force release spin lock');
+        M.state.spinning=false;
+        toggleSpinBtn(false);
+      }
+    }
+  }, 6000);
 }
 function bind(){
   var old=document.getElementById('sr-spin-btn');
