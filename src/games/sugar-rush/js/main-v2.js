@@ -82,7 +82,8 @@ window.ApexSRMain=Object.freeze({
 
 (function(){
 var M=window.ApexSRMain;if(!M)return;
-function renderGrid(grid){
+function renderGrid(grid, opts){
+  opts = opts || {};
   var cs=M.cells;
   for(var i=0;i<cs.length;i++){
     var c=cs[i];c.innerHTML='';
@@ -92,6 +93,50 @@ function renderGrid(grid){
       if(svg)c.innerHTML=svg;
     }
   }
+  /* P1-6: 可选 drop-in 入场（按列错开，对齐 SB） */
+  if(opts.dropIn){
+    for(var j=0;j<cs.length;j++){
+      var cc=cs[j];
+      cc.classList.remove('is-dropping-in');
+      cc.classList.remove('col-0','col-1','col-2','col-3','col-4','col-5','col-6');
+    }
+    void cs[0].offsetWidth;
+    for(var k=0;k<cs.length;k++){
+      cs[k].classList.add('col-'+(k%7));
+      cs[k].classList.add('is-dropping-in');
+    }
+    setTimeout(function(){
+      for(var m=0;m<cs.length;m++){
+        cs[m].classList.remove('is-dropping-in');
+        cs[m].classList.remove('col-'+(m%7));
+      }
+    }, 700);
+  }
+}
+function toggleSpinBtn(on){
+  var btn=document.getElementById('sr-spin-btn');
+  if(!btn)return;
+  btn.classList.toggle('spinning',!!on);
+  btn.disabled=!!on;
+}
+function playSpinDropSR(done){
+  var cs=M.cells;
+  if(!cs.length){ if(done)done(); return; }
+  var staggerMs = M.state.fast ? 10 : 18;
+  var baseMs = M.state.fast ? 120 : 200;
+  for(var i=0;i<cs.length;i++){
+    var col = i % 7;
+    cs[i].style.setProperty('--sr-out-delay', (col * staggerMs) + 'ms');
+    cs[i].classList.add('is-dropping-out');
+  }
+  var totalMs = baseMs + 7 * staggerMs + 20;
+  setTimeout(function(){
+    for(var j=0;j<cs.length;j++){
+      cs[j].classList.remove('is-dropping-out');
+      cs[j].style.removeProperty('--sr-out-delay');
+    }
+    if(done)done();
+  }, totalMs);
 }
 function runDemoSpin(){
   var E=window.ApexSugarRushGameEngine;
@@ -101,7 +146,7 @@ function runDemoSpin(){
 }
 M.onBoot(function(){
   var res=runDemoSpin();
-  if(res&&res.finalGrid)renderGrid(res.finalGrid);
+  if(res&&res.finalGrid)renderGrid(res.finalGrid,{dropIn:true});
   else{
     var S=window.ApexSRSymbolsV3,ids=S?S.list():[],g=[];
     for(var i=0;i<49;i++)g.push(ids[i%ids.length]||null);
@@ -297,12 +342,18 @@ var M=window.ApexSRMain;if(!M)return;
 function A(){return window.ApexSRAudio;}
 function tierOf(x){return window.ApexSRFx?window.ApexSRFx.tierOf(x):0;}
 function spinWithAudio(){
+  // 对齐 SB：自动模式中点旋转=停止
+  if(M.state.auto){
+    if(window.ApexSRAutoFast&&window.ApexSRAutoFast.stopAuto)window.ApexSRAutoFast.stopAuto();
+    return;
+  }
   if(M.state.spinning)return;
   var a=A();if(a&&a.sfxTap)a.sfxTap();
   var E=window.ApexSugarRushGameEngine,Fx2=window.ApexSRFx2;
   if(!E){return;}
   if(a&&a.sfxSpin)a.sfxSpin();
   M.state.spinning=true;
+  toggleSpinBtn(true);
   var bet=M.BETS[M.state.betIndex];
   var res=null;
   try{res=E.spin('demo',bet);}catch(e){console.error('[spinAud]',e);M.state.spinning=false;return;}
@@ -314,7 +365,9 @@ function spinWithAudio(){
   if(nScatter>=2&&a&&a.sfxScatter)a.sfxScatter();
   var run=function(){
     if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
-    if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid);
+    // P3-1: 先出场动画再入场
+    playSpinDropSR(function(){
+    if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid,{dropIn:true});
     M.state.balance+=(res.winMinor||0)-bet;
     M.paintStats();
     var win=res.winMinor||0;
@@ -345,7 +398,9 @@ function spinWithAudio(){
       if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);else if(Fx2)Fx2.setTumble(0);
       if(window.ApexBgm&&!res.fsTriggered)try{window.ApexBgm.toBase(1400);}catch(e){}
       M.state.spinning=false;
+      toggleSpinBtn(false);
     },hold);
+    });   /* 闭合 playSpinDropSR 回调 */
   };
   if(Fx2&&nScatter>=2)Fx2.anticipateScatter(grid,run);
   else run();
@@ -390,6 +445,11 @@ function readModeFromUrl(){
 }
 
 function spinGateway(){
+  // 对齐 SB：自动模式中点旋转=停止
+  if(M.state.auto){
+    if(window.ApexSRAutoFast&&window.ApexSRAutoFast.stopAuto)window.ApexSRAutoFast.stopAuto();
+    return;
+  }
   if(M.state.spinning)return;
   var G=window.ApexSRRealGate;
   var isReal=(M.state.mode||'demo')==='real';
@@ -416,6 +476,7 @@ function spinGateway(){
   var a=window.ApexSRAudio;
   if(a&&a.sfxTap)a.sfxTap();
   M.state.spinning=true;
+  toggleSpinBtn(true);
   M.state.balance-=bet;
   if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
   if(a&&a.sfxSpin)a.sfxSpin();
@@ -453,12 +514,14 @@ function spinGateway(){
       if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
       if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);
       M.state.spinning=false;
+      toggleSpinBtn(false);
     },win>0?680:200);
   }).catch(function(err){
     console.error('[gateway]',err&&err.message);
     M.state.balance+=bet;
     if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
     M.state.spinning=false;
+    toggleSpinBtn(false);
     var t2=document.getElementById('sr-toast');
     if(t2){t2.textContent='\u65cb\u8f6c\u5931\u8d25\uff0c\u5df2\u9000\u8fd8\u6295\u6ce8';t2.hidden=false;
       void t2.offsetWidth;t2.classList.add('is-visible');

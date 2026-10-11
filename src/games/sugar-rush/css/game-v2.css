@@ -514,7 +514,6 @@
   transform-origin: center;
 }
 .sr-win-burst-inner.is-big  { background: linear-gradient(145deg,#ffe27a,#ff7a1e); }
-.sr-win-burst-inner.is-huge { background: linear-gradient(145deg,#ffd24a,#e5397e,#7c2fff); color: #fff; }
 @keyframes sr-burst-in {
   0%   { transform: scale(.4); opacity: 0; }
   60%  { transform: scale(1.12); opacity: 1; }
@@ -531,9 +530,7 @@
   to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
 }
 
-.sr-ctrl.is-active {
-  background: #2a2a30; color: #ffffff;
-}
+.sr-ctrl.is-active { background: #17171b; color: #ffffff; }
 .sr-ctrl.is-active .sr-ic { color: #ffd24a; }
 
 /* ===== B2: 5-tier win cinematics ===== */
@@ -797,9 +794,10 @@
 
 /* ===== S6: auto/fast button feedback ===== */
 .sr-ctrl--stop {
-  background: #e5397e !important;
+  background: #17171b !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(229,57,126,.35) !important;
+  box-shadow: 0 6px 20px rgba(23,23,27,.35),
+              inset 0 0 0 2px rgba(255,255,255,.22) !important;
 }
 .sr-ctrl--stop .sr-ic { color: #ffffff !important; }
 
@@ -811,7 +809,10 @@
 .sr-ctrl.is-active .sr-ic { color: #ffd24a; }
 
 .sr-ctrl--primary.sr-ctrl--stop {
-  background: #e5397e !important;
+  background: #17171b !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(23,23,27,.35),
+              inset 0 0 0 2px rgba(255,255,255,.22) !important;
 }
 
 /* ===== S8: rules paytable layout ===== */
@@ -977,3 +978,132 @@ button:focus-visible,
 .sd-delay-33 { --sd-sym-delay: 3.3s; }
 .sd-delay-34 { --sd-sym-delay: 3.4s; }
 .sd-delay-35 { --sd-sym-delay: 3.5s; }
+
+/* ============================================================
+   P1-4: 按钮对齐 SB（最终覆盖，务必在文件末尾）
+   ============================================================ */
+.sr-ctrl {
+  height: 58px;
+  min-height: 0;
+  padding: 0 8px;
+  border: 1px solid #e6e6ec;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #17171b;
+  font-size: 11.5px;
+  font-weight: 600;
+  transition: background-color .15s, transform .08s;
+}
+.sr-ctrl:hover { background: #f2f2f6; }
+.sr-ctrl:active { transform: scale(.96); }
+.sr-ctrl.is-active {
+  background: #17171b;
+  color: #ffffff;
+  border-color: #17171b;
+}
+.sr-ctrl.is-active .sr-ic { color: #ffffff; }
+.sr-ctrl:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.sr-ctrl--primary {
+  height: 64px;
+  background: #17171b;
+  color: #ffffff;
+  border-color: #17171b;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(23,23,27,.25);
+  font-size: 12px;
+  font-weight: 700;
+}
+.sr-ctrl--primary:hover { background: #1c1c1c; }
+.sr-ctrl--primary:active { background: #2a2a30; }
+.sr-ctrl--primary .sr-ic-lg { color: #ffffff; }
+.sr-ctrl--primary.spinning .sr-ic-lg {
+  animation: srSpin 1s linear infinite;
+}
+@keyframes srSpin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+.sr-ctrl--stop {
+  background: #17171b !important;
+  color: #ffffff !important;
+  border-color: #17171b !important;
+}
+.sr-ctrl--stop .sr-ic { color: #ffffff !important; }
+
+/* 极速激活也用黑白方案（去粉红） */
+.sr-ctrl.is-active.sr-ctrl--stop {
+  background: #17171b;
+  color: #ffffff;
+}
+
+/* P1-6: 棋盘入场 drop-in（按列错开，对齐 SB stagger） */
+.sr-cell.is-dropping-in {
+  animation: srDropIn .42s cubic-bezier(.22,.7,.36,1) backwards;
+  animation-delay: var(--sr-cell-delay, 0s);
+}
+@keyframes srDropIn {
+  from { opacity: 0; transform: translateY(-24px) scale(.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.sr-cell.col-0 { --sr-cell-delay: 0.000s; }
+.sr-cell.col-1 { --sr-cell-delay: 0.035s; }
+.sr-cell.col-2 { --sr-cell-delay: 0.070s; }
+.sr-cell.col-3 { --sr-cell-delay: 0.105s; }
+.sr-cell.col-4 { --sr-cell-delay: 0.140s; }
+.sr-cell.col-5 { --sr-cell-delay: 0.175s; }
+.sr-cell.col-6 { --sr-cell-delay: 0.210s; }
+
+/* ============================================================
+   P2: SR 令牌系统（对齐 SB 风格：白为主/黑为辅/彩色点缀）
+   ============================================================ */
+:root {
+  /* 色板 */
+  --sr-bg:            #eef0f6;
+  --sr-panel:         #ffffff;
+  --sr-panel-2:       #f6f6fa;
+  --sr-black:         #17171b;
+  --sr-black-2:       #2a2a30;
+  --sr-text:          #17171b;
+  --sr-text-2:        #6a6a75;
+  --sr-muted:         #8b8b96;
+  --sr-border:        #e6e6ec;
+  --sr-border-2:      #f0f0f5;
+
+  /* 点缀色（<10% 面积） */
+  --sr-accent:        #e5397e;
+  --sr-accent-2:      #ff8a1e;
+  --sr-gold:          #ffd24a;
+  --sr-purple:        #7c2fff;
+  --sr-green:         #16a34a;
+  --sr-red:           #dc2626;
+
+  /* 圆角 */
+  --sr-radius-sm:     8px;
+  --sr-radius-md:     14px;
+  --sr-radius-lg:     20px;
+  --sr-radius-pill:   999px;
+
+  /* 阴影 */
+  --sr-shadow-1:      0 2px 8px rgba(23,23,27,.04);
+  --sr-shadow-2:      0 4px 20px rgba(23,23,27,.08);
+  --sr-shadow-3:      0 6px 20px rgba(23,23,27,.25);
+
+  /* 动效 */
+  --sr-ease:          cubic-bezier(.22,.7,.36,1);
+  --sr-ease-pop:      cubic-bezier(.22,1.4,.36,1);
+  --sr-ease-fall:     cubic-bezier(.34,1.2,.64,1);
+}
+
+/* P3-1: 出场 drop-out（按列错开，对齐 SB playSpinDrop） */
+.sr-cell.is-dropping-out {
+  animation: srDropOut .32s cubic-bezier(.22,.7,.36,1) forwards;
+  animation-delay: var(--sr-out-delay, 0s);
+  pointer-events: none;
+}
+@keyframes srDropOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(20px) scale(.9); }
+}
