@@ -38,6 +38,7 @@ var state = {
     fastMode: false,
     spinning: false,
     bonusLock: false,
+    fsPending: null,   // S2.2: 断线恢复时的 FS 会话快照
     tumbleTimers: [],
     sheetCloseTimer: 0,
     confirmCloseTimer: 0,
@@ -139,8 +140,13 @@ var state = {
   function playSpinDrop(board, done) {
     var cells = board.querySelectorAll('.sd-sym');
     if (!cells.length) { done(); return; }
-    var staggerMs = state.fastMode ? 10 : 18;
-    var baseMs = state.fastMode ? 120 : 200;
+    // S2.1-13: 三档时长（normal / quick / turbo）
+    var _tier = 'normal';
+    if (state.fastMode) _tier = 'turbo';
+    var _tcfg = (window.ApexAnimator && window.ApexAnimator.tierOf)
+      ? window.ApexAnimator.tierOf(_tier) : { win: 500, remove: 300, dropIn: 400, stagger: 18 };
+    var staggerMs = _tcfg.stagger;
+    var baseMs = _tcfg.win;
     for (var i = 0; i < cells.length; i++) {
       var col = i % 6;
       cells[i].style.setProperty('--drop-delay', (col * staggerMs) + 'ms');
@@ -160,7 +166,10 @@ var state = {
   function applyDropIn(board) {
     var cells = board.querySelectorAll('.sd-sym');
     if (!cells.length) return;
-    var staggerMs = state.fastMode ? 10 : 18;
+    var _tier = state.fastMode ? 'turbo' : 'normal';
+    var _tcfg = (window.ApexAnimator && window.ApexAnimator.tierOf)
+      ? window.ApexAnimator.tierOf(_tier) : { stagger: 18 };
+    var staggerMs = _tcfg.stagger;
     for (var i = 0; i < cells.length; i++) {
       var col = i % 6;
       cells[i].style.setProperty('--drop-delay', (col * staggerMs) + 'ms');
@@ -502,6 +511,17 @@ var state = {
     state.win = winMinor / 100;
     state.balance = result.balanceAfter / 100;
     playSpinDrop(el.board, function () {
+    // S2.1-12: Anticipation — 恰好 3 个 scatter 时减速悬念
+    var _s2_scatterCount = 0;
+    var _s2_scatterPos = [];
+    try {
+      if (Array.isArray(result.finalGrid)) {
+        for (var _si = 0; _si < result.finalGrid.length; _si++) {
+          if (result.finalGrid[_si] === 'lollipop') { _s2_scatterCount++; _s2_scatterPos.push(_si); }
+        }
+      }
+    } catch (e) {}
+    var _s2_runTumble = function () {
     playTumbleSequence(result, true).then(function () {
     if (audio && audio.play) {
       try { playAudio('spin-stop'); } catch (err) {}
@@ -553,16 +573,18 @@ var state = {
       var ratio = state.win / (betMinor / 100);
       try {
         if (announcer) {
-          var lvl = ratio >= 100 ? "ultra" : ratio >= 50 ? "epic" : ratio >= 20 ? "mega" : ratio >= 5 ? "big" : "";
+          // S2.1-14: 阈值对齐 20/50/100/500
+          var lvl = ratio >= 500 ? "ultra" : ratio >= 100 ? "epic" : ratio >= 50 ? "mega" : ratio >= 20 ? "big" : "";
           announcer.polite(lvl ? (lvl + " win: " + state.win.toFixed(2)) : ("Win: " + state.win.toFixed(2)));
         }
       } catch (e) {}
       if (audio) {
-        if (ratio >= 100) playAudio('ultra-win');
-        else if (ratio >= 50) playAudio('epic-win');
-        else if (ratio >= 20) playAudio('mega-win');
-        else if (ratio >= 5)  playAudio('big-win');
-        else                  playAudio('win-normal');
+        // S2.1-14: 5 档音频对齐
+        if (ratio >= 500) playAudio('ultra-win');
+        else if (ratio >= 100) playAudio('epic-win');
+        else if (ratio >= 50) playAudio('mega-win');
+        else if (ratio >= 20)  playAudio('big-win');
+        else                   playAudio('win-normal');
       }
       if (haptics) haptics.winPulse(ratio);
       if (window.ApexWinFeedback) {
@@ -599,7 +621,7 @@ var state = {
         var p = runtime && runtime.getProvider && runtime.getProvider();
         var done = function () {
           renderStats();
-          resolveAutoDone({ stop: false });
+          resolveAutoDone({ stop: false, netMinor: ((winMinor | 0) + Math.round((bonusWin || 0) * 100)) - (betMinor | 0) });
           pending = null;
         };
         // P0-4: real 模式服务端权威，getBalance 失败绝不本地加钱（防双重记账）。
@@ -622,7 +644,7 @@ var state = {
       });
       return;
     }
-    resolveAutoDone({ stop: false });
+    resolveAutoDone({ stop: false, netMinor: (winMinor | 0) - (betMinor | 0) });
     pending = null;
     }).catch(function (err) {
       if (window.console && console.error) console.error('[onSpinResult] tumble failed:', err);
@@ -632,9 +654,24 @@ var state = {
       pending = null;
       if (el.board) el.board.dataset.spinning = '0';
       renderSpinBtn();
-      resolveAutoDone({ stop: true, stopReason: 'spin_error' });
+      resolveAutoDone({ stop: true, stopReason: 'spin_error', netMinor: -(betMinor | 0) });
     });
-    });
+    };   // 闭合 _s2_runTumble
+    // S2.1-12: 恰好 3 个 scatter → anticipation 后跑 tumble
+    if (_s2_scatterCount === 3 && window.ApexAnticipation) {
+      try {
+        window.ApexAnticipation.play({
+          board: el.board,
+          positions: _s2_scatterPos,
+          durationMs: state.fastMode ? 600 : 1200,
+          audioFn: playAudio,
+          onDone: _s2_runTumble
+        });
+      } catch (e) { _s2_runTumble(); }
+    } else {
+      _s2_runTumble();
+    }
+    });   // 闭合 playSpinDrop 回调
   }
 
   var el = {};
@@ -681,7 +718,27 @@ var state = {
     if (initial) el.board.dataset.fast = state.fastMode ? '1' : '0';
   }
 
+  var _renderStatsPending = false;
+  var _renderStatsPendingCall = null;
   function renderStats() {
+    // S2.1-15: RAF 批量合并——同一帧内多次调用只渲染一次，消除数字闪烁
+    if (_renderStatsPending) {
+      _renderStatsPendingCall = true;
+      return;
+    }
+    _renderStatsPending = true;
+    var _do = function () {
+      _renderStatsPending = false;
+      _renderStatsDoWork();
+      if (_renderStatsPendingCall) {
+        _renderStatsPendingCall = false;
+        renderStats();
+      }
+    };
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(_do);
+    else setTimeout(_do, 16);
+  }
+  function _renderStatsDoWork() {
     el.balance.textContent = fmt(state.balance);
     el.bet.textContent = fmt(getBet());
     el.betDisplay.textContent = fmt(getBet());
@@ -798,6 +855,22 @@ var state = {
     toast('游戏初始化失败，请刷新页面');
   }
 
+  // S2.1-17: 自动旋转配置（可后续从设置页写入 localStorage）
+  function _readAutoCfg() {
+    try {
+      var raw = localStorage.getItem('apex.sweet.auto.cfg');
+      if (raw) {
+        var c = JSON.parse(raw);
+        return {
+          maxSpins: Number.isSafeInteger(c.maxSpins) && c.maxSpins >= 0 ? c.maxSpins : 0,
+          stopLoss: Number.isFinite(c.stopLoss) && c.stopLoss >= 0 ? c.stopLoss : 0,
+          stopWin:  Number.isFinite(c.stopWin)  && c.stopWin  >= 0 ? c.stopWin  : 0
+        };
+      }
+    } catch (e) {}
+    return { maxSpins: 0, stopLoss: 0, stopWin: 0 };
+  }
+
   function resolveAutoDone(outcome) {
     if (pendingAutoResolve) {
       var r = pendingAutoResolve;
@@ -830,8 +903,12 @@ var state = {
       return;
     }
     if (autoSpinCtl && autoSpinCtl.isRunning()) return;
+    var _cfg = _readAutoCfg();
     autoSpinCtl = window.ApexAutoSpin.create({
       delay: state.fastMode ? 150 : 400,
+      maxSpins: _cfg.maxSpins,
+      stopLoss: _cfg.stopLoss,
+      stopWin:  _cfg.stopWin,
       spinFn: autoSpinFn,
       onState: function () {
         state.autoSpin = !!(autoSpinCtl && autoSpinCtl.isRunning());
@@ -843,7 +920,11 @@ var state = {
         pendingAutoResolve = null;
         renderAutoBtn();
         renderSpinBtn();
+        // S2.1-17: 5 种结束原因提示
         if (reason === 'insufficient') toast('试玩余额不足');
+        else if (reason === 'stop_loss') toast('已达止损线，自动停止');
+        else if (reason === 'stop_win')  toast('已达止盈线，自动停止');
+        else if (reason === 'max_spins') toast('已达成局数上限');
       }
     });
     state.autoSpin = true;
@@ -1188,6 +1269,21 @@ function toast(msg) {
               p.getBalance().then(function (bal) {
                 state.balance = bal.minor / 100;
                 renderStats();
+              }).catch(function () {});
+            }
+            // S2.2: FS 会话恢复检测
+            if (p && typeof p.getFreeSpinStatus === 'function') {
+              p.getFreeSpinStatus().then(function (fs) {
+                if (fs && fs.remaining > 0) {
+                  state.bonusLock = true;
+                  state.fsPending = { remaining: fs.remaining, sessionId: fs.sessionId };
+                  try { toast('检测到未完成的免费旋转（剩 ' + fs.remaining + ' 次），点击旋转继续'); } catch (e) {}
+                  try { renderSpinBtn(); } catch (e) {}
+                } else {
+                  state.bonusLock = false;
+                  state.fsPending = null;
+                  try { renderSpinBtn(); } catch (e) {}
+                }
               }).catch(function () {});
             }
           }

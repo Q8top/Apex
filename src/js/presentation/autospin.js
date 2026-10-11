@@ -13,7 +13,7 @@
  *   });
  *   auto.start(); auto.stop(); auto.isRunning();
  *
- * Stop reasons: 'user' | 'max_spins' | 'spin_error' | 'insufficient' | 'timeout'
+ * Stop reasons: 'user' | 'max_spins' | 'spin_error' | 'insufficient' | 'timeout' | 'stop_loss' | 'stop_win'
  *
  * No leaks: stop() always clears the pending timer; second stop() no-op.
  * spinFn throw or reject -> stopped with 'spin_error'.
@@ -44,6 +44,10 @@
     var maxSpins = Number.isSafeInteger(opts.maxSpins) && opts.maxSpins > 0 ? opts.maxSpins : 0;
     var onState = typeof opts.onState === 'function' ? opts.onState : function () {};
     var onFinish = typeof opts.onFinish === 'function' ? opts.onFinish : function () {};
+    // S2.1-17: 止损/止盈/局数目标
+    var stopLoss = Number.isFinite(opts.stopLoss) && opts.stopLoss > 0 ? opts.stopLoss : 0;
+    var stopWin  = Number.isFinite(opts.stopWin)  && opts.stopWin  > 0 ? opts.stopWin  : 0;
+    var sessionNet = 0;   // 累计净输赢（minor units）
 
     var sched = opts.scheduler && typeof opts.scheduler.delay === 'function'
       ? opts.scheduler : defaultScheduler();
@@ -105,10 +109,15 @@
             finish(res.stopReason || 'insufficient');
             return;
           }
+          // S2.1-17: 累计净输赢（betMinor/winMinor 由 spinFn 返回）
+          if (res && Number.isFinite(res.netMinor)) sessionNet += res.netMinor;
           if (maxSpins > 0 && count >= maxSpins) {
             finish('max_spins');
             return;
           }
+          // S2.1-17: 止损/止盈
+          if (stopLoss > 0 && sessionNet <= -stopLoss) { finish('stop_loss'); return; }
+          if (stopWin  > 0 && sessionNet >= stopWin)   { finish('stop_win');  return; }
           scheduleNext();
         }, function () {
           if (!running) return;
@@ -134,6 +143,8 @@
       if (!spinFn) return false;
       running = true;
       count = 0;
+      sessionNet = 0;   // S2.1-17: 重置累计
+
       setState(STATE.IDLE);
       // 首局立即开始，不等待 delay
       doSpin();
@@ -149,6 +160,7 @@
     function isRunning() { return running; }
     function getState() { return state; }
     function getCount() { return count; }
+    function getSessionNet() { return sessionNet; }
 
     return Object.freeze({
       start: start,
@@ -156,6 +168,7 @@
       isRunning: isRunning,
       getState: getState,
       getCount: getCount,
+      getSessionNet: getSessionNet,
       STATE: STATE
     });
   }

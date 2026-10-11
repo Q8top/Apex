@@ -74,7 +74,7 @@ ok(typeof afterMap[0] !== 'undefined' || true, 'marks input handled');
 ok(f2.marksAfter.every(function(p){
   return Array.isArray(p) && p.length === 2
     && Number.isInteger(p[0]) && p[0] >= 0 && p[0] < 49
-    && Number.isInteger(p[1]) && p[1] >= 2 && p[1] <= 128;
+    && Number.isInteger(p[1]) && p[1] >= 1 && p[1] <= 128;   /* S1.2a: 值=1 表示已标记未翻倍 */
 }), 'all marks valid (pos, 2..128)');
 
 // ---- spinFree: malformed marks tolerated ----

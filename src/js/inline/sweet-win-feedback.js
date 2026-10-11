@@ -28,12 +28,13 @@
   var ID_AMOUNT = 'sd-win-fb-value';
 
   // 等级阈值：ratio = win / bet
+  // S2.1-14: 阈值对齐原版 ≥20/50/100/500×
   var LEVELS = Object.freeze({
-    normal: Object.freeze({ min: 0,   label: '本局赢得', rollMs: 480, holdMs: 1100 }),
-    big:    Object.freeze({ min: 5,   label: '大奖',     rollMs: 600, holdMs: 1500 }),
-    mega:   Object.freeze({ min: 20,  label: '超级中奖', rollMs: 800, holdMs: 2000 }),
-    epic:   Object.freeze({ min: 50,  label: '史诗大奖', rollMs: 900, holdMs: 2400 }),
-    ultra:  Object.freeze({ min: 100, label: '至尊大奖', rollMs: 1100, holdMs: 3000 })
+    normal: Object.freeze({ min: 0,   label: '本局赢得', rollMs: 480,  holdMs: 1100 }),
+    big:    Object.freeze({ min: 20,  label: '大奖',     rollMs: 700,  holdMs: 1800 }),
+    mega:   Object.freeze({ min: 50,  label: '超级中奖', rollMs: 900,  holdMs: 2200 }),
+    epic:   Object.freeze({ min: 100, label: '史诗大奖', rollMs: 1100, holdMs: 2600 }),
+    ultra:  Object.freeze({ min: 500, label: '至尊大奖', rollMs: 1400, holdMs: 3500 })
   });
 
   var el = {};

@@ -20,6 +20,9 @@ function isExempt(file) {
   if (/\/functions\//.test(rel)) return true;                  // 服务端
   if (/\/src\/config\/math-profile\.js$/.test(rel)) return true; // SB demo 档
   if (/\/src\/games\/sugar-rush\/config\/math-profile\.js$/.test(rel)) return true; // SR demo 档
+  // S2.4: dist 下 hash 化的 demo profile（如 math-profile.3e58ac46.js）也豁免
+  if (/\/math-profile\.[0-9a-f]{8}\.js$/.test(rel)) return true;
+  if (/\/config\/math-profile\.js$/.test(rel) && /\/dist\//.test(rel)) return true;
   if (/\/functions\/_config\//.test(rel)) return true;        // 共享 config
   return false;
 }

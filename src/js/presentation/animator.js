@@ -32,6 +32,15 @@
     return false;
   }
 
+  /* S2.1-13: Quick Spin 三档时长配置 */
+  var TIERS = Object.freeze({
+    normal: Object.freeze({ win: 500, remove: 300, dropIn: 400, stagger: 18 }),
+    quick:  Object.freeze({ win: 320, remove: 180, dropIn: 250, stagger: 12 }),
+    turbo:  Object.freeze({ win: 180, remove: 100, dropIn: 150, stagger: 8  })
+  });
+  var EASING = 'cubic-bezier(.34, 1.2, .64, 1)';
+  function tierOf(name){ return TIERS[name] || TIERS.normal; }
+
   function Animator(opts) {
     opts = opts || {};
     var now = typeof opts.now === 'function' ? opts.now : defaultNow;
@@ -199,5 +208,10 @@
     });
   }
 
-  window.ApexAnimator = Object.freeze({ create: Animator });
+  window.ApexAnimator = Object.freeze({
+    create: Animator,
+    TIERS: TIERS,
+    tierOf: tierOf,
+    EASING: EASING
+  });
 })();

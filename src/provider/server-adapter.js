@@ -102,6 +102,14 @@ ServerProvider.prototype.getBalance = function(){
 
 ServerProvider.prototype.getMode = function(){ return 'real'; };
 
+// S2.2: 断线恢复用 — 查询当前 FS 会话
+ServerProvider.prototype.getFreeSpinStatus = function(){
+  return this.client.get('/api/game/state?game=sweet').then(function(resp){
+    if (!resp || resp.success !== true) return null;
+    return resp.fs || null;
+  });
+};
+
 ServerProvider.prototype.resetBalance = function(){
   return Promise.reject(_err.ApexError(_err.CODES.INVALID_BET, 'real 模式不支持重置余额'));
 };
