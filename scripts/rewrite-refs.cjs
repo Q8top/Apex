@@ -47,7 +47,8 @@ for (const f of toRename){
   const h = sha8(f);
   const newName = stem + '.' + h + ext;
   const newFull = path.join(dir, newName);
-  fs.renameSync(f, newFull);
+  // 保留原名（旧 HTML 仍引用不带 hash 的路径，避免 404）
+  fs.copyFileSync(f, newFull);
   // 从 dist/ 起的 URL 路径（前导 /）
   const oldUrl = '/' + path.relative(DIST, f).split(path.sep).join('/');
   const newUrl = '/' + path.relative(DIST, newFull).split(path.sep).join('/');
