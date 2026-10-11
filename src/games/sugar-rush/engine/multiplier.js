@@ -118,6 +118,13 @@ MarkState.prototype.snapshot = function(){
   }
   return out;
 };
+function isValidMark(v){
+  if (!Number.isInteger(v)) return false;
+  if (v === 0) return true;                 /* empty */
+  if (v === 1) return true;                 /* marked (not yet doubled) */
+  /* else must be power of 2 in [2, MAX_MULT] */
+  return v >= 2 && v <= MAX_MULT && (v & (v - 1)) === 0;
+}
 MarkState.prototype.restore = function(snap){
   this.marks.fill(0);
   if (!Array.isArray(snap)) return;
@@ -125,7 +132,7 @@ MarkState.prototype.restore = function(snap){
     var p = snap[i];
     if (!Array.isArray(p) || p.length !== 2) continue;
     if (!Number.isInteger(p[0]) || p[0] < 0 || p[0] >= GRID_SIZE) continue;
-    if (!Number.isInteger(p[1]) || p[1] < 0 || p[1] > MAX_MULT) continue;
+    if (!isValidMark(p[1])) continue;
     this.marks[p[0]] = p[1];
   }
 };

@@ -7,6 +7,7 @@ import { getCurrentUser } from '../../_auth.js';
 import { loadSugarRushEngine, loadSugarRushConfig } from '../../_sugar-rush-bridge.js';
 import { enforceKeyRateLimit } from '../../_rateLimit.js';
 import { sha256Hex } from '../../_security.js';
+import { preparePFContext, bumpNonce } from '../../_provably-fair.js';
 
 const MAX_BET_MINOR = 10000 * 100;
 const MIN_BET_MINOR = 1;
@@ -34,6 +35,23 @@ function toFixedBig(x) {
     throw new Error('toFixedBig: out of safe integer range');
   }
   return BigInt(scaled);
+}
+
+// S3-4a (Day3): lazy cleanup of this user's expired/zero-remaining FS sessions.
+// Safe: the play-path SELECT already filters `status='active' AND remaining>0
+// AND expires_at>now`, so sessions we mark here were already invisible.
+// Global cleanup across all users requires the cron endpoint (see /api/cron/cleanup-fs).
+async function cleanupExpiredFS(env, userId) {
+  try {
+    const nowIso = new Date().toISOString();
+    await env.apex_db.prepare(
+      "UPDATE free_spin_sessions SET status = 'expired', updated_at = ? " +
+      "WHERE user_id = ? AND game_id = 'sugar-rush' AND status = 'active' " +
+      "  AND (expires_at <= ? OR remaining_spins <= 0)"
+    ).bind(nowIso, userId, nowIso).run();
+  } catch (e) {
+    console.warn('[fs-cleanup] failed', e && e.message);
+  }
 }
 
 function calcWinMinorFixed(betMinor, totalMultiplier, payScale) {
@@ -175,6 +193,9 @@ export async function executeSpin(env, user, body) {
     return { status: 409, body: { success: false, code: 'spin_id_taken' } };
   }
 
+  // S3-4a: housekeeping before FS lookup
+  await cleanupExpiredFS(env, userId);
+
   const nowIso = new Date().toISOString();
   const fsSession = await env.apex_db.prepare(
     "SELECT id, remaining_spins, total_spins, bet_minor, version, retrigger_count, chain_id, chain_win_minor, marks_json " +
@@ -226,7 +247,13 @@ export async function executeSpin(env, user, body) {
   }
 
   const payScale = profile.payScale;
-  // sugar-rush engine already applies payScale + max-win cap internally
+  // S3-3 (Day3): spinResult.winMinor is the AUTHORITATIVE value.
+  // The engine (game-engine.js) already did:
+  //   totalMult = cappedRawWin * payScale   // payScale applied here
+  //   winMinor  = floor(betMinor * totalMult)
+  // Do NOT re-apply payScale via calcWinMinorFixed here (double-multiply).
+  // Future P2/P3: move the final floor step inside engine to BigInt if
+  // betMinor > 1e6 ever needs exactness.
   const theoreticalWinMinor = spinResult.winMinor;
 
   let actualWinMinor = theoreticalWinMinor;
@@ -361,14 +388,18 @@ export async function executeSpin(env, user, body) {
            fsAwarded, fsAwarded, actualWinMinor, expiresAt));
   }
 
+  // S3-5b: Provably Fair context (seed commit + nonce)
+  const clientSeed = (typeof body.clientSeed === 'string' && body.clientSeed.length <= 128)
+    ? body.clientSeed : null;
+  const pf = await preparePFContext(env, userId, clientSeed);
   const balanceDelta = isFree ? actualWinMinor : (actualWinMinor - effectiveBetMinor);
   stmts.push(env.apex_db.prepare(
     "INSERT INTO spins " +
     "(spin_id, user_id, request_fingerprint, mode, is_free, free_round_total, " +
     " bet_minor, win_minor, effective_bet_minor, fs_session_id, chain_id, " +
     " balance_before, balance_after, balance_delta, result_json, game_version, math_version, " +
-    " max_win_applied, capped_this_spin) " +
-    "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    " max_win_applied, capped_this_spin, server_seed_hash, client_seed, nonce) " +
+    "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   ).bind(
     spinId, userId, fingerprint, isFree ? 1 : 0,
     isFree ? fsSession.total_spins : null,
@@ -376,11 +407,16 @@ export async function executeSpin(env, user, body) {
     isFree ? fsSession.id : null, isFree ? fsSession.chain_id : newChainId,
     balanceBefore, balanceAfter, balanceDelta,
     JSON.stringify(spinResult), gameVersion, mathVersion,
-    maxWinMinor, cappedThisSpin
+    maxWinMinor, cappedThisSpin,
+    pf.serverSeedHash, pf.clientSeed, pf.nonce
   ));
 
   try {
     await env.apex_db.batch(stmts);
+    // S3-5b: nonce 只在事务成功后递增（幂等重放不会消耗 nonce）
+    try { await bumpNonce(env, userId); } catch (e2) {
+      console.warn('[pf] bumpNonce failed', e2 && e2.message);
+    }
   } catch (e) {
     const reason = classifyError(e);
     if (reason === 'insufficient_balance' || reason === 'guard_failed') {
