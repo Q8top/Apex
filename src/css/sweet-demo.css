@@ -662,3 +662,10 @@ a{color:inherit;text-decoration:none}
     opacity: 1 !important;
   }
 }
+
+
+/* A: overscroll-behavior + callout lock (parity with SR rebuild) */
+html, body {
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
+}

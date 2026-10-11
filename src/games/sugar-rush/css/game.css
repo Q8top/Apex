@@ -51,9 +51,9 @@ a{color:inherit;text-decoration:none}
 .sr-sym svg{width:92%;height:92%;display:block}
 .sr-sym.is-winning{background:rgba(255,79,163,.14);transform:scale(1.06);z-index:2}
 .sr-sym.is-removing{opacity:0;transform:scale(.55)}
-.sr-sym.is-dropping-in{animation:sr-drop-in .34s cubic-bezier(.2,.8,.3,1.05) both;animation-delay:var(--sr-drop-delay,0ms)}
+/* D-2: old is-dropping-in rule removed; see D-1 srCellDropIn */
 .sr-board[data-fast="1"] .sr-sym{transition-duration:.08s}
-@keyframes sr-drop-in{0%{transform:translate3d(0,-24px,0) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+/* D-2: sr-drop-in removed; superseded by srCellDropIn (D-1) */
 @media (prefers-reduced-motion:reduce){.sr-sym,.sr-sym.is-dropping-in{transition:none!important;animation:none!important}}
 
 .sr-stats{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;background:var(--sr-panel);border-radius:var(--sr-radius-md);padding:12px 10px;box-shadow:var(--sr-shadow-1)}
@@ -125,3 +125,398 @@ a{color:inherit;text-decoration:none}
 .sr-sheet-item svg{flex-shrink:0;color:var(--sr-text-2)}
 .sr-sheet-item span:first-of-type{flex:1}
 .sr-sheet-val{font-size:13px;color:var(--sr-text-2);font-weight:600}
+
+
+/* ============================================================
+   A+C: one-screen + anti-zoom + visual parity with Sweet
+   Added: 2026-10-10 (rebuild phase A)
+   ============================================================ */
+
+/* --- 1. Anti-zoom / anti-bounce (parity with sweet-demo.css) --- */
+html, body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button, a, .sr-sym, .sr-board, .sr-bet-btn, .sr-ctrl,
+.sr-header-btn, .sr-reset, .sr-sheet-item {
+  touch-action: manipulation;
+}
+input, textarea, [contenteditable="true"] {
+  touch-action: auto;
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* --- 2. SVG stroke parity (Sweet uses 1.75 across all UI icons) --- */
+.sr-header-btn svg,
+.sr-ctrl svg,
+.sr-bet-btn svg,
+.sr-reset svg,
+.sr-sheet-item svg {
+  stroke-width: 1.75;
+}
+
+/* --- 3. Body lock (one screen, no scroll) --- */
+.sr-main {
+  overflow-y: hidden;
+}
+
+/* --- 4. Safe-area bottom padding (iPhone home bar) --- */
+.sr-main {
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+/* --- 5. sr-stage: grid container sizing parity with sd-stage --- */
+.sr-stage {
+  /* Parent flex child already flex:1 1 0; min-height:0. Keep.
+     Just clamp inner board so it never exceeds both axes. */
+}
+.sr-board {
+  /* already has aspect-ratio:1/1; max-width:100%; max-height:100%.
+     Add: keep box-sizing honest. */
+  box-sizing: border-box;
+}
+
+/* --- 6. Tab-bar / bottom-controls don't slide under keyboard --- */
+.sr-controls {
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   D-1: Symbol animation parity with sweet-demo.css
+   Added: 2026-10-10 (rebuild phase D)
+   Aligns SR sym animation set with Sweet's 12 keyframes.
+   ============================================================ */
+
+/* --- 1. Symbol win pop (matches Sweet .symbolWinPop) --- */
+@keyframes srSymbolWinPop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.18); }
+  55%  { transform: scale(0.92); }
+  75%  { transform: scale(1.08); }
+  100% { transform: scale(1.02); }
+}
+.sr-sym.is-winning svg {
+  animation: srSymbolWinPop 480ms cubic-bezier(.34, 1.56, .64, 1) both;
+}
+
+/* --- 2. Symbol remove (match Sweet .symbolRemove) --- */
+@keyframes srSymbolRemove {
+  0%   { opacity: 1; transform: scale(1) rotate(0deg); }
+  25%  { opacity: 1; transform: scale(1.15) rotate(-3deg); }
+  100% { opacity: 0; transform: scale(0.35) rotate(6deg); }
+}
+.sr-sym.is-removing svg {
+  animation: srSymbolRemove 320ms cubic-bezier(.55, 0, .85, .3) both;
+}
+
+/* --- 3. Symbol enter (match Sweet .symbolEnter) --- */
+@keyframes srSymbolEnter {
+  0%   { opacity: 0; transform: translate3d(0, -32px, 0) scale(.88); }
+  68%  { opacity: 1; transform: translate3d(0, 6px, 0) scale(1.04); }
+  86%  { transform: translate3d(0, -2px, 0) scale(0.99); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.sr-sym.is-entering svg {
+  animation: srSymbolEnter 420ms cubic-bezier(.16, 1, .3, 1) both;
+}
+
+/* --- 4. Cell fall (used during tumble gravity) --- */
+@keyframes srCellFall {
+  0%   { transform: translate3d(0, calc(var(--sr-fall-rows, 1) * -100%), 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.sr-sym.is-falling {
+  animation: srCellFall 400ms cubic-bezier(.2, .85, .25, 1) both;
+}
+
+/* --- 5. Cell drop-out (spin start) --- */
+@keyframes srCellDropOut {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: translate3d(0, 130%, 0); }
+}
+.sr-sym.is-dropping-out {
+  animation: srCellDropOut 200ms cubic-bezier(.5, 0, .9, .35) both;
+  animation-delay: var(--sr-drop-delay, 0ms);
+}
+
+/* --- 6. Cell drop-in (new symbol arrives) --- */
+@keyframes srCellDropIn {
+  0%   { opacity: 0; transform: translate3d(0, -220%, 0) scale(.88); }
+  70%  { opacity: 1; transform: translate3d(0, 4%, 0) scale(1.03); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+.sr-sym.is-dropping-in {
+  animation: srCellDropIn 280ms cubic-bezier(.34, 1.4, .64, 1) both;
+  animation-delay: var(--sr-drop-delay, 0ms);
+}
+
+/* --- 7. Win feedback glow (epic tier) --- */
+@keyframes srWinFbEpic {
+  0%, 100% { box-shadow: 0 5px 22px rgba(255,140,20,.35), 0 0 40px rgba(255,180,20,.25); }
+  50%      { box-shadow: 0 6px 30px rgba(255,140,20,.55), 0 0 60px rgba(255,180,20,.45); }
+}
+.sr-win-flash.is-epic {
+  animation: srWinFbEpic 1.2s ease-in-out infinite;
+  color: #b45309;
+  text-shadow: 0 2px 18px rgba(255,140,20,.65), 0 1px 2px rgba(0,0,0,.2);
+}
+
+/* --- 8. Win feedback glow (ultra tier) --- */
+@keyframes srWinFbUltra {
+  0%, 100% { box-shadow: 0 6px 26px rgba(236,72,153,.45), 0 0 50px rgba(168,85,247,.35); }
+  50%      { box-shadow: 0 8px 40px rgba(236,72,153,.75), 0 0 80px rgba(168,85,247,.55); }
+}
+.sr-win-flash.is-ultra {
+  animation: srWinFbUltra 1.0s ease-in-out infinite;
+  color: #831843;
+  text-shadow: 0 2px 24px rgba(236,72,153,.8), 0 1px 2px rgba(0,0,0,.2);
+}
+
+/* --- 9. Win feedback generic glow (soft pulse) --- */
+@keyframes srWinFbGlow {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.15); }
+}
+.sr-win-flash.is-show {
+  animation: srWinFbGlow 0.9s ease-in-out infinite;
+}
+
+/* --- 10. FS flash (full-screen golden burst) --- */
+@keyframes srFsFlash {
+  0%   { opacity: 0; transform: scale(0.6); }
+  30%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+.sr-fs-flash {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  background: radial-gradient(circle at center,
+    rgba(255,215,0,0.85) 0%, rgba(255,180,20,0.35) 35%, transparent 70%);
+  opacity: 0;
+}
+.sr-fs-flash.is-on {
+  animation: srFsFlash 700ms ease-out forwards;
+}
+
+/* --- 11. FS particle burst --- */
+@keyframes srFsParticle {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) scale(0.3); }
+  20%  { opacity: 1; transform: translate3d(calc(var(--sr-dx) * 0.25), calc(var(--sr-dy) * 0.25), 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(var(--sr-dx), var(--sr-dy), 0) scale(0.6); }
+}
+.sr-fs-particles {
+  position: fixed; inset: 0; pointer-events: none; z-index: 199; overflow: hidden;
+}
+.sr-fs-particle {
+  position: absolute; left: 50%; top: 50%;
+  width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #FFF6A0 0%, #FFD020 45%, #E59A00 100%);
+  box-shadow: 0 0 8px rgba(255, 208, 32, 0.85);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.sr-fs-particles.is-on .sr-fs-particle {
+  animation: srFsParticle 900ms cubic-bezier(.2, .8, .3, 1) forwards;
+}
+
+/* --- 12. Fast mode: compress all tumble animations --- */
+.sr-board[data-fast="1"] .sr-sym.is-winning svg,
+.sr-board[data-fast="1"] .sr-sym.is-removing svg,
+.sr-board[data-fast="1"] .sr-sym.is-entering svg,
+.sr-board[data-fast="1"] .sr-sym.is-falling {
+  animation-duration: 180ms;
+}
+
+/* --- 13. Reduced motion: kill all symbol animations --- */
+@media (prefers-reduced-motion: reduce) {
+  .sr-sym.is-winning svg,
+  .sr-sym.is-removing svg,
+  .sr-sym.is-entering svg,
+  .sr-sym.is-falling,
+  .sr-sym.is-dropping-in,
+  .sr-sym.is-dropping-out,
+  .sr-win-flash,
+  .sr-fs-flash.is-on,
+  .sr-fs-particle {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ============================================================
+   F1: Paytable styles (parity with sweet-demo.css)
+   ============================================================ */
+.sr-pt { margin-top: 18px; }
+.sr-pt h3 { font-size: 15px; margin: 16px 0 8px; color: #111; }
+.sr-pt-note {
+  font-size: 12px;
+  color: #8a8a8f;
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+.sr-pt-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  border: 1px solid #ececee;
+  background: #fafafa;
+}
+.sr-pt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: #111;
+  font-variant-numeric: tabular-nums;
+  min-width: 480px;
+}
+.sr-pt-table th,
+.sr-pt-table td {
+  padding: 8px 6px;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid #ececee;
+}
+.sr-pt-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f4f4f6;
+  color: #666;
+  font-weight: 600;
+  font-size: 11.5px;
+}
+.sr-pt-table tbody tr:last-child td { border-bottom: 0; }
+.sr-pt-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.015); }
+.sr-pt-sym {
+  text-align: left;
+  padding-left: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.sr-pt-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+  flex: 0 0 auto;
+}
+.sr-pt-ic svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.sr-pt-top { color: #b45309; font-weight: 700; }
+
+/* ============================================================
+   F3: Win-flash tier labels (label + value on one line)
+   ============================================================ */
+.sr-win-flash {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.5px;
+}
+
+/* ============================================================
+   F6: FS confetti (reuse D-1 sr-fs-flash + sr-fs-particles)
+   ============================================================ */
+.sr-fs-particle {
+  transform-origin: center center;
+}
+
+
+/* ============================================================
+   F7: symbol material enhancement
+   Adds depth to existing SVG symbols without redrawing them.
+   Reduces the "flat polygon" feel vs Sweet Bonanza.
+   ============================================================ */
+
+/* Grid cell: soft radial background + inner depth */
+.sr-sym {
+  background: radial-gradient(
+    circle at 50% 30%,
+    #ffffff 0%,
+    #fafafd 55%,
+    #f0f0f4 100%
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: box-shadow .2s ease, background .2s ease;
+}
+
+/* Symbol SVG: gentle drop-shadow for physical presence */
+.sr-sym > svg {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.10));
+  transition: filter .2s ease;
+}
+
+/* Winning cell: lift and glow */
+.sr-sym.is-winning {
+  background: radial-gradient(
+    circle at 50% 30%,
+    #fffef5 0%,
+    #fff9dc 60%,
+    #fff2b8 100%
+  ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 3px rgba(217, 168, 0, 0.10),
+    0 0 0 2px rgba(217, 168, 0, 0.25),
+    0 4px 12px rgba(217, 168, 0, 0.20);
+}
+.sr-sym.is-winning > svg {
+  filter: drop-shadow(0 2px 4px rgba(217, 168, 0, 0.35))
+          drop-shadow(0 0 6px rgba(255, 220, 80, 0.45));
+}
+
+/* Fast mode: reduce filter for perf */
+.sr-board[data-fast="1"] .sr-sym > svg {
+  filter: none;
+}
+
+/* Reduced motion: keep static but preserve depth (no transition) */
+@media (prefers-reduced-motion: reduce) {
+  .sr-sym, .sr-sym > svg {
+    transition: none !important;
+  }
+}
+
+
+/* ============================================================
+   G1: numeric roll feedback
+   ============================================================ */
+@keyframes srNumPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.sr-stat-value.is-pop {
+  animation: srNumPop 420ms cubic-bezier(.34, 1.56, .64, 1) both;
+  color: #16a34a;
+}
+
+
+/* ============================================================
+   G3-2: Anticipation pulse (when scatterCount = threshold - 1)
+   ============================================================ */
+@keyframes srAnticipation {
+  0%   { box-shadow: 0 0 0 0 rgba(217, 168, 0, 0.00), inset 0 1px 0 rgba(255,255,255,.95); transform: scale(1); }
+  30%  { box-shadow: 0 0 0 4px rgba(217, 168, 0, 0.45), inset 0 1px 0 rgba(255,255,255,.95); transform: scale(1.04); }
+  60%  { box-shadow: 0 0 0 12px rgba(217, 168, 0, 0.00), inset 0 1px 0 rgba(255,255,255,.95); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 168, 0, 0.00), inset 0 1px 0 rgba(255,255,255,.95); transform: scale(1); }
+}
+.sr-sym.is-anticipation {
+  animation: srAnticipation 1.0s ease-in-out infinite;
+  background: radial-gradient(circle at 50% 30%, #fffef5 0%, #fff9dc 60%, #fff2b8 100%) !important;
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sr-sym.is-anticipation {
+    animation: none !important;
+    box-shadow: 0 0 0 2px rgba(217, 168, 0, 0.55);
+  }
+}

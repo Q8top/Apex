@@ -28,12 +28,30 @@ function isLocked(id) { return Object.prototype.hasOwnProperty.call(LOCKED, id);
 function list() { return Object.keys(LOCKED); }
 function kindOf(id) { var s = LOCKED[id]; return s ? s.kind : null; }
 
+
+var LABELS = Object.freeze({
+  blue_candy:   '橙色软糖熊',
+  green_candy:  '紫色软糖熊',
+  purple_candy: '红色软糖熊',
+  red_candy:    '绿色星星糖',
+  strawberry:   '紫色果冻豆',
+  orange:       '橙色爱心糖',
+  cherry:       '红色爱心糖',
+  grape:        '紫色圆形糖',
+  mango:        '粉色圆形糖果',
+  lollipop:     '棒棒糖',
+  candy_bomb:   '倍率炸弹'
+});
+function labelOf(id){ return LABELS[id] || id; }
+
 window.ApexSugarRushSymbolsLocked = Object.freeze({
   SYMBOLS_LOCKED: true,
   LOCKED: LOCKED,
   assertSymbolsLocked: assertSymbolsLocked,
   isLocked: isLocked,
   list: list,
-  kindOf: kindOf
+  kindOf: kindOf,
+  LABELS: LABELS,
+  labelOf: labelOf
 });
 })();

@@ -255,6 +255,11 @@
         tone({ freq: f, dur: 260, type: 'triangle', gain: 0.10, delay: i * 0.13 });
       });
     },
+    'anticipation': function () {
+      // Two low 'thump' beats: heartbeat during suspense
+      tone({ freq: 180, freqTo: 120, dur: 140, type: 'sine', gain: 0.09 });
+      tone({ freq: 180, freqTo: 120, dur: 140, type: 'sine', gain: 0.09, delay: 0.34 });
+    },
     'fs-loop':     function () {
       [784, 988].forEach(function (f, i) {
         tone({ freq: f, dur: 160, type: 'sine', gain: 0.06, delay: i * 0.09 });

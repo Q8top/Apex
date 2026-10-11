@@ -14,7 +14,7 @@ var REAL_PROFILE = Object.freeze({
     scatterWeight: 1,
     multiplierWeight: 0,
     fsMultiplierWeight: 1,
-    payScale: 5.50,
+    payScale: 6.50,
     maxWinMultiplier: 5000,
     pityRate: 0.0,
     pityMin: 0,

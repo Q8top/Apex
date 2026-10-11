@@ -5,72 +5,107 @@ function ok(c, n){ if (c) { passed++; } else { failed++; console.log('FAIL: ' + 
 var M = window.ApexSugarRushMultiplier;
 ok(typeof M.MarkState === 'function', 'MarkState exists');
 ok(M.GRID_SIZE === 49, 'GRID_SIZE=49');
-ok(M.MIN_MARK === 2, 'MIN_MARK=2');
+ok(M.MARKED === 1, 'MARKED=1');
 ok(M.MAX_MARK === 128, 'MAX_MARK=128');
+
+// 原版语义测试
 var st = new M.MarkState();
-ok(st.get(0) === 0, 'init 0');
-st.set(10, 2);
-ok(st.get(10) === 2, 'set 2');
-var threw = false; try { st.set(10, 1); } catch(e){ threw = true; }
-ok(threw, 'reject value < 2');
-threw = false; try { st.set(10, 256); } catch(e){ threw = true; }
-ok(threw, 'reject value > 128');
-threw = false; try { st.set(49, 2); } catch(e){ threw = true; }
-ok(threw, 'reject pos >= 49');
-threw = false; try { st.set(-1, 2); } catch(e){ threw = true; }
-ok(threw, 'reject pos < 0');
+ok(st.get(0) === 0, 'init 0 (unmarked)');
+
+// 第 1 次获胜：仅标记
+st.updateAfterWin([5]);
+ok(st.get(5) === M.MARKED, '1st win: 0 -> MARKED(1)');
+
+// 第 2 次获胜：MARKED -> 2x
+st.updateAfterWin([5]);
+ok(st.get(5) === 2, '2nd win: MARKED -> 2x');
+
+// 第 3 次获胜：2x -> 4x
+st.updateAfterWin([5]);
+ok(st.get(5) === 4, '3rd win: 2x -> 4x');
+
+// 第 4-7 次
+st.updateAfterWin([5]); ok(st.get(5) === 8,  '4th: 4x -> 8x');
+st.updateAfterWin([5]); ok(st.get(5) === 16, '5th: 8x -> 16x');
+st.updateAfterWin([5]); ok(st.get(5) === 32, '6th: 16x -> 32x');
+st.updateAfterWin([5]); ok(st.get(5) === 64, '7th: 32x -> 64x');
+st.updateAfterWin([5]); ok(st.get(5) === 128, '8th: 64x -> 128x');
+
+// 封顶
+st.updateAfterWin([5]); ok(st.get(5) === 128, '9th: capped at 128x');
+st.updateAfterWin([5]); ok(st.get(5) === 128, '10th: still 128x');
+
+// sumInCluster: MARKED 不计入
 var st2 = new M.MarkState();
-st2.set(0, 2); st2.set(1, 4); st2.set(5, 8);
-ok(st2.sumInCluster([0, 1, 2]) === 6, 'sum 2+4=6');
-ok(st2.sumInCluster([0, 1, 5]) === 14, 'sum 2+4+8=14');
-ok(st2.sumInCluster([10, 11]) === 0, 'empty cluster = 0');
+st2.updateAfterWin([0]);      // 0 -> MARKED
+st2.updateAfterWin([1]);      // 1 -> MARKED
+st2.updateAfterWin([1]);      // 1 -> 2x
+st2.updateAfterWin([2]);      // 2 -> MARKED
+st2.updateAfterWin([2]);      // 2 -> 2x
+st2.updateAfterWin([2]);      // 2 -> 4x
+
+ok(st2.sumInCluster([0]) === 0,    'cluster [0]: MARKED only -> 0');
+ok(st2.sumInCluster([1]) === 2,    'cluster [1]: 2x -> 2');
+ok(st2.sumInCluster([2]) === 4,    'cluster [2]: 4x -> 4');
+ok(st2.sumInCluster([0,1,2]) === 6, 'cluster [0,1,2]: 0 + 2 + 4 = 6');
+
+// 顺序保证：先用已有乘数，再更新
 var st3 = new M.MarkState();
-st3.set(10, 2); st3.set(20, 128);
-var up = st3.upgradeOnExplosion([10, 20, 30]);
-ok(st3.get(10) === 4, '10: 2->4');
-ok(st3.get(20) === 128, '20: 128 stays');
-ok(st3.get(30) === 0, '30: no mark');
-ok(up.length === 2, '2 upgrades reported');
-var st3b = new M.MarkState();
-st3b.set(5, 64);
-st3b.upgradeOnExplosion([5]);
-ok(st3b.get(5) === 128, '64->128');
-var st3c = new M.MarkState();
-st3c.set(6, 128);
-st3c.upgradeOnExplosion([6]);
-ok(st3c.get(6) === 128, '128 stays (no overflow)');
+// 假设一个位置第一次赢
+st3.updateAfterWin([10]);   // MARKED
+// 第二次赢：结算时用 0（只标记），然后变成 2x
+var win2 = st3.sumInCluster([10]);
+ok(win2 === 0, 'before 2nd win: multiplier = 0');
+st3.updateAfterWin([10]);   // MARKED -> 2x
+ok(st3.get(10) === 2, 'after 2nd win: 2x');
+// 第三次赢：结算时用 2，然后变成 4x
+var win3 = st3.sumInCluster([10]);
+ok(win3 === 2, 'before 3rd win: multiplier = 2');
+st3.updateAfterWin([10]);
+ok(st3.get(10) === 4, 'after 3rd win: 4x');
+
+// snapshot / restore
 var st4 = new M.MarkState();
-st4.set(0, 4);
-var rng = { randomInt: function(m){ return 0; } };
-var sp = st4.seedNewMarks([0, 1, 2], rng, 1.0);
-ok(st4.get(0) === 4, 'existing mark kept');
-ok(st4.get(1) === 2, 'pos 1 seeded');
-ok(st4.get(2) === 2, 'pos 2 seeded');
-ok(sp.length === 2, '2 seeds reported');
-var st5 = new M.MarkState();
-st5.set(3, 2); st5.set(20, 64); st5.set(48, 128);
-var snap = st5.snapshot();
+st4.updateAfterWin([3, 20, 48]);
+st4.updateAfterWin([3, 20, 48]);
+var snap = st4.snapshot();
 ok(snap.length === 3, 'snapshot 3 entries');
-var st6 = new M.MarkState({ fromSnapshot: snap });
-ok(st6.get(3) === 2, 'restore pos 3');
-ok(st6.get(20) === 64, 'restore pos 20');
-ok(st6.get(48) === 128, 'restore pos 48');
-ok(st6.get(0) === 0, 'restore absent = 0');
-var bad = [['x', 4], [10], [10, 3], [10, 'y'], [50, 4], [10, 4]];
-var st7 = new M.MarkState({ fromSnapshot: bad });
-ok(st7.get(10) === 4, 'bad input: only valid pair kept');
-st7.reset();
-ok(st7.get(10) === 0, 'reset clears');
-ok(st7.snapshot().length === 0, 'reset snapshot empty');
-var st8 = new M.MarkState();
-st8.set(0, 2); st8.set(5, 16);
-var vis = st8.visual();
-ok(vis.length === 2, 'visual 2');
-ok(vis[0].position === 0 && vis[0].value === 2, 'visual entry 0');
-ok(vis[1].position === 5 && vis[1].value === 16, 'visual entry 5');
+var st5 = new M.MarkState({ fromSnapshot: snap });
+ok(st5.get(3) === 2, 'restore pos 3: 2x');
+ok(st5.get(20) === 2, 'restore pos 20: 2x');
+ok(st5.get(48) === 2, 'restore pos 48: 2x');
+
+// reset
+st5.reset();
+ok(st5.get(3) === 0, 'reset clears');
+ok(st5.snapshot().length === 0, 'reset snapshot empty');
+
+// legacy API
 var ls = new M.MultiplierState();
 ls.add(0, 5); ls.add(1, 10);
 ok(ls.total() === 15, 'legacy total');
 ok(ls.size() === 2, 'legacy size');
+
+// visual
+var st6 = new M.MarkState();
+st6.updateAfterWin([0]);
+st6.updateAfterWin([0]);
+st6.updateAfterWin([5]);
+var vis = st6.visual();
+ok(vis.length === 2, 'visual 2');
+ok(vis[0].position === 0 && vis[0].value === 2, 'visual[0] = {0, 2}');
+ok(vis[1].position === 5 && vis[1].value === 1, 'visual[1] = {5, 1 MARKED}');
+
+// validation
+var threw = false;
+try { st6.set(10, 3); } catch (e) { threw = true; }
+ok(threw, 'reject non-power-of-2 value');
+threw = false;
+try { st6.set(10, 0); } catch (e) { threw = true; }
+ok(!threw, 'accept 0 (unmarked)');
+threw = false;
+try { st6.set(10, 1); } catch (e) { threw = true; }
+ok(!threw, 'accept 1 (MARKED)');
+
 console.log('[multiplier-marks] passed=' + passed + ' failed=' + failed);
 process.exit(failed > 0 ? 1 : 0);

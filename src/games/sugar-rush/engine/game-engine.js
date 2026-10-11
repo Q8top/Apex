@@ -190,15 +190,16 @@ function spinFree(mode, betMinor, opts){
     var clusterMult = 0;
     var upgradeInfo = [];
     var seedInfo = [];
+    // 原版语义：先用当前乘数结算，再更新位置值
     for (var k = 0; k < ev.wins.length; k++){
       var w = ev.wins[k];
       var markSum = marks.sumInCluster(w.positions);
       clusterMult += w.payoutMultiplier * Math.max(1, markSum);
-      var up = marks.upgradeOnExplosion(w.positions);
-      for (var u = 0; u < up.length; u++) upgradeInfo.push(up[u]);
-      var sp = marks.seedNewMarks(w.positions, rng, 1.0);
-      for (var sx = 0; sx < sp.length; sx++) seedInfo.push(sp[sx]);
     }
+    // 所有获胜位置统一更新（用于后续回合）
+    var allWinningPositions = ev.winningPositions.slice();
+    var up = marks.updateAfterWin(allWinningPositions);
+    for (var u = 0; u < up.length; u++) upgradeInfo.push(up[u]);
     rawWin += clusterMult;
     cascades++;
     var nextGrid = _tb.tumble(cur, ev.winningPositions, rng);

@@ -92,3 +92,11 @@ apex-game-v1*.tar.gz
 
 # ===== P0 phase artifacts =====
 audit-logs/
+
+# ===== P0-P3: local backup FILES (not just dirs) =====
+.audit-backup-*.js
+.audit-backup-*.cjs
+.audit-backup-*.md
+.audit-backup-*.json
+.audit-backup-*.txt
+.audit-backup-*

@@ -1,3 +1,8 @@
+# P2b note: style-src-attr 'unsafe-inline' is intentionally kept.
+# Reason: SVG 1.1 <text paint-order='...'> cannot be moved to external CSS.
+# See docs/P2b-csp-style-src-attr.md for the full analysis.
+# (Do NOT embed /* */ comments inside the CSP value -- HTTP headers
+#  do not support CSS-style comments and will fail to parse.)
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
@@ -6,7 +11,7 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net; style-src-attr 'unsafe-inline'; /* P2b: kept for SVG paint-order (SVG 1.1) - see docs/P2b-csp-style-src-attr.md */ font-src 'self' https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; media-src 'self'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self'; upgrade-insecure-requests; report-uri /api/csp-report
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net; style-src-attr 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; media-src 'self'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self'; upgrade-insecure-requests; report-uri /api/csp-report
 
 /api/*
   Cache-Control: no-store

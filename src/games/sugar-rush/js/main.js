@@ -67,7 +67,23 @@ function updateBetDisplay(){
   if (!state.autoSpinning) el.spinBtn.disabled = state.spinning || !canAfford;
   el.autoBtn.disabled = !canAfford && !state.autoSpinning;
 }
-function updateWin(minor){ el.win.textContent = fmt(minor); }
+function updateWin(minor){
+  if (!el.win) return;
+  var numEl = el.win;
+  if (minor <= 0){ numEl.textContent = fmt(0); return; }
+  var from = 0;
+  try {
+    var cur = numEl.textContent.replace(/[^\d.]/g, '');
+    if (cur && !isNaN(Number(cur))) from = Math.floor(Number(cur) * 100);
+  } catch (e) {}
+  srRollNumber(from, minor, 900, function(v, last){
+    numEl.textContent = fmt(Math.floor(v));
+    if (last){
+      numEl.classList.add('is-pop');
+      setTimeout(function(){ numEl.classList.remove('is-pop'); }, 420);
+    }
+  });
+}
 
 function renderGrid(types){
   var board = el.board;
@@ -132,13 +148,39 @@ function applyDropIn(){
   return delay((state.fastMode ? 120 : 200) + 7 * stagger + 100);
 }
 
+var _srRollRaf = 0;
+function srRollNumber(from, to, duration, onTick){
+  if (_srRollRaf){ cancelAnimationFrame(_srRollRaf); _srRollRaf = 0; }
+  var reduce = false;
+  try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  if (reduce || !(duration > 0)){ onTick(to, true); return; }
+  var start = performance.now();
+  function tick(now){
+    var t = Math.min(1, (now - start) / duration);
+    var eased = 1 - Math.pow(1 - t, 3);
+    var last = t >= 1;
+    onTick(from + (to - from) * eased, last);
+    if (!last) _srRollRaf = requestAnimationFrame(tick);
+    else _srRollRaf = 0;
+  }
+  _srRollRaf = requestAnimationFrame(tick);
+}
+function srTierLabel(tier){
+  var t = (window.ApexI18n && window.ApexI18n.t) ? window.ApexI18n.t : function(k){ return k; };
+  if (tier === 'ultra') return t('win.ultra') || 'ULTRA WIN';
+  if (tier === 'epic')  return t('win.epic')  || 'EPIC WIN';
+  if (tier === 'mega')  return t('win.mega')  || 'MEGA WIN';
+  if (tier === 'big')   return t('win.big')   || 'BIG WIN';
+  return '';
+}
 function showWinFlash(text, tier){
+  var _lbl = srTierLabel(tier);
   var old = el.board.querySelector(".sr-win-flash");
   if (old) old.remove();
   var div = document.createElement("div");
   div.className = "sr-win-flash";
   if (tier) div.classList.add("is-" + tier);
-  div.textContent = text;
+  _lbl ? div.textContent = _lbl + ' ' + text : div.textContent = text;
   el.board.appendChild(div);
   requestAnimationFrame(function(){ div.classList.add("is-show"); });
   return delay(700).then(function(){
@@ -180,6 +222,75 @@ function updateTumbleCounter(step){
 }
 
 /* ---------- tumble playback ---------- */
+function computeTumbleRoles(prevGrid, nextGrid, removedPositions){
+  // D-3: classify each cell of nextGrid as new (entering) or dropped (falling).
+  // prevGrid / nextGrid are 49-length arrays of symbol ids.
+  // removedPositions is the set of indices that vanished in prevGrid.
+  var COLS = 7, ROWS = 7;
+  var removed = {};
+  for (var r = 0; r < removedPositions.length; r++){
+    removed[removedPositions[r]] = true;
+  }
+  var entering = [];
+  var falling = [];
+  for (var c = 0; c < COLS; c++){
+    var kept = [];
+    for (var row = ROWS - 1; row >= 0; row--){
+      var idx = row * COLS + c;
+      if (!removed[idx]){
+        kept.push({ origRow: row, sym: prevGrid[idx] });
+      }
+    }
+    var newCount = ROWS - kept.length;
+    for (var e = 0; e < newCount; e++){
+      entering.push(e * COLS + c);
+    }
+    for (var k = 0; k < kept.length; k++){
+      var newRow = newCount + k;
+      var origRow = kept[k].origRow;
+      if (newRow > origRow){
+        falling.push({ index: newRow * COLS + c, rows: newRow - origRow });
+      }
+    }
+  }
+  return { entering: entering, falling: falling };
+}
+
+function applyRoleAnimations(anims){
+  // D-3: apply is-entering / is-falling classes based on role.
+  // Returns true if applied, false if caller should fall back to applyDropIn.
+  if (!anims) return false;
+  var total = anims.entering.length + anims.falling.length;
+  if (total !== 49) return false;
+  var cells = el.board.children;
+  if (cells.length !== 49) return false;
+  var stagger = state.fastMode ? 8 : 16;
+  var i;
+  for (i = 0; i < anims.entering.length; i++){
+    var idxE = anims.entering[i];
+    var cellE = cells[idxE];
+    if (!cellE) continue;
+    var colE = idxE % 7;
+    cellE.style.setProperty('--sr-drop-delay', (colE * stagger) + 'ms');
+    cellE.classList.add('is-entering');
+  }
+  for (i = 0; i < anims.falling.length; i++){
+    var info = anims.falling[i];
+    var cellF = cells[info.index];
+    if (!cellF) continue;
+    cellF.style.setProperty('--sr-fall-rows', String(info.rows));
+    cellF.classList.add('is-falling');
+  }
+  setTimeout(function(){
+    for (var j = 0; j < cells.length; j++){
+      cells[j].classList.remove('is-entering', 'is-falling');
+      cells[j].style.removeProperty('--sr-fall-rows');
+      cells[j].style.removeProperty('--sr-drop-delay');
+    }
+  }, 520);
+  return true;
+}
+
 function playSteps(steps, finalGrid, opts){
   opts = opts || {};
   if (!steps || steps.length === 0){
@@ -187,25 +298,48 @@ function playSteps(steps, finalGrid, opts){
     return Promise.resolve();
   }
   var p = Promise.resolve();
+  var prevGridSnapshot = null;   // D-3b: track grid before each step
   steps.forEach(function(step, i){
     p = p.then(function(){
       if (!opts.noCounter) updateTumbleCounter(i + 1);
       markWinning(step.winningPositions);
       if (step.wins && step.wins.length && state.mode === 'demo'){
-        // P0-3b: only demo mode shows float estimates; real gets authoritative values from server
         for (var k = 0; k < step.wins.length; k++){
           var w = step.wins[k];
           var amt = Math.floor(state.currentBetMinor * w.payoutMultiplier * state.payScaleDemo);
           if (amt > 0) showFloatWin(w.positions, amt);
         }
       }
+      // capture grid before removal (after last step's re-render, DOM matches this)
+      prevGridSnapshot = (function(){
+        var arr = new Array(49);
+        var cells = el.board.children;
+        for (var c = 0; c < 49 && c < cells.length; c++){
+          arr[c] = cells[c].dataset.sid || null;
+        }
+        return arr;
+      })();
       return delay(state.fastMode ? 200 : 400);
     }).then(function(){
+      if (i >= 1) playAudio('tumble');
       markRemoving(step.winningPositions);
       return delay(state.fastMode ? 120 : 250);
     }).then(function(){
       renderGrid(step.gridAfter);
       if (Audio) playAudio("tumble-land");
+      // D-3b: role-aware animation with safe fallback
+      var applied = false;
+      try {
+        if (prevGridSnapshot && prevGridSnapshot.every(function(x){ return x !== null; })){
+          var anims = computeTumbleRoles(prevGridSnapshot, step.gridAfter, step.winningPositions);
+          applied = applyRoleAnimations(anims);
+        }
+      } catch (e) {
+        applied = false;
+      }
+      if (applied){
+        return delay((state.fastMode ? 220 : 420));
+      }
       return applyDropIn();
     });
   });
@@ -240,6 +374,7 @@ function playFsSequence(fsDetail){
   });
   return p.then(function(){
     if (overlay) overlay.hidden = true;
+    playAudio('bonus');
   });
 }
 
@@ -258,11 +393,16 @@ function doRealSpin(betMinor, opts){
     state.spinning = false;
     if (el.skipBtn) el.skipBtn.hidden = true;
     el.board.removeAttribute('data-spinning');
-    updateBetDisplay();
+    restoreSpinBtnLabel(); updateBetDisplay();
     if (!opts.silent) alert(window.ApexI18n ? window.ApexI18n.t('sr.toast.loginRequired') : '\u767b\u5f55\u540e\u624d\u80fd\u8fdb\u5165\u6b63\u5f0f\u6e38\u620f');
     return Promise.resolve();
   }
   var spinId = makeSpinId();
+  // G3-2b TODO: real mode anticipation not implemented.
+  // Server returns only finalGrid (post-tumble), so scatter
+  // positions in the initial grid are not available. Requires
+  // server to return cascades/initialGrid for accurate scatter
+  // position. Tracked as G4 (real cascades animation).
   el.board.setAttribute('data-spinning', '1');
   return client.post('/api/game/sugar-rush-spin', {
     spinId: spinId, betMinor: betMinor, mode: 'real'
@@ -287,8 +427,14 @@ function doRealSpin(betMinor, opts){
     updateWin(winMinor);
     if (winMinor > 0){
       var ratio = winMinor / betMinor;
-      var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
-      if (Audio) playAudio(ratio >= 20 ? 'win-big' : 'win-normal');
+      var tier = ratio >= 300 ? 'ultra' : ratio >= 100 ? 'epic' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
+      var _audioKey;
+        if (ratio >= 300) _audioKey = 'ultra-win';
+        else if (ratio >= 100) _audioKey = 'epic-win';
+        else if (ratio >= 50) _audioKey = 'mega-win';
+        else if (ratio >= 20) _audioKey = 'win-big';
+        else _audioKey = 'win-normal';
+        playAudio(_audioKey);
       return showWinFlash('+' + fmt(winMinor), tier);
     }
   }).then(function(){
@@ -296,13 +442,13 @@ function doRealSpin(betMinor, opts){
     state.skipRequested = false;
     if (el.skipBtn) el.skipBtn.hidden = true;
     el.board.removeAttribute('data-spinning');
-    updateBetDisplay();
+    restoreSpinBtnLabel(); updateBetDisplay();
   }).catch(function(err){
     state.spinning = false;
     state.skipRequested = false;
     if (el.skipBtn) el.skipBtn.hidden = true;
     el.board.removeAttribute('data-spinning');
-    updateBetDisplay();
+    restoreSpinBtnLabel(); updateBetDisplay();
     console.error('[sugar-rush] real spin error', err);
   });
 }
@@ -325,10 +471,15 @@ state.spinning = true;
   updateBalance();
   updateBetDisplay();
   el.spinBtn.disabled = true;
+  var _sp=(window.ApexI18n&&window.ApexI18n.t)?window.ApexI18n.t:function(k){return k;};
+  var _spLbl=el.spinBtn.querySelector('span');
+  if(_spLbl) _spLbl.textContent=_sp('sr.btn.spinning')||'旋转中';
   updateWin(0);
   clearTimers();
   clearCellAnim();
+  try { if (window.ApexAnticipation) window.ApexAnticipation.cancel(); } catch (e) {}
   el.board.setAttribute("data-spinning", "1");
+  playAudio("spin-start");
 
   if (state.mode === 'real'){
     return doRealSpin(betMinor, opts);
@@ -340,10 +491,43 @@ state.spinning = true;
     if (state.mode === 'demo'){ state.payScaleDemo = d.payScale || 1; }
     renderGrid(d.initialGrid);
     return applyDropIn().then(function(){
+      // G3-2b: Anticipation — pulse scatters before revealing bonus state.
+      // Trigger only when scatterCount === threshold - 1 (= 2 of 3).
+      var scatterPositions = [];
+      try {
+        var init = d.initialGrid || [];
+        for (var _i = 0; _i < init.length; _i++){
+          if (Lock.kindOf(init[_i]) === 'scatter') scatterPositions.push(_i);
+        }
+      } catch (e) {}
+      var shouldAnt = false;
+      try {
+        shouldAnt = (window.ApexAnticipation &&
+                     typeof window.ApexAnticipation.shouldAnticipate === 'function' &&
+                     window.ApexAnticipation.shouldAnticipate(scatterPositions.length, 3));
+      } catch (e) {}
+      if (shouldAnt && scatterPositions.length > 0){
+        try {
+          return window.ApexAnticipation.play({
+            board: el.board,
+            positions: scatterPositions,
+            durationMs: state.fastMode ? 600 : 1200,
+            audioFn: playAudio
+          });
+        } catch (e) {}
+      }
+      return Promise.resolve();
+    }).then(function(){
       return playBaseCascades(d);
     }).then(function(){
       if (result.fsTriggered){
-        if (Audio) playAudio("scatter");
+        playAudio("scatter");
+        playAudio("fs-enter");
+        try { srSpawnFsParticles(); } catch (e) {}
+        try {
+          var _ff = document.getElementById('sr-fs-flash');
+          if (_ff){ _ff.classList.remove('is-on'); void _ff.offsetWidth; _ff.classList.add('is-on'); setTimeout(function(){ try { _ff.classList.remove('is-on'); } catch (e2) {} }, 800); }
+        } catch (e) {}
         return delay(250).then(function(){ return playFsSequence(d.fsDetail); });
       }
       state.balanceMinor += result.winMinor;
@@ -351,7 +535,7 @@ state.spinning = true;
       updateWin(result.winMinor);
       if (result.winMinor > 0) {
         var ratio = result.winMinor / betMinor;
-        var tier = ratio >= 100 ? 'super' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
+        var tier = ratio >= 300 ? 'ultra' : ratio >= 100 ? 'epic' : ratio >= 50 ? 'mega' : ratio >= 20 ? 'big' : null;
         if (Audio) playAudio(ratio >= 20 ? "win-big" : "win-normal");
         return showWinFlash("+" + fmt(result.winMinor), tier);
       }
@@ -360,6 +544,10 @@ state.spinning = true;
       state.skipRequested = false;
       if (el.skipBtn) el.skipBtn.hidden = true;
       el.board.removeAttribute("data-spinning");
+      playAudio("spin-stop");
+      var _sp2=(window.ApexI18n&&window.ApexI18n.t)?window.ApexI18n.t:function(k){return k;};
+      var _sp2Lbl=el.spinBtn.querySelector('span');
+      if(_sp2Lbl) _sp2Lbl.textContent=_sp2('sr.btn.spin')||'旋转';
       updateBetDisplay();
       return result;
     }).catch(function(err){
@@ -367,7 +555,7 @@ state.spinning = true;
       state.skipRequested = false;
       if (el.skipBtn) el.skipBtn.hidden = true;
       el.board.removeAttribute("data-spinning");
-      updateBetDisplay();
+      restoreSpinBtnLabel(); updateBetDisplay();
       console.error("[sugar-rush] spin error", err);
     });
   });
@@ -396,14 +584,14 @@ function startAutoViaCtl(n){
         var running = (st === 'spinning' || st === 'waiting');
         state.autoSpinning = running;
         var lbl = el.autoBtn.querySelector("span");
-        if (lbl) lbl.textContent = running ? 'STOP' : 'AUTO';
+        if (lbl){ var _t=(window.ApexI18n&&window.ApexI18n.t)?window.ApexI18n.t:function(k){return k;}; lbl.textContent = running ? (_t('sr.btn.stop')||'STOP') : (_t('sr.btn.auto')||'自动'); }
       },
       onFinish: function(reason){
         state.autoSpinning = false;
         state.autoRemaining = 0;
         el.autoBtn.removeAttribute('data-active');
         var lbl = el.autoBtn.querySelector("span");
-        if (lbl) lbl.textContent = 'AUTO';
+        if (lbl){ var _t2=(window.ApexI18n&&window.ApexI18n.t)?window.ApexI18n.t:function(k){return k;}; lbl.textContent = _t2('sr.btn.auto')||'自动'; }
         autospinCtl = null;
       }
     });
@@ -569,18 +757,68 @@ function loadServerBalance(){
     }
   }).catch(function(){});
 }
+function srBuildPaytable(){
+  var Lock = window.ApexSugarRushSymbolsLocked;
+  var PT = window.ApexSugarRushPaytableLocked;
+  if (!PT || !PT.PAYTABLE_SNAPSHOT) return '';
+  var SNAP = PT.PAYTABLE_SNAPSHOT;
+  var syms = ['blue_candy','green_candy','purple_candy','red_candy','strawberry','orange','cherry','grape','mango'];
+  var payKeys = { blue_candy:'BLUE_CANDY', green_candy:'GREEN_CANDY', purple_candy:'PURPLE_CANDY', red_candy:'RED_CANDY', strawberry:'STRAWBERRY', orange:'ORANGE', cherry:'CHERRY', grape:'GRAPE', mango:'MANGO' };
+  var names = { blue_candy:'橙色软糖熊', green_candy:'紫色软糖熊', purple_candy:'红色软糖熊', red_candy:'绿色星星糖', strawberry:'紫色果冻豆', orange:'橙色爱心糖', cherry:'红色爱心糖', grape:'紫色圆形糖', mango:'粉色圆形糖果' };
+  var svgFn = (window.ApexSugarRushSymbolsV2 && typeof window.ApexSugarRushSymbolsV2.get === 'function')
+    ? function(id){ try { return window.ApexSugarRushSymbolsV2.get(id, 'pt-' + id); } catch (e) { return ''; } }
+    : function(){ return ''; };
+  var html = '<section class="sr-pt">';
+  html += '<h3>赔率表（Cluster Pays）</h3>';
+  html += '<p class="sr-pt-note">相邻 5 个或以上同符号连成一簇即中奖。5~6 / 7~8 / 9~10 / 11+ 各档。</p>';
+  html += '<div class="sr-pt-scroll"><table class="sr-pt-table">';
+  html += '<thead><tr><th>符号</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12+</th></tr></thead>';
+  html += '<tbody>';
+  for (var i = 0; i < syms.length; i++){
+    var id = syms[i]; var key = payKeys[id]; var t = SNAP[key]; if (!t) continue;
+    html += '<tr>';
+    html += '<td class="sr-pt-sym"><span class="sr-pt-ic">' + svgFn(id) + '</span>' + names[id] + '</td>';
+    html += '<td>' + t[5] + 'x</td>';
+    html += '<td>' + t[6] + 'x</td>';
+    html += '<td>' + t[7] + 'x</td>';
+    html += '<td>' + t[8] + 'x</td>';
+    html += '<td>' + t[9] + 'x</td>';
+    html += '<td>' + t[10] + 'x</td>';
+    html += '<td>' + t[11] + 'x</td>';
+    html += '<td class="sr-pt-top">' + t[12] + 'x</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div></section>';
+  return html;
+}
 function buildSheetBody(){
+  // S1: 8 sections aligned with Sweet Bonanza rules sheet depth.
+  // Order: board -> cluster -> tumble -> scatter -> retrigger ->
+  //        bomb -> bets -> notice.
   var t = (window.ApexI18n && window.ApexI18n.t) ? window.ApexI18n.t : function(k){ return k; };
-  return '<h3>' + t('sr.rules.tumble.title') + '</h3>'
-       + '<p>' + t('sr.rules.intro') + '</p>'
-       + '<p>' + t('sr.rules.tumble.body') + '</p>'
-       + '<h3>' + t('sr.rules.fs.title') + '</h3>'
-       + '<p>' + t('sr.rules.fs.body') + '</p>'
-       + '<h3>' + t('sr.rules.bomb.title') + '</h3>'
-       + '<p>' + t('sr.rules.bomb.body') + '</p>'
-       + '<h3>' + t('sr.rules.notice.title') + '</h3>'
-       + '<ul><li>' + t('sr.rules.notice.item1') + '</li>'
-       + '<li>' + t('sr.rules.notice.item2') + '</li></ul>';
+  var html = '';
+  html += '<h3>' + t('sr.rules.board.title') + '</h3>';
+  html += '<p>' + t('sr.rules.board.body') + '</p>';
+  html += '<h3>' + t('sr.rules.cluster.title') + '</h3>';
+  html += '<p>' + t('sr.rules.cluster.body') + '</p>';
+  html += '<h3>' + t('sr.rules.tumble.title') + '</h3>';
+  html += '<p>' + t('sr.rules.intro') + '</p>';
+  html += '<p>' + t('sr.rules.tumble.body') + '</p>';
+  html += '<h3>' + t('sr.rules.scatter.title') + '</h3>';
+  html += '<p>' + t('sr.rules.scatter.body') + '</p>';
+  html += '<h3>' + t('sr.rules.fs.title') + '</h3>';
+  html += '<p>' + t('sr.rules.fs.body') + '</p>';
+  html += '<h3>' + t('sr.rules.retrigger.title') + '</h3>';
+  html += '<p>' + t('sr.rules.retrigger.body') + '</p>';
+  html += '<h3>' + t('sr.rules.bomb.title') + '</h3>';
+  html += '<p>' + t('sr.rules.bomb.body') + '</p>';
+  html += '<h3>' + t('sr.rules.bets.title') + '</h3>';
+  html += '<p>' + t('sr.rules.bets.body') + '</p>';
+  html += '<h3>' + t('sr.rules.notice.title') + '</h3>';
+  html += '<ul><li>' + t('sr.rules.notice.item1') + '</li>';
+  html += '<li>' + t('sr.rules.notice.item2') + '</li></ul>';
+  html += srBuildPaytable();
+  return html;
 }
 
 function openSheet(){
@@ -607,6 +845,40 @@ function bindSheet(){
   document.addEventListener("keydown", function(e){
     if (e.key === "Escape" && !sh.hidden) closeSheet();
   });
+}
+
+function srSpawnFsParticles(){
+  var prev = document.getElementById('sr-fs-particles');
+  if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
+  var wrap = document.createElement('div');
+  wrap.id = 'sr-fs-particles';
+  wrap.className = 'sr-fs-particles';
+  var COUNT = 15;
+  var buf = new Uint32Array(1);
+  for (var i = 0; i < COUNT; i++){
+    var p = document.createElement('div');
+    p.className = 'sr-fs-particle';
+    crypto.getRandomValues(buf); var r1 = buf[0];
+    crypto.getRandomValues(buf); var r2 = buf[0];
+    crypto.getRandomValues(buf); var r3 = buf[0];
+    var angle = (i / COUNT) * Math.PI * 2 + ((r1 % 200) / 1000 - 0.1);
+    var dist = 140 + (r2 % 120);
+    p.style.setProperty('--sr-dx', (Math.cos(angle) * dist).toFixed(1) + 'px');
+    p.style.setProperty('--sr-dy', (Math.sin(angle) * dist).toFixed(1) + 'px');
+    p.style.animationDelay = (r3 % 60) + 'ms';
+    wrap.appendChild(p);
+  }
+  document.body.appendChild(wrap);
+  void wrap.offsetWidth;
+  wrap.classList.add('is-on');
+  setTimeout(function(){
+    if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+  }, 1200);
+}
+function restoreSpinBtnLabel(){
+  var _t3 = (window.ApexI18n && window.ApexI18n.t) ? window.ApexI18n.t : function(k){ return k; };
+  var lbl = el.spinBtn.querySelector('span');
+  if (lbl) lbl.textContent = _t3('sr.btn.spin') || '旋转';
 }
 
 function wireAudioBridge(){
