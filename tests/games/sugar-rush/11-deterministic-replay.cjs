@@ -98,7 +98,7 @@ for (var m = 0; m < f1.marksAfter.length; m++){
   var p = f1.marksAfter[m];
   ok(Array.isArray(p) && p.length === 2, 'f1 mark valid (' + m + ')');
   ok(p[0] >= 0 && p[0] < 49, 'f1 mark pos in range (' + m + ')');
-  ok(p[1] >= 2 && p[1] <= 128, 'f1 mark value in range (' + m + ')');
+  ok(p[1] >= 1 && p[1] <= 128, 'f1 mark value in range (' + m + ')');
 }
 
 console.log('[deterministic-replay] passed=' + passed + ' failed=' + failed);

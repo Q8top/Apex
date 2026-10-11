@@ -5,6 +5,16 @@ var files = [
   '02-rng-evaluator.cjs',
   '03-payout-bonus.cjs',
   '04-tumble-engine.cjs',
+  '05-multiplier-marks.cjs',
+  '06-spin-base-free.cjs',
+  '07-grid-boundaries.cjs',
+  '08-payout-precision.cjs',
+  '09-max-win-cap.cjs',
+  '10-free-spin-rules.cjs',
+  '11-deterministic-replay.cjs',
+  '12-client-server-parity.cjs',
+  '13-long-run-stability.cjs',
+  '14-performance-benchmark.cjs',
 ];
 var totalPassed = 0, totalFailed = 0, exitCode = 0;
 files.forEach(function(f){

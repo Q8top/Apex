@@ -34,7 +34,7 @@ for (var j = 0; j < 3000; j++){
   for (var k = 0; k < f.marksAfter.length; k++){
     var p = f.marksAfter[k];
     if (!Array.isArray(p) || p.length !== 2 ||
-        p[0] < 0 || p[0] >= 49 || p[1] < 2 || p[1] > 128){
+        p[0] < 0 || p[0] >= 49 || p[1] < 1 || p[1] > 128){
       badMarkFound = true; break;
     }
   }

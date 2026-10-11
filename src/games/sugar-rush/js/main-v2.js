@@ -349,6 +349,113 @@ function bind(){
 }
 M.onBoot(bind);
 window.ApexSRAudioBridge=Object.freeze({spinWithAudio:spinWithAudio,bind:bind});
+/* S4-1b: real/demo gateway dispatcher */
+(function(){
+'use strict';
+var M=window.ApexSRMain;if(!M)return;
+
+function readModeFromUrl(){
+  try{
+    var p=new URLSearchParams(window.location.search);
+    var m=p.get('mode');
+    if(m==='real'||m==='demo')return m;
+  }catch(e){}
+  return 'demo';
+}
+
+function spinGateway(){
+  if(M.state.spinning)return;
+  var G=window.ApexSRRealGate;
+  var isReal=(M.state.mode||'demo')==='real';
+
+  if(!isReal){
+    if(window.ApexSRAudioBridge)window.ApexSRAudioBridge.spinWithAudio();
+    return;
+  }
+
+  if(!G||typeof G.runRealSpin!=='function'){
+    console.error('[gateway] real mode but ApexSRRealGate missing');
+    return;
+  }
+
+  var bet=M.BETS[M.state.betIndex];
+  if(M.state.balance<bet){
+    var t=document.getElementById('sr-toast');
+    if(t){t.textContent='\u4f59\u989d\u4e0d\u8db3';t.hidden=false;
+      void t.offsetWidth;t.classList.add('is-visible');
+      setTimeout(function(){t.classList.remove('is-visible');setTimeout(function(){t.hidden=true;},220);},1600);}
+    return;
+  }
+
+  var a=window.ApexSRAudio;
+  if(a&&a.sfxTap)a.sfxTap();
+  M.state.spinning=true;
+  M.state.balance-=bet;
+  if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
+  if(a&&a.sfxSpin)a.sfxSpin();
+
+  G.runRealSpin(bet).then(function(resp){
+    var body=(resp&&resp.result)?resp.result:resp;
+    var win=(resp&&resp.winMinor)||body.winMinor||0;
+    var grid=(body&&body.finalGrid)||[];
+    M.state.last=body;
+    if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
+    if(window.ApexSRRender)window.ApexSRRender.renderGrid(grid);
+    M.state.balance=(resp&&typeof resp.balanceAfter==='number')?resp.balanceAfter:(M.state.balance+win);
+    if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
+    else M.paintStats();
+    var wEl=document.getElementById('sr-win');
+    if(wEl&&window.ApexSRFx)window.ApexSRFx.rollNumber(wEl,0,win,560);
+    else if(wEl)wEl.textContent=M.fmtMinor(win);
+    if(window.ApexSRSpinV2)window.ApexSRSpinV2.markWinning(body);
+    var casc=(body&&body.cascades)|0;
+    if(casc>0&&window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(casc);
+    if(win>0){
+      if(window.ApexSRFx2&&window.ApexSRFx2.haptic)window.ApexSRFx2.haptic(30);
+      if(window.ApexSRWinTierV2)window.ApexSRWinTierV2.showWinInline(win);
+      var FxTier=window.ApexSRFx;
+      if(a&&a.sfxWin&&FxTier&&FxTier.tierOf)a.sfxWin(FxTier.tierOf(win/bet));
+    }
+    if(body&&body.fsTriggered){
+      var spins=body.fsSpinsAwarded|0;
+      if(!spins){var sc=body.scatterCount|0;spins=(sc>=6)?20:(sc===5)?15:(sc===4)?12:10;}
+      if(window.ApexSRFSEntry&&window.ApexSRFSEntry.playFSEntry)window.ApexSRFSEntry.playFSEntry(spins);
+      else if(a&&a.sfxFSEntry)a.sfxFSEntry();
+    }
+    if(window.ApexSRHistory)window.ApexSRHistory.push({bet:bet,win:win,fs:!!(body&&body.fsTriggered)});
+    setTimeout(function(){
+      if(window.ApexSRSpinV2)window.ApexSRSpinV2.clearCells();
+      if(window.ApexSRTumbleTier)window.ApexSRTumbleTier.setTumbleTiered(0);
+      M.state.spinning=false;
+    },win>0?680:200);
+  }).catch(function(err){
+    console.error('[gateway]',err&&err.message);
+    M.state.balance+=bet;
+    if(window.ApexSRBalance)window.ApexSRBalance.paintBalanceAnimated(M.state.balance);
+    M.state.spinning=false;
+    var t2=document.getElementById('sr-toast');
+    if(t2){t2.textContent='\u65cb\u8f6c\u5931\u8d25\uff0c\u5df2\u9000\u8fd8\u6295\u6ce8';t2.hidden=false;
+      void t2.offsetWidth;t2.classList.add('is-visible');
+      setTimeout(function(){t2.classList.remove('is-visible');setTimeout(function(){t2.hidden=true;},220);},1600);}
+  });
+}
+
+function bindGateway(){
+  var old=document.getElementById('sr-spin-btn');
+  if(!old)return;
+  var nb=old.cloneNode(true);
+  old.parentNode.replaceChild(nb,old);
+  nb.addEventListener('click',spinGateway);
+}
+
+M.onBoot(function(){
+  M.state.mode=readModeFromUrl();
+  if(window.ApexSRHeaderMode)window.ApexSRHeaderMode.paint();
+  if(window.ApexSRWallet)window.ApexSRWallet.paintModeUI();
+  bindGateway();
+});
+window.ApexSRSpinGateway=Object.freeze({spin:spinGateway,bind:bindGateway,readMode:readModeFromUrl});
+})();
 })();
 
 (function(){

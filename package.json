@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "wrangler pages dev . --d1 apex_db=apex-db",
-    "deploy": "wrangler pages deploy . --project-name=apex --branch=main",
+    "deploy": "wrangler pages deploy dist --project-name=apex --branch=main",
     "migrate:local": "bash scripts/migrate.sh --local",
     "migrate:remote": "bash scripts/migrate.sh --remote",
     "backup": "bash scripts/backup.sh",
@@ -32,6 +32,7 @@
     "test:math": "node tests/math/rtp-gate.cjs",
     "test:rtp": "node tests/math/rtp-gate.cjs",
     "test:rtp:full": "RTP_GATE_SPINS=200000 node tests/math/rtp-gate.cjs",
+    "test:rtp3": "node tools/rtp-gate-v3.cjs 20000",
     "test:engine": "node tests/engine/all.test.cjs",
     "test:e2e": "node tests/e2e/spin-sql.cjs && node tests/e2e/spin-api.cjs",
     "test:fault": "bash tests/fault/run-all.sh",

@@ -19,6 +19,20 @@ PAIRS=(
   "src/engine/bonus.js:functions/_engine/bonus.js"
   "src/engine/payout.js:functions/_engine/payout.js"
   "src/engine/game-engine.js:functions/_engine/game-engine.js"
+  # Sugar Rush 专属（物理隔离，独立镜像）
+  "src/games/sugar-rush/config/symbols.locked.js:functions/games/sugar-rush/config/symbols.locked.js"
+  "src/games/sugar-rush/config/paytable.locked.js:functions/games/sugar-rush/config/paytable.locked.js"
+  "src/games/sugar-rush/config/math-profile.js:functions/games/sugar-rush/config/math-profile.js"
+  "src/games/sugar-rush/engine/errors.js:functions/games/sugar-rush/engine/errors.js"
+  "src/games/sugar-rush/engine/grid.js:functions/games/sugar-rush/engine/grid.js"
+  "src/games/sugar-rush/engine/rng.js:functions/games/sugar-rush/engine/rng.js"
+  "src/games/sugar-rush/engine/payout.js:functions/games/sugar-rush/engine/payout.js"
+  "src/games/sugar-rush/engine/multiplier.js:functions/games/sugar-rush/engine/multiplier.js"
+  "src/games/sugar-rush/engine/evaluator.js:functions/games/sugar-rush/engine/evaluator.js"
+  "src/games/sugar-rush/engine/tumble.js:functions/games/sugar-rush/engine/tumble.js"
+  "src/games/sugar-rush/engine/bonus.js:functions/games/sugar-rush/engine/bonus.js"
+  "src/games/sugar-rush/engine/cap.js:functions/games/sugar-rush/engine/cap.js"
+  "src/games/sugar-rush/engine/game-engine.js:functions/games/sugar-rush/engine/game-engine.js"
 )
 
 FAIL=0
