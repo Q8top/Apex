@@ -13,8 +13,14 @@ function ApexSRCallTierClass(m){
   return '';
 }
 function ApexSRCallTierOf(m){
-  try{ if(window.ApexSRTierOfFn) return window.ApexSRTierOfFn(m); }catch(e){}
-  return '';
+  // Fix: 返回数字 tier (0-4)，与 sfxWin/setTumbleTiered 一致
+  // 阈值：<5 -> 0, 5-20 -> 1, 20-100 -> 2, 100-500 -> 3, >=500 -> 4
+  var v = Number(m) || 0;
+  if (v >= 500) return 4;
+  if (v >= 100) return 3;
+  if (v >= 20)  return 2;
+  if (v >= 5)   return 1;
+  return 0;
 }
 /* Fix: 跨 IIFE 调用 toggleSpinBtn 的安全 wrapper */
 function ApexSRCallToggleSpinBtn(on){
@@ -711,7 +717,8 @@ function setTumbleTiered(n){
   n=n|0;
   if(n<=0){el.hidden=true;el.className='sr-tumble-counter';lastN=0;return;}
   el.className='sr-tumble-counter';
-  var t=ApexSRCallTierOf(n);
+  // Fix: 内联 tumble tier 判定（避免与 ApexSRWinTier 的 tierOf 混淆）
+  var t=(n>=4)?4:(n===3)?3:(n===2)?2:(n===1)?1:0;
   el.classList.add('sr-tc-'+t);
   el.textContent='x'+n;
   el.hidden=false;
