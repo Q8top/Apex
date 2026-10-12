@@ -24,7 +24,7 @@
  *   - entry in {undefined,'modal','page'}
  *   - entry==='page' implies typeof url === 'string' && url.length > 0
  */
-var GAMES = [
+var GAMES = Object.freeze([
   {id:"olympus", n:"\u5965\u6797\u5339\u65af", src:"/assets/games/olympus.webp"},
   {id:"sweet", n:"\u7cd6\u679c\u8fde\u8fde\u7206", src:"/assets/games/sweet.webp", live:true, entry:"modal", brand:"sweet", subtitle:"\u9009\u62E9\u6E38\u620F\u6A21\u5F0F"},
   {id:"sugar-rush", n:"\u751c\u871c\u7206\u5956", src:"/assets/games/sugar.webp", live:true, entry:"modal", brand:"sugar-rush", subtitle:"\u9009\u62E9\u6E38\u620F\u6A21\u5F0F", url:"/sugar-rush.html"},
@@ -37,7 +37,7 @@ var GAMES = [
   {id:"wolf", n:"\u72fc\u9ec4\u91d1", src:"/assets/games/wolf.webp"},
   {id:"fruit", n:"\u6c34\u679c\u6d3e\u5bf9", src:"/assets/games/fruit.webp"},
   {id:"megaways", n:"\u5927\u5bcc\u7fc1", src:"/assets/games/megaways.webp"},
-];
+]);
 
 function getById(id){
   for (var i = 0; i < GAMES.length; i++){ if (GAMES[i].id === id) return GAMES[i]; }
