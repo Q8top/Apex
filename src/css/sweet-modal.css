@@ -183,3 +183,66 @@
   .sweet-modal-title{font-size:23px}
   .sweet-modal-cover{width:76px;height:76px;border-radius:20px}
 }
+
+/* ==== v3 refresh: filled gradient cards for stronger impact ==== */
+.sweet-modal-panel{max-width:440px;border-radius:30px;padding:36px 26px 24px}
+.sweet-modal-cover{width:104px;height:104px;border-radius:28px}
+.sweet-modal-title{font-size:28px;letter-spacing:-.7px}
+.sweet-modal-actions{gap:14px}
+
+.sweet-mode{
+  padding:16px 18px;border:none;border-radius:22px;color:#fff;
+  box-shadow:0 12px 26px rgba(17,17,17,.10);
+}
+.sweet-mode:hover{transform:translateY(-2px)}
+.sweet-mode:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+.sweet-mode-badge{
+  width:56px;height:56px;border-radius:18px;
+  background:rgba(255,255,255,.22);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.sweet-mode-badge svg{width:32px;height:32px}
+.sweet-mode-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.sweet-mode-desc{font-size:12.5px;color:rgba(255,255,255,.78)}
+.sweet-mode-arrow{font-size:24px;color:rgba(255,255,255,.6)}
+.sweet-mode:hover .sweet-mode-arrow{color:#fff}
+
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--demo{
+  background:linear-gradient(135deg,#ff8bb8 0%,#ff4fa3 100%);
+  box-shadow:0 14px 30px rgba(255,79,163,.34);border-color:transparent;
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--demo:hover{
+  box-shadow:0 20px 44px rgba(255,79,163,.42);
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--real{
+  background:linear-gradient(135deg,#1c1c1c 0%,#000 100%);
+  box-shadow:0 14px 30px rgba(17,17,17,.32);border-color:transparent;
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--real:hover{
+  box-shadow:0 20px 44px rgba(17,17,17,.40);
+}
+
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--demo{
+  background:linear-gradient(135deg,#a878ff 0%,#7c2fff 100%);
+  box-shadow:0 14px 30px rgba(124,47,255,.34);border-color:transparent;
+}
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--demo:hover{
+  box-shadow:0 20px 44px rgba(124,47,255,.42);
+}
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--real{
+  background:linear-gradient(135deg,#ff5c9c 0%,#e5397e 100%);
+  box-shadow:0 14px 30px rgba(229,57,126,.34);border-color:transparent;
+}
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--real:hover{
+  box-shadow:0 20px 44px rgba(229,57,126,.42);
+}
+
+@media (max-width:400px){
+  .sweet-modal-panel{padding:30px 20px 20px}
+  .sweet-modal-cover{width:92px;height:92px;border-radius:24px}
+  .sweet-modal-title{font-size:25px}
+  .sweet-mode{padding:14px 16px;border-radius:20px}
+  .sweet-mode-badge{width:50px;height:50px;border-radius:16px}
+}
+

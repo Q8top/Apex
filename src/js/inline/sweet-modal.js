@@ -20,28 +20,14 @@
   var state = { isOpen: false, lastFocused: null, closeTimer: 0, focusTimer: 0, currentTarget: '/sweet-demo.html' };
 
   var SVG_DEMO = ''
-    + '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">'
-    +   '<defs>'
-    +     '<linearGradient id="swDemoG" x1="0" y1="0" x2="1" y2="1">'
-    +       '<stop offset="0" stop-color="#ff7ab8"/>'
-    +       '<stop offset="1" stop-color="#ff4fa3"/>'
-    +     '</linearGradient>'
-    +   '</defs>'
-    +   '<circle cx="12" cy="12" r="9.5" fill="url(#swDemoG)"/>'
-    +   '<path d="M10 8.6 L16.2 12 L10 15.4 Z" fill="#fff"/>'
+    + '<svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false">'
+    +   '<path d="M9.2 6.6 L18.6 12 L9.2 17.4 Z" fill="#ffffff"/>'
     + '</svg>';
 
   var SVG_REAL = ''
-    + '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">'
-    +   '<defs>'
-    +     '<linearGradient id="swRealG" x1="0" y1="0" x2="1" y2="0">'
-    +       '<stop offset="0" stop-color="#e6c781"/>'
-    +       '<stop offset="1" stop-color="#d9b45b"/>'
-    +     '</linearGradient>'
-    +   '</defs>'
-    +   '<circle cx="12" cy="12" r="9.5" fill="#111111"/>'
-    +   '<path d="M8 12 L14.5 12" stroke="url(#swRealG)" stroke-width="1.8" stroke-linecap="round" fill="none"/>'
-    +   '<path d="M11.2 8.8 L14.6 12 L11.2 15.2" stroke="url(#swRealG)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+    + '<svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false">'
+    +   '<path d="M12 3.4 L20 12 L12 20.6 L4 12 Z" fill="#f3d582"/>'
+    +   '<path d="M12 6.2 L17.4 12 L12 17.8 L6.6 12 Z" fill="#fff7e2" opacity=".55"/>'
     + '</svg>';
 
   var MARKUP = ''
