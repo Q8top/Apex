@@ -114,6 +114,40 @@ ServerProvider.prototype.resetBalance = function(){
   return Promise.reject(_err.ApexError(_err.CODES.INVALID_BET, 'real 模式不支持重置余额'));
 };
 
+// S2.2-2: buy free spins via server (real mode)
+ServerProvider.prototype.buyFreeSpins = function(req){
+  var self = this;
+  req = req || {};
+  var betMinor = Number(req.bet) || 0;
+  var spinId = req.spinId || uuid();
+  return this.client.post('/api/game/buy-fs', {
+    spinId: spinId,
+    betMinor: betMinor,
+    mode: 'real'
+  }).then(function(resp){
+    if (!resp || resp.success !== true){
+      var msg = (resp && resp.message) || '\u670d\u52a1\u5668\u9519\u8bef';
+      var code = (resp && resp.code) || 'unknown';
+      var e = _err.ApexError(_err.CODES.INVALID_RESULT, msg);
+      e.serverCode = code;
+      e.balance = resp && resp.balance;
+      throw e;
+    }
+    self.lastBalance = resp.balanceAfter;
+    return {
+      spinId: spinId,
+      costMinor: resp.costMinor,
+      balanceBefore: resp.balanceBefore,
+      balanceAfter: resp.balanceAfter,
+      sessionId: resp.sessionId,
+      remaining: resp.remaining,
+      totalSpins: resp.totalSpins,
+      chainId: resp.chainId,
+      cached: !!resp.cached
+    };
+  });
+};
+
 ServerProvider.prototype.spin = function(req){
   var self = this;
   req = req || {};

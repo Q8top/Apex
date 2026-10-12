@@ -1236,13 +1236,7 @@ function toast(msg) {
     el.buyRoot.setAttribute('hidden', '');
   }
 
-  function confirmBuy() {
-    var cost = getBet() * BUY_FS_COST_MULT;
-    if (state.balance < cost) {
-      toast('\u8bd5\u73a9\u4f59\u989d\u4e0d\u8db3');
-      return;
-    }
-    closeBuy();
+  function _fallbackLocalBuy(cost) {
     state.balance -= cost;
     state.bonusLock = true;
     renderStats();
@@ -1257,6 +1251,57 @@ function toast(msg) {
       renderSpinBtn();
       pending = null;
     });
+  }
+
+  function confirmBuy() {
+    var betMinor = Math.round(getBet() * 100);
+    var cost = betMinor / 100 * BUY_FS_COST_MULT;
+    if (state.balance < cost) {
+      toast('\u8bd5\u73a9\u4f59\u989d\u4e0d\u8db3');
+      return;
+    }
+    if (GAME_MODE === 'real') {
+      var p = runtime && runtime.getProvider && runtime.getProvider();
+      if (!p || typeof p.buyFreeSpins !== 'function') {
+        toast('\u8d2d\u4e70\u529f\u80fd\u4e0d\u53ef\u7528');
+        return;
+      }
+      closeBuy();
+      state.bonusLock = true;
+      renderSpinBtn();
+      p.buyFreeSpins({ bet: betMinor }).then(function (res) {
+        state.balance = (res.balanceAfter || 0) / 100;
+        renderStats();
+        var feature = { triggered: true, initialSpins: res.totalSpins || BUY_FS_AWARD };
+        try { if (window.ApexBgm) window.ApexBgm.toFreeSpins(1200); } catch (e) {}
+        try { if (window.ApexAudioSynth) window.ApexAudioSynth.play('fs-enter'); } catch (e) {}
+        runBonusSequence(feature, betMinor, function (bonusWin) {
+          state.bonusLock = false;
+          pending = null;
+          if (p.getBalance) {
+            p.getBalance().then(function (bal) {
+              state.balance = bal.minor / 100;
+              renderStats();
+              renderSpinBtn();
+            }).catch(function () { renderSpinBtn(); });
+          } else {
+            state.balance += (bonusWin || 0) / 100;
+            renderStats();
+            renderSpinBtn();
+          }
+        });
+      }).catch(function (err) {
+        state.bonusLock = false;
+        renderSpinBtn();
+        var code = err && err.serverCode;
+        if (code === 'insufficient_balance') toast('\u4f59\u989d\u4e0d\u8db3');
+        else if (code === 'unauthenticated') toast('\u8bf7\u5148\u767b\u5f55');
+        else toast('\u8d2d\u4e70\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5');
+      });
+      return;
+    }
+    closeBuy();
+    _fallbackLocalBuy(cost);
   }
 
   // S2.3-1: big win full-screen overlay (ratio >= 20)
