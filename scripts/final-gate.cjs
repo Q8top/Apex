@@ -15,6 +15,7 @@ var SUITES = [
   ['config: public-rules', 'node tests/config/public-rules.test.cjs', 'fail: 0'],
   ['config: games-registry', 'node tests/config/games-registry.test.cjs', 'fail: 0'],
   ['config: version', 'node tests/config/version.test.cjs', 'fail: 0'],
+  ['config: engine-errors', 'node tests/config/engine-errors.test.cjs', 'fail: 0'],
   ['engine: sweet', 'node tests/engine/all.test.cjs', '0 \u5931\u8d25'],
   ['routing: sweet', 'node tests/games/sweet-demo/routing.cjs', 'failed=0'],
   ['sugar-rush: full', 'node tests/games/sugar-rush/run-all.cjs', 'failed=0'],
