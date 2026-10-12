@@ -211,7 +211,13 @@ function bootstrapDb() {
   var ok4 = results4.filter(function (r) { return r.status === 200; }).length;
   var fs2 = mem4.prepare('SELECT remaining_spins, version FROM free_spin_sessions WHERE user_id=?').get(uid4);
   t('4a at least 1 success', ok4 >= 1, 'ok=' + ok4);
-  t('4b remaining_spins decreased', fs2.remaining_spins < 2, 'got ' + fs2.remaining_spins);
+  // Optimistic lock: at least one concurrent request must consume a spin
+  // when ok4 >= 1; if both requests lost the race (extreme CI timing),
+  // remaining must stay <= initial value.
+  t('4b remaining_spins not increased', fs2.remaining_spins <= 2, 'got ' + fs2.remaining_spins);
+  t('4b2 remaining consistent with successes',
+    (ok4 >= 1 ? fs2.remaining_spins <= 2 - ok4 : fs2.remaining_spins === 2),
+    'ok4=' + ok4 + ' rem=' + fs2.remaining_spins);
   t('4c version incremented', fs2.version > 0, 'got ' + fs2.version);
 
   // Ledger consistency: FS spins should have NO bet event
