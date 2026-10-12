@@ -10,6 +10,7 @@ var SUITES = [
   // [label, command, must contain]
   ['syntax: JS files', 'bash scripts/syntax-check.sh', null],
   ['config: symbols-locked', 'node tests/config/symbols-locked.test.cjs', 'fail: 0'],
+  ['config: paytable-locked', 'node tests/config/paytable-locked.test.cjs', 'fail: 0'],
   ['config: version', 'node tests/config/version.test.cjs', 'fail: 0'],
   ['engine: sweet', 'node tests/engine/all.test.cjs', '0 \u5931\u8d25'],
   ['routing: sweet', 'node tests/games/sweet-demo/routing.cjs', 'failed=0'],

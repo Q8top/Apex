@@ -1,3 +1,30 @@
+/* Apex - Paytable locked snapshot (cross-engine contract).
+ *
+ * SNAPSHOT maps regular symbol paytableKey -> { clusterSize: multiplier }.
+ * Values are total multipliers (not bet-fractions). RTP is applied
+ * downstream via payScale in math-profile; do not double-apply here.
+ *
+ * Mounted as window.ApexPaytableLocked (frozen).
+ * Byte-identical mirror at functions/_config/paytable.locked.js,
+ * enforced by scripts/check-config-sync.sh in CI.
+ *
+ * Contract:
+ *   - SNAPSHOT keys === symbols.locked paytableKey set (9 keys)
+ *   - scatter and multiplier symbols have paytableKey:null and are
+ *     NOT present in SNAPSHOT
+ *   - MIN_MATCH is the lowest cluster size that pays
+ *   - cluster tiers per symbol derived from SNAPSHOT (currently 8/10/12);
+ *     verifyAgainst reads tiers from SNAPSHOT, not a hardcoded list
+ *
+ * Public API:
+ *   verifyAgainst(actual)  returns true when actual matches snapshot;
+ *                          throws Error('PAYTABLE_MISMATCH: ...') on
+ *                          missing key, extra key, or tier mismatch;
+ *                          returns false when actual is falsy.
+ *                          (Design note: unlike symbols.locked.
+ *                          assertSymbolsLocked, this returns false for
+ *                          a falsy argument instead of throwing.)
+ */
 (function(){
 'use strict';
 var SNAPSHOT = Object.freeze({
@@ -14,12 +41,18 @@ var SNAPSHOT = Object.freeze({
 var MIN_MATCH = 8;
 function verifyAgainst(actual){
   if (!actual) return false;
-  var keys = Object.keys(SNAPSHOT);
-  for (var i=0;i<keys.length;i++){
-    var k = keys[i];
+  var snapKeys = Object.keys(SNAPSHOT);
+  var actKeys = Object.keys(actual);
+  for (var x=0;x<actKeys.length;x++){
+    if (snapKeys.indexOf(actKeys[x]) === -1){
+      throw new Error('PAYTABLE_MISMATCH: extra ' + actKeys[x]);
+    }
+  }
+  for (var i=0;i<snapKeys.length;i++){
+    var k = snapKeys[i];
     var a = actual[k], b = SNAPSHOT[k];
     if (!a) throw new Error('PAYTABLE_MISMATCH: missing ' + k);
-    var hs = [8,10,12];
+    var hs = Object.keys(b).map(Number).sort(function(p,q){ return p-q; });
     for (var j=0;j<hs.length;j++){
       var h = hs[j];
       if (a[h] !== b[h]) throw new Error('PAYTABLE_MISMATCH: ' + k + '[' + h + '] ' + a[h] + ' !== ' + b[h]);
@@ -27,6 +60,7 @@ function verifyAgainst(actual){
   }
   return true;
 }
+
 window.ApexPaytableLocked = Object.freeze({
   PAYTABLE_SNAPSHOT: SNAPSHOT,
   MIN_MATCH: MIN_MATCH,
