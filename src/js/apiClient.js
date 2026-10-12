@@ -57,7 +57,7 @@
       try {
         json = await response.json();
       } catch (e) {
-        json = { success: false, message: '无效的服务器响应', status: response.status };
+        json = { success: false, message: 'invalid server response', status: response.status };
       }
 
       // CSRF 自愈：若首次请求因缺少 CSRF cookie 被 403 拒绝，
@@ -85,9 +85,9 @@
     } catch (err) {
       if (timeoutId) clearTimeout(timeoutId);
       if (err.name === 'AbortError') {
-        return { success: false, message: '请求超时，请检查网络' };
+        return { success: false, message: 'request timeout' };
       }
-      return { success: false, message: '网络错误：' + err.message };
+      return { success: false, message: 'network error: ' + err.message };
     }
   }
 

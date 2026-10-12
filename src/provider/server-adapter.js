@@ -111,7 +111,7 @@ ServerProvider.prototype.getFreeSpinStatus = function(){
 };
 
 ServerProvider.prototype.resetBalance = function(){
-  return Promise.reject(_err.ApexError(_err.CODES.INVALID_BET, 'real 模式不支持重置余额'));
+  return Promise.reject(_err.ApexError(_err.CODES.INVALID_BET, 'reset not supported in real mode'));
 };
 
 // S2.2-2: buy free spins via server (real mode)
@@ -162,7 +162,7 @@ ServerProvider.prototype.spin = function(req){
     isFree: isFree
   }).then(function(resp){
     if (!resp || resp.success !== true){
-      var msg = (resp && resp.message) || '服务器错误';
+      var msg = (resp && resp.message) || 'server error';
       var code = (resp && resp.code) || 'unknown';
       var e = _err.ApexError(_err.CODES.INVALID_RESULT, msg);
       e.serverCode = code;

@@ -90,7 +90,7 @@
         state.sfxVolume = n;
         notifySynth('sfx', n);
       } else {
-        throw new Error('audio: 未知音量类型 ' + kind);
+        throw new Error('audio: unknown volume kind ' + kind);
       }
       return n;
     }

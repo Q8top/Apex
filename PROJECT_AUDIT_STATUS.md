@@ -221,7 +221,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 |---|---|---|---|---|---|
 | 1 | `src/core/runtime.js` | 4688 | `7d9493cc` | - | NOT_AUDITED |
 | 2 | `src/core/state.js` | 2886 | `a05e86ab` | - | NOT_AUDITED |
-| 3 | `src/js/apiClient.js` | 4072 | `49c4529b` | - | NOT_AUDITED |
+| 3 | `src/js/apiClient.js` | 4056 | `7683bc67` | - | **FROZEN** |
 | 4 | `src/js/captcha.v2.js` | 3946 | `0ebc6a58` | - | NOT_AUDITED |
 | 5 | `src/js/core/game-events.js` | 916 | `ffa262e7` | - | NOT_AUDITED |
 | 6 | `src/js/core/game-runtime.js` | 1920 | `e99f7d43` | - | NOT_AUDITED |
@@ -261,7 +261,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 | 40 | `src/js/presentation/audio-bridge.js` | 7932 | `ac130815` | - | NOT_AUDITED |
 | 41 | `src/js/presentation/audio-lifecycle.js` | 4530 | `926add5b` | - | NOT_AUDITED |
 | 42 | `src/js/presentation/audio-synth.js` | 17983 | `5ab87feb` | - | NOT_AUDITED |
-| 43 | `src/js/presentation/audio.js` | 4881 | `9203c399` | - | NOT_AUDITED |
+| 43 | `src/js/presentation/audio.js` | 4882 | `cf791c76` | - | **FROZEN** |
 | 44 | `src/js/presentation/autospin.js` | 5380 | `a2434482` | - | NOT_AUDITED |
 | 45 | `src/js/presentation/bgm.js` | 3605 | `52403b92` | - | NOT_AUDITED |
 | 46 | `src/js/presentation/error-reporter.js` | 3493 | `ce17a75f` | - | NOT_AUDITED |
@@ -278,7 +278,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 | 57 | `src/provider/demo-adapter.js` | 6104 | `bff3807b` | - | NOT_AUDITED |
 | 58 | `src/provider/local-demo.js` | 791 | `4b721e02` | - | NOT_AUDITED |
 | 59 | `src/provider/provider.js` | 313 | `1f7c8a09` | - | NOT_AUDITED |
-| 60 | `src/provider/server-adapter.js` | 5748 | `89520b8c` | - | NOT_AUDITED |
+| 60 | `src/provider/server-adapter.js` | 5745 | `63871ddd` | - | **FROZEN** |
 | 61 | `src/provider/server.js` | 1632 | `b70aa0ab` | - | NOT_AUDITED |
 | 62 | `src/wallet/demo-wallet.js` | 1696 | `b02a21f8` | - | NOT_AUDITED |
 | 63 | `src/wallet/wallet.js` | 556 | `1e808737` | - | NOT_AUDITED |
