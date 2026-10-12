@@ -22,10 +22,15 @@
  *     fall outside [0,rows) x [0,cols).
  *   - isIndexInside(idx) accepts any value and returns boolean.
  *
- * RESERVED (zero consumers at audit time; kept for API stability):
- *   - getRow(index)    Math.floor(index / columns)
- *   - getColumn(index) index % columns
- *   - clone(array)     shallow copy of an array
+ * Consumer status (audit round-check of files 1-10):
+ *   getIndex      read by src/engine/tumble.js via _g alias
+ *   isIndexInside read by tumble.js for position validation
+ *   getIndexSafe  TEST-ONLY (tests/config/engine-grid.test.cjs);
+ *                 safe variant kept for future call sites that
+ *                 cannot rely on caller-side bounds checking
+ *   getRow        TEST-ONLY roundtrip assertion; no production use
+ *   getColumn     TEST-ONLY roundtrip assertion; no production use
+ *   clone         TEST-ONLY; SR engine has its own clone
  *
  * clone() now throws ApexError(INVALID_GRID_SIZE) on non-array input
  * instead of a native TypeError, so callers can catch one error type.

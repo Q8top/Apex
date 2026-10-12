@@ -101,7 +101,7 @@ var s2 = fs.readFileSync(ROOT + '/functions/_engine/grid.js', 'utf8');
 t('mirror byte-identical', s1 === s2);
 
 // comments: reserved markers
-t('comment marks RESERVED', s1.indexOf('RESERVED') !== -1);
+t('comment documents consumer status', s1.indexOf('Consumer status') !== -1);
 t('comment warns getIndex hot path', s1.indexOf('HOT PATH') !== -1);
 
 console.log('');
