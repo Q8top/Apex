@@ -67,7 +67,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 | 2 | `src/engine/errors.js` | 3110 | `d9feaba7` | - | **FROZEN** |
 | 3 | `src/engine/evaluator.js` | 2061 | `6267b608` | - | NOT_AUDITED |
 | 4 | `src/engine/game-engine.js` | 7403 | `27fe4d0a` | - | NOT_AUDITED |
-| 5 | `src/engine/grid.js` | 595 | `14a86440` | - | NOT_AUDITED |
+| 5 | `src/engine/grid.js` | 2605 | `21db1e1d` | - | **FROZEN** |
 | 6 | `src/engine/multiplier.js` | 1013 | `165b7590` | - | NOT_AUDITED |
 | 7 | `src/engine/payout.js` | 1459 | `48dc07d6` | - | NOT_AUDITED |
 | 8 | `src/engine/rng.js` | 1875 | `06af8aa6` | - | NOT_AUDITED |
