@@ -20,6 +20,7 @@ var SUITES = [
   ['config: engine-rng', 'node tests/config/engine-rng.test.cjs', 'fail: 0'],
   ['config: engine-payout', 'node tests/config/engine-payout.test.cjs', 'fail: 0'],
   ['config: engine-multiplier', 'node tests/config/engine-multiplier.test.cjs', 'fail: 0'],
+  ['config: engine-tumble', 'node tests/config/engine-tumble.test.cjs', 'fail: 0'],
   ['engine: sweet', 'node tests/engine/all.test.cjs', '0 \u5931\u8d25'],
   ['routing: sweet', 'node tests/games/sweet-demo/routing.cjs', 'failed=0'],
   ['sugar-rush: full', 'node tests/games/sugar-rush/run-all.cjs', 'failed=0'],
