@@ -91,3 +91,16 @@ a:focus-visible{
   margin-inline:auto;
   padding-inline:var(--layout-gutter);
 }
+
+/* ---- Touch hardening ---- */
+html{height:100%;overscroll-behavior:none;}
+body{
+  height:100%;overflow:hidden;
+  touch-action:manipulation;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;user-select:none;
+}
+button,a,input,select,textarea{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
