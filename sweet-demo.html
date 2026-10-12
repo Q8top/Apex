@@ -21,6 +21,7 @@
     <symbol id="ic-repeat" viewBox="0 0 24 24"><path d="M4 9a8 8 0 0114-3l3 3M20 15a8 8 0 01-14 3l-3-3M17 6v3h3M7 18v-3H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-rotate" viewBox="0 0 24 24"><path d="M12 5a7 7 0 107 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 2v6l3-3z" fill="currentColor"/></symbol>
     <symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></symbol>
+    <symbol id="ic-auto" viewBox="0 0 24 24"><path d="M4 9a8 8 0 0114-3l3 3M20 15a8 8 0 01-14 3l-3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 13l3-4 3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-chevron-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 5h11a3 3 0 013 3v11H7a3 3 0 01-3-3V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 16h14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="ic-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -34,11 +35,14 @@
   </defs></svg>
 
 <header class="sd-header">
-  <a class="sd-header-btn" href="/" aria-label="返回">
+  <a class="sd-header-back" href="/" aria-label="返回">
     <svg class="sd-ic"><use href="#ic-arrow-left"/></svg>
   </a>
-  <h1 class="sd-header-title" data-i18n="game.title">糖果连连爆</h1>
-  <button type="button" class="sd-header-btn" id="sd-menu-btn" aria-label="菜单">
+  <div class="sd-header-title">
+    <span class="sd-header-main" data-i18n="game.title">糖果连连爆</span>
+    <span class="sd-header-pill"><span class="sd-header-dot"></span><span data-i18n="game.demo">试玩模式</span></span>
+  </div>
+  <button type="button" class="sd-header-menu" id="sd-menu-btn" aria-label="菜单">
     <svg class="sd-ic"><use href="#ic-menu"/></svg>
   </button>
 </header>
@@ -50,9 +54,12 @@
     <div class="sd-tumble-counter" id="sd-tumble-counter" hidden></div>
     <button type="button" class="sd-skip-btn" id="sd-skip-btn" hidden data-i18n="btn.skip">跳过</button>
   </section>
-  <div class="sd-win-row" id="sd-win-fb" aria-live="polite" aria-atomic="true">
+  <div class="sd-win-card" id="sd-win-fb" aria-live="polite" aria-atomic="true">
+    <svg class="sd-win-star" aria-hidden="true"><use href="#ic-star"/></svg>
     <span class="sd-win-label" id="sd-win-fb-label" data-i18n="stat.win">本局赢得</span>
     <strong class="sd-win-value" id="sd-win-fb-value">¥0.00</strong>
+    <span class="sd-win-deco sd-win-deco--l" aria-hidden="true"></span>
+    <span class="sd-win-deco sd-win-deco--r" aria-hidden="true"></span>
   </div>
   <section class="sd-stats">
     <div class="sd-stat">
@@ -72,7 +79,7 @@
   </section>
   <section class="sd-bet-row">
     <button type="button" class="sd-reset-btn" id="sd-reset-btn">
-      <svg class="sd-ic-sm"><use href="#ic-refresh"/></svg>
+      <svg class="sd-ic-sm"><use href="#ic-repeat"/></svg>
       <span data-i18n="btn.reset">重置</span>
     </button>
     <div class="sd-bet-pill" aria-label="投注调整">
@@ -87,7 +94,7 @@
   </section>
   <section class="sd-controls">
     <button type="button" class="sd-ctrl" id="sd-auto-btn" aria-label="自动">
-      <svg class="sd-ic"><use href="#ic-repeat"/></svg>
+      <svg class="sd-ic"><use href="#ic-auto"/></svg>
       <span class="sd-ctrl-label" data-i18n="btn.auto">自动</span>
     </button>
     <button type="button" class="sd-ctrl sd-ctrl--primary" id="sd-spin-btn" aria-label="旋转">
