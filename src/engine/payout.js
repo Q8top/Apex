@@ -31,6 +31,13 @@
  *   player-facing formatter (that lives in the UI layer with
  *   Intl.NumberFormat). Changing the separator here requires a
  *   corresponding UI change to stay consistent.
+ *
+ * Consumer status (audit round-check of files 1-10):
+ *   calculatePayout  read by src/engine/game-engine.js via _pay alias
+ *   unitsToMinor     TEST-ONLY (tests/engine/all.test.cjs, SR 03)
+ *   minorToUnits     TEST-ONLY (tests/engine/all.test.cjs, SR 03/08)
+ *   formatMinor      TEST-ONLY (tests/engine/all.test.cjs)
+ *                    (retained for server-side logging paths)
  */
 (function(){
 'use strict';
