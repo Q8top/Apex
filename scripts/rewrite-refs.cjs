@@ -84,6 +84,30 @@ for (const hf of htmlFiles){
 }
 console.log('[rewrite-refs] total ' + totalHits + ' refs rewritten');
 
+// 6) cleanup: delete plain copies that are no longer referenced anywhere
+const textExt = /\.(html|js|css|json|xml|txt|webmanifest)$/i;
+const allText = [];
+(function walkAll(d){
+  for (const e of fs.readdirSync(d, { withFileTypes: true })){
+    const full = path.join(d, e.name);
+    if (e.isDirectory()){ walkAll(full); continue; }
+    if (textExt.test(e.name)) allText.push(full);
+  }
+})(DIST);
+const blob = allText.map(f => fs.readFileSync(f, 'utf-8')).join('\n');
+
+let removed = 0, kept = 0;
+for (const [oldUrl] of mapping){
+  const abs = path.join(DIST, oldUrl);
+  if (!fs.existsSync(abs)) continue;
+  const rel = oldUrl.replace(/^\//, '');
+  if (blob.indexOf(oldUrl) >= 0 || blob.indexOf(rel) >= 0){ kept++; continue; }
+  fs.unlinkSync(abs);
+  removed++;
+}
+console.log('[rewrite-refs] cleanup removed=' + removed + ' kept=' + kept);
+
+
 // 5) 验证：不应有 ?v= 残留
 let leftover = 0;
 for (const hf of htmlFiles){

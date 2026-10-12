@@ -17,7 +17,6 @@
   var ID = 'sd-history-root';
   var BODY_SEL = '#sd-hist-body';
   var MAX = 100;
-  var CLOSE_ANIM_MS = 300;
   var PLACEHOLDER = '—';
 
   var records = [];
@@ -148,18 +147,14 @@
   var root = null;
   var panel = null;
   var bodyEl = null;
-  var closeTimer = null;
-  var escHandler = null;
-  var focusBefore = null;
+  var CORE = window.ApexSheetCore;
+  var ctx = CORE.createContext(
+    function () { return root; },
+    function () { return panel; }
+  );
 
-  function lockScroll() {
-    if (window.ApexSheetLock) window.ApexSheetLock.lock();
-    else document.body.style.overflow = 'hidden';
-  }
-  function unlockScroll() {
-    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
-    else document.body.style.overflow = '';
-  }
+  function lockScroll() { CORE.lockScroll(); }
+  function unlockScroll() { CORE.unlockScroll(); }
 
   function ensure() {
     if (root) return root;
@@ -184,69 +179,21 @@
     if (bodyEl) bodyEl.innerHTML = renderList();
   }
 
-  function bindEsc() {
-    if (escHandler) return;
-    escHandler = function (e) {
-      if (e.key === 'Escape' || e.keyCode === 27) close();
-    };
-    document.addEventListener('keydown', escHandler);
-  }
-  function unbindEsc() {
-    if (!escHandler) return;
-    document.removeEventListener('keydown', escHandler);
-    escHandler = null;
-  }
+  function bindEsc() { CORE.bindEsc(ctx, function () { close(); }); }
+  function unbindEsc() { CORE.unbindEsc(ctx); }
 
   function open() {
-    var r = ensure();
-    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-
-    var wasOpen = r.classList.contains('is-open');
-    refresh();
-    r.removeAttribute('hidden');
-    void r.offsetWidth;
-    r.classList.add('is-open');
-
-    if (!wasOpen) {
-      lockScroll();
-      focusBefore = (document.activeElement && document.activeElement !== document.body)
-        ? document.activeElement : null;
-      bindEsc();
-    }
-    if (panel && typeof panel.focus === 'function') {
-      try { panel.focus(); } catch (e) {}
-    }
+    CORE.open(ctx, { ensure: ensure, onOpen: refresh });
   }
 
-  function close() {
-    if (!root || !root.classList.contains('is-open')) return;
-
-    root.classList.remove('is-open');
-    unlockScroll();
-    unbindEsc();
-
-    if (focusBefore && typeof focusBefore.focus === 'function') {
-      try { focusBefore.focus(); } catch (e) {}
-    }
-    focusBefore = null;
-
-    if (closeTimer) clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () {
-      closeTimer = null;
-      if (root && !root.classList.contains('is-open')) {
-        root.setAttribute('hidden', '');
-      }
-    }, CLOSE_ANIM_MS);
-  }
+  function close() { CORE.close(ctx); }
 
   function clear() {
     records.length = 0;
     if (isOpen()) refresh();   // 打开状态下清空立刻反映
   }
 
-  function isOpen() {
-    return !!(root && root.classList.contains('is-open'));
-  }
+  function isOpen() { return CORE.isOpen(ctx); }
 
   window.ApexHistory = Object.freeze({
     open: open,

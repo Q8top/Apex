@@ -15,7 +15,6 @@
   'use strict';
 
   var ID = 'sd-rules-root';
-  var CLOSE_ANIM_MS = 300;
 
   var CONTENT = Object.freeze([
     Object.freeze({ h: '玩法说明', p: '6 列 × 5 行棋盘。每次旋转后生成 30 个符号，相同符号数量达标即中奖。' }),
@@ -32,18 +31,14 @@
   // ── 模块级状态 ────────────────────────────────────────────────────
   var root = null;
   var panel = null;
-  var closeTimer = null;
-  var escHandler = null;
-  var focusBefore = null;
+  var CORE = window.ApexSheetCore;
+  var ctx = CORE.createContext(
+    function () { return root; },
+    function () { return panel; }
+  );
 
-  function lockScroll() {
-    if (window.ApexSheetLock) window.ApexSheetLock.lock();
-    else document.body.style.overflow = 'hidden';
-  }
-  function unlockScroll() {
-    if (window.ApexSheetLock) window.ApexSheetLock.unlock();
-    else document.body.style.overflow = '';
-  }
+  function lockScroll() { CORE.lockScroll(); }
+  function unlockScroll() { CORE.unlockScroll(); }
 
 
   // ── 赔率表渲染 ────────────────────────────────────────────────
@@ -157,63 +152,16 @@
     return root;
   }
 
-  function bindEsc() {
-    if (escHandler) return;
-    escHandler = function (e) {
-      if (e.key === 'Escape' || e.keyCode === 27) close();
-    };
-    document.addEventListener('keydown', escHandler);
-  }
-  function unbindEsc() {
-    if (!escHandler) return;
-    document.removeEventListener('keydown', escHandler);
-    escHandler = null;
-  }
+  function bindEsc() { CORE.bindEsc(ctx, function () { close(); }); }
+  function unbindEsc() { CORE.unbindEsc(ctx); }
 
   function open() {
-    var r = ensure();
-    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-
-    var wasOpen = r.classList.contains('is-open');
-    r.removeAttribute('hidden');
-    void r.offsetWidth;
-    r.classList.add('is-open');
-
-    if (!wasOpen) {
-      lockScroll();
-      focusBefore = (document.activeElement && document.activeElement !== document.body)
-        ? document.activeElement : null;
-      bindEsc();
-    }
-    if (panel && typeof panel.focus === 'function') {
-      try { panel.focus(); } catch (e) {}
-    }
+    CORE.open(ctx, { ensure: ensure });
   }
 
-  function close() {
-    if (!root || !root.classList.contains('is-open')) return;
+  function close() { CORE.close(ctx); }
 
-    root.classList.remove('is-open');
-    unlockScroll();
-    unbindEsc();
-
-    if (focusBefore && typeof focusBefore.focus === 'function') {
-      try { focusBefore.focus(); } catch (e) {}
-    }
-    focusBefore = null;
-
-    if (closeTimer) clearTimeout(closeTimer);
-    closeTimer = setTimeout(function () {
-      closeTimer = null;
-      if (root && !root.classList.contains('is-open')) {
-        root.setAttribute('hidden', '');
-      }
-    }, CLOSE_ANIM_MS);
-  }
-
-  function isOpen() {
-    return !!(root && root.classList.contains('is-open'));
-  }
+  function isOpen() { return CORE.isOpen(ctx); }
 
   window.ApexRules = Object.freeze({
     open: open,

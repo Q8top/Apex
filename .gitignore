@@ -100,3 +100,9 @@ audit-logs/
 .audit-backup-*.json
 .audit-backup-*.txt
 .audit-backup-*
+
+# apex export snapshots (large, generated)
+docs/APEX-ALL-*.md
+docs/APEX-ASSETS-*.md
+docs/APEX-BUNDLE-*.md
+docs/APEX-DIST-*.md
