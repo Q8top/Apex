@@ -730,3 +730,19 @@ body{padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
       0 0 0 8px rgba(255,182,210,.7);
   }
 }
+
+/* ==== RTL (Arabic) ==== */
+html[dir='rtl'] body{direction:rtl;}
+html[dir='rtl'] .sd-header{
+  grid-template-columns:44px 1fr 44px 44px;
+}
+html[dir='rtl'] .sd-header-back svg{transform:scaleX(-1);}
+html[dir='rtl'] .sd-sheet-item svg.sd-sheet-chevron{transform:scaleX(-1);}
+html[dir='rtl'] .sd-win-fb-wheat--l{left:auto;right:12px;}
+html[dir='rtl'] .sd-win-fb-wheat--r{right:auto;left:12px;}
+html[dir='rtl'] .sd-bet-pill{direction:rtl;}
+html[dir='rtl'] .sd-stat-label{letter-spacing:0;}
+html[dir='rtl'] .sd-set-row input[type='checkbox']::after{left:auto;right:3px;}
+html[dir='rtl'] .sd-set-row input[type='checkbox']:checked::after{transform:translateX(-18px);}
+html[dir='rtl'] .sd-bigwin-rays{animation-direction:reverse;}
+html[dir='rtl'] .sd-hist-time{text-align:right;}

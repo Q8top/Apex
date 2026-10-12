@@ -79,6 +79,19 @@ jobs:
         run: |
           node tests/engine/all.test.cjs
 
+      - name: API unit tests (spin / buy-fs / history / deposit)
+        run: |
+          node tests/api/spin.test.cjs
+          node tests/api/buy-fs.test.cjs
+          node tests/api/history.test.cjs
+          node tests/api/deposit.test.cjs
+
+      - name: Lint sweet rules (quick)
+        run: node scripts/lint-sweet-rules.cjs
+
+      - name: Tab order static check
+        run: node scripts/check-tab-order.cjs
+
       - name: E2E tests (SQL + API)
         run: |
           node tests/e2e/spin-sql.cjs
