@@ -176,6 +176,11 @@ function renderCatContent(content, catKey){
       var gid = el.dataset.game;
       var g = window.ApexGamesRegistry && window.ApexGamesRegistry.getById(gid);
       if (!g || !g.live) return;
+      // entry='page' -> direct navigation; default 'modal' -> picker
+      if (g.entry === 'page' && typeof g.url === 'string' && g.url) {
+        location.href = g.url;
+        return;
+      }
       if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
         window.ApexSweetModal.open({
           cover: g.src,

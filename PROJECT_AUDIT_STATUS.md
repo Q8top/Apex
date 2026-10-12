@@ -72,7 +72,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 | 7 | `src/engine/payout.js` | 1459 | `48dc07d6` | - | NOT_AUDITED |
 | 8 | `src/engine/rng.js` | 1875 | `06af8aa6` | - | NOT_AUDITED |
 | 9 | `src/engine/tumble.js` | 1369 | `57bd0d12` | - | NOT_AUDITED |
-| 10 | `src/games/registry.js` | 1582 | `84011780` | - | NOT_AUDITED |
+| 10 | `src/games/registry.js` | 3398 | `b0c34ba1` | - | **FROZEN** |
 | 11 | `src/games/sugar-rush/config/math-profile.js` | 2464 | `a8d0a0ca` | - | NOT_AUDITED |
 | 12 | `src/games/sugar-rush/config/paytable.locked.js` | 1517 | `785deb55` | - | NOT_AUDITED |
 | 13 | `src/games/sugar-rush/config/symbols.locked.js` | 2117 | `a816be33` | - | NOT_AUDITED |

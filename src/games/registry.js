@@ -4,6 +4,25 @@
  * Single source of truth for the game catalog.
  * To add a new game: edit THIS file only.
  * apex-app.js reads from here and never hardcodes game ids.
+ *
+ * Entry shape:
+ *   id       required, unique, [a-z0-9-]+
+ *   n        required, display name (escaped Unicode OK)
+ *   src      required, cover image path
+ *   live     optional bool, true = clickable, opens per entry
+ *   entry    optional, one of 'modal' (default) | 'page'
+ *            - modal: opens ApexSweetModal with brand+subtitle+url
+ *            - page:  navigates directly to url
+ *            - absent: treated as 'modal'
+ *   brand    optional, data-brand token passed to modal (e.g. 'sweet')
+ *   subtitle optional, modal subtitle override
+ *   url      optional, redirect target; when entry='page' it is required,
+ *            when entry='modal' it overrides the modal's default target
+ *
+ * Invariants (checked at boot in apex-app.js):
+ *   - all ids unique
+ *   - entry in {undefined,'modal','page'}
+ *   - entry==='page' implies typeof url === 'string' && url.length > 0
  */
 var GAMES = [
   {id:"olympus", n:"\u5965\u6797\u5339\u65af", src:"/assets/games/olympus.webp"},
@@ -25,8 +44,30 @@ function getById(id){
   return null;
 }
 
+function validate(){
+  var seen = Object.create(null);
+  for (var i = 0; i < GAMES.length; i++){
+    var g = GAMES[i];
+    if (!g || typeof g.id !== 'string' || !/^[a-z0-9-]+$/.test(g.id)){
+      throw new Error('GAMES_REGISTRY: invalid id at ' + i);
+    }
+    if (seen[g.id]) throw new Error('GAMES_REGISTRY: duplicate id ' + g.id);
+    seen[g.id] = 1;
+    if (typeof g.n !== 'string' || !g.n) throw new Error('GAMES_REGISTRY: missing n for ' + g.id);
+    if (typeof g.src !== 'string' || !g.src) throw new Error('GAMES_REGISTRY: missing src for ' + g.id);
+    if (g.entry != null && g.entry !== 'modal' && g.entry !== 'page'){
+      throw new Error('GAMES_REGISTRY: invalid entry for ' + g.id + ': ' + g.entry);
+    }
+    if (g.entry === 'page' && (typeof g.url !== 'string' || !g.url)){
+      throw new Error('GAMES_REGISTRY: entry=page requires url for ' + g.id);
+    }
+  }
+  return true;
+}
+
 window.ApexGamesRegistry = Object.freeze({
   GAMES: GAMES,
-  getById: getById
+  getById: getById,
+  validate: validate
 });
 })();

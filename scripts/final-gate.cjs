@@ -13,6 +13,7 @@ var SUITES = [
   ['config: paytable-locked', 'node tests/config/paytable-locked.test.cjs', 'fail: 0'],
   ['config: math-profile', 'node tests/config/math-profile.test.cjs', 'fail: 0'],
   ['config: public-rules', 'node tests/config/public-rules.test.cjs', 'fail: 0'],
+  ['config: games-registry', 'node tests/config/games-registry.test.cjs', 'fail: 0'],
   ['config: version', 'node tests/config/version.test.cjs', 'fail: 0'],
   ['engine: sweet', 'node tests/engine/all.test.cjs', '0 \u5931\u8d25'],
   ['routing: sweet', 'node tests/games/sweet-demo/routing.cjs', 'failed=0'],
