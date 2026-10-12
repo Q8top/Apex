@@ -19,10 +19,17 @@
  *   url      optional, redirect target; when entry='page' it is required,
  *            when entry='modal' it overrides the modal's default target
  *
- * Invariants (checked at boot in apex-app.js):
+ * Invariants (checked by validate() below):
  *   - all ids unique
  *   - entry in {undefined,'modal','page'}
  *   - entry==='page' implies typeof url === 'string' && url.length > 0
+ *
+ * Consumer status (audit round-check of files 1-10):
+ *   GAMES    read by apex-app.js renderCatContent
+ *   getById  read by apex-app.js on card click
+ *   validate TEST-ONLY: exercised by tests/config/games-registry.test.cjs;
+ *            not invoked at boot. Kept as a forward-compatible guard
+ *            for any future runtime that builds a catalog adapter.
  */
 var GAMES = Object.freeze([
   {id:"olympus", n:"\u5965\u6797\u5339\u65af", src:"/assets/games/olympus.webp"},
