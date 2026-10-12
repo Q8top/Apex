@@ -94,6 +94,7 @@ var state = {
   }
 
   var GAME_MODE = getGameMode();
+try { document.documentElement.setAttribute("data-game-mode", GAME_MODE); } catch (e) {}
 
   function initRuntime() {
     if (!window.ApexGameRuntime) return null;

@@ -656,3 +656,77 @@ body{padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
   .sd-ctrl--primary .sd-ic-lg{width:24px;height:24px;}
   .sd-ctrl--primary .sd-ctrl-label{font-size:9px;}
 }
+
+/* ==== desktop / large tablet (768px+) ==== */
+@media (min-width:768px){
+  body{
+    display:block;
+    background:
+      radial-gradient(40% 60% at 20% 20%,rgba(255,182,210,.35) 0%,rgba(255,182,210,0) 70%),
+      radial-gradient(40% 60% at 80% 80%,rgba(214,168,255,.32) 0%,rgba(214,168,255,0) 70%),
+      #fafafb;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .sd-header{
+    grid-template-columns:56px 1fr 56px 56px;
+    padding:12px 20px;
+    border-radius:24px 24px 0 0;
+  }
+  .sd-header-back,.sd-header-mute,.sd-header-menu{width:48px;height:48px;}
+  .sd-header-main{font-size:20px;}
+  .sd-header-pill{font-size:12px;padding:4px 12px;}
+  .sd-header-icon{width:44px;height:44px;flex:0 0 44px;}
+  .sd-main{
+    max-width:420px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:0 0 24px 24px;
+    box-shadow:0 30px 80px rgba(17,17,17,.12),
+      0 0 0 1px rgba(255,182,210,.35);
+    padding:16px 16px 24px;
+    min-height:calc(100vh - 40px);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .sd-stage{flex:1;}
+  .sd-board{
+    padding:12px;
+    gap:6px;
+    border-radius:20px;
+    box-shadow:0 8px 24px rgba(17,17,17,.08),
+      0 0 0 1px rgba(17,17,17,.05);
+  }
+  .sd-sym{border-radius:12px;}
+  .sd-win-card{padding:14px 20px 18px;border-radius:18px;}
+  .sd-win-star{width:20px;height:20px;}
+  .sd-win-value{font-size:44px;}
+  .sd-win-label{font-size:13px;}
+  .sd-stats{gap:10px;}
+  .sd-stat{padding:14px 10px;border-radius:14px;}
+  .sd-stat-ic{width:18px;height:18px;}
+  .sd-stat-label{font-size:11px;}
+  .sd-stat-value{font-size:16px;}
+  .sd-bet-row{gap:10px;}
+  .sd-reset-btn{padding:0 20px;font-size:13px;min-height:56px;border-radius:16px;}
+  .sd-bet-pill{min-height:56px;border-radius:16px;padding:6px;}
+  .sd-bet-btn{width:48px;height:48px;}
+  .sd-bet-btn .sd-ic{width:24px;height:24px;}
+  .sd-bet-value{font-size:22px;}
+  .sd-controls{gap:14px;padding:8px 0 4px;}
+  .sd-ctrl{width:72px;height:72px;}
+  .sd-ctrl .sd-ic{width:28px;height:28px;}
+  .sd-ctrl-label{font-size:11px;}
+  .sd-ctrl--primary{width:108px;height:108px;}
+  .sd-ctrl--primary .sd-ic-lg{width:46px;height:46px;}
+  .sd-ctrl--primary .sd-ctrl-label{font-size:12px;}
+  .sd-ctrl--primary:hover{
+    box-shadow:0 16px 40px rgba(255,79,163,.55),
+      0 0 0 6px rgba(255,255,255,.98),
+      0 0 0 8px rgba(255,182,210,.7);
+  }
+}

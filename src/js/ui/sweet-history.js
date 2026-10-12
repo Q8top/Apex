@@ -80,6 +80,89 @@
     return null;
   }
 
+    function _replaceAll(arr) {
+    records.length = 0;
+    if (!Array.isArray(arr)) return;
+    for (var i = 0; i < arr.length; i++) {
+      var rec = arr[i];
+      if (!isValidRec(rec)) continue;
+      records.push({
+        ts: Number(rec.ts),
+        betMinor: Math.floor(Number(rec.betMinor)),
+        winMinor: Math.floor(Number(rec.winMinor)),
+        spinId: (typeof rec.spinId === 'string') ? rec.spinId.slice(0, 12) : null,
+        ratio: Number.isFinite(Number(rec.ratio)) ? Number(rec.ratio) : null,
+        tumbleCount: Number.isSafeInteger(rec.tumbleCount) ? rec.tumbleCount : 0,
+        fsTriggered: !!rec.fsTriggered,
+        maxMultiplier: Number.isFinite(Number(rec.maxMultiplier)) ? Number(rec.maxMultiplier) : 0,
+        balanceAfter: Number.isSafeInteger(rec.balanceAfter) ? rec.balanceAfter : null
+      });
+    }
+    if (records.length > MAX) records.length = MAX;
+  }
+
+  function _loadLocal() {
+    try {
+      var hist = window.ApexLocalHistory;
+      if (!hist || typeof hist.load !== 'function') return [];
+      var raw = hist.load();
+      var out = [];
+      for (var i = 0; i < raw.length; i++) {
+        var r = raw[i];
+        out.push({
+          ts: Number(r.t) || Date.now(),
+          betMinor: Math.round((Number(r.bet) || 0) * 100),
+          winMinor: Math.round((Number(r.win) || 0) * 100),
+          spinId: null,
+          ratio: null,
+          tumbleCount: 0,
+          fsTriggered: !!r.fs,
+          maxMultiplier: 0,
+          balanceAfter: null
+        });
+      }
+      return out.reverse();
+    } catch (e) { return []; }
+  }
+
+  function _loadRemote() {
+    var client = window.apiClient;
+    if (!client || typeof client.get !== 'function') return Promise.resolve([]);
+    return client.get('/api/game/history?game=sweet&limit=30').then(function (resp) {
+      if (!resp || resp.success !== true || !Array.isArray(resp.items)) return [];
+      var out = [];
+      for (var i = 0; i < resp.items.length; i++) {
+        var it = resp.items[i];
+        var bet = Number(it.effective_bet_minor || it.bet_minor || 0);
+        var win = Number(it.win_minor || 0);
+        out.push({
+          ts: it.created_at ? new Date(it.created_at).getTime() : Date.now(),
+          betMinor: bet,
+          winMinor: win,
+          spinId: (typeof it.spin_id === 'string') ? it.spin_id.slice(0, 12) : null,
+          ratio: bet > 0 ? (win / bet) : null,
+          tumbleCount: 0,
+          fsTriggered: !!it.is_free,
+          maxMultiplier: 0,
+          balanceAfter: Number.isSafeInteger(it.balance_after) ? it.balance_after : null
+        });
+      }
+      return out;
+    }).catch(function () { return []; });
+  }
+
+  function _refreshAsync() {
+    var mode = (document.documentElement.getAttribute('data-game-mode') || 'demo');
+    if (mode === 'real') {
+      _loadRemote().then(function (arr) {
+        _replaceAll(arr);
+        if (isOpen()) refresh();
+      });
+    } else {
+      _replaceAll(_loadLocal());
+    }
+  }
+
   function renderList() {
     // 统计汇总
     var totalSpins = records.length;
@@ -192,6 +275,7 @@
   function unbindEsc() { CORE.unbindEsc(ctx); }
 
   function open() {
+    _refreshAsync();
     CORE.open(ctx, { ensure: ensure, onOpen: refresh });
   }
 
