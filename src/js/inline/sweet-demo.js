@@ -1361,7 +1361,38 @@ function toast(msg) {
   }
   try { window.ApexLocalHistory = Object.freeze({ load: _histLoad, push: _histPush, key: HIST_KEY, max: HIST_MAX }); } catch (e) {}
 
-function bindEvents() {
+// S3.3-1: balance poll (real mode only, visibility aware)
+  var _pollTimer = 0;
+  var _pollInFlight = false;
+  var POLL_INTERVAL = 20000;
+  function _pollBalance() {
+    if (GAME_MODE !== 'real') return;
+    if (document.hidden) return;
+    if (_pollInFlight) return;
+    var p = runtime && runtime.getProvider && runtime.getProvider();
+    if (!p || typeof p.getBalance !== 'function') return;
+    _pollInFlight = true;
+    p.getBalance().then(function (bal) {
+      var minor = bal && typeof bal.minor === 'number' ? bal.minor : null;
+      if (minor !== null) {
+        var v = minor / 100;
+        if (Math.abs(v - state.balance) > 0.005) {
+          state.balance = v;
+          renderStats();
+        }
+      }
+    }).catch(function () {}).then(function () { _pollInFlight = false; });
+  }
+  function _startBalancePoll() {
+    if (_pollTimer) return;
+    _pollTimer = setInterval(_pollBalance, POLL_INTERVAL);
+    _pollBalance();
+  }
+  function _stopBalancePoll() {
+    if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = 0; }
+  }
+
+  function bindEvents() {
     // 全局按钮点击 → ui-tap 音效（事件委托，避免逐个绑定）
     document.addEventListener('click', function (e) {
       if (!e.target || !e.target.closest) return;
@@ -1441,8 +1472,14 @@ function bindEvents() {
     });
 
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden && state.autoSpin) stopAuto();
-    });
+    if (document.hidden) {
+      if (state.autoSpin) stopAuto();
+      _stopBalancePoll();
+    } else {
+      _pollBalance();
+      _startBalancePoll();
+    }
+  });
   }
 
   function handleMenuAction(action) {
@@ -1593,6 +1630,7 @@ function bindEvents() {
       }
     } catch (e) {}
 
+    if (GAME_MODE === 'real') _startBalancePoll();
     // real 模式：异步拉服务端余额
     if (runtime && GAME_MODE === 'real') {
       var p0 = runtime.getProvider && runtime.getProvider();

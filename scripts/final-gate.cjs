@@ -20,6 +20,7 @@ var SUITES = [
   ['api: buy-fs', 'node tests/api/buy-fs.test.cjs', 'fail: 0'],
   ['api: history', 'node tests/api/history.test.cjs', 'fail: 0'],
   ['api: deposit', 'node tests/api/deposit.test.cjs', 'fail: 0'],
+  ['api: state', 'node tests/api/state.test.cjs', 'fail: 0'],
   ['security: no secret leak', 'node scripts/check-no-secret-leak.cjs', 'OK'],
   ['security: no math leak', 'node scripts/check-no-math-leak.cjs', '0 leaks'],
   ['security: client/server sep', 'bash scripts/check-client-server-separation.sh', 'passed'],

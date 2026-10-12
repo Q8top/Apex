@@ -17,6 +17,13 @@ export async function onRequestGet({ request, env }){
   }
 
   const nowIso = new Date().toISOString();
+  let walletBalance = null;
+  try {
+    const u = await env.apex_db.prepare(
+      'SELECT wallet_balance FROM users WHERE id = ? LIMIT 1'
+    ).bind(user.userId).first();
+    if (u) walletBalance = u.wallet_balance;
+  } catch (e) {}
   let row = null;
   try {
     row = await env.apex_db.prepare(
@@ -37,6 +44,7 @@ export async function onRequestGet({ request, env }){
 
   return jsonResponse({
     success: true,
+    balance: walletBalance,
     fs: row ? {
       sessionId: row.id,
       remaining: row.remaining_spins,
