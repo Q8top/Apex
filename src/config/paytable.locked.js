@@ -24,6 +24,15 @@
  *                          (Design note: unlike symbols.locked.
  *                          assertSymbolsLocked, this returns false for
  *                          a falsy argument instead of throwing.)
+ *
+ * Consumer status (audit round-check of files 1-10):
+ *   PAYTABLE_SNAPSHOT  read by engines via _ptl alias.
+ *   MIN_MATCH          read by engines via _ptl alias.
+ *   verifyAgainst      TEST-ONLY: exercised by
+ *                      tests/config/paytable-locked.test.cjs; no
+ *                      production caller today. Kept as a
+ *                      forward-compatible guard for future engine
+ *                      integrations that build their own paytable.
  */
 (function(){
 'use strict';

@@ -45,7 +45,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 | # | path | size | sha8 | bin | state |
 |---|---|---|---|---|---|
 | 1 | `src/config/math-profile.js` | 6083 | `3be708ae` | - | **FROZEN** |
-| 2 | `src/config/paytable.locked.js` | 2835 | `e2a2a552` | - | **FROZEN** |
+| 2 | `src/config/paytable.locked.js` | 3312 | `bf535a8a` | - | **FROZEN** |
 | 3 | `src/config/public-rules.js` | 1419 | `1a22e5a9` | - | **FROZEN** |
 | 4 | `src/config/symbols.locked.js` | 4517 | `c65fdc47` | - | **FROZEN** |
 | 5 | `src/config/version.js` | 1302 | `06c860f9` | - | **FROZEN** |
