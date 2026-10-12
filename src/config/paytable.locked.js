@@ -13,7 +13,7 @@
  *   - scatter and multiplier symbols have paytableKey:null and are
  *     NOT present in SNAPSHOT
  *   - MIN_MATCH is the lowest cluster size that pays
- *   - cluster tiers per symbol derived from SNAPSHOT (currently 8/10/12);
+ *   - cluster tiers per symbol derived from SNAPSHOT (currently 5/6/8/10/12/15);
  *     verifyAgainst reads tiers from SNAPSHOT, not a hardcoded list
  *
  * Public API:
@@ -37,17 +37,17 @@
 (function(){
 'use strict';
 var SNAPSHOT = Object.freeze({
-  BANANA:       Object.freeze({ 8: 0.25, 10: 0.75, 12: 2 }),
-  GRAPE:        Object.freeze({ 8: 0.4,  10: 0.9,  12: 4 }),
-  WATERMELON:   Object.freeze({ 8: 0.5,  10: 1.0,  12: 5 }),
-  PLUM:         Object.freeze({ 8: 0.8,  10: 1.2,  12: 8 }),
-  APPLE:        Object.freeze({ 8: 1.0,  10: 1.5,  12: 10 }),
-  BLUE_CANDY:   Object.freeze({ 8: 1.5,  10: 2.0,  12: 12 }),
-  GREEN_CANDY:  Object.freeze({ 8: 2.0,  10: 5.0,  12: 15 }),
-  PURPLE_CANDY: Object.freeze({ 8: 2.5,  10: 10.0, 12: 25 }),
-  RED_HEART:    Object.freeze({ 8: 10.0, 10: 25.0, 12: 50 })
+  BANANA:       Object.freeze({ 5: 0.0833, 6: 0.125, 8: 0.25, 10: 0.75, 12: 2.0, 15: 5.0 }),
+  GRAPE:        Object.freeze({ 5: 0.1333, 6: 0.2, 8: 0.4, 10: 0.9, 12: 4.0, 15: 10.0 }),
+  WATERMELON:   Object.freeze({ 5: 0.1667, 6: 0.25, 8: 0.5, 10: 1.0, 12: 5.0, 15: 12.5 }),
+  PLUM:         Object.freeze({ 5: 0.2667, 6: 0.4, 8: 0.8, 10: 1.2, 12: 8.0, 15: 20.0 }),
+  APPLE:        Object.freeze({ 5: 0.3333, 6: 0.5, 8: 1.0, 10: 1.5, 12: 10.0, 15: 25.0 }),
+  BLUE_CANDY:   Object.freeze({ 5: 0.5, 6: 0.75, 8: 1.5, 10: 2.0, 12: 12.0, 15: 30.0 }),
+  GREEN_CANDY:  Object.freeze({ 5: 0.6667, 6: 1.0, 8: 2.0, 10: 5.0, 12: 15.0, 15: 37.5 }),
+  PURPLE_CANDY: Object.freeze({ 5: 0.8333, 6: 1.25, 8: 2.5, 10: 10.0, 12: 25.0, 15: 62.5 }),
+  RED_HEART:    Object.freeze({ 5: 3.3333, 6: 5.0, 8: 10.0, 10: 25.0, 12: 50.0, 15: 125.0 })
 });
-var MIN_MATCH = 8;
+var MIN_MATCH = 5;
 function verifyAgainst(actual){
   if (!actual) return false;
   var snapKeys = Object.keys(SNAPSHOT);

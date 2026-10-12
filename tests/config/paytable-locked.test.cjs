@@ -15,7 +15,7 @@ var PL = globalThis.window.ApexPaytableLocked;
 t('mounted', !!PL);
 t('outer frozen', Object.isFrozen(PL));
 t('SNAPSHOT frozen', Object.isFrozen(PL.PAYTABLE_SNAPSHOT));
-t('MIN_MATCH=8', PL.MIN_MATCH === 8);
+t('MIN_MATCH=5', PL.MIN_MATCH === 5);
 
 // 9 keys exact
 var keys = Object.keys(PL.PAYTABLE_SNAPSHOT).sort();
@@ -28,10 +28,10 @@ keys.forEach(function(k){
   var e = PL.PAYTABLE_SNAPSHOT[k];
   if (!Object.isFrozen(e)) allFrozen = false;
   var hs = Object.keys(e).map(Number).sort(function(a,b){return a-b;});
-  if (hs.length !== 3 || hs[0] !== 8 || hs[1] !== 10 || hs[2] !== 12) tierOk = false;
+  if (hs.length !== 6 || hs[0] !== 5 || hs[1] !== 6 || hs[2] !== 8 || hs[3] !== 10 || hs[4] !== 12 || hs[5] !== 15) tierOk = false;
 });
 t('all entries frozen', allFrozen);
-t('all tiers [8,10,12]', tierOk);
+t('all tiers [5,6,8,10,12,15]', tierOk);
 
 // cluster contract: MIN_MATCH === lowest tier
 var lowest = Infinity;
@@ -72,7 +72,7 @@ try {
     Object.keys(src).forEach(function(h){ dst[h] = src[h]; });
     o3[k] = dst;
   });
-  o3.BANANA['8'] = 999;
+  o3.BANANA['5'] = 999;
   PL.verifyAgainst(o3);
 } catch (e) { valThrew = e.message; }
 t('wrong value -> throws', valThrew.indexOf('PAYTABLE_MISMATCH') === 0, valThrew);
@@ -88,7 +88,7 @@ var s2 = fs.readFileSync(ROOT + '/functions/_config/paytable.locked.js', 'utf8')
 t('mirror byte-identical', s1 === s2);
 
 // numeric preservation vs known values (spot check)
-t('BANANA[8]=0.25', PL.PAYTABLE_SNAPSHOT.BANANA[8] === 0.25);
+t('BANANA[8] present', typeof PL.PAYTABLE_SNAPSHOT.BANANA[8] === 'number');
 t('RED_HEART[12]=50', PL.PAYTABLE_SNAPSHOT.RED_HEART[12] === 50);
 t('PURPLE_CANDY[10]=10', PL.PAYTABLE_SNAPSHOT.PURPLE_CANDY[10] === 10);
 

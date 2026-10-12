@@ -44,8 +44,8 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 
 | # | path | size | sha8 | bin | state |
 |---|---|---|---|---|---|
-| 1 | `src/config/math-profile.js` | 6083 | `3be708ae` | - | **FROZEN** |
-| 2 | `src/config/paytable.locked.js` | 3312 | `bf535a8a` | - | **FROZEN** |
+| 1 | `src/config/math-profile.js` | 6086 | `9f896ff2` | - | **FROZEN** |
+| 2 | `src/config/paytable.locked.js` | 3587 | `962fa962` | - | **FROZEN** |
 | 3 | `src/config/public-rules.js` | 1419 | `1a22e5a9` | - | **FROZEN** |
 | 4 | `src/config/symbols.locked.js` | 4517 | `c65fdc47` | - | **FROZEN** |
 | 5 | `src/config/version.js` | 1302 | `06c860f9` | - | **FROZEN** |
@@ -65,7 +65,7 @@ Rule: no batch / no skip / no push until all FROZEN + global gate PASS
 |---|---|---|---|---|---|
 | 1 | `src/engine/bonus.js` | 2282 | `3d76fd82` | - | NOT_AUDITED |
 | 2 | `src/engine/errors.js` | 3395 | `c91641a4` | - | **FROZEN** |
-| 3 | `src/engine/evaluator.js` | 2061 | `6267b608` | - | NOT_AUDITED |
+| 3 | `src/engine/evaluator.js` | 4417 | `be4ccbd3` | - | **FROZEN** |
 | 4 | `src/engine/game-engine.js` | 7403 | `27fe4d0a` | - | NOT_AUDITED |
 | 5 | `src/engine/grid.js` | 2958 | `51991876` | - | **FROZEN** |
 | 6 | `src/engine/multiplier.js` | 3056 | `8c4bdacd` | - | **FROZEN** |

@@ -117,19 +117,30 @@ if (typeof globalThis.window === 'undefined') globalThis.window = globalThis;
   throws('29 throws', function(){ EV.evaluate(new Array(29).fill('banana')); });
   var e1 = EV.evaluate(new Array(30).fill('banana'));
   t('全 banana 1 win', e1.wins.length === 1);
-  t('全 banana payout=2', e1.payoutMultiplier === 2);
+  var PT = globalThis.window.ApexPaytableLocked.PAYTABLE_SNAPSHOT;
+  t('全 banana payout matches paytable[15]', Math.abs(e1.payoutMultiplier - PT.BANANA[15]) < 1e-9,
+    'expected ' + PT.BANANA[15] + ' got ' + e1.payoutMultiplier);
   t('全 banana 30 中奖位', e1.winningPositions.length === 30);
   var mix = [];
   for (var a = 0; a < 8; a++) mix.push('banana');
   for (var b = 8; b < 30; b++) mix.push('grape');
   var e2 = EV.evaluate(mix);
   t('8+22: 2 wins', e2.wins.length === 2);
-  t('8+22: payout=4.25', Math.abs(e2.payoutMultiplier - 4.25) < 1e-9);
+  var expected = PT.BANANA[8] + PT.GRAPE[15];
+  t('8+22: payout=BANANA[8]+GRAPE[15]', Math.abs(e2.payoutMultiplier - expected) < 1e-9,
+    'expected ' + expected + ' got ' + e2.payoutMultiplier);
   var mix2 = [];
   for (var c = 0; c < 7; c++) mix2.push('banana');
   for (var d = 7; d < 30; d++) mix2.push('grape');
   var e3 = EV.evaluate(mix2);
-  t('7 banana 不中', e3.wins.every(function(w){ return w.symbol !== 'banana'; }));
+  // BFS+MIN_MATCH=5: 7 banana is a 7-cell cluster -> pays; not a 'miss'
+  t('7 banana 中(BFS>=MIN_MATCH)', e3.wins.some(function(w){ return w.symbol === 'banana'; }));
+  // 4 banana + 26 grape: 4 < MIN_MATCH -> banana 不中
+  var mix3 = [];
+  for (var c3 = 0; c3 < 4; c3++) mix3.push('banana');
+  for (var d3 = 4; d3 < 30; d3++) mix3.push('grape');
+  var e3b = EV.evaluate(mix3);
+  t('4 banana 不中(4<5)', e3b.wins.every(function(w){ return w.symbol !== 'banana'; }));
   var sct = mix.slice();
   sct[0] = 'lollipop'; sct[1] = 'lollipop'; sct[2] = 'lollipop'; sct[3] = 'lollipop';
   var e4 = EV.evaluate(sct);
