@@ -169,16 +169,16 @@ jobs:
         run: node tools/rtp-gate-v3.cjs
         env:
           RTP_MODE: real
-          RTP_SPINS: '50000'
-          RTP_SEEDS: '1'
-          RTP_THRESHOLD: '0.05'
+          RTP_SPINS: '200000'
+          RTP_SEEDS: '2'
+          RTP_THRESHOLD: '0.03'
       - name: Sugar Rush RTP (fast, demo)
         run: node tools/rtp-gate-v3.cjs
         env:
           RTP_MODE: demo
-          RTP_SPINS: '50000'
-          RTP_SEEDS: '1'
-          RTP_THRESHOLD: '0.05'
+          RTP_SPINS: '200000'
+          RTP_SEEDS: '2'
+          RTP_THRESHOLD: '0.03'
 
   cap-enforcement-gate:
     needs: test
