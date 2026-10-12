@@ -55,6 +55,10 @@ function assertSymbolsLocked(nextSymbols){
   }
   var cur = Object.keys(LOCKED).sort().join(',');
   var nxt = Object.keys(nextSymbols).sort().join(',');
+  // Note: literal 'SYMBOLS_LOCKED:' string rather than CODES.SYMBOLS_LOCKED
+  // because this module loads before src/engine/errors.js in HTML order.
+  // The engine error code of the same name is a separate protocol
+  // constant used by throw sites in the engine layer.
   if (cur !== nxt) throw new Error('SYMBOLS_LOCKED: ' + cur + ' !== ' + nxt);
   return true;
 }
