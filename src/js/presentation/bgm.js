@@ -105,4 +105,13 @@ window.ApexBgm = Object.freeze({
   attach:attach, toBase:toBase, toFreeSpins:toFreeSpins,
   stop:stop, setEnabled:setEnabled, isOn:isOn
 });
+
+/* P3e-2/3/4: register with ApexAudioLifecycle */
+if (typeof window !== 'undefined' && window.ApexAudioLifecycle){
+  try {
+    window.ApexAudioLifecycle.register('bgm', {
+      getCtx: function(){ return ctx; }
+    });
+  } catch (e) {}
+}
 })();

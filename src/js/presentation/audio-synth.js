@@ -345,4 +345,13 @@
     getVolumes: getVolumes,
     hasSupport: function () { return !!(window.AudioContext || window.webkitAudioContext); }
   });
+
+/* P3e-2/3/4: register with ApexAudioLifecycle */
+if (typeof window !== 'undefined' && window.ApexAudioLifecycle){
+  try {
+    window.ApexAudioLifecycle.register('synth', {
+      getCtx: function(){ return ctx; }
+    });
+  } catch (e) {}
+}
 })();

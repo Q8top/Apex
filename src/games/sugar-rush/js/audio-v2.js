@@ -186,4 +186,13 @@ window.ApexSRAudio=Object.freeze({
   sfxFSEntry:sfxFSEntry,sfxFSExit:sfxFSExit,
   _isReady:function(){return !!ctx;}
 });
+
+/* P3e-3: register with ApexAudioLifecycle */
+if (typeof window !== 'undefined' && window.ApexAudioLifecycle){
+  try {
+    window.ApexAudioLifecycle.register('sugar-rush-audio', {
+      getCtx: function(){ return ctx; }
+    });
+  } catch (e) {}
+}
 })();

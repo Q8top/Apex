@@ -711,8 +711,15 @@ var state = {
       var html = '';
       for (var j = 0; j < CELLS; j++) {
         var delay = ((j * 137) % 36) / 10;
-        // S4.1: --sd-sym-delay 改用 class 变体（CSP 禁止内联 style）
-        html += '<div class="sd-sym sd-delay-' + (j * 137 % 36) + '"><svg viewBox="0 0 160 160" aria-hidden="true"><use href="#' + ids[j] + '"/></svg></div>';
+        // P3c: 不再依赖 HTML 内联 <symbol>，用 ApexRenderer.placeholder 兜底
+        var ph = '';
+        try {
+          if (window.ApexRenderer && typeof window.ApexRenderer.placeholder === 'function') {
+            ph = window.ApexRenderer.placeholder(ids[j], { size: '100%' });
+          }
+        } catch (e) {}
+        if (!ph) ph = '<svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="#ccc"/></svg>';
+        html += '<div class="sd-sym sd-delay-' + (j * 137 % 36) + '">' + ph + '</div>';
       }
       el.board.innerHTML = html;
     }
