@@ -1,0 +1,116 @@
+/* APEX DESIGN SYSTEM v1.0.0 FINAL
+   Document APEX-DS-001 | Freeze 2026-10-12
+   Source of truth: docs/DESIGN.md
+   This is the ONLY authority for design tokens. */
+:root{
+  color-scheme:light;
+  --paper-0:#ffffff; --paper-1:#f7f7f8;
+  --paper-2:#f0f0f3; --paper-3:#e9e9ec; --paper-4:#d8d8dc;
+  --ink-0:#111111;   --ink-1:#2a2a30;
+  --ink-2:#6a6a75;   --ink-3:#a8a8ad;   --ink-4:#d0d0d5;
+  --accent:#ff4fa3;  --accent-soft:#ff7ab8;
+  --accent-deep:#e13c8c; --accent-glow:rgba(255,79,163,.28);
+  --sr-accent:#7c2fff; --sr-accent-soft:#a678ff;
+  --sr-accent-deep:#5c1fbf; --sr-rose:#e5397e;
+  --gold:#d9b45b; --gold-soft:#f3d582; --gold-deep:#b89540;
+  --success:#16a34a; --warning:#f59e0b;
+  --danger:#dc2626;  --info:#3b82f6;
+
+  /* surface & border aliases */
+  --surface-page:var(--paper-1);
+  --surface-card:var(--paper-0);
+  --surface-control:var(--paper-0);
+  --surface-hover:var(--paper-1);
+  --surface-pressed:var(--paper-2);
+  --border-subtle:var(--paper-2);
+  --border-default:var(--paper-3);
+  --border-strong:var(--paper-4);
+
+  /* shadows */
+  --shadow-1:0 1px 2px rgba(17,17,17,.04);
+  --shadow-2:0 4px 16px rgba(17,17,17,.06);
+  --shadow-3:0 8px 24px rgba(17,17,17,.10);
+  --shadow-4:0 20px 60px rgba(17,17,17,.14);
+  --shadow-inset:inset 0 1px 0 rgba(255,255,255,.60);
+  --shadow-glow-pink:0 8px 24px var(--accent-glow);
+  --shadow-glow-gold:0 8px 24px rgba(217,180,91,.28);
+
+  /* radii */
+  --r-xs:8px; --r-sm:12px; --r-md:16px;
+  --r-lg:22px; --r-xl:28px; --r-pill:999px;
+
+  /* spacing */
+  --s-1:4px;  --s-2:8px;  --s-3:12px; --s-4:16px;
+  --s-5:20px; --s-6:24px; --s-8:32px;
+  --s-10:40px; --s-12:48px;
+
+  /* typography */
+  --font-sans:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --f-display:clamp(28px,6vw,40px);
+  --f-h1:clamp(20px,5vw,24px);
+  --f-h2:17px; --f-body:14px; --f-label:12px;
+  --f-caption:11px; --f-micro:9px; --f-mono:13px;
+  --fw-regular:500; --fw-medium:600;
+  --fw-bold:700;    --fw-black:800;
+  --lh-tight:1.2; --lh-normal:1.4; --lh-loose:1.55;
+  --ls-tight:-0.5px; --ls-normal:0; --ls-wide:1.4px;
+
+  /* motion */
+  --ease-out:cubic-bezier(.22,.70,.36,1);
+  --ease-pop:cubic-bezier(.22,1.00,.36,1);
+  --ease-bounce:cubic-bezier(.34,1.30,.64,1);
+  --ease-sharp:cubic-bezier(.40,0,.20,1);
+  --duration-instant:100ms;
+  --duration-fast:150ms;
+  --duration-normal:220ms;
+  --duration-panel:320ms;
+  --duration-number:480ms;
+
+  /* z-index */
+  --z-base:1; --z-header:100; --z-controls:200; --z-toast:900;
+  --z-sheet:1000; --z-confirm:1100;
+  --z-modal:2000; --z-transition:3000;
+
+  /* layout */
+  --layout-max:480px;
+  --layout-gutter:16px;
+  --header-height:56px;
+  --stats-height:44px;
+  --board-gap:4px;
+  --board-padding:12px;
+
+  /* interaction */
+  --target-min:44px;
+  --focus-width:2px;
+  --focus-offset:3px;
+
+  /* safe area */
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-right:env(safe-area-inset-right,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-left:env(safe-area-inset-left,0px);
+}
+
+/* theme entry: Sweet Bonanza */
+[data-game-theme="sweet"]{
+  --game-accent:var(--accent);
+  --game-accent-soft:var(--accent-soft);
+  --game-accent-deep:var(--accent-deep);
+  --game-accent-glow:var(--accent-glow);
+}
+
+/* theme entry: Sugar Rush */
+[data-game-theme="sugar-rush"]{
+  --game-accent:var(--sr-accent);
+  --game-accent-soft:var(--sr-accent-soft);
+  --game-accent-deep:var(--sr-accent-deep);
+  --game-accent-glow:rgba(124,47,255,.24);
+}
+
+/* numeric utility */
+.sd-numeric{
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum";
+  white-space:nowrap;
+}
