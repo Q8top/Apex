@@ -159,6 +159,8 @@ async function executeBuy(env, userId, spinId, betMinor) {
   };
 }
 
+export { executeBuy };
+
 export async function onRequestOptions(context) {
   var requestId = context.data && context.data.requestId ? context.data.requestId : '';
   return optionsResponse(requestId);
