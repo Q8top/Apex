@@ -33,7 +33,7 @@ var PROFILES = Object.freeze({
 function getProfile(mode){
   // S1.6: real 档物理隔离在 functions/_config/，客户端禁止读取
   if (mode !== 'demo'){
-    throw new Error('MATH_PROFILE: real 参数不可在客户端读取');
+    throw new Error('MATH_PROFILE: real profile is server-only');
   }
   return PROFILES.demo;
 }
@@ -90,21 +90,21 @@ function validate(){
     var m = modes[i];
     var p = PROFILES[m];
     var keys = Object.keys(p.baseWeights);
-    if (keys.length !== 9) throw new Error('MATH_PROFILE: ' + m + ' 需要 9 个 regular 符号');
+    if (keys.length !== 9) throw new Error('MATH_PROFILE: ' + m + ' requires exactly 9 regular symbols');
     var total = 0;
     for (var j = 0; j < keys.length; j++){
       var w = p.baseWeights[keys[j]];
       if (!Number.isSafeInteger(w) || w <= 0){
-        throw new Error('MATH_PROFILE: ' + m + '.' + keys[j] + ' 权重必须正整数');
+        throw new Error('MATH_PROFILE: ' + m + '.' + keys[j] + ' weight must be positive integer');
       }
       total += w;
     }
-    if (total <= 0) throw new Error('MATH_PROFILE: ' + m + ' 总权重为 0');
+    if (total <= 0) throw new Error('MATH_PROFILE: ' + m + ' total weight is 0');
     if (!Number.isSafeInteger(p.scatterWeight) || p.scatterWeight < 0){
-      throw new Error('MATH_PROFILE: ' + m + '.scatterWeight 必须非负整数');
+      throw new Error('MATH_PROFILE: ' + m + '.scatterWeight must be non-negative integer');
     }
     if (!Number.isSafeInteger(p.multiplierWeight) || p.multiplierWeight < 0){
-      throw new Error('MATH_PROFILE: ' + m + '.multiplierWeight 必须非负整数');
+      throw new Error('MATH_PROFILE: ' + m + '.multiplierWeight must be non-negative integer');
     }
     // Upper bounds to prevent RNG saturation from accidental large weights.
     var W_MAX = 10000;
@@ -123,7 +123,7 @@ function validate(){
       throw new Error('MATH_PROFILE: ' + m + '.fsMultiplierWeight invalid');
     }
     if (!p.targetRtp || p.targetRtp.min >= p.targetRtp.max){
-      throw new Error('MATH_PROFILE: ' + m + '.targetRtp 区间非法');
+      throw new Error('MATH_PROFILE: ' + m + '.targetRtp range invalid');
     }
   }
   return true;

@@ -97,7 +97,7 @@ t('checkSimResult: low hitRate rejected', hrLow.ok === false);
 // --- client file must not contain 'real' profile data ---
 var src = fs.readFileSync(ROOT + '/src/config/math-profile.js', 'utf8');
 t('client file: no real: entry', !/real\s*:\s*Object\.freeze/.test(src));
-t('client file: getProfile guard present', src.indexOf('real 参数不可在客户端读取') !== -1);
+t('client file: getProfile guard present', src.indexOf('real profile is server-only') !== -1 || src.indexOf('real 参数不可在客户端读取') !== -1);
 
 console.log('');
 console.log('========== config/math-profile ==========');
