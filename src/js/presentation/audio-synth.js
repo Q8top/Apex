@@ -143,6 +143,15 @@
     }
   }
 
+  var _randBuf = new Uint32Array(1);
+  function _rand(){ // uniform [-1, 1); crypto-only, no Math.random
+    var c = (typeof crypto !== 'undefined' && crypto &&
+             typeof crypto.getRandomValues === 'function') ? crypto : null;
+    if (!c) return 0;
+    c.getRandomValues(_randBuf);
+    return (_randBuf[0] / 0x80000000) - 1;
+  }
+
   function _makeIR(c, seconds, decay) {
     var rate = c.sampleRate || 44100;
     var len = Math.max(1, Math.floor(rate * seconds));
@@ -151,7 +160,7 @@
       var d = buf.getChannelData(ch);
       for (var i = 0; i < len; i++) {
         var t = i / len;
-        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
+        d[i] = _rand() * Math.pow(1 - t, decay);
       }
     }
     return buf;
@@ -174,7 +183,7 @@
     var len = Math.max(1, Math.floor(rate * durSec));
     var buf = c.createBuffer(1, len, rate);
     var d = buf.getChannelData(0);
-    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    for (var i = 0; i < len; i++) d[i] = _rand();
     var src = c.createBufferSource();
     src.buffer = buf;
     var flt = c.createBiquadFilter();

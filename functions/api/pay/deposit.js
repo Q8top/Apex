@@ -9,8 +9,11 @@ const MAX_DEPOSIT = 5000000;
 const PROVIDER = 'placeholder';
 
 function genIntentId() {
-  var rand = Math.floor(Math.random() * 1e12).toString(36);
-  return 'dep-' + Date.now().toString(36) + '-' + rand;
+  var buf = new Uint8Array(8);
+  globalThis.crypto.getRandomValues(buf);
+  var hex = '';
+  for (var i = 0; i < buf.length; i++) hex += (buf[i] + 0x100).toString(16).slice(1);
+  return 'dep-' + Date.now().toString(36) + '-' + hex;
 }
 
 function validate(body) {

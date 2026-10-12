@@ -16,8 +16,11 @@ const BUY_FS_AWARD = 10;
 const FS_TTL_MS = 24 * 60 * 60 * 1000;
 
 function genEventId(prefix) {
-  var rand = Math.floor(Math.random() * 1e12).toString(36);
-  return prefix + '-' + Date.now().toString(36) + '-' + rand;
+  var buf = new Uint8Array(8);
+  globalThis.crypto.getRandomValues(buf);
+  var hex = '';
+  for (var i = 0; i < buf.length; i++) hex += (buf[i] + 0x100).toString(16).slice(1);
+  return prefix + '-' + Date.now().toString(36) + '-' + hex;
 }
 
 function guardStmt(env) {
