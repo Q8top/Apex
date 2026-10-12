@@ -180,6 +180,8 @@ function renderCatContent(content, catKey){
         window.ApexSweetModal.open({
           cover: g.src,
           title: g.n,
+          subtitle: g.subtitle || '\u9009\u62E9\u6E38\u620F\u6A21\u5F0F',
+          brand: g.brand || '',
           target: g.url || '/sweet-demo.html'
         });
       }

@@ -141,13 +141,16 @@
   function applyContent(opts) {
     opts = opts || {};
     state.currentTarget = opts.target || '/sweet-demo.html';
-    if (!opts.cover && !opts.title) return;
     var r = document.getElementById(ROOT_ID);
     if (!r) return;
     var img = r.querySelector('.sweet-modal-cover img');
     if (img && opts.cover) img.setAttribute('src', opts.cover);
     var h = r.querySelector('.sweet-modal-title');
     if (h && opts.title) h.textContent = opts.title;
+    var sub = r.querySelector('.sweet-modal-subtitle');
+    if (sub && opts.subtitle) sub.textContent = opts.subtitle;
+    if (opts.brand) r.setAttribute('data-brand', String(opts.brand));
+    else r.removeAttribute('data-brand');
   }
 
   function open(opts) {

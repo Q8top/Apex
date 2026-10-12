@@ -171,3 +171,74 @@ body.sweet-modal-locked{overflow:hidden;touch-action:none}
   .sweet-mode:hover .sweet-mode-badge{transform:none}
   .sweet-mode:hover .sweet-mode-arrow{transform:none}
 }
+
+
+/* ============================================================
+   P1d · Brand differentiation (sweet / sugar-rush)
+   ------------------------------------------------------------
+   通过 .sweet-modal-root[data-brand="..."] 切换主色调。
+   - sweet      粉紫（原版保持默认，不用 data-brand 也行）
+   - sugar-rush 紫金（与 SR game-v2.css 主色对齐）
+   ============================================================ */
+
+.sweet-modal-root {
+  --sw-accent: #ff4fa3;
+  --sw-accent-soft: rgba(255,79,163,.08);
+  --sw-accent-border: rgba(255,79,163,.35);
+  --sw-accent-shadow: rgba(255,79,163,.22);
+  --sw-real-glow: rgba(217,180,91,.16);
+}
+
+.sweet-modal-root[data-brand="sugar-rush"] {
+  --sw-accent: #7c2fff;
+  --sw-accent-soft: rgba(124,47,255,.08);
+  --sw-accent-border: rgba(124,47,255,.38);
+  --sw-accent-shadow: rgba(124,47,255,.24);
+  --sw-real-glow: rgba(255,210,74,.22);
+}
+
+/* eyebrow 品牌字色 */
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-modal-eyebrow {
+  color: #7c2fff;
+  letter-spacing: 1.6px;
+}
+
+/* demo 卡：hover 边框 + badge 光圈 */
+.sweet-modal-root .sweet-mode--demo:hover {
+  border-color: var(--sw-accent-border);
+}
+.sweet-modal-root .sweet-mode--demo .sweet-mode-badge {
+  box-shadow: 0 0 0 4px var(--sw-accent-soft);
+  transition: box-shadow .18s ease;
+}
+.sweet-modal-root .sweet-mode--demo:hover .sweet-mode-badge {
+  box-shadow: 0 0 0 6px var(--sw-accent-soft);
+}
+
+/* demo SVG 圆形底色：data-brand=sugar-rush 时用紫色 */
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-mode--demo .sweet-mode-badge {
+  background: #7c2fff;
+}
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-mode--demo .sweet-mode-badge svg circle {
+  fill: #7c2fff;
+}
+
+/* real 卡 hover 光圈走品牌色 */
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-mode--real:hover {
+  box-shadow: 0 8px 24px var(--sw-real-glow), 0 8px 24px rgba(0,0,0,.18);
+}
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-mode--real .sweet-mode-badge {
+  box-shadow: 0 0 0 4px var(--sw-real-glow);
+}
+
+/* 封面图底色（透明 PNG/WebP 时露出主色） */
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-modal-cover {
+  box-shadow: 0 0 0 1px rgba(124,47,255,.12),
+              0 8px 20px rgba(124,47,255,.10),
+              0 0 40px rgba(124,47,255,.08);
+}
+
+/* footer 文案在 sugar-rush 时略染紫 */
+.sweet-modal-root[data-brand="sugar-rush"] .sweet-modal-footer {
+  color: #8a7aa8;
+}
