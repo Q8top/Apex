@@ -17,7 +17,6 @@
  *   PROVIDER_UNAVAILABLE     6   provider/wallet missing
  *   INVALID_RESULT           3   provider returned malformed result
  *   NETWORK_ERROR            5   transport failure to backend
- *   SYMBOLS_LOCKED           2   symbol set drift from contract
  *   INVALID_MAX              4   RNG upper bound invalid
  *   INVALID_MULTIPLIER      14   payout multiplier out of range
  *   INVALID_GRID_SIZE       11   grid array length mismatch
@@ -27,6 +26,11 @@
  * RESERVED (defined for forward-compat; zero consumers today):
  *   SPIN_IN_PROGRESS         -   planned client-side reentry guard
  *   RTP_HARD_LIMIT           -   planned server-side RTP cap guard
+ *   SYMBOLS_LOCKED           -   the config/symbols.locked.js module
+ *                                throws a literal 'SYMBOLS_LOCKED:'
+ *                                string because it loads before this
+ *                                file; the constant exists so future
+ *                                engine-side guards can branch on it.
  *   Do not remove; server-side guards are being added incrementally
  *   and these codes are already baked into protocol reasoning.
  *
