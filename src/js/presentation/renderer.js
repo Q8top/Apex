@@ -3,14 +3,13 @@
  * 职责：源优先级 + 单源降级 + PLACEHOLDER 兜底 + bootCheck()。
  *
  * 源优先级：
- *   1) ApexSymbolsV2.get()         —— 新 V2 SVG（uid 隔离）
- *   2) ApexEngineSymbolRender      —— 旧引擎分发（内部再走 FruitSvg / painters）
- *   3) PLACEHOLDER                 —— 灰底 + 首字母，永不空白
+ *   1) ApexSymbolsV2.get()  —— V2 SVG（uid 隔离）
+ *   2) PLACEHOLDER          —— 灰底 + 首字母，永不空白
  *
  * 契约：
  *   - render(id, opts) 恒返回含 <svg> 的字符串（除非 id 完全非法，返回空 PLACEHOLDER）
  *   - bootCheck() 返回结构化报告，不抛错
- *   - 不改 ApexSymbolsV2 / ApexEngineSymbolRender 语义
+ *   - 不改 ApexSymbolsV2 语义
  */
 (function () {
   'use strict';
@@ -74,26 +73,11 @@
     }
   }
 
-  function tryLegacy(symbolId, opts) {
-    var ER = window.ApexEngineSymbolRender;
-    if (!ER || typeof ER.render !== 'function') return null;
-    try {
-      var out = ER.render(symbolId, opts);
-      if (!out || out.indexOf('<svg') < 0) return null;
-      return out;
-    } catch (e) {
-      return null;
-    }
-  }
 
   function resolveSource(symbolId) {
     var V2 = window.ApexSymbolsV2;
     if (V2 && typeof V2.has === 'function') {
       try { if (V2.has(symbolId)) return 'v2'; } catch (e) {}
-    }
-    var ER = window.ApexEngineSymbolRender;
-    if (ER && typeof ER.has === 'function') {
-      try { if (ER.has(symbolId)) return 'legacy'; } catch (e) {}
     }
     return 'placeholder';
   }
@@ -102,8 +86,6 @@
     opts = opts || {};
     var out = tryV2(symbolId, opts);
     if (out) return out;
-    out = tryLegacy(symbolId, opts);
-    if (out) return out;
     return placeholder(symbolId, opts);
   }
 
@@ -111,7 +93,6 @@
     var report = {
       sources: {
         v2: !!(window.ApexSymbolsV2 && typeof window.ApexSymbolsV2.get === 'function'),
-        legacy: !!(window.ApexEngineSymbolRender && typeof window.ApexEngineSymbolRender.render === 'function'),
         locked: !!(window.ApexSymbolsLocked && (typeof window.ApexSymbolsLocked.list === 'function' || typeof window.ApexSymbolsLocked.get === 'function'))
       },
       symbols: {},
@@ -151,8 +132,8 @@
       report.totalChecked++;
     }
 
-    // 无任何真实源时，整体标记为不通过
-    if (!report.sources.v2 && !report.sources.legacy) {
+    // V2 未加载，整体标记为不通过
+    if (!report.sources.v2) {
       report.ok = false;
     }
 

@@ -14,13 +14,14 @@
 
   // Step 6b：优先使用新引擎渲染器（src/js/engine/symbols-render.js）
   // 若不可用，则回退到本文件的 <svg><use> 方式
-  function tryEngineRender(symbolId, opts) {
+function tryEngineRender(symbolId, opts) {
     if (typeof window === 'undefined') return '';
-    var R = window.ApexEngineSymbolRender;
+    var R = window.ApexRenderer;
     if (!R || typeof R.render !== 'function') return '';
-    if (!R.has(symbolId)) return '';
     try {
-      return R.render(symbolId, opts || {});
+      var out = R.render(symbolId, opts || {});
+      if (!out || out.indexOf('<svg') < 0) return '';
+      return out;
     } catch (e) {
       return '';
     }
