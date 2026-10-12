@@ -99,7 +99,15 @@
       'sr.rules.notice.item2': '试玩模式余额为虚拟，可随时重置。',
       'sr.toast.insufficient': '余额不足，请重置或降低投注',
       'sr.toast.loginRequired': '请先登录',
-      'sr.toast.realSpinFailed': '旋转失败'
+      'sr.toast.realSpinFailed': '旋转失败',
+      'btn.buy': '买 FS',
+      'btn.cancel': '取消',
+      'btn.confirm': '确认购买',
+      'buy.title': '购买免费旋转',
+      'buy.desc': '支付',
+      'buy.desc2': '，立即获得',
+      'buy.desc3': '次免费旋转',
+      'buy.hint': '购买后进入免费旋转，无需再支付'
     },
     'en-US': {
       'game.title': 'Apex', 'game.demo': 'Demo Mode', 'game.menu': 'Game Menu',
@@ -168,7 +176,15 @@
       'sr.rules.notice.item2': 'Demo balance is virtual and can be reset anytime.',
       'sr.toast.insufficient': 'Insufficient balance',
       'sr.toast.loginRequired': 'Please log in',
-      'sr.toast.realSpinFailed': 'Spin failed'
+      'sr.toast.realSpinFailed': 'Spin failed',
+      'btn.buy': 'Buy FS',
+      'btn.cancel': 'Cancel',
+      'btn.confirm': 'Confirm',
+      'buy.title': 'Buy Free Spins',
+      'buy.desc': 'Pay',
+      'buy.desc2': ', receive',
+      'buy.desc3': 'free spins',
+      'buy.hint': 'Enter free spins after purchase'
     },
     'ja': {
       'game.title': 'キャンディクラッシュ',
@@ -259,6 +275,14 @@
       'sr.toast.insufficient': '残高不足',
       'sr.toast.loginRequired': 'ログインしてください',
       'sr.toast.realSpinFailed': 'スピン失敗',
+      'btn.buy': 'FSを買う',
+      'btn.cancel': 'キャンセル',
+      'btn.confirm': '確認',
+      'buy.title': 'フリースピン購入',
+      'buy.desc': '支払い',
+      'buy.desc2': '、即度獲得',
+      'buy.desc3': '回フリースピン',
+      'buy.hint': '購入後すぐフリースピン開始'
     },
     'ko': {
       'game.title': '캔디 크러시',
@@ -349,6 +373,14 @@
       'sr.toast.insufficient': '잔액 부족',
       'sr.toast.loginRequired': '로그인',
       'sr.toast.realSpinFailed': '스핀 실패',
+      'btn.buy': 'FS 구매',
+      'btn.cancel': '취소',
+      'btn.confirm': '구매 확인',
+      'buy.title': '프리스핀 구매',
+      'buy.desc': '지불',
+      'buy.desc2': ', 즉시 획득',
+      'buy.desc3': '회 프리스핀',
+      'buy.hint': '구매 후 바로 프리스핀 시작'
     },
     'es': {
       'game.title': 'Apex Candy',
@@ -439,6 +471,14 @@
       'sr.toast.insufficient': 'Saldo insuficiente',
       'sr.toast.loginRequired': 'Inicia sesión',
       'sr.toast.realSpinFailed': 'Giro fallido',
+      'btn.buy': 'Comprar FS',
+      'btn.cancel': 'Cancelar',
+      'btn.confirm': 'Confirmar compra',
+      'buy.title': 'Comprar giros gratis',
+      'buy.desc': 'Pagar',
+      'buy.desc2': ', recibe',
+      'buy.desc3': 'giros gratis',
+      'buy.hint': 'Entra en giros gratis tras la compra'
     },
     'pt-BR': {
       'game.title': 'Apex Candy',
@@ -529,6 +569,14 @@
       'sr.toast.insufficient': 'Saldo insuficiente',
       'sr.toast.loginRequired': 'Faça login',
       'sr.toast.realSpinFailed': 'Giro falhou',
+      'btn.buy': 'Comprar FS',
+      'btn.cancel': 'Cancelar',
+      'btn.confirm': 'Confirmar',
+      'buy.title': 'Comprar rodadas grátis',
+      'buy.desc': 'Pagar',
+      'buy.desc2': ', receba',
+      'buy.desc3': 'rodadas grátis',
+      'buy.hint': 'Entre nas rodadas grátis após a compra'
     },
     'ar': {
       'game.title': 'حلوى الانفجار',
@@ -686,7 +734,23 @@
       'sr.rules.notice.item2': 'Demo balance is virtual and can be reset anytime.',
       'sr.toast.insufficient': 'Insufficient balance',
       'sr.toast.loginRequired': 'Please log in',
-      'sr.toast.realSpinFailed': 'Spin failed'
+      'sr.toast.realSpinFailed': 'Spin failed',
+      'btn.buy': 'شراء FS',
+      'btn.cancel': 'إلغاء',
+      'btn.confirm': 'تأكيد',
+      'buy.title': 'شراء دورات مجانية',
+      'buy.desc': 'ادفع',
+      'buy.desc2': '، احصل',
+      'buy.desc3': 'دورات مجانية',
+      'buy.hint': 'ادخل الدورات المجانية بعد الشراء',
+      'btn.buy': 'ซื้อ FS',
+      'btn.cancel': 'ยกเลิก',
+      'btn.confirm': 'ยืนยัน',
+      'buy.title': 'ซื้อฟรีสปิน',
+      'buy.desc': 'จ่าย',
+      'buy.desc2': 'รับทันที',
+      'buy.desc3': 'ฟรีสปิน',
+      'buy.hint': 'เข้าฟรีสปินทันทีหลังซื้อ'
     },
     'vi': {
       'game.title': 'Apex', 'game.demo': 'Demo Mode', 'game.menu': 'Game Menu',
@@ -755,7 +819,15 @@
       'sr.rules.notice.item2': 'Demo balance is virtual and can be reset anytime.',
       'sr.toast.insufficient': 'Insufficient balance',
       'sr.toast.loginRequired': 'Please log in',
-      'sr.toast.realSpinFailed': 'Spin failed'
+      'sr.toast.realSpinFailed': 'Spin failed',
+      'btn.buy': 'Mua FS',
+      'btn.cancel': 'Hủy',
+      'btn.confirm': 'Xác nhận',
+      'buy.title': 'Mua vòng quay miễn phí',
+      'buy.desc': 'Trả',
+      'buy.desc2': ', nhận ngay',
+      'buy.desc3': 'vòng quay miễn phí',
+      'buy.hint': 'Vào vòng quay miễn phí sau khi mua'
     },
     'id': {
       'game.title': 'Apex', 'game.demo': 'Demo Mode', 'game.menu': 'Game Menu',
@@ -824,7 +896,15 @@
       'sr.rules.notice.item2': 'Demo balance is virtual and can be reset anytime.',
       'sr.toast.insufficient': 'Insufficient balance',
       'sr.toast.loginRequired': 'Please log in',
-      'sr.toast.realSpinFailed': 'Spin failed'
+      'sr.toast.realSpinFailed': 'Spin failed',
+      'btn.buy': 'Beli FS',
+      'btn.cancel': 'Batal',
+      'btn.confirm': 'Konfirmasi',
+      'buy.title': 'Beli putaran gratis',
+      'buy.desc': 'Bayar',
+      'buy.desc2': ', dapatkan',
+      'buy.desc3': 'putaran gratis',
+      'buy.hint': 'Masuk putaran gratis setelah pembelian'
     },
     'ms': {
       'game.title': 'Apex', 'game.demo': 'Demo Mode', 'game.menu': 'Game Menu',
@@ -893,7 +973,15 @@
       'sr.rules.notice.item2': 'Demo balance is virtual and can be reset anytime.',
       'sr.toast.insufficient': 'Insufficient balance',
       'sr.toast.loginRequired': 'Please log in',
-      'sr.toast.realSpinFailed': 'Spin failed'
+      'sr.toast.realSpinFailed': 'Spin failed',
+      'btn.buy': 'Beli FS',
+      'btn.cancel': 'Batal',
+      'btn.confirm': 'Sahkan',
+      'buy.title': 'Beli putaran percuma',
+      'buy.desc': 'Bayar',
+      'buy.desc2': ', dapat',
+      'buy.desc3': 'putaran percuma',
+      'buy.hint': 'Masuk putaran percuma selepas belian'
     }
   };
   Object.keys(STRINGS).forEach(function (k) { Object.freeze(STRINGS[k]); });

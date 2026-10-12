@@ -121,7 +121,7 @@
     html += '<div class="sd-rules-backdrop" data-rules-close="1"></div>';
     html += '<div class="sd-rules-panel" role="dialog" aria-modal="true" aria-labelledby="sd-rules-title" tabindex="-1">';
     html += '<div class="sd-rules-handle"></div>';
-    html += '<header class="sd-rules-header"><h2 id="sd-rules-title">游戏规则</h2></header>';
+    html += '<header class="sd-rules-header"><h2 id="sd-rules-title">游戏规则</h2><button type=\"button\" class=\"sd-rules-close\" aria-label=\"\u5173\u95ed\" data-rules-close=\"1\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6l-12 12\"/></svg></button></header>';
     html += '<div class="sd-rules-body">';
     for (var i = 0; i < CONTENT.length; i++) {
       html += '<section class="sd-rules-block">';
@@ -148,6 +148,15 @@
       if (t.closest('[data-rules-close]')) close();
     });
     document.body.appendChild(root);
+    try { if (window.ApexI18n && typeof window.ApexI18n.apply === 'function') window.ApexI18n.apply(root); } catch (e) {}
+    try {
+      var ns = root.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < ns.length; i++) {
+        var k = ns[i].getAttribute('data-i18n');
+        var v = window.ApexI18n && window.ApexI18n.t ? window.ApexI18n.t(k) : null;
+        if (v && v !== k) ns[i].textContent = v;
+      }
+    } catch (e) {}
     panel = root.querySelector('.sd-rules-panel');
     return root;
   }

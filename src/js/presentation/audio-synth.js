@@ -20,6 +20,9 @@
   var musicGain = null;
   var sfxGain = null;
 
+  var reverbNode = null;
+  var reverbGain = null;
+  var compressorNode = null;
   var vols = {
     enabled: true,
     master: 0.8,
@@ -49,9 +52,27 @@
     masterGain = ctx.createGain();
     musicGain = ctx.createGain();
     sfxGain = ctx.createGain();
+    compressorNode = ctx.createDynamicsCompressor();
+    try {
+      compressorNode.threshold.value = -18;
+      compressorNode.knee.value = 24;
+      compressorNode.ratio.value = 3;
+      compressorNode.attack.value = 0.005;
+      compressorNode.release.value = 0.18;
+    } catch (e) {}
+    reverbNode = ctx.createConvolver();
+    try { reverbNode.buffer = _makeIR(ctx, 2.4, 2.6); } catch (e) { reverbNode = null; }
+    reverbGain = ctx.createGain();
+    reverbGain.gain.value = 0.22;
+    masterGain.connect(compressorNode);
+    compressorNode.connect(ctx.destination);
     musicGain.connect(masterGain);
     sfxGain.connect(masterGain);
-    masterGain.connect(ctx.destination);
+    if (reverbNode && reverbGain) {
+      sfxGain.connect(reverbGain);
+      reverbGain.connect(reverbNode);
+      reverbNode.connect(masterGain);
+    }
     applyGains();
     return ctx;
   }
@@ -122,6 +143,96 @@
     }
   }
 
+  function _makeIR(c, seconds, decay) {
+    var rate = c.sampleRate || 44100;
+    var len = Math.max(1, Math.floor(rate * seconds));
+    var buf = c.createBuffer(2, len, rate);
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch);
+      for (var i = 0; i < len; i++) {
+        var t = i / len;
+        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
+      }
+    }
+    return buf;
+  }
+
+  function noise(opts) {
+    var c = ensureCtx();
+    if (!c) return false;
+    var o = opts || {};
+    var dur = Number.isFinite(o.dur) && o.dur > 0 ? o.dur : 140;
+    var gainVal = Number.isFinite(o.gain) && o.gain >= 0 ? o.gain : 0.08;
+    var filterType = o.filter || 'lowpass';
+    var freqFrom = Number.isFinite(o.freq) && o.freq > 0 ? o.freq : 2000;
+    var freqTo = Number.isFinite(o.freqTo) && o.freqTo > 0 ? o.freqTo : freqFrom;
+    var delay = Number.isFinite(o.delay) && o.delay >= 0 ? o.delay : 0;
+    var bus = (o.bus === 'music') ? musicGain : sfxGain;
+    var now = c.currentTime + delay;
+    var durSec = dur / 1000;
+    var rate = c.sampleRate || 44100;
+    var len = Math.max(1, Math.floor(rate * durSec));
+    var buf = c.createBuffer(1, len, rate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    var src = c.createBufferSource();
+    src.buffer = buf;
+    var flt = c.createBiquadFilter();
+    flt.type = filterType;
+    flt.frequency.setValueAtTime(freqFrom, now);
+    if (freqTo !== freqFrom) {
+      flt.frequency.exponentialRampToValueAtTime(Math.max(40, freqTo), now + durSec);
+    }
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(gainVal, now + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + durSec);
+    src.connect(flt);
+    flt.connect(g);
+    g.connect(bus);
+    src.onended = function () {
+      try { src.disconnect(); } catch (e) {}
+      try { flt.disconnect(); } catch (e) {}
+      try { g.disconnect(); } catch (e) {}
+    };
+    try { src.start(now); src.stop(now + durSec + 0.02); return true; } catch (e) { return false; }
+  }
+
+  function fm(opts) {
+    var c = ensureCtx();
+    if (!c) return false;
+    var o = opts || {};
+    var carrierFreq = Number.isFinite(o.freq) && o.freq > 0 ? o.freq : 440;
+    var modRatio = Number.isFinite(o.ratio) ? o.ratio : 2;
+    var modDepth = Number.isFinite(o.depth) ? o.depth : carrierFreq * 1.5;
+    var dur = Number.isFinite(o.dur) && o.dur > 0 ? o.dur : 220;
+    var gainVal = Number.isFinite(o.gain) && o.gain >= 0 ? o.gain : 0.10;
+    var delay = Number.isFinite(o.delay) && o.delay >= 0 ? o.delay : 0;
+    var bus = (o.bus === 'music') ? musicGain : sfxGain;
+    var now = c.currentTime + delay;
+    var durSec = dur / 1000;
+    var mod = c.createOscillator();
+    mod.type = 'sine';
+    mod.frequency.value = carrierFreq * modRatio;
+    var modGain = c.createGain();
+    modGain.gain.value = modDepth;
+    mod.connect(modGain);
+    var car = c.createOscillator();
+    car.type = o.type || 'sine';
+    car.frequency.value = carrierFreq;
+    modGain.connect(car.frequency);
+    var g = c.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(gainVal, now + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + durSec);
+    car.connect(g);
+    g.connect(bus);
+    mod.onended = function () {
+      try { mod.disconnect(); modGain.disconnect(); car.disconnect(); g.disconnect(); } catch (e) {}
+    };
+    try { mod.start(now); car.start(now); mod.stop(now + durSec + 0.02); car.stop(now + durSec + 0.02); return true; } catch (e) { return false; }
+  }
+
   function tone(opts) {
     var c = ensureCtx();
     if (!c) return false;
@@ -184,86 +295,109 @@
     return true;
   }
 
+  // Commercial-grade presets. All rely on tone/noise/fm primitives.
+  // KISS: no external assets, no randomness in volume, deterministic.
   var PRESETS = {
-    // UI：柔和的三角波"点"（原为 square 刺耳）
-    'ui-tap':      function () { tone({ freq: 900, dur: 60, type: 'triangle', gain: 0.06 }); },
-    // Spin：温和上升
-    'spin-start':  function () { tone({ freq: 380, freqTo: 620, dur: 160, type: 'triangle', gain: 0.09 }); },
-    'spin-stop':   function () { tone({ freq: 620, freqTo: 380, dur: 130, type: 'triangle', gain: 0.08 }); },
-    // Tumble：低沉轻"呼"（原为 sawtooth）
-    'tumble':      function () { tone({ freq: 260, freqTo: 160, dur: 110, type: 'triangle', gain: 0.07 }); },
-
-    // 中奖：由低到高的 2~3 音
-    'win-normal':  function () {
-      tone({ freq: 660, dur: 140, type: 'sine', gain: 0.10 });
-      tone({ freq: 990, dur: 180, type: 'sine', gain: 0.09, delay: 0.10 });
+    'ui-tap': function () {
+      tone({ freq: 1240, freqTo: 880, dur: 55, type: 'sine', gain: 0.06 });
     },
-    'big-win':     function () {
-      [523, 659, 784].forEach(function (f, i) {
-        tone({ freq: f, dur: 180, type: 'sine', gain: 0.10, delay: i * 0.10 });
-      });
+    'spin-start': function () {
+      noise({ freq: 2400, freqTo: 380, dur: 480, gain: 0.10, filter: 'lowpass' });
+      tone({ freq: 220, freqTo: 320, dur: 400, type: 'sine', gain: 0.05, delay: 0.02 });
     },
-    'mega-win':    function () {
-      [523, 659, 784, 1047].forEach(function (f, i) {
-        tone({ freq: f, dur: 200, type: 'sine', gain: 0.11, delay: i * 0.09 });
-      });
+    'spin-stop': function () {
+      tone({ freq: 1320, dur: 45, type: 'sine', gain: 0.09 });
+      tone({ freq: 1760, dur: 60, type: 'triangle', gain: 0.06, delay: 0.04 });
     },
-    'super-win':   function () {
-      [523, 659, 784, 1047].forEach(function (f, i) {
-        tone({ freq: f, dur: 240, type: 'sine', gain: 0.11, delay: i * 0.08 });
-      });
-      tone({ freq: 1318, dur: 500, type: 'sine', gain: 0.08, delay: 0.42 });
+    'tumble': function () {
+      noise({ freq: 800, freqTo: 1800, dur: 110, gain: 0.08, filter: 'bandpass' });
+      tone({ freq: 180, freqTo: 120, dur: 90, type: 'sine', gain: 0.05 });
     },
-    'epic-win':    function () {
-      // 4 音琶音 + 1 收尾（原为 8 音，太噪）
-      [523, 659, 784, 1047].forEach(function (f, i) {
-        tone({ freq: f, dur: 260, type: 'sine', gain: 0.12, delay: i * 0.07 });
-      });
-      tone({ freq: 1568, dur: 700, type: 'sine', gain: 0.09, delay: 0.40 });
-    },
-    'ultra-win':   function () {
-      // 5 音琶音 + 2 长尾（原为 10 音）
-      [523, 659, 784, 1047, 1318].forEach(function (f, i) {
-        tone({ freq: f, dur: 280, type: 'sine', gain: 0.12, delay: i * 0.06 });
-      });
-      tone({ freq: 1568, dur: 900, type: 'sine', gain: 0.09, delay: 0.42 });
-      tone({ freq: 1047, dur: 600, type: 'triangle', gain: 0.07, delay: 0.75 });
-    },
-
-    // Bonus / FS
-    'bonus':       function () {
-      [440, 554, 659].forEach(function (f, i) {
-        tone({ freq: f, dur: 220, type: 'triangle', gain: 0.09, delay: i * 0.11 });
-      });
-    },
-    // 倍率：轻点（原为 square 1400Hz 尖啸）
-    'multiplier':  function () { tone({ freq: 1180, dur: 80, type: 'triangle', gain: 0.05 }); },
-
-    // Tumble 落点：木质"嗒"（去掉 square 900 的尖）
     'tumble-land': function () {
-      tone({ freq: 170, freqTo: 120, dur: 70, type: 'triangle', gain: 0.08 });
+      noise({ freq: 1600, freqTo: 600, dur: 70, gain: 0.10, filter: 'highpass' });
+      tone({ freq: 140, freqTo: 90, dur: 90, type: 'sine', gain: 0.06, delay: 0.01 });
     },
-
-    // FS 炸弹爆炸：低频 + 轻体感（原为 sawtooth 0.18 + sine 0.25 爆音）
+    'win-normal': function () {
+      // Marimba-like 3-note phrase: C5-E5-G5 with quick decay
+      [523.25, 659.25, 783.99].forEach(function (f, i) {
+        tone({ freq: f, dur: 220, type: 'triangle', gain: 0.10, delay: i * 0.10 });
+        tone({ freq: f * 2, dur: 160, type: 'sine', gain: 0.04, delay: i * 0.10 });
+      });
+    },
+    'big-win': function () {
+      // 5-note ascending + pad sweep
+      [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach(function (f, i) {
+        tone({ freq: f, dur: 260, type: 'triangle', gain: 0.11, delay: i * 0.085 });
+        tone({ freq: f * 2, dur: 180, type: 'sine', gain: 0.04, delay: i * 0.085 });
+      });
+      tone({ freq: 261.63, dur: 900, type: 'sine', gain: 0.05, delay: 0.05 });
+      tone({ freq: 329.63, dur: 900, type: 'sine', gain: 0.05, delay: 0.05 });
+    },
+    'mega-win': function () {
+      [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach(function (f, i) {
+        tone({ freq: f, dur: 280, type: 'triangle', gain: 0.11, delay: i * 0.075 });
+        tone({ freq: f * 2, dur: 200, type: 'sine', gain: 0.045, delay: i * 0.075 });
+      });
+      fm({ freq: 523.25, ratio: 1.5, depth: 400, dur: 1200, gain: 0.05, delay: 0.10 });
+    },
+    'super-win': function () {
+      [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1318.51].forEach(function (f, i) {
+        tone({ freq: f, dur: 300, type: 'triangle', gain: 0.12, delay: i * 0.065 });
+        tone({ freq: f * 2, dur: 220, type: 'sine', gain: 0.05, delay: i * 0.065 });
+      });
+      fm({ freq: 261.63, ratio: 2, depth: 600, dur: 1600, gain: 0.06, delay: 0.15 });
+      noise({ freq: 4000, freqTo: 600, dur: 900, gain: 0.04, filter: 'lowpass', delay: 0.20 });
+    },
+    'epic-win': function () {
+      [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00].forEach(function (f, i) {
+        tone({ freq: f, dur: 320, type: 'triangle', gain: 0.12, delay: i * 0.06 });
+        tone({ freq: f * 2, dur: 240, type: 'sine', gain: 0.05, delay: i * 0.06 });
+      });
+      fm({ freq: 261.63, ratio: 1.5, depth: 700, dur: 2000, gain: 0.06, delay: 0.10 });
+      noise({ freq: 5000, freqTo: 400, dur: 1400, gain: 0.05, filter: 'lowpass', delay: 0.30 });
+      tone({ freq: 2093.00, dur: 1400, type: 'sine', gain: 0.06, delay: 0.55 });
+    },
+    'ultra-win': function () {
+      [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 1046.50, 1174.66, 1318.51].forEach(function (f, i) {
+        tone({ freq: f, dur: 340, type: 'triangle', gain: 0.12, delay: i * 0.055 });
+        tone({ freq: f * 2, dur: 260, type: 'sine', gain: 0.05, delay: i * 0.055 });
+      });
+      fm({ freq: 261.63, ratio: 2, depth: 900, dur: 2400, gain: 0.07, delay: 0.10 });
+      fm({ freq: 392.00, ratio: 1.5, depth: 700, dur: 2400, gain: 0.05, delay: 0.20 });
+      noise({ freq: 6000, freqTo: 300, dur: 1800, gain: 0.05, filter: 'lowpass', delay: 0.40 });
+      tone({ freq: 2637.02, dur: 1600, type: 'sine', gain: 0.06, delay: 0.60 });
+    },
+    'bonus': function () {
+      [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach(function (f, i) {
+        tone({ freq: f, dur: 280, type: 'triangle', gain: 0.10, delay: i * 0.10 });
+      });
+      fm({ freq: 261.63, ratio: 1.5, depth: 500, dur: 1800, gain: 0.05, delay: 0.10 });
+      noise({ freq: 5000, freqTo: 500, dur: 1200, gain: 0.045, filter: 'lowpass', delay: 0.20 });
+    },
+    'multiplier': function () {
+      fm({ freq: 1100, ratio: 3, depth: 800, dur: 130, gain: 0.06 });
+    },
     'bomb-explode': function (opts) {
       var intensity = Math.min(100, Math.max(2, (opts && opts.value) || 2));
-      var dur = 220 + intensity * 1.2;
-      tone({ freq: 140, freqTo: 55, dur: dur, type: 'triangle', gain: 0.12 });
-      tone({ freq: 90, freqTo: 50, dur: Math.max(120, dur * 0.6), type: 'sine', gain: 0.10, delay: 0.04 });
+      var dur = 260 + intensity * 1.5;
+      noise({ freq: 3000, freqTo: 100, dur: dur, gain: 0.14, filter: 'lowpass' });
+      tone({ freq: 120, freqTo: 45, dur: dur, type: 'sine', gain: 0.13 });
+      tone({ freq: 60, freqTo: 30, dur: Math.max(160, dur * 0.7), type: 'sine', gain: 0.10, delay: 0.04 });
     },
-    'fs-enter':    function () {
-      [523, 659, 784].forEach(function (f, i) {
-        tone({ freq: f, dur: 260, type: 'triangle', gain: 0.10, delay: i * 0.13 });
+    'fs-enter': function () {
+      [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 1046.50].forEach(function (f, i) {
+        tone({ freq: f, dur: 320, type: 'triangle', gain: 0.10, delay: i * 0.10 });
       });
+      fm({ freq: 261.63, ratio: 2, depth: 600, dur: 2200, gain: 0.055, delay: 0.15 });
     },
     'anticipation': function () {
-      // Two low 'thump' beats: heartbeat during suspense
-      tone({ freq: 180, freqTo: 120, dur: 140, type: 'sine', gain: 0.09 });
-      tone({ freq: 180, freqTo: 120, dur: 140, type: 'sine', gain: 0.09, delay: 0.34 });
+      tone({ freq: 220, freqTo: 165, dur: 140, type: 'sine', gain: 0.09 });
+      tone({ freq: 220, freqTo: 165, dur: 140, type: 'sine', gain: 0.09, delay: 0.32 });
+      tone({ freq: 165, freqTo: 110, dur: 180, type: 'sine', gain: 0.07, delay: 0.66 });
     },
-    'fs-loop':     function () {
-      [784, 988].forEach(function (f, i) {
-        tone({ freq: f, dur: 160, type: 'sine', gain: 0.06, delay: i * 0.09 });
+    'fs-loop': function () {
+      [783.99, 987.77].forEach(function (f, i) {
+        tone({ freq: f, dur: 180, type: 'sine', gain: 0.05, delay: i * 0.10 });
       });
     }
   };

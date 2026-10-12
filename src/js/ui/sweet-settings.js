@@ -125,7 +125,7 @@
       + '<div class="sd-set-backdrop" data-set-close="1"></div>'
       + '<div class="sd-set-panel" role="dialog" aria-modal="true" aria-labelledby="sd-set-title" tabindex="-1">'
       +   '<div class="sd-set-handle"></div>'
-      +   '<header class="sd-set-header"><h2 id="sd-set-title">游戏设置</h2></header>'
+      +   '<header class="sd-set-header"><h2 id="sd-set-title">游戏设置</h2><button type=\"button\" class=\"sd-set-close\" aria-label=\"\u5173\u95ed\" data-set-close=\"1\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6l-12 12\"/></svg></button></header>'
       +   '<div class="sd-set-body">'
       +     '<label class="sd-set-row"><span>音效</span><input type="checkbox" data-k="audioEnabled"></label>'
       +     '<label class="sd-set-row"><span>音乐音量</span><input type="range" min="0" max="1" step="0.1" data-k="musicVolume"></label>'
@@ -179,6 +179,15 @@
       set(patch);
     });
     document.body.appendChild(root);
+    try { if (window.ApexI18n && typeof window.ApexI18n.apply === 'function') window.ApexI18n.apply(root); } catch (e) {}
+    try {
+      var ns = root.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < ns.length; i++) {
+        var k = ns[i].getAttribute('data-i18n');
+        var v = window.ApexI18n && window.ApexI18n.t ? window.ApexI18n.t(k) : null;
+        if (v && v !== k) ns[i].textContent = v;
+      }
+    } catch (e) {}
     panel = root.querySelector('.sd-set-panel');
     return root;
   }

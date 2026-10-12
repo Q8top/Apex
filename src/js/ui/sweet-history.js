@@ -139,7 +139,7 @@
       + '<div class="sd-hist-backdrop" data-hist-close="1"></div>'
       + '<div class="sd-hist-panel" role="dialog" aria-modal="true" aria-labelledby="sd-hist-title" tabindex="-1">'
       +   '<div class="sd-hist-handle"></div>'
-      +   '<header class="sd-hist-header"><h2 id="sd-hist-title">游戏记录</h2></header>'
+      +   '<header class="sd-hist-header"><h2 id="sd-hist-title">游戏记录</h2><button type=\"button\" class=\"sd-hist-close\" aria-label=\"\u5173\u95ed\" data-hist-close=\"1\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6l-12 12\"/></svg></button></header>'
       +   '<div class="sd-hist-body" id="sd-hist-body"></div>'
       + '</div>';
   }
@@ -169,6 +169,15 @@
       if (t.closest('[data-hist-close]')) close();
     });
     document.body.appendChild(root);
+    try { if (window.ApexI18n && typeof window.ApexI18n.apply === 'function') window.ApexI18n.apply(root); } catch (e) {}
+    try {
+      var ns = root.querySelectorAll('[data-i18n]');
+      for (var i = 0; i < ns.length; i++) {
+        var k = ns[i].getAttribute('data-i18n');
+        var v = window.ApexI18n && window.ApexI18n.t ? window.ApexI18n.t(k) : null;
+        if (v && v !== k) ns[i].textContent = v;
+      }
+    } catch (e) {}
     panel = root.querySelector('.sd-hist-panel');
     bodyEl = root.querySelector(BODY_SEL);
     return root;

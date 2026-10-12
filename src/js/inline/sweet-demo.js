@@ -35,6 +35,7 @@ var state = {
     betIndex: DEFAULT_BET_INDEX,
     win: 0,
     autoSpin: false,
+    spinSeq: 0,        // S2.1-18: monotonic id, drops stale async results
     fastMode: false,
     spinning: false,
     bonusLock: false,
@@ -588,7 +589,13 @@ var state = {
       }
       if (haptics) haptics.winPulse(ratio);
       if (window.ApexWinFeedback) {
-        window.ApexWinFeedback.show(state.win, betMinor / 100);
+        var _betY = betMinor / 100; var _ratio = _betY > 0 ? (state.win / _betY) : 0; if (_ratio >= 500) playAudio('ultra-win'); else if (_ratio >= 100) playAudio('epic-win'); else if (_ratio >= 50) playAudio('super-win'); else if (_ratio >= 20) playAudio('big-win'); else playAudio('win-normal'); window.ApexWinFeedback.show(state.win, _betY);
+        try { _histPush({ bet: _betY, win: state.win, mode: GAME_MODE }); } catch (e) {}
+        if (_ratio >= 20) {
+          setTimeout(function () {
+            try { openBigWin(state.win, _ratio); } catch (e) {}
+          }, 1500);
+        }
       }
     }
     if (result.tumbles && result.tumbles.length > 1) {
@@ -685,7 +692,19 @@ var state = {
     el.betPlus = $('sd-bet-plus');
     el.resetBtn = $('sd-reset-btn');
     el.autoBtn = $('sd-auto-btn');
+    el.muteBtn = document.getElementById('sd-mute-btn');
     el.spinBtn = $('sd-spin-btn');
+    el.buyBtn = $('sd-buy-btn');
+    el.buyRoot = $('sd-buy-root');
+    el.buyOk = $('sd-buy-ok');
+    el.buyCancel = $('sd-buy-cancel');
+    el.buyCost = $('sd-buy-cost');
+    el.buySpins = $('sd-buy-spins');
+    el.bigwinRoot = $('sd-bigwin-root');
+    el.bigwinLabel = $('sd-bigwin-label');
+    el.bigwinValue = $('sd-bigwin-value');
+    el.bigwinMult = $('sd-bigwin-mult');
+    el.bigwinOk = $('sd-bigwin-ok');
     el.fastBtn = $('sd-fast-btn');
     el.menuBtn = $('sd-menu-btn');
     el.sheetRoot = $('sd-sheet-root');
@@ -728,6 +747,61 @@ var state = {
 
   var _renderStatsPending = false;
   var _renderStatsPendingCall = null;
+  // S2.1-16: rAF number roll - 480ms ease-out, cancel-safe, honors reduced-motion.
+  var _numState = Object.create(null);
+  function _reducedMotion() {
+    try {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) { return false; }
+  }
+  function _animateNum(el, to) {
+    if (!el) return;
+    var toNum = Number(to);
+    if (!Number.isFinite(toNum)) toNum = 0;
+    var prev = _numState[el.id] || { shown: toNum, raf: 0 };
+    if (prev.raf) { try { cancelAnimationFrame(prev.raf); } catch (e) {} }
+    if (_reducedMotion() || document.hidden || toNum === prev.shown) {
+      el.textContent = fmt(toNum);
+      _numState[el.id] = { shown: toNum, raf: 0 };
+      return;
+    }
+    var from = prev.shown;
+    var delta = toNum - from;
+    if (Math.abs(delta) < 0.005) {
+      el.textContent = fmt(toNum);
+      _numState[el.id] = { shown: toNum, raf: 0 };
+      return;
+    }
+    var t0 = (typeof performance !== 'undefined' && performance.now)
+      ? performance.now() : Date.now();
+    var D = 480;
+    function tick(now) {
+      var t = ((now || Date.now()) - t0) / D;
+      if (t < 0) t = 0; if (t > 1) t = 1;
+      var e = 1 - Math.pow(1 - t, 3);
+      var v = from + delta * e;
+      el.textContent = fmt(v);
+      if (t < 1) {
+        _numState[el.id].raf = requestAnimationFrame(tick);
+      } else {
+        el.textContent = fmt(toNum);
+        _numState[el.id] = { shown: toNum, raf: 0 };
+      }
+    }
+    _numState[el.id] = { shown: from, raf: requestAnimationFrame(tick) };
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) return;
+    for (var id in _numState) {
+      if (_numState[id].raf) {
+        try { cancelAnimationFrame(_numState[id].raf); } catch (e) {}
+        _numState[id].raf = 0;
+      }
+    }
+    if (typeof renderStats === 'function') renderStats();
+  });
+
   function renderStats() {
     // S2.1-15: RAF 批量合并——同一帧内多次调用只渲染一次，消除数字闪烁
     if (_renderStatsPending) {
@@ -747,10 +821,10 @@ var state = {
     else setTimeout(_do, 16);
   }
   function _renderStatsDoWork() {
-    el.balance.textContent = fmt(state.balance);
+    _animateNum(el.balance, state.balance);
     el.bet.textContent = fmt(getBet());
     el.betDisplay.textContent = fmt(getBet());
-    el.win.textContent = fmt(state.win);
+    _animateNum(el.win, state.win);
     el.win.dataset.win = state.win > 0 ? '1' : '0';
   }
 
@@ -813,6 +887,14 @@ var state = {
     if (el.winLabel) el.winLabel.textContent = window.ApexI18n.t('win.label');
   }
 
+  function renderMuteBtn() {
+    if (!el.muteBtn) return;
+    var on = window.ApexSettings ? !!window.ApexSettings.get().audioEnabled : true;
+    el.muteBtn.setAttribute('aria-pressed', on ? 'false' : 'true');
+    var use = el.muteBtn.querySelector('use');
+    if (use) use.setAttribute('href', on ? '#ic-sound' : '#ic-sound-mute');
+  }
+
   function applySettings() {
     if (!window.ApexSettings) return;
     var cfg = window.ApexSettings.get();
@@ -824,6 +906,7 @@ var state = {
     if (haptics) haptics.setEnabled(!!cfg.hapticsEnabled);
     state.fastMode = !!cfg.fastMode;
     if (el.board) el.board.dataset.fast = state.fastMode ? '1' : '0';
+    renderMuteBtn();
     renderFastBtn();
   }
 
@@ -837,6 +920,9 @@ var state = {
     }
 
     state.spinning = true;
+    state.spinSeq = (state.spinSeq | 0) + 1;
+    var _seq = state.spinSeq;
+    state.spinSeqActive = _seq;
     el.board.dataset.spinning = '1';
     renderSpinBtn();
     if (haptics) haptics.pulse('spin');
@@ -1118,7 +1204,118 @@ function toast(msg) {
     }, 1600);
   }
 
-  function bindEvents() {
+    // S2.2-1: buy free spins (demo only, cost 100x bet, 10 spins)
+  var BUY_FS_COST_MULT = 100;
+  var BUY_FS_AWARD = 10;
+
+  function openBuy() {
+    if (state.spinning || state.bonusLock) return;
+    if (!el.buyRoot) return;
+    var cost = getBet() * BUY_FS_COST_MULT;
+    if (el.buyCost) el.buyCost.textContent = fmt(cost);
+    if (el.buySpins) el.buySpins.textContent = String(BUY_FS_AWARD);
+    var enough = state.balance >= cost;
+    if (el.buyOk) {
+      el.buyOk.disabled = !enough;
+      el.buyOk.style.opacity = enough ? '' : '.45';
+      el.buyOk.style.cursor = enough ? '' : 'not-allowed';
+    }
+    el.buyRoot.removeAttribute('hidden');
+    setTimeout(function(){ try { (el.buyCancel||el.buyOk).focus(); } catch(e){} }, 40);
+    if (window.ApexA11y && typeof window.ApexA11y.trapFocus === 'function') {
+      try { state.buyTrap = window.ApexA11y.trapFocus(el.buyRoot, { autoFocus: false, restoreFocus: false }); } catch (e) {}
+    }
+  }
+
+  function closeBuy() {
+    if (!el.buyRoot) return;
+    if (state.buyTrap) {
+      try { state.buyTrap.release(); } catch (e) {}
+      state.buyTrap = null;
+    }
+    el.buyRoot.setAttribute('hidden', '');
+  }
+
+  function confirmBuy() {
+    var cost = getBet() * BUY_FS_COST_MULT;
+    if (state.balance < cost) {
+      toast('\u8bd5\u73a9\u4f59\u989d\u4e0d\u8db3');
+      return;
+    }
+    closeBuy();
+    state.balance -= cost;
+    state.bonusLock = true;
+    renderStats();
+    renderSpinBtn();
+    var feature = { triggered: true, initialSpins: BUY_FS_AWARD };
+    try { if (window.ApexBgm) window.ApexBgm.toFreeSpins(1200); } catch (e) {}
+    try { if (window.ApexAudioSynth) window.ApexAudioSynth.play('fs-enter'); } catch (e) {}
+    runBonusSequence(feature, Math.round(getBet() * 100), function (bonusWin) {
+      state.bonusLock = false;
+      state.balance += (bonusWin || 0) / 100;
+      renderStats();
+      renderSpinBtn();
+      pending = null;
+    });
+  }
+
+  // S2.3-1: big win full-screen overlay (ratio >= 20)
+  var BIGWIN_TIERS = [
+    { min: 500, label: '\u81f3\u5c0a\u5927\u5956' },
+    { min: 100, label: '\u53f2\u8bd7\u5927\u5956' },
+    { min:  50, label: '\u8d85\u7ea7\u4e2d\u5956' },
+    { min:  20, label: '\u5927\u5956' }
+  ];
+  function _bigwinTier(ratio) {
+    for (var i = 0; i < BIGWIN_TIERS.length; i++) {
+      if (ratio >= BIGWIN_TIERS[i].min) return BIGWIN_TIERS[i];
+    }
+    return null;
+  }
+  function openBigWin(winAmt, ratio) {
+    if (!el.bigwinRoot) return;
+    var tier = _bigwinTier(ratio);
+    if (!tier) return;
+    if (el.bigwinLabel) el.bigwinLabel.textContent = tier.label;
+    if (el.bigwinValue) el.bigwinValue.textContent = fmt(winAmt);
+    if (el.bigwinMult) el.bigwinMult.textContent = '\u00d7' + ratio.toFixed(2);
+    el.bigwinRoot.removeAttribute('hidden');
+    try { if (el.bigwinOk) el.bigwinOk.focus(); } catch (e) {}
+  }
+  function closeBigWin() {
+    if (!el.bigwinRoot) return;
+    el.bigwinRoot.setAttribute('hidden', '');
+  }
+
+  // S3.2-1: local history persistence (last 100 spins)
+  var HIST_KEY = 'apex.sweet.history.v1';
+  var HIST_MAX = 100;
+  function _histLoad() {
+    try {
+      var raw = localStorage.getItem(HIST_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function _histSave(arr) {
+    try { localStorage.setItem(HIST_KEY, JSON.stringify(arr.slice(-HIST_MAX))); } catch (e) {}
+  }
+  function _histPush(rec) {
+    if (!rec || typeof rec !== 'object') return;
+    var arr = _histLoad();
+    arr.push({
+      t: Date.now(),
+      bet: Number(rec.bet) || 0,
+      win: Number(rec.win) || 0,
+      fs: !!rec.fs,
+      mode: rec.mode || GAME_MODE
+    });
+    _histSave(arr);
+  }
+  try { window.ApexLocalHistory = Object.freeze({ load: _histLoad, push: _histPush, key: HIST_KEY, max: HIST_MAX }); } catch (e) {}
+
+function bindEvents() {
     // 全局按钮点击 → ui-tap 音效（事件委托，避免逐个绑定）
     document.addEventListener('click', function (e) {
       if (!e.target || !e.target.closest) return;
@@ -1137,6 +1334,35 @@ function toast(msg) {
     el.autoBtn.addEventListener('click', function () {
       if (state.autoSpin) stopAuto(); else startAuto();
     });
+    if (el.bigwinOk) el.bigwinOk.addEventListener('click', closeBigWin);
+    if (el.bigwinRoot) {
+      el.bigwinRoot.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('[data-bigwin-close]')) closeBigWin();
+      });
+    }
+    if (el.buyBtn) {
+      el.buyBtn.addEventListener('click', function () { openBuy(); });
+    }
+    if (el.buyOk) el.buyOk.addEventListener('click', function () { confirmBuy(); });
+    if (el.buyRoot) {
+      el.buyRoot.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('[data-buy-close]')) closeBuy();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Escape' || e.key === 'Esc') && el.buyRoot && !el.buyRoot.hasAttribute('hidden')) {
+        closeBuy();
+      }
+    });
+    if (el.muteBtn) {
+      el.muteBtn.addEventListener('click', function () {
+        var cur = window.ApexSettings ? window.ApexSettings.get().audioEnabled : true;
+        var next = !cur;
+        if (window.ApexSettings) window.ApexSettings.set({ audioEnabled: next });
+        if (audio) audio.setEnabled(next);
+        renderMuteBtn();
+      });
+    }
     el.spinBtn.addEventListener('click', function () {
       if (state.autoSpin) { stopAuto(); return; }
       doSpin();
