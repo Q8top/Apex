@@ -119,6 +119,13 @@ function simulate(opts){
       totalFsSpins += fs.fsCount;
       totalFsMultiplier += fs.fsMultSum;
       totalMult += fs.fsMultSum;
+      // P0-3 round cap: align with functions/api/game/spin.js reward_chains
+      // semantics - base (already per-spin capped by engine) + FS sum must
+      // not exceed profile.maxWinMultiplier x bet for the whole round.
+      var roundMaxMult = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
+      if (totalMult > roundMaxMult) {
+        totalMult = roundMaxMult;
+      }
     }
 
     // P0-1 接线后：engine 的 totalMultiplier 已包含 payScale+cap，不再额外乘
