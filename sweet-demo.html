@@ -34,81 +34,59 @@
   </defs></svg>
 
 <header class="sd-header">
-  <a class="sd-header-back" href="/" aria-label="返回大厅">
+  <a class="sd-header-btn" href="/" aria-label="返回">
     <svg class="sd-ic"><use href="#ic-arrow-left"/></svg>
   </a>
-  <div class="sd-header-brand">
-    <img class="sd-header-icon" src="/assets/games/sweet.webp" alt="" draggable="false">
-    <div class="sd-header-text">
-      <span class="sd-header-main" data-i18n="game.title">糖果连连爆</span>
-      <span class="sd-header-sub" data-i18n="game.demo">试玩模式</span>
-    </div>
-  </div>
-  <span class="sd-header-pill">
-    <span class="sd-header-pill-dot"></span>
-    <span data-i18n="game.demo">试玩模式</span>
-  </span>
-  <button type="button" class="sd-header-menu" id="sd-menu-btn" aria-label="打开菜单">
+  <h1 class="sd-header-title" data-i18n="game.title">糖果连连爆</h1>
+  <button type="button" class="sd-header-btn" id="sd-menu-btn" aria-label="菜单">
     <svg class="sd-ic"><use href="#ic-menu"/></svg>
   </button>
 </header>
 
 <main class="sd-main">
-  <div class="sd-banner" aria-hidden="true">
-    <span class="sd-banner-line"></span>
-    <span class="sd-banner-text">甜蜜连线 · 赢取大奖</span>
-    <span class="sd-banner-line"></span>
-  </div>
-
   <section class="sd-stage" aria-label="游戏区域">
     <div class="sd-board" id="sd-board"></div>
     <div class="sd-fs-flash" id="sd-fs-flash" hidden></div>
     <div class="sd-tumble-counter" id="sd-tumble-counter" hidden></div>
     <button type="button" class="sd-skip-btn" id="sd-skip-btn" hidden data-i18n="btn.skip">跳过</button>
   </section>
-
-  <section class="sd-win-area" aria-live="polite" aria-atomic="true">
-    <div class="sd-win-fb" id="sd-win-fb">
-      <svg class="sd-win-fb-star" aria-hidden="true"><use href="#ic-star"/></svg>
-      <span class="sd-win-fb-label" id="sd-win-fb-label" data-i18n="stat.win">本局赢得</span>
-      <strong class="sd-win-fb-value" id="sd-win-fb-value">¥0.00</strong>
-      <span class="sd-win-fb-wheat sd-win-fb-wheat--l" aria-hidden="true"></span>
-      <span class="sd-win-fb-wheat sd-win-fb-wheat--r" aria-hidden="true"></span>
-    </div>
-  </section>
+  <div class="sd-win-row" id="sd-win-fb" aria-live="polite" aria-atomic="true">
+    <span class="sd-win-label" id="sd-win-fb-label" data-i18n="stat.win">本局赢得</span>
+    <strong class="sd-win-value" id="sd-win-fb-value">¥0.00</strong>
+  </div>
   <section class="sd-stats">
     <div class="sd-stat">
-      <span class="sd-stat-ic"><svg><use href="#ic-wallet"/></svg></span>
-      <span class="sd-stat-label" data-i18n="stat.balance">余额</span>
-      <span class="sd-stat-value" id="sd-balance">¥10,000.00</span>
+      <svg class="sd-stat-ic"><use href="#ic-wallet"/></svg>
+      <div class="sd-stat-body">
+        <span class="sd-stat-label" data-i18n="stat.balance">试玩余额</span>
+        <span class="sd-stat-value" id="sd-balance">¥10,000.00</span>
+      </div>
     </div>
     <div class="sd-stat">
-      <span class="sd-stat-ic"><svg><use href="#ic-chips"/></svg></span>
-      <span class="sd-stat-label" data-i18n="stat.bet">下注</span>
-      <span class="sd-stat-value" id="sd-bet">¥2.00</span>
-    </div>
-    <div class="sd-stat sd-stat--win">
-      <span class="sd-stat-ic"><svg><use href="#ic-star"/></svg></span>
-      <span class="sd-stat-label" data-i18n="stat.win">本局赢得</span>
-      <span class="sd-stat-value" id="sd-win" aria-live="polite" aria-atomic="true">¥0.00</span>
+      <svg class="sd-stat-ic"><use href="#ic-chips"/></svg>
+      <div class="sd-stat-body">
+        <span class="sd-stat-label" data-i18n="stat.bet">投注金额</span>
+        <span class="sd-stat-value" id="sd-bet">¥2.00</span>
+      </div>
     </div>
   </section>
-
-  <section class="sd-bet" aria-label="投注金额调整">
-    <button type="button" class="sd-bet-btn" id="sd-bet-minus" aria-label="减少投注">
-      <svg class="sd-ic"><use href="#ic-minus"/></svg>
+  <section class="sd-bet-row">
+    <button type="button" class="sd-reset-btn" id="sd-reset-btn">
+      <svg class="sd-ic-sm"><use href="#ic-refresh"/></svg>
+      <span data-i18n="btn.reset">重置</span>
     </button>
-    <div class="sd-bet-center">
+    <div class="sd-bet-pill" aria-label="投注调整">
+      <button type="button" class="sd-bet-btn" id="sd-bet-minus" aria-label="减少">
+        <svg class="sd-ic"><use href="#ic-minus"/></svg>
+      </button>
       <span class="sd-bet-value" id="sd-bet-display">¥2.00</span>
-      <span class="sd-bet-caption" data-i18n="stat.bet">投注金额</span>
+      <button type="button" class="sd-bet-btn" id="sd-bet-plus" aria-label="增加">
+        <svg class="sd-ic"><use href="#ic-plus"/></svg>
+      </button>
     </div>
-    <button type="button" class="sd-bet-btn" id="sd-bet-plus" aria-label="增加投注">
-      <svg class="sd-ic"><use href="#ic-plus"/></svg>
-    </button>
   </section>
-
   <section class="sd-controls">
-    <button type="button" class="sd-ctrl" id="sd-auto-btn" aria-label="自动旋转">
+    <button type="button" class="sd-ctrl" id="sd-auto-btn" aria-label="自动">
       <svg class="sd-ic"><use href="#ic-repeat"/></svg>
       <span class="sd-ctrl-label" data-i18n="btn.auto">自动</span>
     </button>
@@ -116,32 +94,14 @@
       <svg class="sd-ic-lg"><use href="#ic-rotate"/></svg>
       <span class="sd-ctrl-label" data-i18n="btn.spin">旋转</span>
     </button>
-    <button type="button" class="sd-ctrl" id="sd-fast-btn" aria-label="极速模式">
+    <button type="button" class="sd-ctrl" id="sd-fast-btn" aria-label="极速">
       <svg class="sd-ic"><use href="#ic-zap"/></svg>
       <span class="sd-ctrl-label" data-i18n="btn.fast">极速</span>
     </button>
   </section>
-
-  <button type="button" class="sd-reset" id="sd-reset-btn">
-    <svg class="sd-ic-sm"><use href="#ic-refresh"/></svg>
-    <span data-i18n="btn.reset">重置余额</span>
-  </button>
 </main>
 
-<nav class="sd-tabbar" aria-label="底部导航">
-  <a class="sd-tab sd-tab--active" href="/" aria-label="首页">
-    <svg class="sd-tab-ic"><use href="#ic-home"/></svg>
-    <span class="sd-tab-label">首页</span>
-  </a>
-  <button type="button" class="sd-tab" data-sheet-action="history" aria-label="记录">
-    <svg class="sd-tab-ic"><use href="#ic-history"/></svg>
-    <span class="sd-tab-label">记录</span>
-  </button>
-  <button type="button" class="sd-tab" data-sheet-action="settings" aria-label="设置">
-    <svg class="sd-tab-ic"><use href="#ic-settings"/></svg>
-    <span class="sd-tab-label">设置</span>
-  </button>
-</nav>
+
 
 <div class="sd-sheet-root" id="sd-sheet-root" hidden>
   <div class="sd-sheet-backdrop" data-sheet-close="1"></div>
