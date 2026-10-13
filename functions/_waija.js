@@ -9,7 +9,7 @@
  *   - Amounts are integer cents ($2.50 -> 250).
  */
 
-import { createHash } from 'node:crypto';
+import { md5 } from './_md5.js';
 
 function baseUrl(env) {
   var b = (env && env.WAIJA_API_BASE) || 'https://api-eu-1.waija.com/';
@@ -107,7 +107,7 @@ export function verifyCallback(env, url) {
   if (!Number.isFinite(n)) return { ok: false, error: 2, reason: 'bad_timestamp' };
   var age = Math.abs(Math.floor(Date.now() / 1000) - n);
   if (age > 30) return { ok: false, error: 2, reason: 'stale_timestamp' };
-  var expected = createHash('md5').update(String(ts) + String(salt)).digest('hex');
+  var expected = md5(String(ts) + String(salt));
   if (expected !== key) return { ok: false, error: 2, reason: 'signature_mismatch' };
   return { ok: true };
 }
