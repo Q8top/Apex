@@ -7,12 +7,10 @@ var _tumble = window.ApexEngineTumble;
 var _bonus = window.ApexEngineBonus;
 var _pay = window.ApexEnginePayout;
 
-/* S1.7: 客户端生产禁用 gridOverride；Node 环境（CI/测试）放行 */
+/* P1-M5: only Node and local dev allow gridOverride. */
 var ALLOW_GRID_OVERRIDE = (typeof location === 'undefined') ||
   (location.hostname === 'localhost' ||
-   location.hostname === '127.0.0.1' ||
-   /\.pages\.dev$/.test(location.hostname) ||
-   /[?&]__test=1/.test(location.search || ''));
+   location.hostname === '127.0.0.1');
 
 function GameEngine(opts){
   opts = opts || {};

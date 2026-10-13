@@ -22,6 +22,7 @@ var SUITES = [
   ['config: validate-parity', 'node tests/config/validate-parity.test.cjs', 'failed=0'],
   ['math: rounding-parity', 'node tests/math/rounding-parity.cjs', 'failed=0'],
   ['config: paytable-ui-consistency', 'node tests/config/paytable-ui-consistency.test.cjs', 'failed=0'],
+  ['config: gridoverride-scope', 'node tests/config/gridoverride-scope.test.cjs', 'failed=0'],
   ['config: engine-errors', 'node tests/config/engine-errors.test.cjs', 'fail: 0'],
   ['config: engine-grid', 'node tests/config/engine-grid.test.cjs', 'fail: 0'],
   ['config: engine-rng', 'node tests/config/engine-rng.test.cjs', 'fail: 0'],
