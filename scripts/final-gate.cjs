@@ -39,6 +39,13 @@ var SUITES = [
   ['security: no secret leak', 'node scripts/check-no-secret-leak.cjs', 'OK'],
   ['security: no math leak', 'node scripts/check-no-math-leak.cjs', '0 leaks'],
   ['security: client/server sep', 'bash scripts/check-client-server-separation.sh', 'passed'],
+  ['security: authority-boundary', 'node tests/security/authority-boundary.test.cjs', 'failed=0'],
+  ['security: passkey-recover-status', 'node tests/security/passkey-recover-status.test.cjs', 'failed=0'],
+  ['security: recover-email-rate', 'node tests/security/recover-email-rate.test.cjs', 'failed=0'],
+  ['security: csp-regression', 'node tests/security/csp-regression.test.cjs', 'failed=0'],
+  ['security: history-game-filter', 'node tests/security/history-game-filter.test.cjs', 'failed=0'],
+  ['security: username-case', 'node tests/security/username-case.test.cjs', 'failed=0'],
+  ['settlement: buy-fs conc', 'node tests/settlement/b5-buyfs-concurrency.cjs', '0 fail'],
   ['lint: sweet rules', 'node scripts/lint-sweet-rules.cjs', 'errors=0'],
   ['a11y: tab order', 'node scripts/check-tab-order.cjs', 'issues=0']
 ];

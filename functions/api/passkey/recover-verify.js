@@ -83,6 +83,19 @@ export async function onRequestPost(context) {
     return errorResponse('账号不存在', 404, 'not_found', requestId);
   }
 
+  // P0-SEC-4 (2.B.4): recover path must honour account status.
+  // Without this, a self-excluded/disabled user could re-bind passkey
+  // and obtain a fresh session.
+  const statusRow = await env.apex_db.prepare(
+    'SELECT status FROM users WHERE id = ?'
+  ).bind(userId).first();
+  if (!statusRow) {
+    return errorResponse('账号不存在', 404, 'not_found', requestId);
+  }
+  if (statusRow.status && statusRow.status !== 'active') {
+    return errorResponse('账号状态不允许找回', 403, 'user_inactive', requestId);
+  }
+
   // 确认该用户确实有 passkey（防止密码重置码被误用）
   const hasPasskey = await env.apex_db.prepare(
     'SELECT id FROM passkeys WHERE user_id = ? LIMIT 1'

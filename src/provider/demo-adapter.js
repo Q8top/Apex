@@ -98,7 +98,8 @@ DemoProvider.prototype.spin = function(req){
     var gridSmall = res.grid;
 
     // 应用 payScale（与 simulator-v2 一致）
-    var winMinor = Math.floor(betMinor * res.totalMultiplier * this.payScale);
+    // P0-FIN-1: engine totalMultiplier already includes payScale.
+    var winMinor = Math.floor(betMinor * res.totalMultiplier);
     var _maxWinMinor = betMinor * this.maxWinMultiplier;
     if (Number.isSafeInteger(_maxWinMinor) && _maxWinMinor > 0 && winMinor > _maxWinMinor) {
       winMinor = _maxWinMinor;

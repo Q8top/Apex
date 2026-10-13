@@ -3,12 +3,16 @@
 // 返回：{ success, fs: { sessionId, remaining, total, chainId, marks } | null }
 import { jsonResponse, optionsResponse } from '../../_response.js';
 import { getCurrentUser } from '../../_auth.js';
+import { enforceKeyRateLimit } from '../../_rateLimit.js';
 
 export async function onRequestOptions(){ return optionsResponse(); }
 
 export async function onRequestGet({ request, env }){
   const user = await getCurrentUser(env, request);
   if (!user) return jsonResponse({ success: false, code: 'unauthenticated' }, 401);
+
+  const rl = await enforceKeyRateLimit(env, 'game:state', 'u:' + user.userId, 60, 1);
+  if (rl) return rl;
 
   const url = new URL(request.url);
   const gameId = url.searchParams.get('game') || 'sweet';

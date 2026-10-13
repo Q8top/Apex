@@ -41,8 +41,10 @@ function calcWinMinorFixed(betMinor, totalMultiplier, payScale) {
     throw new Error('calcWinMinorFixed: betMinor invalid');
   }
   var totalFixed = toFixedBig(totalMultiplier);
-  var payScaleFixed = toFixedBig(payScale);
-  var product = BigInt(betMinor) * totalFixed * payScaleFixed;
+  // P0-FIN-1: engine totalMultiplier already includes payScale.
+  // Do NOT multiply by payScale again. Fix confirmed by 2a1 diag:
+  //   old ratio spinjs/engine ~= payScale (11.51x over-payout).
+  var product = BigInt(betMinor) * totalFixed;
   var minor = product / PRECISION_DIVISOR; // 向下取整（保守）
   return Number(minor);
 }

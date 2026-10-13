@@ -58,7 +58,7 @@ export async function onRequestPost(context) {
 
   const accountLower = account.toLowerCase();
   const user = await env.apex_db.prepare(
-    'SELECT id, username, email, password_hash, email_verified, status FROM users WHERE username = ? OR LOWER(email) = ? LIMIT 1'
+    'SELECT id, username, email, password_hash, email_verified, status FROM users WHERE LOWER(username) = LOWER(?) OR LOWER(email) = ? LIMIT 1'
   ).bind(account, accountLower).first();
 
   if (!user) {

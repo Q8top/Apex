@@ -24,13 +24,19 @@ function genEventId(prefix) {
 }
 
 function guardStmt(env) {
-  return env.apex_db.prepare("SELECT CASE WHEN changes() = 1 THEN 1 ELSE 0 END AS ok");
+  return env.apex_db.prepare(
+    "INSERT INTO _settlement_guard (slot, guard_value) " +
+    "VALUES (1, CASE WHEN changes() = 1 THEN 1 ELSE 0 END) " +
+    "ON CONFLICT(slot) DO UPDATE " +
+    "SET guard_value = CASE WHEN changes() = 1 THEN 1 ELSE 0 END"
+  );
 }
 
 function classifyError(e) {
   var m = (e && e.message) ? String(e.message) : '';
   if (m.indexOf('insufficient_balance') !== -1) return 'insufficient_balance';
   if (m.indexOf('guard_failed') !== -1) return 'guard_failed';
+  if (m.indexOf('CHECK constraint failed') !== -1) return 'guard_failed';
   if (m.indexOf('UNIQUE') !== -1 && m.indexOf('spin_id') !== -1) return 'idempotent_conflict';
   return 'unknown';
 }
@@ -80,6 +86,9 @@ async function executeBuy(env, userId, spinId, betMinor) {
   }
 
   var cfg = await loadConfig();
+  var realProfile = cfg.MathProfile && cfg.MathProfile.getProfile
+    ? cfg.MathProfile.getProfile('real') : null;
+  var payScale = (realProfile && realProfile.payScale) || 1.0;
   var mathVersion = (cfg.Version && cfg.Version.VERSION && cfg.Version.VERSION.math) || '1.0.0';
   var gameVersion = (cfg.Version && cfg.Version.VERSION && cfg.Version.VERSION.game) || '1.0.0';
   var fingerprint = await sha256Hex(JSON.stringify(['v1-buyfs', String(userId), String(spinId), 'sweet', String(betMinor)]));
@@ -125,7 +134,7 @@ async function executeBuy(env, userId, spinId, betMinor) {
     "(user_id, trigger_spin_id, chain_id, mode, bet_minor, pay_scale, " +
     " total_spins, remaining_spins, chain_win_minor, expires_at) " +
     "VALUES (?, ?, ?, 'real', ?, ?, ?, ?, 0, ?)"
-  ).bind(userId, spinId, chainId, betMinor, 1.0, BUY_FS_AWARD, BUY_FS_AWARD, expiresAt));
+  ).bind(userId, spinId, chainId, betMinor, payScale, BUY_FS_AWARD, BUY_FS_AWARD, expiresAt));
 
   try {
     await env.apex_db.batch(stmts);

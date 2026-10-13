@@ -1,5 +1,6 @@
 import { jsonResponse, errorResponse, optionsResponse } from '../_response.js';
 import { getCurrentUser, buildClearAllSessionCookies } from '../_auth.js';
+import { enforceKeyRateLimit } from '../_rateLimit.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -22,6 +23,9 @@ export async function onRequestGet(context) {
         code: 'unauthenticated',
       }), { status: 401, headers });
     }
+
+    const rl = await enforceKeyRateLimit(env, 'me', 'u:' + user.userId, 60, 1);
+    if (rl) return rl;
 
     return jsonResponse({
       success: true,

@@ -56,7 +56,7 @@ export async function onRequestPost(context) {
 
   // 2) 唯一性再次检查（防竞态）
   const existing = await env.apex_db.prepare(
-    'SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1'
+    'SELECT id FROM users WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?) LIMIT 1'
   ).bind(username, email).first();
   if (existing) {
     return errorResponse('账号或邮箱已被使用', 409, 'user_exists', requestId);
