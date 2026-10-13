@@ -74,11 +74,13 @@ ok(parsed[2][0] === 45 && parsed[2][1] === 64, 'entry 2 preserved');
 // Feed back to engine
 var round = E.spinFree('real', 100, { marks: parsed });
 ok(Array.isArray(round.marksAfter), 'round-trip marksAfter array');
+// drift fix: aggregate single ok() regardless of random marks count
+var rtMarksValid = true;
 for (var k = 0; k < round.marksAfter.length; k++){
   var pk = round.marksAfter[k];
-  ok(Array.isArray(pk) && pk.length === 2 && pk[0] >= 0 && pk[0] < 49,
-     'round-trip mark valid (' + k + ')');
+  if (!(Array.isArray(pk) && pk.length === 2 && pk[0] >= 0 && pk[0] < 49)) rtMarksValid = false;
 }
+ok(rtMarksValid, 'round-trip marks all valid (' + round.marksAfter.length + ')');
 
 // =====================================================
 // i18n keys exist (server-side not needed, but frontend)

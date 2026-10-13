@@ -94,12 +94,15 @@ var f2 = E.spinFree('real', 100, { marks: marksIn });
 ok(Array.isArray(f1.marksAfter), 'f1 marksAfter array');
 ok(Array.isArray(f2.marksAfter), 'f2 marksAfter array');
 // Both runs process same input marks (different random grids, but valid output)
+// drift fix: aggregate, single ok() regardless of random marks count
+var marksAllValid = true;
 for (var m = 0; m < f1.marksAfter.length; m++){
   var p = f1.marksAfter[m];
-  ok(Array.isArray(p) && p.length === 2, 'f1 mark valid (' + m + ')');
-  ok(p[0] >= 0 && p[0] < 49, 'f1 mark pos in range (' + m + ')');
-  ok(p[1] >= 1 && p[1] <= 128, 'f1 mark value in range (' + m + ')');
+  if (!(Array.isArray(p) && p.length === 2)) marksAllValid = false;
+  if (!(p[0] >= 0 && p[0] < 49)) marksAllValid = false;
+  if (!(p[1] >= 1 && p[1] <= 128)) marksAllValid = false;
 }
+ok(marksAllValid, 'f1 marks all valid (' + f1.marksAfter.length + ')');
 
 console.log('[deterministic-replay] passed=' + passed + ' failed=' + failed);
 process.exit(failed > 0 ? 1 : 0);

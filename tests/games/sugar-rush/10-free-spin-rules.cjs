@@ -60,13 +60,17 @@ ok(true, 'distribution: 10=' + hits.awarded10 + ' 12=' + hits.awarded12 +
 
 // spinFree also detects retrigger
 var retrigCount = 0;
+var retrigAwardOk = 0;
 for (var j = 0; j < 500; j++){
   var f = E.spinFree('demo', 100);
   if (f.fsTriggered){
     retrigCount++;
-    ok(f.fsSpinsAwarded === 3, 'spinFree retrigger awards 3 (' + j + ')');
+    if (f.fsSpinsAwarded === 3) retrigAwardOk++;
   }
 }
+// drift fix: single deterministic ok() regardless of random retrigger count
+ok(retrigAwardOk === retrigCount,
+   'all ' + retrigCount + ' retriggers award 3');
 ok(true, 'demo 500 FS spins: ' + retrigCount + ' retriggers detected');
 
 // FS spin does NOT charge bet (winMinor independent of bet semantics)
