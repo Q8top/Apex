@@ -1,7 +1,7 @@
 # M6 Known Defects - UI rules panel vs engine authority
 
 Date: 2026-10-13
-Status: registered, deferred to Stage 6 (UI/UX batch)
+Status: RESOLVED in Stage 6 batch A (2026-10-13)
 Authority: src/config/paytable.locked.js + src/engine/bonus.js
 
 ## Confirmed authoritative values
@@ -16,11 +16,11 @@ Authority: src/config/paytable.locked.js + src/engine/bonus.js
 - src/js/ui/sweet-rules.js rule text: "8 or more" -> "5 or more".
   This was a direct rule misstatement (players were told 8, engine pays at 5).
 
-## Deferred to Stage 6 (UI batch)
+## Resolved in Stage 6 batch A (2026-10-13)
 
-Registered as xfail() in tests/config/paytable-ui-consistency.test.cjs.
-When Stage 6 fixes these, the xfail flips to XPASS and CI will prompt
-the assertion to be promoted to a positive check.
+The four items below were fixed; the xfail() assertions in
+tests/config/paytable-ui-consistency.test.cjs have been promoted
+to positive t() assertions.
 
 1. sweet-rules.js reads window.ApexPaytable (old table with MIN_MATCH=8,
    tiers [8,10,12]) instead of window.ApexPaytableLocked.

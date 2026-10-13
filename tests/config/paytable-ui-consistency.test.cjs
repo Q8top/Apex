@@ -10,8 +10,7 @@ const srcdemo= fs.readFileSync(ROOT + '/src/js/inline/sweet-demo.js', 'utf8');
 
 let pass = 0, fail = 0;
 function t(n, c){ if (c){ console.log('  ok    ' + n); pass++; } else { fail++; console.log('  FAIL  ' + n); } }
-// xfail = known defect, expected to FAIL today; if it passes, fix is done.
-function xfail(n, c){ if (!c){ console.log('  xfail ' + n + ' (known defect)'); pass++; } else { fail++; console.log('  XPASS ' + n + ' -> fix landed, convert to positive'); } }
+// All previous xfail() defects landed in Stage 6 batch A.
 
 console.log('=== UI rules panel vs engine authority ===');
 
@@ -28,17 +27,19 @@ t('BET_OPTIONS defined in sweet-demo',
 t('rule text now says 5 or more',
   /\u51fa\u73b0 5 \u4e2a\u53ca\u4ee5\u4e0a/.test(rules));
 
-// Known defects (xfail) - to be fixed in Stage 6 UX batch
 console.log('');
-console.log('--- known defects (xfail, Stage 6) ---');
-xfail('UI reads ApexPaytableLocked (not old ApexPaytable)',
+t('UI reads ApexPaytableLocked (not old ApexPaytable)',
   /window\.ApexPaytableLocked/.test(rules));
-xfail('UI header has all 6 tiers 5/6/8/10/12/15',
-  /<th>5<\/th>/.test(rules) && /<th>6<\/th>/.test(rules) && /<th>15<\/th>/.test(rules));
-xfail('UI no longer claims 8~9 / 10~11 / 12+',
+t('UI no longer reads old ApexPaytable.PAYTABLE',
+  !/window\.ApexPaytable\s*&&\s*window\.ApexPaytable\.PAYTABLE/.test(rules));
+t('UI header has all 6 tiers 5/6/8/10/12/15',
+  /<th>5<\/th>/.test(rules) && /<th>6<\/th>/.test(rules) && /<th>8<\/th>/.test(rules)
+  && /<th>10<\/th>/.test(rules) && /<th>12<\/th>/.test(rules) && /<th>15<\/th>/.test(rules));
+t('UI no longer claims 8~9 / 10~11 / 12+',
   !/8~9 ?\u540c\u6863/.test(rules));
-xfail('UI renders all 6 tier cells',
-  /t\[5\]/.test(rules) && /t\[6\]/.test(rules) && /t\[15\]/.test(rules));
+t('UI renders all 6 tier cells',
+  /t\[5\]/.test(rules) && /t\[6\]/.test(rules) && /t\[8\]/.test(rules)
+  && /t\[10\]/.test(rules) && /t\[12\]/.test(rules) && /t\[15\]/.test(rules));
 
 console.log('');
 console.log('[m6-ui-consistency] passed=' + pass + ' failed=' + fail);

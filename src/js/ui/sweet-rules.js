@@ -73,30 +73,32 @@
   }
 
   function buildPaytable() {
-    var PT = window.ApexPaytable && window.ApexPaytable.PAYTABLE;
+    var PTL = window.ApexPaytableLocked;
+    var PT = PTL && PTL.PAYTABLE_SNAPSHOT;
     if (!PT) return '';
     var html = '<section class="sd-rules-block sd-rules-pt">';
     html += '<h3>赔率表（Pay Anywhere）</h3>';
-    html += '<p class="sd-rules-pt-note">同种符号出现 8 个及以上即中奖，'
-          + '位置无需相邻。8~9 同档，10~11 同档，12+ 最高档。</p>';
+    html += '<p class="sd-rules-pt-note">同种符号出现 5 个及以上即中奖，'
+          + '位置无需相邻。5 / 6 / 8 / 10 / 12 / 15 六档。</p>';
     html += '<div class="sd-pt-scroll"><table class="sd-pt-table">';
     html += '<thead><tr><th>符号</th><th>类型</th>'
-          + '<th>8</th><th>9</th><th>10</th><th>11</th><th>12+</th></tr></thead>';
+          + '<th>5</th><th>6</th><th>8</th><th>10</th><th>12</th><th>15</th></tr></thead>';
     html += '<tbody>';
     for (var i = 0; i < PAY_ORDER.length; i++) {
       var key = PAY_ORDER[i][0], name = PAY_ORDER[i][1], kind = PAY_ORDER[i][2];
       var t = PT[key];
       if (!t) continue;
-      var v8 = t[8], v10 = t[10], v12 = t[12];
+      var v5 = t[5], v6 = t[6], v8 = t[8], v10 = t[10], v12 = t[12], v15 = t[15];
       var svg = symSVG(key);
       html += '<tr>'
             + '<td class="sd-pt-sym"><span class="sd-pt-ic">' + svg + '</span>' + name + '</td>'
             + '<td class="sd-pt-kind">' + kind + '</td>'
-            + '<td>' + fmt(v8) + '</td>'
+            + '<td>' + fmt(v5) + '</td>'
+            + '<td>' + fmt(v6) + '</td>'
             + '<td>' + fmt(v8) + '</td>'
             + '<td>' + fmt(v10) + '</td>'
-            + '<td>' + fmt(v10) + '</td>'
-            + '<td class="sd-pt-top">' + fmt(v12) + '</td>'
+            + '<td>' + fmt(v12) + '</td>'
+            + '<td class="sd-pt-top">' + fmt(v15) + '</td>'
             + '</tr>';
     }
     html += '</tbody></table></div></section>';
