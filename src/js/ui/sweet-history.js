@@ -176,15 +176,15 @@
     }
 
     var head = '<div class="sd-hist-summary">'
-      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总局数</span><span class="sd-hist-cell-value">' + totalSpins + '</span></div>'
-      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">中奖次数</span><span class="sd-hist-cell-value">' + hitSpins + '</span></div>'
-      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总下注</span><span class="sd-hist-cell-value">' + fmtMoney(totalBet) + '</span></div>'
-      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">总中奖</span><span class="sd-hist-cell-value">' + fmtMoney(totalWin) + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">' + t('history.total_spins') + '</span><span class="sd-hist-cell-value">' + totalSpins + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">' + t('history.hit_spins') + '</span><span class="sd-hist-cell-value">' + hitSpins + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">' + t('history.total_bet') + '</span><span class="sd-hist-cell-value">' + fmtMoney(totalBet) + '</span></div>'
+      + '<div class="sd-hist-cell"><span class="sd-hist-cell-label">' + t('history.total_win') + '</span><span class="sd-hist-cell-value">' + fmtMoney(totalWin) + '</span></div>'
       + '</div>'
-      + '<h3 class="sd-hist-section">最近记录</h3>';
+      + '<h3 class="sd-hist-section">' + t('history.recent') + '</h3>';
 
     if (!records.length) {
-      return head + '<p class="sd-hist-empty">暂无记录</p>';
+      return head + '<p class="sd-hist-empty">' + t('history.empty') + '</p>';
     }
 
     var html = head + '<ul class="sd-hist-list">';
@@ -195,20 +195,20 @@
       var sign = delta > 0 ? '+' : '';
 
       var extras = [];
-      if (r.tumbleCount >= 2) extras.push('连消 x' + r.tumbleCount);
+      if (r.tumbleCount >= 2) extras.push(t('history.extra.tumble', { v: r.tumbleCount }));
       if (r.fsTriggered) extras.push('FS');
       if (Number.isFinite(r.maxMultiplier) && r.maxMultiplier > 0 && r.maxMultiplier !== 1) {
-        extras.push('倍率 ' + r.maxMultiplier.toFixed(2) + 'x');
+        extras.push(t('history.extra.multiplier', { v: r.maxMultiplier.toFixed(2) }));
       }
 
       html += '<li class="sd-hist-item">'
         +   '<div class="sd-hist-row">'
-        +     '<span class="sd-hist-bet-big">下注 ' + fmtMoney(r.betMinor) + '</span>'
+        +     '<span class="sd-hist-bet-big">' + t('history.bet', { v: fmtMoney(r.betMinor) }) + '</span>'
         +     '<span class="sd-hist-delta ' + cls + '">' + sign + fmtMoney(delta) + '</span>'
         +   '</div>'
         +   '<div class="sd-hist-sub">'
         +     '<span class="sd-hist-time">' + fmtTime(r.ts) + '</span>'
-        +     '<span class="sd-hist-win-sub">· 中奖 ' + fmtMoney(r.winMinor) + '</span>'
+        +     '<span class="sd-hist-win-sub">· ' + t('history.win', { v: fmtMoney(r.winMinor) }) + '</span>'
         +     (extras.length ? '<span class="sd-hist-extra">· ' + extras.join(' · ') + '</span>' : '')
         +   '</div>'
         + '</li>';
@@ -222,7 +222,7 @@
       + '<div class="sd-hist-backdrop" data-hist-close="1"></div>'
       + '<div class="sd-hist-panel" role="dialog" aria-modal="true" aria-labelledby="sd-hist-title" tabindex="-1">'
       +   '<div class="sd-hist-handle"></div>'
-      +   '<header class="sd-hist-header"><h2 id="sd-hist-title">游戏记录</h2><button type=\"button\" class=\"sd-hist-close\" aria-label=\"\u5173\u95ed\" data-hist-close=\"1\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6l-12 12\"/></svg></button></header>'
+      +   '<header class="sd-hist-header"><h2 id="sd-hist-title">' + t('history.title') + '</h2><button type=\"button\" class=\"sd-hist-close\" aria-label=\"' + t('history.close') + '\" data-hist-close=\"1\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6l-12 12\"/></svg></button></header>'
       +   '<div class="sd-hist-body" id="sd-hist-body"></div>'
       + '</div>';
   }
