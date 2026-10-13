@@ -21,7 +21,7 @@ t('(200, 2)=400', P.calculatePayout(200, 2) === 400);
 t('(200, 0.25)=50', P.calculatePayout(200, 0.25) === 50);
 t('(100, 0)=0', P.calculatePayout(100, 0) === 0);
 t('(200, 0.5)=100', P.calculatePayout(200, 0.5) === 100);
-t('Math.round SW policy (100, 0.255)=26', P.calculatePayout(100, 0.255) === 26);
+t('Math.floor SW policy (100, 0.255)=25', P.calculatePayout(100, 0.255) === 25);
 
 var cpBad = [[0,1],[-1,1],[1.5,1],['100',1],[null,1],[100,-1],[100,NaN],[100,Infinity],[100,'x']];
 cpBad.forEach(function(pair, i){
@@ -80,7 +80,8 @@ t('formatMinor rejects non-int', fm);
 var s1 = fs.readFileSync(ROOT + '/src/engine/payout.js', 'utf8');
 var s2 = fs.readFileSync(ROOT + '/functions/_engine/payout.js', 'utf8');
 t('mirror byte-identical', s1 === s2);
-t('comment: SW Math.round', s1.indexOf('Math.round(betMinor * multiplier)') !== -1);
+t('comment: SW Math.floor', s1.indexOf('Math.floor(betMinor * multiplier)') !== -1);
+t('comment: no stale round claim', s1.indexOf('Math.round(betMinor') === -1);
 t('comment: SR divergence', s1.indexOf('Math.floor') !== -1);
 t('comment: scale rejection', s1.indexOf('scale=0 and negative') !== -1);
 t('comment: overflow policy', s1.indexOf('MAX_SAFE_INTEGER') !== -1);

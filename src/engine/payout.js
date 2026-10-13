@@ -4,8 +4,8 @@
  * Byte-identical mirror at functions/_engine/payout.js.
  *
  * SWEET BONANZA ROUNDING POLICY:
- *   calculatePayout uses Math.round(betMinor * multiplier).
- *   Sugar Rush's independent engine uses Math.floor for the same
+ *   calculatePayout uses Math.floor(betMinor * multiplier).
+ *   Sugar Rush's independent engine also uses Math.floor for the same
  *   expression. This is an INTENTIONAL divergence: the two games
  *   have separately calibrated RTP targets and the rounding
  *   direction feeds into that calibration. Do not 'unify' them
@@ -58,7 +58,7 @@ function calculatePayout(betMinor, multiplier){
   if (!Number.isFinite(product) || product > Number.MAX_SAFE_INTEGER){
     throw _err.ApexError(_err.CODES.INVALID_MULTIPLIER, 'product exceeds MAX_SAFE_INTEGER');
   }
-  return Math.round(product);
+  return Math.floor(product);
 }
 
 function unitsToMinor(units, scale){
@@ -73,7 +73,7 @@ function unitsToMinor(units, scale){
   if (!Number.isFinite(product) || Math.abs(product) > Number.MAX_SAFE_INTEGER){
     throw _err.ApexError(_err.CODES.INVALID_BET, 'units*scale exceeds MAX_SAFE_INTEGER');
   }
-  return Math.round(product);
+  return Math.floor(product);
 }
 
 function minorToUnits(minor, scale){
