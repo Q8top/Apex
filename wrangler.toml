@@ -13,6 +13,14 @@ ENVIRONMENT = "production"
 PUBLIC_BASE_URL = "https://apextop.cc.cd"
 EMAIL_FROM = "Apex Entertainment <noreply@notify.apextop.cc.cd>"
 
+# ==== GGR Labs (Step 2, non-secret vars) ====
+GGR_API_HOST = "api.ggrlabs.com"
+GGR_DEFAULT_CURRENCY = "USD"
+GGR_DEPOSIT_URL = "https://apextop.cc.cd/deposit"
+GGR_RETURN_URL = "https://apextop.cc.cd/"
+GGR_LOBBY_URL = "https://apextop.cc.cd/"
+
+
 # ============================================================
 # Preview / Staging 环境骨架
 # ============================================================
