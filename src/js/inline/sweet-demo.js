@@ -868,7 +868,7 @@ try { document.documentElement.setAttribute("data-game-mode", GAME_MODE); } catc
   }
 
   function renderFastBtn() {
-    el.fastBtn.classList.toggle('active', state.fastMode);
+    el.fastBtn.classList.toggle('is-active', state.fastMode);
   }
 
   function applyI18n(root) {
