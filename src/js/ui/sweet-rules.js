@@ -18,7 +18,7 @@
 
   var CONTENT = Object.freeze([
     Object.freeze({ h: '玩法说明', p: '6 列 × 5 行棋盘。每次旋转后生成 30 个符号，相同符号数量达标即中奖。' }),
-    Object.freeze({ h: '中奖规则', p: 'Pay Anywhere：同一种符号出现 8 个及以上即中奖，位置无需相邻。' }),
+    Object.freeze({ h: '中奖规则', p: 'Pay Anywhere：同一种符号出现 5 个及以上即中奖，位置无需相邻。' }),
     Object.freeze({ h: '连消（Tumble）', p: '中奖符号消失，上方符号下落补位，形成新棋盘；若再次中奖则继续连消，直至无中奖。' }),
     Object.freeze({ h: 'Scatter 棒棒糖', p: '单次旋转出现 4 个及以上触发免费旋转，每次固定 10 局：4 个 = 3× 派彩 + 10 FS；5 个 = 5× 派彩 + 10 FS；6 个 = 100× 派彩 + 10 FS。' }),
     Object.freeze({ h: '免费旋转中再次触发', p: '免费旋转期间再次出现 4 个及以上棒棒糖，按相同规则再触发 10 局。' }),
