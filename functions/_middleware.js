@@ -64,6 +64,12 @@ export async function onRequest(context) {
     const csrfExemptPaths = new Set([
       '/api/csp-report',
       '/api/log',
+      // 2026-10-13: Waija game-aggregator callback.
+      // Third-party server POST; cannot carry a browser CSRF cookie.
+      // Auth for this endpoint is provider-side (IP whitelist and/or
+      // provider-issued credentials), NOT CSRF. Do not add more paths
+      // to this set without a specific provider-auth story.
+      '/api/wallet/waija/callback',
     ]);
     const isCsrfExempt = csrfExemptPaths.has(url.pathname);
 
