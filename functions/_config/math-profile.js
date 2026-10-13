@@ -76,7 +76,9 @@ function buildRngWeights(mode, opts){
   var keys = Object.keys(p.baseWeights);
   for (var i = 0; i < keys.length; i++){
     var k = keys[i];
-    var id = ID_MAP[k] || k.toLowerCase();
+    // P1-M1: match client behaviour - missing ID_MAP entry must throw.
+    var id = ID_MAP[k];
+    if (!id) throw new Error('MATH_PROFILE: no ID_MAP entry for ' + k);
     out[id] = p.baseWeights[k];
   }
   if (p.scatterWeight > 0){
