@@ -25,6 +25,11 @@
     "/package-lock.json",
     "/wrangler.toml",
     "/.env*",
-    "/.cfignore"
+    "/.cfignore",
+    "/README.md",
+    "/.dev.vars",
+    "/.dev.vars.*",
+    "/.deploy-trigger",
+    "/.archive/*"
   ]
 }

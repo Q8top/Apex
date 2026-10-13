@@ -106,3 +106,8 @@ docs/APEX-ALL-*.md
 docs/APEX-ASSETS-*.md
 docs/APEX-BUNDLE-*.md
 docs/APEX-DIST-*.md
+
+# ===== Apex: package exports (contain sensitive values) =====
+Sweet-Full-Package.md
+*-Package.md
+docs/private/

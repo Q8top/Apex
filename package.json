@@ -46,7 +46,9 @@
     "test:full": "npm run syntax && npm run test:security && npm run test:all && npm run test:engine && npm run test:e2e && npm run test:settlement && npm run test:fault && npm run test:monitoring && npm run test:rollout && npm run test:rtp && npm run check:leak",
     "test:smoke:local": "bash scripts/run-smoke.sh",
     "check:leak": "node scripts/check-no-math-leak.cjs",
-    "check:secret": "node scripts/check-no-secret-leak.cjs"
+    "check:secret": "node scripts/check-no-secret-leak.cjs",
+    "check:htmlrefs": "node scripts/check-html-refs.cjs",
+    "check:deployex": "node scripts/check-deploy-excludes.cjs"
   },
   "devDependencies": {
     "wrangler": "^4.144.0"

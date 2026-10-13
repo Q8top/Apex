@@ -9,6 +9,8 @@ var ROOT = path.resolve(__dirname, '..');
 var SUITES = [
   // [label, command, must contain]
   ['syntax: JS files', 'bash scripts/syntax-check.sh', null],
+  ['html: refs exist', 'node scripts/check-html-refs.cjs', 'miss=0'],
+  ['deploy: excludes', 'node scripts/check-deploy-excludes.cjs', 'miss=0'],
   ['config: symbols-locked', 'node tests/config/symbols-locked.test.cjs', 'fail: 0'],
   ['config: paytable-locked', 'node tests/config/paytable-locked.test.cjs', 'fail: 0'],
   ['config: math-profile', 'node tests/config/math-profile.test.cjs', 'fail: 0'],
@@ -29,6 +31,7 @@ var SUITES = [
   ['fault: concurrency', 'node tests/fault/concurrency-fault.cjs', 'fail: 0'],
   ['fault: config', 'node tests/fault/config-fault.cjs', 'fail: 0'],
   ['api: spin', 'node tests/api/spin.test.cjs', 'fail: 0'],
+  ['api: spin-dto', 'node tests/api/spin-dto.test.cjs', 'failed=0'],
   ['api: buy-fs', 'node tests/api/buy-fs.test.cjs', 'fail: 0'],
   ['api: history', 'node tests/api/history.test.cjs', 'fail: 0'],
   ['api: deposit', 'node tests/api/deposit.test.cjs', 'fail: 0'],

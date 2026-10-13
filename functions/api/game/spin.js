@@ -101,6 +101,23 @@ function guardStmt(env) {
   );
 }
 
+// P0-SEC-1: response DTO whitelist (never leak payScale/rawMultiplier/
+// diagnostics/bombSum/bombFactor/bombPositions to client)
+function pickSpinResult(r) {
+  if (!r || typeof r !== 'object') return r;
+  return {
+    spinId: r.spinId,
+    mode: r.mode,
+    betMinor: r.betMinor,
+    grid: r.grid,
+    cascades: r.cascades,
+    bonus: r.bonus,
+    totalMultiplier: r.totalMultiplier,
+    cappedByMaxWin: r.cappedByMaxWin,
+    totalWinMinor: r.totalWinMinor
+  };
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
   const requestId = context.data && context.data.requestId ? context.data.requestId : '';
@@ -434,7 +451,7 @@ export async function executeSpin(env, user, body) {
     body: {
       success: true,
       cached: false,
-      result: spinResult,
+      result: pickSpinResult(spinResult),
       winMinor: actualWinMinor,
       balanceBefore: balanceBefore,
       balanceAfter: balanceAfter,

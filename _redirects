@@ -15,6 +15,7 @@
 /README.md                /404.html  302
 /.deploy-trigger          /404.html  302
 
+/_headers                 /404.html  302
 # --- 敏感目录（整个目录级阻断）---
 /functions/*              /404.html  302
 /migrations/*             /404.html  302

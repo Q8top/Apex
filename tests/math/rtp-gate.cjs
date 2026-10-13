@@ -99,6 +99,12 @@ MODES.forEach(function(mode){
   console.log('  BonusRate = ' + result.bonusRate.toFixed(4));
   console.log('  MaxWin    = ' + result.maxWinUnits.toFixed(2) + 'x');
   console.log('  P99       = ' + result.p99.toFixed(2) + 'x');
+  console.log('  TotalBet  = ' + result.wagered + ' minor');
+  console.log('  TotalPaid = ' + result.paid + ' minor');
+  console.log('  Spins     = ' + result.spins);
+  console.log('  HighMult% = ' + (result.highMultRate * 100).toFixed(3) + ' (>=10x)');
+  console.log('  MaxWin%   = ' + (result.maxWinRate * 100).toFixed(4) + ' (>=cap)');
+  console.log('  CI95      = +/-' + result.ci95Half.toFixed(4) + ' (RTP half-width)');
   console.log('  耗时      = ' + elapsed + ' ms');
   console.log('  PASS      = ' + (v.ok ? 'YES' : 'NO'));
 

@@ -89,6 +89,8 @@ function simulate(opts){
   var totalFsSpins = 0, totalFsMultiplier = 0;
   var wins = new Array(spins);
   var maxWinUnits = 0;
+  var highMultCount = 0, maxWinCount = 0;
+  var maxWinLimit = (profile.maxWinMultiplier != null) ? profile.maxWinMultiplier : 5000;
 
   for (var i = 0; i < spins; i++){
     var gridOverride = null;
@@ -133,6 +135,8 @@ function simulate(opts){
     paid += winMinor;
     wins[i] = winMinor / betMinor;
     if (winMinor > 0) hits++;
+    if (wins[i] >= 10) highMultCount++;
+    if (wins[i] >= maxWinLimit) maxWinCount++;
     if (res.diagnostics.terminatedBySafetyLimit) cappedRounds++;
     totalTumbles += res.diagnostics.tumbleCount;
     if (wins[i] > maxWinUnits) maxWinUnits = wins[i];
@@ -149,7 +153,20 @@ function simulate(opts){
     avgFsSpins: totalFsSpins / spins,
     avgFsMultiplier: totalFsMultiplier / spins,
     cappedRounds: cappedRounds, maxWinUnits: maxWinUnits,
-    median: q(0.5), p95: q(0.95), p99: q(0.99)
+    median: q(0.5), p95: q(0.95), p99: q(0.99),
+    highMultRate: spins > 0 ? highMultCount / spins : 0,
+    maxWinRate: spins > 0 ? maxWinCount / spins : 0,
+    winStd: (function(){
+      var m = (betMinor > 0) ? (paid / betMinor / spins) : 0;
+      var sq = 0; for (var kk = 0; kk < wins.length; kk++){ var dd = wins[kk] - m; sq += dd * dd; }
+      return spins > 0 ? Math.sqrt(sq / spins) : 0;
+    })(),
+    ci95Half: (function(){
+      var m = (betMinor > 0) ? (paid / betMinor / spins) : 0;
+      var sq = 0; for (var kk = 0; kk < wins.length; kk++){ var dd = wins[kk] - m; sq += dd * dd; }
+      var sd = spins > 0 ? Math.sqrt(sq / spins) : 0;
+      return spins > 0 ? 1.96 * sd / Math.sqrt(spins) : 0;
+    })()
   };
 }
 

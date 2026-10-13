@@ -47,3 +47,7 @@ Apex_*.md
 _headers
 _routes.json
 .assetsignore
+_redirects
+README.md
+.deploy-trigger
+.cfignore
