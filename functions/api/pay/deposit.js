@@ -1,28 +1,14 @@
-// Apex - POST /api/pay/deposit (PSP skeleton)
-// Creates a deposit intent. No real PSP wired yet.
-import { jsonResponse, errorResponse, optionsResponse } from '../../_response.js';
-import { getCurrentUser } from '../../_auth.js';
-import { sha256Hex } from '../../_security.js';
+// Apex - POST /api/pay/deposit (PSP skeleton, disabled)
+// Real money is OFF. Always returns 501 not_implemented.
+// C4 (2.C.4): previously returned 200 with fake intentId.
+import { jsonResponse, optionsResponse } from '../../_response.js';
 
-const MIN_DEPOSIT = 100;
-const MAX_DEPOSIT = 5000000;
-const PROVIDER = 'placeholder';
-
-function genIntentId() {
-  var buf = new Uint8Array(8);
-  globalThis.crypto.getRandomValues(buf);
-  var hex = '';
-  for (var i = 0; i < buf.length; i++) hex += (buf[i] + 0x100).toString(16).slice(1);
-  return 'dep-' + Date.now().toString(36) + '-' + hex;
-}
-
-function validate(body) {
-  if (!body || typeof body !== 'object') return 'body_invalid';
-  var amount = body.amountMinor;
-  if (!Number.isSafeInteger(amount)) return 'amount_non_integer';
-  if (amount < MIN_DEPOSIT) return 'amount_below_min';
-  if (amount > MAX_DEPOSIT) return 'amount_above_max';
-  return null;
+function disabled() {
+  return jsonResponse(
+    { success: false, code: 'not_implemented', message: 'payment_channel_under_construction' },
+    501,
+    ''
+  );
 }
 
 export async function onRequestOptions(context) {
@@ -30,38 +16,5 @@ export async function onRequestOptions(context) {
   return optionsResponse(requestId);
 }
 
-export async function onRequestPost(context) {
-  var request = context.request;
-  var env = context.env;
-  var requestId = context.data && context.data.requestId ? context.data.requestId : '';
-
-  var user = await getCurrentUser(env, request);
-  if (!user || !user.userId) {
-    return jsonResponse({ success: false, message: '\u672a\u767b\u5f55', code: 'unauthenticated' }, 401, requestId);
-  }
-
-  var body;
-  try { body = await request.json(); } catch (e) {
-    return errorResponse('invalid json', 400, 'invalid_json', requestId);
-  }
-  var invalid = validate(body);
-  if (invalid) return errorResponse('invalid amount', 400, invalid, requestId);
-
-  var intentId = genIntentId();
-  var fingerprint = await sha256Hex(JSON.stringify(
-    ['dep', String(user.userId), intentId, String(body.amountMinor)]
-  ));
-
-  // Skeleton. Real money moves only after a verified PSP webhook
-  // credits wallet_ledger with change_type='deposit'.
-  return jsonResponse({
-    success: true,
-    intentId: intentId,
-    amountMinor: body.amountMinor,
-    currency: 'CNY',
-    provider: PROVIDER,
-    fingerprint: fingerprint,
-    status: 'pending',
-    message: '\u6b64\u4e3a\u9884\u7559\u63a5\u53e3\uff0c\u672a\u63a5\u5165\u771f\u5b9e\u652f\u4ed8'
-  }, 200, requestId);
-}
+export async function onRequestPost() { return disabled(); }
+export async function onRequestGet()  { return disabled(); }

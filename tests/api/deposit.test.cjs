@@ -21,9 +21,9 @@ if (!globalThis.crypto) { globalThis.crypto = require('crypto').webcrypto; }
   var res1 = await mod.onRequestPost({
     request: req1, env: env1, data: { requestId: 'rid1' }
   });
-  t('1a status 401', res1.status === 401, 'got ' + res1.status);
+  t('1a status 501 (disabled even without auth)', res1.status === 501, 'got ' + res1.status);
   var body1 = await res1.json();
-  t('1b code unauthenticated', body1.code === 'unauthenticated', body1.code);
+  t('1b code not_implemented', body1.code === 'not_implemented', body1.code);
 
   console.log('\n=== 2) invalid amount -> 400 ===');
   var req2 = new Request('https://x/api/pay/deposit', {
@@ -34,9 +34,23 @@ if (!globalThis.crypto) { globalThis.crypto = require('crypto').webcrypto; }
   var res2 = await mod.onRequestPost({
     request: req2, env: env1, data: { requestId: 'rid2' }
   });
-  // If auth check fires first (no session cookie) it'll be 401.
-  // We accept either 401 (auth first) or 400 (validated) since order matters.
-  t('2a returns 4xx', res2.status === 400 || res2.status === 401, 'got ' + res2.status);
+  // Endpoint is unconditionally 501 (real money off); validation never runs.
+  t('2a still 501 (validation bypassed when disabled)', res2.status === 501, 'got ' + res2.status);
+
+  console.log('');
+  console.log('=== 3) authenticated still 501 (real money OFF) ===');
+  var req3 = new Request('https://x/api/pay/deposit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amountMinor: 1000 })
+  });
+  var res3 = await mod.onRequestPost({ request: req3, env: env1, data: { requestId: 'rid3' } });
+  t('3a status 501', res3.status === 501, 'got ' + res3.status);
+  var body3 = await res3.json();
+  t('3b code not_implemented', body3.code === 'not_implemented', body3.code);
+  t('3c no intentId leaked', !('intentId' in body3));
+  t('3d no fingerprint leaked', !('fingerprint' in body3));
+  t('3e no provider leaked', !('provider' in body3));
 
   console.log('');
   console.log('========== deposit test ==========');

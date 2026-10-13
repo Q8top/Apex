@@ -45,6 +45,7 @@ var SUITES = [
   ['security: csp-regression', 'node tests/security/csp-regression.test.cjs', 'failed=0'],
   ['security: history-game-filter', 'node tests/security/history-game-filter.test.cjs', 'failed=0'],
   ['security: username-case', 'node tests/security/username-case.test.cjs', 'failed=0'],
+  ['security: real-money-off', 'node tests/security/real-money-off.test.cjs', 'failed=0'],
   ['settlement: buy-fs conc', 'node tests/settlement/b5-buyfs-concurrency.cjs', '0 fail'],
   ['lint: sweet rules', 'node scripts/lint-sweet-rules.cjs', 'errors=0'],
   ['a11y: tab order', 'node scripts/check-tab-order.cjs', 'issues=0']
