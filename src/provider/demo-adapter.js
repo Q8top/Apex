@@ -58,7 +58,10 @@ function DemoProvider(opts){
   var weights = MP.buildRngWeights(this.mode);
   this.engine = new GE.GameEngine({
     rng: new RG.Rng(weights),
-    maxTumbleSteps: 20,
+    // P1-M4: unify with server (spin.js) and simulator-v2.
+    // Client demo previously used 20, server used 100 -> mismatch
+    // in safety-limit termination. Now both use 100.
+    maxTumbleSteps: 100,
     profile: profile
   });
   this.payScale = profile.payScale;
