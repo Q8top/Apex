@@ -21,7 +21,7 @@
     <symbol id="ic-repeat" viewBox="0 0 24 24"><path d="M4 9a8 8 0 0114-3l3 3M20 15a8 8 0 01-14 3l-3-3M17 6v3h3M7 18v-3H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-rotate" viewBox="0 0 24 24"><path d="M12 5a7 7 0 107 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 2v6l3-3z" fill="currentColor"/></symbol>
     <symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/></symbol>
-    <symbol id="ic-auto" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0113.7-5.6L20 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 01-13.7 5.6L4 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-auto" viewBox="0 0 24 24"><path d="M12 4a8 8 0 018 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 12a8 8 0 008 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5v4l3-2z" fill="currentColor"/><path d="M12 21.5v-4l-3 2z" fill="currentColor"/><path d="M10.4 9.4l4.2 2.6-4.2 2.6z" fill="currentColor"/></symbol>
     <symbol id="ic-chevron-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 5h11a3 3 0 013 3v11H7a3 3 0 01-3-3V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 16h14" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="ic-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -100,13 +100,14 @@
     </div>
   </section>
   <section class="sd-controls">
-    <button type="button" class="sd-ctrl sd-ctrl--buy" id="sd-buy-btn" aria-label="购买免费旋转">
-      <svg class="sd-ic"><use href="#ic-dollar"/></svg>
-      <span class="sd-ctrl-label" data-i18n="btn.buy">买 FS</span>
-    </button>
+    
     <button type="button" class="sd-ctrl" id="sd-auto-btn" aria-label="自动">
       <svg class="sd-ic"><use href="#ic-auto"/></svg>
       <span class="sd-ctrl-label" data-i18n="btn.auto">自动</span>
+    </button>
+    <button type="button" class="sd-ctrl sd-ctrl--buy" id="sd-buy-btn" aria-label="购买免费旋转">
+      <svg class="sd-ic"><use href="#ic-dollar"/></svg>
+      <span class="sd-ctrl-label" data-i18n="btn.buy">买 FS</span>
     </button>
     <button type="button" class="sd-ctrl sd-ctrl--primary" id="sd-spin-btn" aria-label="旋转">
       <svg class="sd-ic-lg"><use href="#ic-rotate"/></svg>
