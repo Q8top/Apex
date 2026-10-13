@@ -224,8 +224,14 @@ function bootstrapDb() {
   var fsHits4 = results4.filter(function (r) {
     return r.status === 200 && r.body && r.body.freeSpin;
   }).length;
-  t('4b2 (remaining + version) invariant holds',
-    fs2.remaining_spins + fs2.version === 2,
+  // Correct invariant: version increments once per successful FS spin
+  // (spin.js:327-335 UPDATE sets both remaining_spins - 1 and
+  // version + 1 in the same statement). Retrigger can ADJUST
+  // remaining by a random amount, so remaining + version is NOT
+  // conserved. Only version === (count of 200 responses that went
+  // through the FS branch) is schedule-independent.
+  t('4b2 version === count of FS-consuming responses',
+    fs2.version === fsHits4,
     'fsHits=' + fsHits4 + ' ok4=' + ok4 +
     ' rem=' + fs2.remaining_spins + ' version=' + fs2.version);
   t('4c version is a non-negative integer',
