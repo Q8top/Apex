@@ -126,8 +126,40 @@ function rstr2hex(input) {
   return output;
 }
 
+// Pure UTF-8 -> binary string. Cloudflare Workers ban escape/unescape,
+// so we hand-roll it. Handles BMP and surrogate pairs.
 function str2rstrUTF8(input) {
-  return unescape(encodeURIComponent(input));
+  var s = String(input);
+  var out = '';
+  var i, c, c2, cp;
+  for (i = 0; i < s.length; i++) {
+    c = s.charCodeAt(i);
+    if (c < 0x80) {
+      out += String.fromCharCode(c);
+    } else if (c < 0x800) {
+      out += String.fromCharCode(0xC0 | (c >> 6));
+      out += String.fromCharCode(0x80 | (c & 0x3F));
+    } else if (c >= 0xD800 && c <= 0xDBFF && i + 1 < s.length) {
+      c2 = s.charCodeAt(i + 1);
+      if (c2 >= 0xDC00 && c2 <= 0xDFFF) {
+        i++;
+        cp = ((c - 0xD800) << 10) + (c2 - 0xDC00) + 0x10000;
+        out += String.fromCharCode(0xF0 | (cp >> 18));
+        out += String.fromCharCode(0x80 | ((cp >> 12) & 0x3F));
+        out += String.fromCharCode(0x80 | ((cp >> 6) & 0x3F));
+        out += String.fromCharCode(0x80 | (cp & 0x3F));
+      } else {
+        out += String.fromCharCode(0xE0 | (c >> 12));
+        out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+        out += String.fromCharCode(0x80 | (c & 0x3F));
+      }
+    } else {
+      out += String.fromCharCode(0xE0 | (c >> 12));
+      out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+      out += String.fromCharCode(0x80 | (c & 0x3F));
+    }
+  }
+  return out;
 }
 
 function rawMD5(s) {
