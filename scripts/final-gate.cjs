@@ -19,6 +19,7 @@ var SUITES = [
   ['config: version', 'node tests/config/version.test.cjs', 'fail: 0'],
   ['config: id-map-strictness', 'node tests/config/id-map-strictness.test.cjs', 'failed=0'],
   ['config: tumble-steps-uniform', 'node tests/config/tumble-steps-uniform.test.cjs', 'failed=0'],
+  ['config: validate-parity', 'node tests/config/validate-parity.test.cjs', 'failed=0'],
   ['config: engine-errors', 'node tests/config/engine-errors.test.cjs', 'fail: 0'],
   ['config: engine-grid', 'node tests/config/engine-grid.test.cjs', 'fail: 0'],
   ['config: engine-rng', 'node tests/config/engine-rng.test.cjs', 'fail: 0'],

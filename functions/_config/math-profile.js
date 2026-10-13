@@ -92,6 +92,14 @@ function buildRngWeights(mode, opts){
 }
 
 function validate(){
+  // P1-M2: ID_MAP must cover all regular + special symbol IDs.
+  var baseKeys = Object.keys(PROFILES.demo.baseWeights);
+  var needIds = baseKeys.concat(['LOLLIPOP', 'MULTIPLIER_BOMB']);
+  for (var n = 0; n < needIds.length; n++){
+    if (!ID_MAP[needIds[n]]){
+      throw new Error('MATH_PROFILE: ID_MAP missing ' + needIds[n]);
+    }
+  }
   var modes = Object.keys(PROFILES);
   for (var i = 0; i < modes.length; i++){
     var m = modes[i];
@@ -110,12 +118,28 @@ function validate(){
     if (!Number.isSafeInteger(p.scatterWeight) || p.scatterWeight < 0){
       throw new Error('MATH_PROFILE: ' + m + '.scatterWeight 必须非负整数');
     }
+    var W_MAX_SC = 10000;
+    if (p.scatterWeight > W_MAX_SC) throw new Error('MATH_PROFILE: ' + m + '.scatterWeight > ' + W_MAX_SC);
     if (!Number.isSafeInteger(p.multiplierWeight) || p.multiplierWeight < 0){
       throw new Error('MATH_PROFILE: ' + m + '.multiplierWeight 必须非负整数');
     }
+    if (p.multiplierWeight > W_MAX_SC) throw new Error('MATH_PROFILE: ' + m + '.multiplierWeight > ' + W_MAX_SC);
     if (p.fsMultiplierWeight != null && (!Number.isSafeInteger(p.fsMultiplierWeight) || p.fsMultiplierWeight < 0)){
       throw new Error('MATH_PROFILE: ' + m + '.fsMultiplierWeight invalid');
     }
+    if (p.fsMultiplierWeight != null && p.fsMultiplierWeight > W_MAX_SC){
+      throw new Error('MATH_PROFILE: ' + m + '.fsMultiplierWeight > ' + W_MAX_SC);
+    }
+    if (!Number.isSafeInteger(p.maxWinMultiplier) || p.maxWinMultiplier <= 0){
+      throw new Error('MATH_PROFILE: ' + m + '.maxWinMultiplier must be positive integer');
+    }
+    // TODO(M-series): server payScale upper bound is intentionally deferred.
+    //   - Client cap of 10 is demo-only; real uses 11.51.
+    //   - Real cap must derive from overflow bound:
+    //     betMinor * maxMultiplier * payScale <= MAX_SAFE_INTEGER
+    //     => payScale <= MAX_SAFE_INTEGER / (betMinor * maxMultiplier)
+    //   - Until derived, no cap is enforced (known gap; see doc appendix C).
+
     if (!p.targetRtp || p.targetRtp.min >= p.targetRtp.max){
       throw new Error('MATH_PROFILE: ' + m + '.targetRtp 区间非法');
     }
