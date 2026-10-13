@@ -70,6 +70,10 @@ export async function onRequest(context) {
       // provider-issued credentials), NOT CSRF. Do not add more paths
       // to this set without a specific provider-auth story.
       '/api/wallet/waija/callback',
+      // 2026-10-13: public demo game launch. No money, no session,
+      // no user data. Rate-limited by IP. CSRF not meaningful for a
+      // public read-through endpoint.
+      '/api/waija/demo-launch',
     ]);
     const isCsrfExempt = csrfExemptPaths.has(url.pathname);
 
