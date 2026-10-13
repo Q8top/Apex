@@ -52,7 +52,7 @@ export async function onRequestPost(context) {
         code: r.error || 'upstream_error',
         waijaError: r.waijaError || null,
         message: r.message || 'Waija demo launch failed'
-      }, 502, requestId);
+      }, 424, requestId);
     }
     const url = typeof r.data === 'string' ? r.data : null;
     if (!url) {

@@ -28,7 +28,7 @@ export async function onRequestGet(context) {
         code: r.error || 'upstream_error',
         waijaError: r.waijaError || null,
         message: 'Waija catalog unavailable'
-      }, 502, requestId);
+      }, 424, requestId);
     }
     const games = Array.isArray(r.data) ? r.data : [];
     return jsonResponse({
