@@ -181,6 +181,13 @@ function renderCatContent(content, catKey){
         location.href = g.url;
         return;
       }
+      // waijaId -> open the game in a full-screen iframe overlay
+      if (typeof g.waijaId === 'string' && g.waijaId) {
+        if (window.ApexWaijaHome && typeof window.ApexWaijaHome.launch === 'function') {
+          window.ApexWaijaHome.launch(g.waijaId, g.n);
+          return;
+        }
+      }
       if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
         window.ApexSweetModal.open({
           cover: g.src,
