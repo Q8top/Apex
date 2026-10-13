@@ -246,3 +246,63 @@
   .sweet-mode-badge{width:50px;height:50px;border-radius:16px}
 }
 
+/* ===== MODAL v2 FINAL: plain big-button picker ===== */
+.sweet-modal-header{
+  padding:0;margin-bottom:22px;text-align:center;
+}
+.sweet-modal-cover{
+  width:88px;height:88px;margin:0 auto 16px;border-radius:22px;
+  overflow:hidden;background:#fff;
+  box-shadow:0 0 0 1px var(--sm-line),0 10px 24px rgba(17,17,17,.08);
+}
+.sweet-modal-eyebrow{display:none!important;}
+.sweet-modal-subtitle{display:none!important;}
+.sweet-modal-title{
+  margin:0;font-size:22px;font-weight:800;
+  letter-spacing:-.5px;color:var(--sm-ink);
+}
+.sweet-modal-actions{gap:12px;}
+.sweet-modal-footer{display:none!important;}
+
+.sweet-mode{
+  display:flex;align-items:center;justify-content:center;
+  padding:18px 20px;border-radius:18px;border:none;
+  width:100%;text-align:center;cursor:pointer;
+  font-family:inherit;color:#fff;
+  box-shadow:0 10px 22px rgba(17,17,17,.10);
+  transition:transform .18s var(--sm-ease-out),box-shadow .22s var(--sm-ease-out);
+}
+.sweet-mode:hover{transform:translateY(-2px);}
+.sweet-mode:active{transform:translateY(0) scale(.985);}
+.sweet-mode-badge{display:none!important;}
+.sweet-mode-desc{display:none!important;}
+.sweet-mode-arrow{display:none!important;}
+.sweet-mode-title{
+  font-size:17px;font-weight:800;letter-spacing:-.2px;color:#fff;
+}
+
+/* sweet brand */
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--demo{
+  background:linear-gradient(135deg,#ff8bb8 0%,#ff4fa3 100%);
+  box-shadow:0 12px 26px rgba(255,79,163,.34);
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--demo:hover{
+  box-shadow:0 18px 36px rgba(255,79,163,.42);
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--real{
+  background:linear-gradient(135deg,#1c1c1c 0%,#000 100%);
+  box-shadow:0 12px 26px rgba(17,17,17,.32);
+}
+.sweet-modal-root[data-brand='sweet'] .sweet-mode--real:hover{
+  box-shadow:0 18px 36px rgba(17,17,17,.40);
+}
+
+/* sugar-rush brand */
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--demo{
+  background:linear-gradient(135deg,#a878ff 0%,#7c2fff 100%);
+  box-shadow:0 12px 26px rgba(124,47,255,.34);
+}
+.sweet-modal-root[data-brand='sugar-rush'] .sweet-mode--real{
+  background:linear-gradient(135deg,#ff5c9c 0%,#e5397e 100%);
+  box-shadow:0 12px 26px rgba(229,57,126,.34);
+}
