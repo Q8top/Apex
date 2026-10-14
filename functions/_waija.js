@@ -30,10 +30,15 @@ async function post(env, method, extra) {
     api_password: env.WAIJA_API_PASSWORD,
     method: method
   }, extra || {});
+  // Route through the Wispbyte relay (fixed egress IP, Waija-whitelisted).
+  // Direct calls from Cloudflare get 'Ip not whitelisted' because CF egress
+  // IPs are shared and cannot be whitelisted.
+  var relay = env.WAIJA_RELAY_URL;
+  if (!relay) return { ok: false, mock: false, error: 'waija_relay_not_configured' };
   var ctrl = new AbortController();
   var timer = setTimeout(function () { ctrl.abort(); }, 15000);
   try {
-    var res = await fetch(baseUrl(env), {
+    var res = await fetch(relay, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(body),
