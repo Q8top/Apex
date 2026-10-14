@@ -165,11 +165,16 @@ function renderCatContent(content, catKey){
       +'</div>';
   });
   html+='</div>';
-  html+='<button type="button" class="apex-more-btn apex-game-placeholder" aria-label="更多热门游戏" aria-disabled="true" tabindex="-1">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
+  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
   content.innerHTML=html;
   content.querySelectorAll(".apex-game-card").forEach(function(el){
     el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
     el.addEventListener("dragstart", function(e){ e.preventDefault(); });
+  });
+  content.querySelectorAll('.apex-more-btn').forEach(function(el){
+    el.addEventListener('click', function(){
+      location.href = '/hot-games.html';
+    });
   });
   content.querySelectorAll(".apex-game-card--live").forEach(function(el){
     function go(){
