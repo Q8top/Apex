@@ -1,127 +1,110 @@
 // GET /api/waija-proxy-test
-// Self-contained HTTP-proxy-CONNECT client for Cloudflare Workers.
-// Uses cloudflare:sockets directly to avoid the 'workers-fetch-proxy'
-// library's starttls bug. Only supports HTTPS targets through a
-// plaintext HTTP proxy (which is exactly what Waija needs).
+// Final diagnostic: 3 independent tests to pin down whether
+// Cloudflare Workers can do TLS at all, and whether it can do
+// TLS through a CONNECT tunnel.
 import { connect } from 'cloudflare:sockets';
 
-async function readUntil(reader, needle) {
-  var decoder = new TextDecoder();
-  var buf = '';
+async function readAll(reader) {
+  var d = new TextDecoder();
+  var s = '';
   while (true) {
-    var chunk = await reader.read();
-    if (chunk.done) throw new Error('proxy closed early');
-    buf += decoder.decode(chunk.value, { stream: true });
-    var idx = buf.indexOf(needle);
-    if (idx !== -1) {
-      return { head: buf.slice(0, idx + needle.length), rest: buf.slice(idx + needle.length) };
-    }
+    var c = await reader.read();
+    if (c.done) break;
+    s += d.decode(c.value, { stream: true });
   }
+  return s;
 }
 
-async function proxyFetch(env, targetUrl, init) {
-  init = init || {};
-  var u = new URL(targetUrl);
-  var targetHost = u.hostname;
-  var targetPort = u.port || '443';
-  var targetPort = u.port || '443';
-  var proxyHost = env.WEBSHARE_PROXY_HOST;
-  var proxyPort = Number(env.WEBSHARE_PROXY_PORT);
-  var auth = btoa(env.WEBSHARE_PROXY_USERNAME + ':' + env.WEBSHARE_PROXY_PASSWORD);
-
-  // 1. TCP to proxy (plaintext, but allow later startTls)
-  var socket = connect(
-    { hostname: proxyHost, port: proxyPort },
-    { secureTransport: 'starttls' }
-  );
-
-  var writer = socket.writable.getWriter();
-  var reader = socket.readable.getReader();
-
-  // 2. CONNECT handshake
-  var req = 'CONNECT ' + targetHost + ':' + targetPort + ' HTTP/1.1' + String.fromCharCode(13,10)
-          + 'Host: ' + targetHost + ':' + targetPort + String.fromCharCode(13,10)
-          + 'Proxy-Authorization: Basic ' + auth + String.fromCharCode(13,10)
-          + String.fromCharCode(13,10);
-  await writer.write(new TextEncoder().encode(req));
-
-  var resp = await readUntil(reader, String.fromCharCode(13,10,13,10));
-  if (resp.head.indexOf(' 200 ') === -1) {
-    try { await socket.close(); } catch (e) {}
-    throw new Error('proxy CONNECT failed: ' + resp.head.slice(0, 100));
+// TEST 1: direct TLS to a public HTTPS server (no proxy)
+async function test1() {
+  var r = { name: 'direct_tls' };
+  try {
+    var sock = connect({ hostname: 'example.com', port: 443 },
+                       { secureTransport: 'on' });
+    var w = sock.writable.getWriter();
+    await w.write(new TextEncoder().encode(
+      'GET / HTTP/1.1' + String.fromCharCode(13,10) +
+      'Host: example.com' + String.fromCharCode(13,10) +
+      'Connection: close' + String.fromCharCode(13,10,13,10)));
+    try { await w.close(); } catch (e) {}
+    var text = await readAll(sock.readable.getReader());
+    r.ok = true;
+    r.first_line = text.split(String.fromCharCode(13,10))[0];
+    try { await sock.close(); } catch (e) {}
+  } catch (e) {
+    r.ok = false; r.error = String((e && e.message) || e);
   }
+  return r;
+}
 
-  // 3. Upgrade to TLS to the TARGET
-  reader.releaseLock();
-  writer.releaseLock();
-  var tlsSocket = socket.startTls({ expectedServerHostname: targetHost });
-  var tlsWriter = tlsSocket.writable.getWriter();
-  var tlsReader = tlsSocket.readable.getReader();
-
-  // 4. Send the HTTPS request
-  var method = (init.method || 'GET').toUpperCase();
-  var pathAndQuery = u.pathname + (u.search || '');
-  var hdrs = init.headers || {};
-  var bodyStr = init.body != null ? String(init.body) : null;
-  var hlines = ['Host: ' + targetHost];
-  for (var k in hdrs) {
-    if (Object.prototype.hasOwnProperty.call(hdrs, k)) hlines.push(k + ': ' + hdrs[k]);
+// TEST 2: plaintext connect to Webshare, no TLS upgrade
+async function test2(env) {
+  var r = { name: 'plaintext_to_proxy' };
+  try {
+    var sock = connect({ hostname: env.WEBSHARE_PROXY_HOST,
+                        port: Number(env.WEBSHARE_PROXY_PORT) },
+                       { secureTransport: 'starttls' });
+    var w = sock.writable.getWriter();
+    await w.write(new TextEncoder().encode(
+      'GET http://ipv4.webshare.io/ HTTP/1.1' + String.fromCharCode(13,10) +
+      'Host: ipv4.webshare.io' + String.fromCharCode(13,10) +
+      'Proxy-Authorization: Basic ' +
+        btoa(env.WEBSHARE_PROXY_USERNAME + ':' + env.WEBSHARE_PROXY_PASSWORD) +
+        String.fromCharCode(13,10) +
+      'Connection: close' + String.fromCharCode(13,10,13,10)));
+    try { await w.close(); } catch (e) {}
+    var text = await readAll(sock.readable.getReader());
+    r.ok = true;
+    r.first_line = text.split(String.fromCharCode(13,10))[0];
+    r.has_ip = text.indexOf('45.38.107.97') !== -1;
+    try { await sock.close(); } catch (e) {}
+  } catch (e) {
+    r.ok = false; r.error = String((e && e.message) || e);
   }
-  if (bodyStr !== null) hlines.push('Content-Length: ' + new TextEncoder().encode(bodyStr).length);
-  hlines.push('Connection: close');
-  var httpReq = method + ' ' + pathAndQuery + ' HTTP/1.1' + String.fromCharCode(13,10)
-              + hlines.join(String.fromCharCode(13,10))
-              + String.fromCharCode(13,10,13,10)
-              + (bodyStr !== null ? bodyStr : '');
-  await tlsWriter.write(new TextEncoder().encode(httpReq));
-  try { await tlsWriter.close(); } catch (e) {}
+  return r;
+}
 
-  // 5. Read full response
-  var decoder2 = new TextDecoder();
-  var all = '';
-  while (true) {
-    var c = await tlsReader.read();
-    if (c.done) break;
-    all += decoder2.decode(c.value, { stream: true });
+// TEST 3: full CONNECT + startTls to Waija
+async function test3(env) {
+  var r = { name: 'connect_then_starttls' };
+  try {
+    var auth = btoa(env.WEBSHARE_PROXY_USERNAME + ':' + env.WEBSHARE_PROXY_PASSWORD);
+    var sock = connect({ hostname: env.WEBSHARE_PROXY_HOST,
+                        port: Number(env.WEBSHARE_PROXY_PORT) },
+                       { secureTransport: 'starttls' });
+    var w = sock.writable.getWriter();
+    var rd = sock.readable.getReader();
+    await w.write(new TextEncoder().encode(
+      'CONNECT api-eu-1.waija.com:443 HTTP/1.1' + String.fromCharCode(13,10) +
+      'Host: api-eu-1.waija.com:443' + String.fromCharCode(13,10) +
+      'Proxy-Authorization: Basic ' + auth + String.fromCharCode(13,10) +
+      String.fromCharCode(13,10)));
+    var d = new TextDecoder();
+    var head = '';
+    while (head.indexOf(String.fromCharCode(13,10,13,10)) === -1) {
+      var c = await rd.read();
+      if (c.done) throw new Error('closed');
+      head += d.decode(c.value, { stream: true });
+    }
+    r.connect_status = head.split(String.fromCharCode(13,10))[0];
+    rd.releaseLock(); w.releaseLock();
+    var tls = sock.startTls({ expectedServerHostname: 'api-eu-1.waija.com' });
+    r.starttls_ok = true;
+    try { await tls.close(); } catch (e) {}
+    try { await sock.close(); } catch (e) {}
+    r.ok = true;
+  } catch (e) {
+    r.ok = false; r.error = String((e && e.message) || e);
   }
-  try { await tlsSocket.close(); } catch (e) {}
-
-  var sep = all.indexOf(String.fromCharCode(13,10,13,10));
-  if (sep === -1) throw new Error('bad response');
-  var statusLine = all.slice(0, all.indexOf(String.fromCharCode(13,10)));
-  var m = statusLine.match(/HTTP\/\d\.\d (\d+)/);
-  var status = m ? Number(m[1]) : 0;
-  var body = all.slice(sep + 4);
-  return { status: status, body: body, raw_head: all.slice(0, sep) };
+  return r;
 }
 
 export async function onRequestGet(context) {
   var env = context.env;
-  var out = { cfg: {
-    host: env.WEBSHARE_PROXY_HOST,
-    port: env.WEBSHARE_PROXY_PORT,
-    user: env.WEBSHARE_PROXY_USERNAME ? 'SET' : 'MISSING',
-    pass: env.WEBSHARE_PROXY_PASSWORD ? 'SET' : 'MISSING'
-  }, results: [] };
-
-  var targets = [
-    'https://ipv4.webshare.io/',
-    'https://api-eu-1.waija.com/api/'
-  ];
-  for (var i = 0; i < targets.length; i++) {
-    var r = { target: targets[i] };
-    try {
-      var res = await proxyFetch(env, targets[i], { method: 'GET', headers: { 'Accept': 'application/json' } });
-      r.ok = true;
-      r.status = res.status;
-      r.body_head = String(res.body).slice(0, 200);
-    } catch (e) {
-      r.ok = false;
-      r.error = String((e && e.message) || e);
-    }
-    out.results.push(r);
-  }
-
+  var out = { results: [] };
+  out.results.push(await test1());
+  out.results.push(await test2(env));
+  out.results.push(await test3(env));
   return new Response(JSON.stringify(out, null, 2), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
