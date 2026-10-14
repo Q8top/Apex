@@ -1,41 +1,34 @@
 /* Apex x Waija - Full-screen demo launcher for homepage cards.
  *
  * Usage:
- *   window.ApexWaijaHome.launch(gameid, displayName)
+ *   window.ApexWaijaHome.launchUrl(url, displayName)
+ *   window.ApexWaijaHome.launch(gameid, displayName)   [legacy]
  *
- * Creates one overlay lazily, reuses it on subsequent launches.
- * Does not modify any existing DOM or CSS class.
+ * Overlay CSS lives in /src/css/waija-overlay.css (loaded lazily).
+ * All overlay DOM uses class names, no inline style, so it works
+ * under our CSP (style-src 'self').
  */
 (function () {
   'use strict';
 
   var OVERLAY_ID = 'apex-waija-overlay';
-  var STYLE_ID   = 'apex-waija-overlay-style';
+  var CSS_HREF   = '/src/css/waija-overlay.css?v=1';
+  var CSS_ID     = 'apex-waija-overlay-css';
   var overlay = null;
   var iframe = null;
 
-  function injectStyle() {
-    if (document.getElementById(STYLE_ID)) return;
-    var css = ''
-      + '#' + OVERLAY_ID + '{position:fixed;inset:0;background:#000;z-index:2147483600;display:none;}'
-      + '#' + OVERLAY_ID + '.on{display:block;}'
-      + '#' + OVERLAY_ID + ' iframe{width:100%;height:100%;border:0;display:block;background:#000;}'
-      + '#' + OVERLAY_ID + ' .awh-x{position:absolute;top:10px;right:10px;width:44px;height:44px;'
-      + 'border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:22px;cursor:pointer;'
-      + 'display:flex;align-items:center;justify-content:center;line-height:1;z-index:2;}'
-      + '#' + OVERLAY_ID + ' .awh-x:active{transform:scale(.95);}'
-      + '#' + OVERLAY_ID + ' .awh-toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);'
-      + 'background:#222;color:#fff;padding:14px 20px;border-radius:10px;font-size:14px;'
-      + 'max-width:80%;text-align:center;line-height:1.5;}';
-    var st = document.createElement('style');
-    st.id = STYLE_ID;
-    st.textContent = css;
-    document.head.appendChild(st);
+  function ensureCss() {
+    if (document.getElementById(CSS_ID)) return;
+    var link = document.createElement('link');
+    link.id = CSS_ID;
+    link.rel = 'stylesheet';
+    link.href = CSS_HREF;
+    document.head.appendChild(link);
   }
 
   function ensureOverlay() {
     if (overlay) return overlay;
-    injectStyle();
+    ensureCss();
     overlay = document.createElement('div');
     overlay.id = OVERLAY_ID;
     overlay.setAttribute('role', 'dialog');
@@ -50,7 +43,7 @@
 
     iframe = document.createElement('iframe');
     iframe.setAttribute('allow', 'fullscreen; autoplay; clipboard-write');
-    iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
 
     overlay.appendChild(iframe);
@@ -91,6 +84,16 @@
     document.documentElement.style.overflow = 'hidden';
   }
 
+  // Direct URL launcher (used for vendor public demos).
+  function launchUrl(url, displayName) {
+    if (!url) return;
+    ensureOverlay();
+    overlay.classList.add('on');
+    document.documentElement.style.overflow = 'hidden';
+    open(url);
+  }
+
+  // Backend-driven launcher (calls /api/waija/demo-launch).
   function launch(gameid, displayName) {
     if (!gameid) return;
     ensureOverlay();
@@ -126,7 +129,8 @@
   });
 
   window.ApexWaijaHome = Object.freeze({
-    launch: launch,
-    close:  close
+    launch:    launch,
+    launchUrl: launchUrl,
+    close:     close
   });
 })();
