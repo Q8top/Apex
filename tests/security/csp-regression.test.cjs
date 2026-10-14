@@ -16,7 +16,8 @@ for (const ln of h.split('\n')) {
 }
 
 // strict: no /* */ or // comments inside CSP value
-const hasComment = /\/\*|\*\/|\s\/\//.test(csp);
+// Match real block comments (/* ... */) or line comments (\ /* // …). The old pattern flagged 'https://*' as a comment, false positive.
+const hasComment = /\/\*[\s\S]*?\*\/|\s\/\/\s/.test(csp);
 
 const REQUIRED = [
   'default-src','script-src','script-src-attr',
