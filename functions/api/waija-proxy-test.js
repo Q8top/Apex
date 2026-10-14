@@ -37,7 +37,7 @@ async function postViaProxy(env, targetUrl, bodyObj) {
   var bodyStr = JSON.stringify(bodyObj);
   var bodyBytes = new TextEncoder().encode(bodyStr);
 
-  var sock = connect({ hostname: env.WEBSHARE_PROXY_HOST, port: Number(env.WEBSHARE_PROXY_PORT) });
+  var sock = connect({ hostname: env.WEBSHARE_PROXY_HOST, port: Number(env.WEBSHARE_PROXY_PORT) }, { secureTransport: 'starttls' });
   await Promise.race([sock.opened, timeout(8000, 'open_timeout')]);
 
   var w = sock.writable.getWriter();
