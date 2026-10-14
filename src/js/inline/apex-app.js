@@ -181,12 +181,11 @@ function renderCatContent(content, catKey){
         location.href = g.url;
         return;
       }
-      // waijaId -> open the game in a full-screen iframe overlay
-      if (typeof g.waijaId === 'string' && g.waijaId) {
-        if (window.ApexWaijaHome && typeof window.ApexWaijaHome.launch === 'function') {
-          window.ApexWaijaHome.launch(g.waijaId, g.n);
-          return;
-        }
+      // Mode picker: demo vs real. Shows for any live card; demo
+      // delegates to ApexWaijaHome.launch(waijaId) when available.
+      if (window.ApexModePicker && typeof window.ApexModePicker.open === 'function') {
+        window.ApexModePicker.open({ game: g });
+        return;
       }
       if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
         window.ApexSweetModal.open({

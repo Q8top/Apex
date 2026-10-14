@@ -34,9 +34,9 @@ t('all have src', srcOk);
 
 // live games
 var live = R.GAMES.filter(function(g){ return !!g.live; });
-t('exactly 3 live (olympus + sweet + sugar-rush)', live.length === 3, 'got ' + live.length);
+t('exactly 8 live', live.length === 8, 'got ' + live.length);
 var liveIds = live.map(function(g){ return g.id; }).sort();
-t('live are olympus + sweet + sugar-rush', JSON.stringify(liveIds) === JSON.stringify(['olympus','sugar-rush','sweet']), liveIds.join(','));
+t('live id list', JSON.stringify(liveIds) === JSON.stringify(['bass','buffalo','dog','fruit','olympus','sugar-rush','sweet','wolf']), liveIds.join(','));
 
 // entry enum + page requires url
 var entryBad = [], pageNoUrl = [];
