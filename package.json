@@ -55,5 +55,9 @@
   },
   "overrides": {
     "sharp": "0.35.5"
+  },
+  "dependencies": {
+    "@relayer-ws/plain-proxy-sdk": "^1.0.0",
+    "workers-fetch-proxy": "^1.0.0"
   }
 }
