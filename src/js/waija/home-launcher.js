@@ -99,7 +99,7 @@
     ensureOverlay();
     overlay.classList.add('on');
     document.documentElement.style.overflow = 'hidden';
-    showToast('\u6b63\u5728\u52a0\u8f7d ' + (displayName || '\u6e38\u620f') + '\u2026');
+    // no loading toast: the vendor's own splash covers this
 
     fetch('/api/waija/demo-launch', {
       method: 'POST',

@@ -1,18 +1,4 @@
-/* Apex - Game mode picker (white theme).
- * Two buttons: demo / real. Icon + title on top.
- * No inline styles, safe under CSP style-src 'self'.
- */
-
-:root {
-  --mp-paper: #ffffff;
-  --mp-ink: #0f0f12;
-  --mp-muted: #7a7a85;
-  --mp-line: #ececf0;
-  --mp-hover: #f4f4f7;
-  --mp-primary-a: #ff8bb8;
-  --mp-primary-b: #ff4fa3;
-  --mp-ease: cubic-bezier(.2,.8,.2,1);
-}
+/* Apex - Game mode picker. White theme, two side-by-side buttons. */
 
 .mp-root {
   position: fixed;
@@ -29,96 +15,129 @@
 .mp-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(17,17,20,.42);
+  background: rgba(17,17,20,.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   opacity: 0;
-  transition: opacity .18s var(--mp-ease);
+  transition: opacity .2s cubic-bezier(.2,.8,.2,1);
 }
 .mp-root.on .mp-backdrop { opacity: 1; }
 
 .mp-panel {
   position: relative;
   width: 100%;
-  max-width: 380px;
-  background: var(--mp-paper);
-  color: var(--mp-ink);
-  border-radius: 24px;
-  padding: 28px 22px 20px;
-  box-shadow: 0 24px 60px rgba(0,0,0,.28);
-  transform: translateY(12px) scale(.96);
+  max-width: 400px;
+  background: #ffffff;
+  color: #0f0f12;
+  border-radius: 28px;
+  padding: 34px 24px 24px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.08);
+  transform: translateY(16px) scale(.94);
   opacity: 0;
-  transition: transform .22s var(--mp-ease), opacity .18s var(--mp-ease);
+  transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .2s cubic-bezier(.2,.8,.2,1);
 }
 .mp-root.on .mp-panel { transform: translateY(0) scale(1); opacity: 1; }
 
 .mp-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
   border: 0;
-  background: transparent;
-  color: var(--mp-muted);
-  font-size: 22px;
+  background: #f4f4f7;
+  color: #7a7a85;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background .15s var(--mp-ease), color .15s var(--mp-ease);
+  transition: background .15s, color .15s, transform .1s;
 }
-.mp-close:hover { background: var(--mp-hover); color: var(--mp-ink); }
+.mp-close:hover { background: #ececf0; color: #0f0f12; }
+.mp-close:active { transform: scale(.92); }
 
 .mp-icon {
   display: block;
-  width: 88px;
-  height: 88px;
-  border-radius: 20px;
-  margin: 0 auto 14px;
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  margin: 0 auto 16px;
   object-fit: cover;
   background: #f3f3f7;
-  box-shadow: 0 8px 22px rgba(0,0,0,.10);
+  box-shadow: 0 12px 30px rgba(0,0,0,.14);
 }
 
 .mp-title {
-  margin: 0 0 22px;
+  margin: 0 0 4px;
   text-align: center;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-  letter-spacing: -.3px;
-  color: var(--mp-ink);
+  letter-spacing: -.4px;
+  color: #0f0f12;
+}
+
+.mp-sub {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7a7a85;
+  letter-spacing: .2px;
+}
+
+.mp-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .mp-btn {
-  display: block;
-  width: 100%;
-  padding: 15px 16px;
-  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 18px 12px;
+  border-radius: 18px;
   border: 0;
   font: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .2px;
   cursor: pointer;
-  transition: transform .12s var(--mp-ease), box-shadow .18s var(--mp-ease);
+  transition: transform .12s cubic-bezier(.2,.8,.2,1), box-shadow .2s, background .2s;
   -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  min-height: 88px;
 }
-.mp-btn + .mp-btn { margin-top: 10px; }
-.mp-btn:active { transform: scale(.98); }
+.mp-btn:active { transform: scale(.96); }
+
+.mp-btn-label {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .1px;
+}
+
+.mp-btn-desc {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .3px;
+  opacity: .72;
+}
 
 .mp-btn--demo {
-  background: linear-gradient(135deg, var(--mp-primary-a) 0%, var(--mp-primary-b) 100%);
+  background: linear-gradient(135deg, #ff8bb8 0%, #ff4fa3 100%);
   color: #fff;
-  box-shadow: 0 12px 26px rgba(255,79,163,.32);
+  box-shadow: 0 14px 30px rgba(255,79,163,.34);
 }
+.mp-btn--demo:hover { box-shadow: 0 16px 36px rgba(255,79,163,.44); }
 
 .mp-btn--real {
-  background: #f5f5f8;
-  color: var(--mp-ink);
-  border: 1px solid var(--mp-line);
+  background: #0f0f12;
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(15,15,18,.28);
 }
-.mp-btn--real:hover { background: #ececf1; }
+.mp-btn--real:hover { background: #1a1a20; }
 
 @media (prefers-reduced-motion: reduce) {
   .mp-backdrop, .mp-panel, .mp-close, .mp-btn { transition: none !important; }
