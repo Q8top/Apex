@@ -1,36 +1,45 @@
-// GET /api/waija-proxy-test
-// Isolated probe: does the Webshare HTTP proxy work from
-// Cloudflare Pages Functions? Returns the egress IP the
-// proxy reports to the outside world.
 import { createHTTPProxy } from 'workers-fetch-proxy/http';
 
-export async function onRequestGet(context) {
-  const { env } = context;
-  const out = { ok: false, steps: [] };
-  try {
-    out.steps.push('env.host=' + (env.WEBSHARE_PROXY_HOST || 'MISSING'));
-    out.steps.push('env.port=' + (env.WEBSHARE_PROXY_PORT || 'MISSING'));
-    out.steps.push('env.user=' + (env.WEBSHARE_PROXY_USERNAME ? 'SET' : 'MISSING'));
-    out.steps.push('env.pass=' + (env.WEBSHARE_PROXY_PASSWORD ? 'SET' : 'MISSING'));
+const TARGETS = [
+  'https://example.com/',
+  'http://ipv4.webshare.io/',
+  'https://ipv4.webshare.io/',
+  'https://api-eu-1.waija.com/api/'
+];
 
+async function probeOne(env, target) {
+  const out = { target: target, ok: false };
+  try {
     const proxy = createHTTPProxy({
       host: env.WEBSHARE_PROXY_HOST,
       port: Number(env.WEBSHARE_PROXY_PORT),
       username: env.WEBSHARE_PROXY_USERNAME,
       password: env.WEBSHARE_PROXY_PASSWORD
     });
-    out.steps.push('proxy created');
-
-    const res = await proxy.fetch('https://ipv4.webshare.io/');
-    out.steps.push('proxy.fetch status=' + res.status);
+    const res = await proxy.fetch(target, { method: 'GET' });
+    out.status = res.status;
     const text = await res.text();
-    out.egress_ip = text.trim();
+    out.body_head = text.slice(0, 120);
     out.ok = true;
   } catch (e) {
-    out.error = String(e && e.message || e);
-    out.error_name = e && e.name;
+    out.error = String((e && e.message) || e);
   }
-  return new Response(JSON.stringify(out, null, 2), {
+  return out;
+}
+
+export async function onRequestGet(context) {
+  const { env } = context;
+  const cfg = {
+    host: env.WEBSHARE_PROXY_HOST,
+    port: env.WEBSHARE_PROXY_PORT,
+    user: env.WEBSHARE_PROXY_USERNAME ? 'SET' : 'MISSING',
+    pass: env.WEBSHARE_PROXY_PASSWORD ? 'SET' : 'MISSING'
+  };
+  const results = [];
+  for (const t of TARGETS) {
+    results.push(await probeOne(env, t));
+  }
+  return new Response(JSON.stringify({ cfg: cfg, results: results }, null, 2), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });
