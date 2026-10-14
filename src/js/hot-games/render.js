@@ -18,24 +18,13 @@
 
   var currentKey = DATA.CATS[0].key;
 
-  // Preload all game images once we have a UI, using the local asset if
-  // present and otherwise the game icon will simply show as the dashed
-  // placeholder box.
+  // Icon comes from Waija (built at image-snapshot time). If the id is
+  // absent from the map, we fall back to an empty string, which renders
+  // as the dashed placeholder box defined in hot-games.css.
   function iconPath(id) {
-    // Waija icon CDN per provider is not stable; we only ship 12 local
-    // webp icons. Fall back to a generic dashed card.
-    var known = {
-      'waija-pragmaticslots/gates-of-olympus': '/assets/games/olympus.webp',
-      'waija-pragmaticslots/sweet-bonanza':    '/assets/games/sweet.webp',
-      'waija-pragmaticslots/sugar-rush':       '/assets/games/sugar.webp',
-      'waija-pragmaticslots/big-bass-bonanza': '/assets/games/bass.webp',
-      'waija-pragmaticslots/the-dog-house':    '/assets/games/dog.webp',
-      'waija-pragmaticslots/buffalo-king':     '/assets/games/buffalo.webp',
-      'waija-pragmaticslots/wolf-gold':        '/assets/games/wolf.webp',
-      'waija-pragmaticslots/fruit-party':      '/assets/games/fruit.webp',
-      'waija-bgaming/elvis-frog-in-vegas':     '',
-    };
-    return known[id] || '';
+    var M = window.ApexHotGamesImages;
+    if (M && Object.prototype.hasOwnProperty.call(M, id)) return M[id];
+    return '';
   }
 
   function esc(s) {
