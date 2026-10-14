@@ -3,8 +3,10 @@
   'use strict';
 
   var OVERLAY_ID = 'apex-waija-overlay';
-  var CSS_HREF   = '/src/css/waija-overlay.css?v=4';
+  var CSS_HREF   = '/src/css/waija-overlay.css?v=5';
   var CSS_ID     = 'apex-waija-overlay-css';
+  var SS_KEY     = 'apex.waija.lastGame';
+
   var overlay = null;
   var iframe = null;
   var currentUrl = '';
@@ -37,6 +39,13 @@
     w.className = 'awh-dots';
     for (var i = 0; i < 3; i++) w.appendChild(document.createElement('span'));
     return w;
+  }
+
+  function applyViewportHeight() {
+    if (!overlay) return;
+    var vv = window.visualViewport;
+    var h = vv && vv.height ? vv.height : window.innerHeight;
+    overlay.style.height = h + 'px';
   }
 
   function ensureOverlay() {
@@ -72,7 +81,20 @@
     overlay.appendChild(iframe);
     overlay.appendChild(home);
     document.body.appendChild(overlay);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', applyViewportHeight);
+      window.visualViewport.addEventListener('scroll', applyViewportHeight);
+    }
+    window.addEventListener('resize', applyViewportHeight);
     return overlay;
+  }
+
+  function saveSession(url) {
+    try {
+      if (url) sessionStorage.setItem(SS_KEY, url);
+      else sessionStorage.removeItem(SS_KEY);
+    } catch (e) {}
   }
 
   function close() {
@@ -80,6 +102,7 @@
     overlay.classList.remove('on');
     overlay.classList.remove('ready');
     currentUrl = '';
+    saveSession('');
     if (iframe) iframe.src = 'about:blank';
     document.documentElement.style.overflow = '';
   }
@@ -91,7 +114,9 @@
     currentUrl = url;
     iframe.src = url;
     overlay.classList.add('on');
+    applyViewportHeight();
     document.documentElement.style.overflow = 'hidden';
+    saveSession(url);
   }
 
   function launchUrl(url, displayName) { open(url); }
@@ -101,6 +126,7 @@
     ensureOverlay();
     overlay.classList.remove('ready');
     overlay.classList.add('on');
+    applyViewportHeight();
     document.documentElement.style.overflow = 'hidden';
     fetch('/api/waija/demo-launch', {
       method: 'POST',
@@ -131,4 +157,25 @@
     launchUrl: launchUrl,
     close: close
   });
+
+  // Restore previous game on page reload so refreshing keeps the player
+  // in-game instead of dumping them back to the lobby.
+  function restore() {
+    var saved = '';
+    try { saved = sessionStorage.getItem(SS_KEY) || ''; } catch (e) {}
+    if (!saved) return;
+    ensureOverlay();
+    overlay.classList.remove('ready');
+    currentUrl = saved;
+    iframe.src = saved;
+    overlay.classList.add('on');
+    applyViewportHeight();
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restore);
+  } else {
+    restore();
+  }
 })();
