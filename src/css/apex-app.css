@@ -794,5 +794,5 @@
 .apex-game-card--live:active{transform:translateY(0) scale(.98)}
 .apex-game-card--live:focus-visible{outline:2px solid #0a0a0a;outline-offset:3px;border-radius:12px}
 .apex-game-card--live::after{content:'';position:absolute;inset:-3px;border-radius:inherit;background:linear-gradient(135deg,rgba(255,107,157,.55),rgba(168,85,247,.45));opacity:0;z-index:-1;transition:opacity .22s;filter:blur(10px);pointer-events:none}
-.apex-game-card--live:hover::after{opacity:1}
+.apex-game-card--live:hover::after{display:none}
 @media (prefers-reduced-motion:reduce){.apex-game-card--live,.apex-game-card--live::after,}

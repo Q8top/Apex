@@ -1,29 +1,59 @@
 /* Apex x Waija - full-screen demo overlay. */
 #apex-waija-overlay {
-  position: fixed; inset: 0; background: #000;
-  z-index: 2147483600; display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  height: 100vh;
+  height: 100dvh;
+  background: #000;
+  z-index: 2147483600;
+  display: none;
 }
 #apex-waija-overlay.on { display: block; }
+
 #apex-waija-overlay iframe {
-  width: 100%; height: 100%; border: 0; display: block; background: #000;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0; display: block;
+  background: #000;
 }
 
-#apex-waija-overlay .awh-x {
+/* Black placeholder on top of iframe until the vendor page loads. */
+#apex-waija-overlay .awh-loading {
   position: absolute;
-  top: 14px; right: 14px;
-  width: 42px; height: 42px;
-  border-radius: 14px;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #000;
+  z-index: 1;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+#apex-waija-overlay.ready .awh-loading { opacity: 0; }
+
+/* Home button, top-left, mimics the third-party demo layout. */
+#apex-waija-overlay .awh-home {
+  position: absolute;
+  top: 14px; left: 14px;
+  height: 40px;
+  padding: 0 14px 0 12px;
+  border-radius: 12px;
   border: 0;
-  background: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.94);
   color: #0f0f12;
-  font-size: 20px; line-height: 1; font-weight: 700;
+  font-family: inherit;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .2px;
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; gap: 6px;
   z-index: 2;
   box-shadow: 0 6px 20px rgba(0,0,0,.35);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   transition: background .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
 }
-#apex-waija-overlay .awh-x:hover { background: #ffffff; }
-#apex-waija-overlay .awh-x:active { transform: scale(.92); }
+#apex-waija-overlay .awh-home:active { transform: scale(.94); }
+#apex-waija-overlay .awh-home svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
