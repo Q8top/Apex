@@ -8,7 +8,11 @@
   if (!root) return;
   var inner = document.createElement('div');
   inner.className = 'ol-grid-inner';
-  function pick() { return Math.floor(Math.random() * SYM_COUNT); }
+  function pick() {
+    var buf = new Uint8Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0] % SYM_COUNT;
+  }
   for (var i = 0; i < TOTAL; i++) {
     var cell = document.createElement('div');
     cell.className = 'ol-cell';
