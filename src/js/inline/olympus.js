@@ -11,6 +11,7 @@
   var Mu = window.OlympusMultiplier;
   var TB = window.OlympusTumble;
   var RD = window.OlympusRound;
+  var AU = window.OlympusAudio;
 
   if (!S || !P || !W || !MP || !R || !M || !Mu || !TB || !RD) {
     console.error('[olympus] engine modules missing');
@@ -95,6 +96,7 @@
     var i = 0;
     function nextFrame() {
       if (i >= history.length) { onDone(); return; }
+      if (AU) AU.tumble();
       var h = history[i];
       clearMarks();
       paintBoard(h.board);
@@ -190,6 +192,7 @@
     state.balance -= bet;
     state.roundWin = 0;
     render();
+    if (AU) { AU.unlock(); AU.startBgm(); AU.spin(); }
 
     var profile = MP.DEMO;
     setTimeout(function () {
@@ -199,7 +202,12 @@
         state.roundWin = r.winX;
         state.balance += r.winX;
         render();
-        if (r.triggerFS) runFreeSpins(profile, r.fsAward);
+        if (AU && r.winX > 0) {
+          if (r.winX >= 50) { AU.winBig(); AU.playPayout(); }
+          else if (r.winX >= 10) { AU.winMid(); AU.playPayout(); }
+          else { AU.winSmall(); }
+        }
+        if (r.triggerFS) { if (AU) AU.fsTrigger(); runFreeSpins(profile, r.fsAward); }
         else { state.spinning = false; render(); }
       });
     }, 220 / state.speed);
@@ -224,6 +232,7 @@
         state.roundWin += fr.win;
         state.balance += fr.win;
         render();
+        if (AU && fr.win > 0) AU.winSmall();
       }
       safety++;
       setTimeout(tick, 700 / state.speed);
@@ -254,25 +263,32 @@
     doSpin();
   });
   if (el.betMinus) el.betMinus.addEventListener("click", function () {
+    if (AU) AU.button();
     if (state.betIdx > 0) { state.betIdx--; render(); }
   });
   if (el.betPlus) el.betPlus.addEventListener("click", function () {
+    if (AU) AU.button();
     if (state.betIdx < BET_STEPS.length - 1) { state.betIdx++; render(); }
   });
   if (el.ante) el.ante.addEventListener("click", function () {
+    if (AU) AU.button();
     state.ante = !state.ante; render();
   });
   if (el.autoBtn) el.autoBtn.addEventListener("click", function () {
+    if (AU) AU.button();
     if (state.auto) stopAuto(); else startAuto();
   });
   if (el.speedBtn) el.speedBtn.addEventListener("click", function () {
+    if (AU) AU.button();
     state.speed = state.speed === 1 ? 2 : (state.speed === 2 ? 3 : 1);
     render();
   });
   if (el.menu) el.menu.addEventListener("click", function () {
+    if (AU) AU.button();
     alert('\u83DC\u5355 \u00B7 \u656C\u8BF7\u671F\u5F85');
   });
   if (el.buy) el.buy.addEventListener("click", function () {
+    if (AU) AU.button();
     alert('\u8D2D\u4E70\u514D\u8D39\u65CB\u8F6C \u00B7 \u656C\u8BF7\u671F\u5F85');
   });
 
@@ -281,4 +297,13 @@
   var initBoard = R.fillBoard(strips, 5, rng);
   paintBoard(initBoard);
   render();
+
+  // audio requires a user gesture; unlock on first pointer / touch
+  function tryUnlockAudio() {
+    if (AU) { AU.unlock(); AU.startBgm(); }
+    document.removeEventListener('pointerdown', tryUnlockAudio);
+    document.removeEventListener('touchstart', tryUnlockAudio);
+  }
+  document.addEventListener('pointerdown', tryUnlockAudio, { once: true });
+  document.addEventListener('touchstart', tryUnlockAudio, { once: true });
 })();
