@@ -471,3 +471,90 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .ol-lightning { display: none; }
 }
+
+/* ==================== Big Win overlay ==================== */
+.ol-bigwin {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 45%,
+              rgba(0,0,0,.72) 0%,
+              rgba(0,0,0,.55) 40%,
+              rgba(0,0,0,.15) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .28s ease;
+  font-family: inherit;
+  text-align: center;
+}
+.ol-bigwin.on { display: flex; opacity: 1; }
+.ol-bigwin-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4vh;
+  transform: scale(.6);
+  opacity: 0;
+  transition: transform .5s cubic-bezier(.22,1.6,.36,1), opacity .3s ease;
+}
+.ol-bigwin.on .ol-bigwin-inner {
+  transform: scale(1);
+  opacity: 1;
+}
+.ol-bigwin-text {
+  font-size: clamp(34px, 13vw, 68px);
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+  background: linear-gradient(180deg, #fff 0%, #ffe680 38%, #ffb300 62%, #fff5c0 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 24px rgba(255,200,60,.75);
+  filter: drop-shadow(0 4px 18px rgba(255,180,40,.85));
+  animation: bw-pop 1.05s ease-out infinite;
+}
+.ol-bigwin-amount {
+  font-size: clamp(26px, 10vw, 52px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 18px rgba(255,220,120,.95),
+               0 0 6px rgba(255,255,255,.85),
+               0 3px 6px rgba(0,0,0,.55);
+}
+@keyframes bw-pop {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 4px 18px rgba(255,180,40,.7)); }
+  50%      { transform: scale(1.08); filter: drop-shadow(0 6px 30px rgba(255,210,80,1)); }
+}
+/* tier variations */
+.ol-bigwin.is-mega  .ol-bigwin-text {
+  background: linear-gradient(180deg, #fff 0%, #ffb36b 40%, #ff6a00 70%, #fff0d0 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 28px rgba(255,140,40,.9);
+}
+.ol-bigwin.is-super .ol-bigwin-text {
+  background: linear-gradient(180deg, #fff 0%, #ff7a90 40%, #e00030 70%, #fff0f2 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255,60,90,.95);
+}
+.ol-bigwin.is-epic  .ol-bigwin-text {
+  background: linear-gradient(180deg, #fff 0%, #d99bff 40%, #7b00e0 70%, #f4e5ff 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 32px rgba(190,90,255,.95);
+}
+.ol-bigwin.is-max   .ol-bigwin-text {
+  background: linear-gradient(90deg, #ff3d6b 0%, #ffb347 25%, #ffe656 50%, #5dff9c 75%, #5fc9ff 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 36px rgba(255,230,140,1);
+  animation: bw-pop 1.05s ease-out infinite, bw-hue 3.2s linear infinite;
+}
+@keyframes bw-hue { from { background-position: 0% 0; } to { background-position: 200% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .ol-bigwin-inner, .ol-bigwin-text { transition: none !important; animation: none !important; }
+}

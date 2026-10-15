@@ -13,6 +13,7 @@
   var RD = window.OlympusRound;
   var AU = window.OlympusAudio;
   var LX = window.OlympusLightning;
+  var BW = window.OlympusBigWin;
   function rnd() {
     var buf = new Uint32Array(1);
     crypto.getRandomValues(buf);
@@ -383,6 +384,7 @@
     render();
     if (AU) { AU.unlock(); AU.startBgm(); AU.spin(); }
     if (el.topBanner) el.topBanner.classList.remove('is-win', 'is-big');
+    if (BW) BW.hide();
 
     var profile = MP.DEMO;
     var r = playBase(profile);
@@ -418,6 +420,8 @@
           else if (r.winX >= 10) { AU.winMid(); AU.playPayout(); }
           else { AU.winSmall(); }
         }
+        if (BW && r.winX >= 10) BW.play(r.winX, r.winX);
+        else if (BW) BW.hide();
         if (r.triggerFS) {
           if (AU) AU.fsTrigger();
           if (LX) {
