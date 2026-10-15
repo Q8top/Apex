@@ -1,4 +1,4 @@
-/* Apex Loading Screen - fullscreen black, red eye, red progress bar */
+/* Apex Loading Screen - fullscreen image, absolute progress bar */
 
 html, body {
   margin: 0;
@@ -13,43 +13,40 @@ html, body {
 .ld-body {
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #000;
 }
 
 .ld-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .ld-eye {
-  display: block;
-  max-width: min(92vw, 520px);
-  max-height: 68dvh;
-  width: auto;
-  height: auto;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  object-position: center center;
   -webkit-user-drag: none;
   user-select: none;
   pointer-events: none;
-  filter: drop-shadow(0 0 40px rgba(216,27,38,.25));
 }
 
 .ld-bar {
-  position: relative;
-  width: min(72vw, 300px);
+  position: absolute;
+  left: 50%;
+  top: 63%;
+  transform: translateX(-50%);
+  width: min(72vw, 340px);
   height: 4px;
-  background: rgba(255,255,255,.08);
+  background: rgba(255,255,255,.10);
   border-radius: 2px;
   overflow: hidden;
+  z-index: 2;
 }
 
 .ld-fill {
@@ -65,11 +62,15 @@ html, body {
 }
 
 .ld-pct {
+  position: absolute;
+  left: 50%;
+  top: calc(63% + 18px);
+  transform: translateX(-50%);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: rgba(255,255,255,.35);
-  margin-top: -6px;
+  color: rgba(255,255,255,.45);
+  z-index: 2;
 }
 
 @media (prefers-reduced-motion: reduce) {
