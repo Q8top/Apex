@@ -1,41 +1,72 @@
-/* Apex Olympus - board + HUD (round 2). */
+/* Apex Olympus - HUD wiring + engine integration. */
 (function () {
   'use strict';
 
-  /* --- 1. board --- */
-  var COLS = 6, ROWS = 5, SYM_COUNT = 13;
-  var board = document.getElementById('olGrid');
-  function pick() {
-    var buf = new Uint8Array(1);
-    crypto.getRandomValues(buf);
-    return buf[0] % SYM_COUNT;
-  }
-  if (board) {
-    var inner = document.createElement('div');
-    inner.className = 'ol-grid-inner';
-    for (var i = 0; i < COLS * ROWS; i++) {
-      var cell = document.createElement('div');
-      cell.className = 'ol-cell';
-      var img = document.createElement('img');
-      img.src = '/assets/symbols/sym-' + pick() + '.webp?v=1';
-      img.alt = ''; img.draggable = false;
-      cell.appendChild(img);
-      inner.appendChild(cell);
-    }
-    board.appendChild(inner);
+  var S  = window.OlympusSymbols;
+  var P  = window.OlympusPaytable;
+  var W  = window.OlympusReelWeights;
+  var MP = window.OlympusMathProfile;
+  var R  = window.OlympusReels;
+  var M  = window.OlympusMatcher;
+  var Mu = window.OlympusMultiplier;
+  var TB = window.OlympusTumble;
+  var RD = window.OlympusRound;
+
+  if (!S || !P || !W || !MP || !R || !M || !Mu || !TB || !RD) {
+    console.error('[olympus] engine modules missing');
+    return;
   }
 
-  /* --- 2. state --- */
+  /* ---- RNG (mulberry32 seeded from crypto) ---- */
+  function makeRng(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var seedBuf = new Uint32Array(1);
+  crypto.getRandomValues(seedBuf);
+  var rng = makeRng(seedBuf[0]);
+
+  /* ---- reel strips (demo profile for the page) ---- */
+  var stripCfg = {
+    STRIP_LEN: W.STRIP_LEN,
+    WEIGHTS: W.columnsOf('demo'),
+    sumWeights: W.sumWeights
+  };
+  var strips = R.buildStrips(stripCfg, rng);
+
+  /* ---- render board ---- */
+  var gridEl = document.getElementById('olGrid');
+  function renderBoard(board) {
+    if (!gridEl) return;
+    gridEl.innerHTML = '';
+    var inner = document.createElement('div');
+    inner.className = 'ol-grid-inner';
+    for (var r = 0; r < board.length; r++) {
+      for (var c = 0; c < board[r].length; c++) {
+        var cell = document.createElement('div');
+        cell.className = 'ol-cell';
+        var id = board[r][c];
+        if (id) {
+          var img = document.createElement('img');
+          img.src = '/assets/symbols/sym-' + id.slice(4) + '.webp?v=1';
+          img.alt = ''; img.draggable = false;
+          cell.appendChild(img);
+        }
+        inner.appendChild(cell);
+      }
+    }
+    gridEl.appendChild(inner);
+  }
+
+  /* ---- state ---- */
   var BET_STEPS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var state = {
-    balance: 1000.00,
-    betIdx: 2,
-    roundWin: 0,
-    ante: false,
-    spinning: false,
-    auto: false,
-    autoTimer: 0,
-    speed: 1
+    balance: 1000.00, betIdx: 2, roundWin: 0,
+    ante: false, spinning: false, auto: false, autoTimer: 0, speed: 1
   };
 
   var el = {
@@ -62,13 +93,10 @@
 
   function renderSpeed() {
     if (!el.speedIcons) return;
-    var n = state.speed;
-    var html = '';
-    for (var i = 0; i < n; i++) {
-      html += '<i class="ri-flashlight-fill" aria-hidden="true"></i>';
-    }
+    var html = "";
+    for (var i = 0; i < state.speed; i++) html += '<i class="ri-flashlight-fill" aria-hidden="true"></i>';
     el.speedIcons.innerHTML = html;
-    el.speedBtn.classList.toggle('is-on', n > 1);
+    if (el.speedBtn) el.speedBtn.classList.toggle('is-on', state.speed > 1);
   }
 
   function render() {
@@ -87,7 +115,25 @@
     renderSpeed();
   }
 
-  /* --- 3. spin --- */
+  /* ---- one spin through the engine ---- */
+  function playOneSpin(profile, multMap) {
+    return RD.playSpin({
+      strips: strips, symbols: S.SYMBOLS, paytable: P,
+      reels: R, matcher: M, tumble: TB, multiplier: Mu,
+      tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: 40, APPLY_MULT: true },
+      rng: rng, profile: profile, multiplierMap: multMap
+    });
+  }
+
+  function playBase(profile) {
+    return RD.playBase({
+      strips: strips, symbols: S.SYMBOLS, paytable: P,
+      reels: R, matcher: M, tumble: TB, multiplier: Mu,
+      tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: 40, APPLY_MULT: true },
+      rng: rng, profile: profile
+    });
+  }
+
   function doSpin() {
     if (state.spinning) return;
     var bet = effectiveBet();
@@ -97,27 +143,50 @@
     state.roundWin = 0;
     render();
 
-    var dur = 900;
+    var profile = MP.DEMO;
+    var dur = 900 / state.speed;
     setTimeout(function () {
-      var r = new Uint8Array(4);
-      crypto.getRandomValues(r);
-      var roll = ((r[0] << 24) | (r[1] << 16) | (r[2] << 8) | r[3]) >>> 0;
-      var norm = roll / 4294967296;
-      var win = 0;
-      if (norm < 0.35) win = bet * (1 + Math.floor(norm * 20));
-      state.roundWin = Math.round(win * 100) / 100;
-      state.balance += state.roundWin;
-      state.spinning = false;
+      var r = playBase(profile);
+      renderBoard(r.board);
+      state.roundWin = r.winX;
+      state.balance += r.winX;
       render();
-    }, dur / state.speed);
+      if (r.triggerFS) runFreeSpins(profile, r.fsAward);
+      else { state.spinning = false; render(); }
+    }, dur);
   }
 
-  /* --- 4. auto --- */
+  /* ---- free spins (simplified loop) ---- */
+  function runFreeSpins(profile, count) {
+    var st = RD.startFreeSpins({ paytable: P, count: count });
+    var safety = 0;
+    var step = 600 / state.speed;
+    function tick() {
+      if (st.remaining <= 0 || safety >= 200) {
+        state.spinning = false; render(); return;
+      }
+      var fr = RD.nextFreeSpin(st, {
+        strips: strips, symbols: S.SYMBOLS, paytable: P,
+        reels: R, matcher: M, tumble: TB, multiplier: Mu,
+        tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: 40, APPLY_MULT: true },
+        rng: rng, profile: profile
+      });
+      if (fr) {
+        renderBoard(fr.board);
+        state.roundWin += fr.win;
+        state.balance += fr.win;
+        render();
+      }
+      safety++;
+      setTimeout(tick, step);
+    }
+    setTimeout(tick, step);
+  }
+
+  /* ---- auto ---- */
   function startAuto() {
     if (state.auto) return;
-    state.auto = true;
-    render();
-    doSpin();
+    state.auto = true; render(); doSpin();
     var tick = function () {
       if (!state.auto) return;
       doSpin();
@@ -131,7 +200,7 @@
     render();
   }
 
-  /* --- 5. wire --- */
+  /* ---- wire ---- */
   if (el.spin) el.spin.addEventListener('click', function () {
     if (state.auto) { stopAuto(); return; }
     doSpin();
@@ -143,8 +212,7 @@
     if (state.betIdx < BET_STEPS.length - 1) { state.betIdx++; render(); }
   });
   if (el.ante) el.ante.addEventListener('click', function () {
-    state.ante = !state.ante;
-    render();
+    state.ante = !state.ante; render();
   });
   if (el.autoBtn) el.autoBtn.addEventListener('click', function () {
     if (state.auto) stopAuto(); else startAuto();
@@ -160,5 +228,8 @@
     alert('\u8D2D\u4E70\u514D\u8D39\u65CB\u8F6C \u00B7 \u656C\u8BF7\u671F\u5F85');
   });
 
+  /* ---- initial board ---- */
+  var initBoard = R.fillBoard(strips, 5, rng);
+  renderBoard(initBoard);
   render();
 })();
