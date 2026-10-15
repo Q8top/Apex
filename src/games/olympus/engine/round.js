@@ -112,10 +112,25 @@
 
     var totalPayX = 0;
     var step = 0;
+    var history = [];
     while (step < MAX) {
       var wins = matcher.findWins(board, S, paytable);
       if (!wins.length) break;
-      totalPayX += matcher.totalPay(wins);
+      var pay = matcher.totalPay(wins);
+      totalPayX += pay;
+      // snapshot board (before removal) + winning cells for the UI
+      history.push({
+        step: step,
+        board: board.map(function (row) { return row.slice(); }),
+        wins: wins.map(function (w) {
+          return {
+            symId: w.symId,
+            cells: w.cells.map(function (c) { return { r: c.r, c: c.c }; }),
+            pay: w.pay
+          };
+        }),
+        pay: pay
+      });
       board = tumble.removeWins(board, wins);
       board = tumble.drop(board);
       board = tumble.refill(board, strips, mc, mult.pick, rng);
@@ -134,7 +149,7 @@
     return {
       board: board, baseWinX: totalPayX, multiplierSum: multSum,
       winX: rawWin, scatters: scatters, poked: poked, capped: capped,
-      multMap: map, steps: step
+      multMap: map, steps: step, history: history
     };
   }
 

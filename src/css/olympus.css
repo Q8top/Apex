@@ -264,3 +264,51 @@ html, body {
   .ol-round-btn.is-on i { animation: none; }
   .ol-menu-btn, .ol-round-btn, .ol-spin-btn, .ol-action-card { transition: none !important; }
 }
+
+/* ==================== board animations ==================== */
+
+/* winning cell: golden glow + slight scale, fades out */
+.ol-cell.is-win img {
+  animation: ol-win-pop .45s ease-out both;
+  filter: drop-shadow(0 0 12px rgba(255,215,90,.95)) drop-shadow(0 0 4px rgba(255,255,255,.85));
+}
+@keyframes ol-win-pop {
+  0%   { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(255,215,90,0)); }
+  40%  { transform: scale(1.14); filter: drop-shadow(0 0 14px rgba(255,215,90,.95)) drop-shadow(0 0 5px rgba(255,255,255,.9)); }
+  100% { transform: scale(0.6);  filter: drop-shadow(0 0 6px rgba(255,200,60,.5)); opacity: 0; }
+}
+
+/* multiplier gem: pulsing halo */
+.ol-cell.is-mult img {
+  animation: ol-mult-pulse 1.1s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255,180,60,.85)) drop-shadow(0 0 3px rgba(255,255,255,.65));
+}
+@keyframes ol-mult-pulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 6px rgba(255,180,60,.6)); }
+  50%      { transform: scale(1.06); filter: drop-shadow(0 0 14px rgba(255,190,70,1)) drop-shadow(0 0 6px rgba(255,255,255,.7)); }
+}
+
+/* scatter: subtle blue glow */
+.ol-cell.is-scatter img {
+  filter: drop-shadow(0 0 8px rgba(90,150,255,.85)) drop-shadow(0 0 3px rgba(255,255,255,.7));
+}
+
+/* transition on board cells for the drop / refill steps */
+.ol-cell img {
+  transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+}
+
+/* during tumble: new symbols fall in */
+.ol-cell.is-new img {
+  animation: ol-drop-in .32s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes ol-drop-in {
+  0%   { transform: translateY(-120%); opacity: 0; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ol-cell.is-win img,
+  .ol-cell.is-mult img,
+  .ol-cell.is-new img { animation: none !important; }
+}
