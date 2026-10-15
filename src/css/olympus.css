@@ -1,48 +1,53 @@
-/* Apex Olympus game view - fullscreen image, black bars on odd aspect ratios */
+/* Apex Olympus - bg image + 6x5 symbol grid */
 
 html, body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
+  margin: 0; padding: 0; background: #000; color: #fff;
   overflow: hidden;
-  font-family: 'Manrope', system-ui, -apple-system, 'PingFang SC', sans-serif;
+  font-family: Manrope, system-ui, -apple-system, PingFang SC, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
-
-.ol-body {
-  min-height: 100vh;
-  min-height: 100dvh;
-  background: #000;
-}
+.ol-body { min-height: 100vh; min-height: 100dvh; background: #000; }
 
 .ol-stage {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* safe-area: keep image content inside notch / home indicator */
+  position: relative; width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden; background: #000;
+  display: flex; align-items: center; justify-content: center;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
   box-sizing: border-box;
 }
-
 .ol-art {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  object-position: center center;
-  -webkit-user-drag: none;
-  user-select: none;
-  pointer-events: none;
+  display: block; max-width: 100%; max-height: 100%;
+  width: auto; height: auto; object-fit: contain; object-position: center;
+  -webkit-user-drag: none; user-select: none; pointer-events: none;
+}
+
+/* Overlay grid: a wrapper that matches the IMAGE box (not the stage),
+   using the same contain math as the img. */
+.ol-grid {
+  position: absolute;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(100vw, calc(100dvh * 1080 / 2187));
+  height: calc(min(100vw, calc(100dvh * 1080 / 2187)) * 2187 / 1080);
+  pointer-events: none; z-index: 2;
+}
+.ol-grid-inner {
+  position: absolute;
+  left: 4.4%; right: 3.3%; top: 25.2%; bottom: 51.9%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0; box-sizing: border-box;
+}
+.ol-cell {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 0; min-height: 0; padding: 2%; box-sizing: border-box;
+}
+.ol-cell img {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  -webkit-user-drag: none; user-select: none; pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
 }
