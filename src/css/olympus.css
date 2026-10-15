@@ -1,4 +1,4 @@
-/* Apex Olympus - symbol grid, unified canvas, roomier gaps */
+/* Apex Olympus - symbols fill the cell, small gaps */
 
 html, body {
   margin: 0; padding: 0; background: #000; color: #fff;
@@ -33,18 +33,21 @@ html, body {
   gap: 0; box-sizing: border-box;
 }
 .ol-cell {
+  position: relative;
   display: flex; align-items: center; justify-content: center;
   min-width: 0; min-height: 0;
+  overflow: hidden;
   box-sizing: border-box;
 }
-/* symbols: unified 200x200 canvas, anchored at 78% of cell height.
-   The board is 6 cols x 5 rows over ~500px of image height, so
-   a cell is ~100px tall by ~166px wide; 78% leaves visible gaps. */
+/* Render the 200x200 symbol canvas at 130% of cell height.
+   Content inside the canvas (about 90% of 200) then occupies
+   roughly 117% of cell height, leaving a small visible gap
+   between rows and columns. */
 .ol-cell img {
   display: block;
-  height: 78%;
+  height: 130%;
   width: auto;
-  max-width: 100%;
+  max-width: 200%;
   object-fit: contain;
   object-position: center;
   -webkit-user-drag: none; user-select: none; pointer-events: none;
