@@ -14,6 +14,7 @@
   var AU = window.OlympusAudio;
   var LX = window.OlympusLightning;
   var BW = window.OlympusBigWin;
+  var FS = window.OlympusFs;
   function rnd() {
     var buf = new Uint32Array(1);
     crypto.getRandomValues(buf);
@@ -397,6 +398,7 @@
     if (AU) { AU.unlock(); AU.startBgm(); AU.spin(); }
     if (el.topBanner) el.topBanner.classList.remove('is-win', 'is-big');
     if (BW) BW.hide();
+    if (FS) FS.hideAll();
 
     var profile = MP.DEMO;
     var r = playBase(profile);
@@ -448,7 +450,13 @@
               })(fi);
             }
           }
-          runFreeSpins(profile, r.fsAward);
+          if (FS) {
+            FS.showIntro(r.fsAward, function () {
+              runFreeSpins(profile, r.fsAward);
+            });
+          } else {
+            runFreeSpins(profile, r.fsAward);
+          }
         }
         else { state.spinning = false; render(); }
       });
@@ -457,11 +465,45 @@
 
   /* ---- free spins ---- */
   function runFreeSpins(profile, count) {
-    var st = RD.startFreeSpins({ paytable: P, count: count });
+    var st = RD.startFreeSpins({ paytable: P, count: count, tumble: TB });
     var safety = 0;
+    var collected = [];
+    if (FS) FS.showPanel();
+    if (FS) FS.updatePanel(st.remaining, 0, collected);
+
+    function scanMult() {
+      if (!st.multMap) return 0;
+      var sum = 0;
+      for (var r = 0; r < st.multMap.length; r++) {
+        for (var c = 0; c < st.multMap[r].length; c++) {
+          var v = st.multMap[r][c];
+          if (v > 0) {
+            // dedupe: only add if not already recorded at this value
+            sum += v;
+            var found = false;
+            for (var k = 0; k < collected.length; k++) if (collected[k] === v) { found = true; break; }
+            if (!found) collected.push(v);
+          }
+        }
+      }
+      return sum;
+    }
+
     function tick() {
       if (st.remaining <= 0 || safety >= 200) {
-        state.spinning = false; render(); return;
+        var totalWin = st.totalWin;
+        if (FS) FS.hidePanel();
+        if (FS) {
+          FS.showSummary(totalWin, function () {
+            state.spinning = false;
+            state.roundWin = 0;
+            render();
+          });
+        } else {
+          state.spinning = false;
+          render();
+        }
+        return;
       }
       var fr = RD.nextFreeSpin(st, {
         strips: strips, symbols: S.SYMBOLS, paytable: P,
@@ -480,6 +522,8 @@
           var cc = (rnd() * 6) | 0;
           LX.strikeCell(cc, rr);
         }
+        var multSum = scanMult();
+        if (FS) FS.updatePanel(st.remaining, multSum, collected);
       }
       safety++;
       setTimeout(tick, 700 / state.speed);

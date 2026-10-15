@@ -578,3 +578,178 @@ html, body {
   font-variant-numeric: tabular-nums;
 }
 .ol-sym.is-mult { position: relative; }
+
+/* ==================== Free Spins intro ==================== */
+.ol-fs-intro {
+  position: absolute; inset: 0; z-index: 30;
+  display: none; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 45%,
+              rgba(0,0,0,.78) 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.15) 100%);
+  opacity: 0; transition: opacity .3s ease;
+  pointer-events: none;
+}
+.ol-fs-intro.on { display: flex; opacity: 1; pointer-events: auto; }
+.ol-fs-intro-inner {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.6vh; text-align: center;
+  transform: scale(.72); opacity: 0;
+  transition: transform .5s cubic-bezier(.22,1.6,.36,1), opacity .3s ease;
+}
+.ol-fs-intro.on .ol-fs-intro-inner { transform: scale(1); opacity: 1; }
+.ol-fs-intro-crown { filter: drop-shadow(0 0 22px rgba(255,210,80,.95)); }
+.ol-fs-intro-title {
+  font-size: clamp(22px, 7.6vw, 42px); font-weight: 900;
+  letter-spacing: 1.5px;
+  background: linear-gradient(180deg,#fff 0%,#ffe680 40%,#ffb300 72%,#fff5c0 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 24px rgba(255,200,60,.8);
+  filter: drop-shadow(0 3px 14px rgba(255,180,40,.85));
+  animation: fs-glow 1.2s ease-in-out infinite;
+}
+@keyframes fs-glow {
+  0%,100% { filter: drop-shadow(0 3px 14px rgba(255,180,40,.7)); }
+  50%     { filter: drop-shadow(0 5px 26px rgba(255,215,90,1)); }
+}
+.ol-fs-intro-sub {
+  font-size: clamp(12px, 3.4vw, 16px);
+  color: #ffe6a0; opacity: .92; font-weight: 600;
+  letter-spacing: .5px;
+}
+.ol-fs-intro-count {
+  font-size: clamp(48px, 18vw, 96px);
+  font-weight: 900; line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 24px rgba(255,220,120,.95),
+               0 0 8px rgba(255,255,255,.85),
+               0 4px 8px rgba(0,0,0,.55);
+  font-variant-numeric: tabular-nums;
+  animation: fs-count-pop .6s cubic-bezier(.22,1.6,.36,1) both;
+}
+@keyframes fs-count-pop {
+  0%   { transform: scale(.4); opacity: 0; }
+  100% { transform: scale(1);  opacity: 1; }
+}
+.ol-fs-intro-label {
+  font-size: clamp(11px, 3vw, 14px);
+  font-weight: 700; letter-spacing: 3px;
+  color: #ffd86a;
+}
+.ol-fs-intro-hint {
+  margin-top: 2vh;
+  font-size: clamp(10px, 2.8vw, 12px);
+  color: rgba(255,255,255,.55);
+  letter-spacing: 1px;
+  animation: fs-hint-blink 1.4s ease-in-out infinite;
+}
+@keyframes fs-hint-blink { 0%,100% { opacity: .45; } 50% { opacity: .95; } }
+
+/* ==================== Free Spins side panel ==================== */
+.ol-fs-panel {
+  position: absolute; left: 2.5%; top: 25%;
+  width: 17%; max-width: 130px; min-width: 88px;
+  padding: 8px 6px;
+  background: linear-gradient(180deg, rgba(30,15,50,.92), rgba(15,5,30,.94));
+  border: 1.5px solid rgba(255,215,120,.55);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  text-align: center;
+  display: none;
+  z-index: 6;
+  pointer-events: none;
+  box-shadow: 0 4px 18px rgba(0,0,0,.5), inset 0 0 12px rgba(255,215,120,.18);
+}
+.ol-fs-panel.on { display: block; }
+.ol-fs-panel-title {
+  font-size: clamp(8px, 2.2vw, 10px);
+  font-weight: 700; letter-spacing: .8px;
+  color: #ffe6a0;
+  text-transform: uppercase;
+  opacity: .92;
+}
+.ol-fs-panel-mult {
+  font-size: clamp(20px, 6vw, 30px);
+  font-weight: 900;
+  color: #ffd86a;
+  text-shadow: 0 0 12px rgba(255,200,60,.9), 0 2px 4px rgba(0,0,0,.7);
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0;
+}
+.ol-fs-panel-count {
+  font-size: clamp(18px, 5.4vw, 26px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(120,180,255,.8), 0 2px 4px rgba(0,0,0,.7);
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0;
+}
+.ol-fs-panel-sep {
+  height: 1px; background: rgba(255,215,120,.28);
+  margin: 6px 4px;
+}
+.ol-fs-panel-collected {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  justify-content: center;
+  margin-top: 4px;
+  min-height: 16px;
+}
+.ol-fs-panel-collected > span {
+  font-size: clamp(9px, 2.4vw, 11px);
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255,200,60,.18);
+  border: 1px solid rgba(255,215,120,.55);
+  color: #ffe6a0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== Free Spins summary ==================== */
+.ol-fs-summary {
+  position: absolute; inset: 0; z-index: 30;
+  display: none; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 45%,
+              rgba(0,0,0,.78) 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.2) 100%);
+  opacity: 0; transition: opacity .3s ease;
+  pointer-events: none;
+}
+.ol-fs-summary.on { display: flex; opacity: 1; pointer-events: auto; }
+.ol-fs-summary-inner {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.4vh; text-align: center;
+  transform: scale(.75); opacity: 0;
+  transition: transform .48s cubic-bezier(.22,1.6,.36,1), opacity .3s ease;
+}
+.ol-fs-summary.on .ol-fs-summary-inner { transform: scale(1); opacity: 1; }
+.ol-fs-summary-title {
+  font-size: clamp(16px, 4.6vw, 22px);
+  font-weight: 800; letter-spacing: 2px;
+  color: #ffe6a0;
+  text-shadow: 0 0 14px rgba(255,200,60,.75);
+}
+.ol-fs-summary-sub {
+  font-size: clamp(11px, 3vw, 14px);
+  color: rgba(255,255,255,.75);
+}
+.ol-fs-summary-amount {
+  font-size: clamp(36px, 12vw, 72px);
+  font-weight: 900;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 26px rgba(255,220,120,.95),
+               0 0 8px rgba(255,255,255,.85),
+               0 4px 10px rgba(0,0,0,.55);
+}
+.ol-fs-summary-hint {
+  margin-top: 1.2vh;
+  font-size: clamp(10px, 2.8vw, 12px);
+  color: rgba(255,255,255,.55);
+  letter-spacing: 1px;
+  animation: fs-hint-blink 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ol-fs-intro-title, .ol-fs-intro-count, .ol-fs-intro-hint,
+  .ol-fs-summary-hint { animation: none !important; }
+  .ol-fs-intro-inner, .ol-fs-summary-inner { transition: none !important; }
+}

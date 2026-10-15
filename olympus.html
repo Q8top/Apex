@@ -8,7 +8,7 @@
 <title>奥林匹斯</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
-<link rel="stylesheet" href="/src/css/olympus.css?v=19">
+<link rel="stylesheet" href="/src/css/olympus.css?v=20">
 </head>
 <body class="ol-body">
 <div class="ol-stage">
@@ -95,6 +95,44 @@
       <div class="ol-bigwin-amount">¥0.00</div>
     </div>
   </div>
-<script src="/src/js/inline/olympus.js?v=10"></script>
+  <div class="ol-fs-intro" id="olFsIntro" aria-live="polite">
+    <div class="ol-fs-intro-inner">
+      <div class="ol-fs-intro-crown" aria-hidden="true">
+        <svg viewBox="0 0 64 40" width="86" height="54">
+          <path d="M4 36 L10 8 L20 22 L32 4 L44 22 L54 8 L60 36 Z" fill="url(#fsGold)"/>
+          <defs><linearGradient id="fsGold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff2b8"/>
+            <stop offset="0.5" stop-color="#ffc93c"/>
+            <stop offset="1" stop-color="#a06500"/>
+          </linearGradient></defs>
+        </svg>
+      </div>
+      <div class="ol-fs-intro-title">CONGRATULATIONS!</div>
+      <div class="ol-fs-intro-sub">您已获得</div>
+      <div class="ol-fs-intro-count"><span id="olFsCount">15</span></div>
+      <div class="ol-fs-intro-label">FREE SPINS · 免费旋转</div>
+      <div class="ol-fs-intro-hint">点击任意位置继续</div>
+    </div>
+  </div>
+  <aside class="ol-fs-panel" id="olFsPanel" aria-live="polite">
+    <div class="ol-fs-panel-title">TOTAL MULTIPLIER</div>
+    <div class="ol-fs-panel-mult"><span id="olFsMult">1×</span></div>
+    <div class="ol-fs-panel-sep"></div>
+    <div class="ol-fs-panel-title">FREE SPINS LEFT</div>
+    <div class="ol-fs-panel-count"><span id="olFsLeft">15</span></div>
+    <div class="ol-fs-panel-sep"></div>
+    <div class="ol-fs-panel-title">COLLECTED</div>
+    <div class="ol-fs-panel-collected" id="olFsCollected"></div>
+  </aside>
+  <div class="ol-fs-summary" id="olFsSummary" aria-live="polite">
+    <div class="ol-fs-summary-inner">
+      <div class="ol-fs-summary-title">FREE SPINS 结束</div>
+      <div class="ol-fs-summary-sub">您的免费旋转共赢得</div>
+      <div class="ol-fs-summary-amount" id="olFsSummaryAmount">¥0.00</div>
+      <div class="ol-fs-summary-hint">点击继续</div>
+    </div>
+  </div>
+<script src="/src/js/inline/olympus-fs.js?v=1"></script>
+<script src="/src/js/inline/olympus.js?v=11"></script>
 </body>
 </html>
