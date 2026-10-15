@@ -62,3 +62,294 @@ html, body {
   -webkit-user-drag: none; user-select: none; pointer-events: none;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
 }
+
+/* ==================== HUD (bottom controls) ==================== */
+
+/* top-right menu button */
+.ol-menu-btn {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area0-inset-right, 0px));
+  z-index: 10;
+  width: 40px; height: 40px;
+  border: 0; border-radius: 50%;
+  background: rgba(0,,0,.42);
+  color: #fff; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  transition: background .15s, transform .1s;
+}
+.ol-menu-btn:hover { background: rgba(0,0,0,.6); }
+.ol-menu-btn:active { transform: scale(.93); }
+
+/* HUD container sits below the board (grid ends at ~53%) */
+.ol-hud {
+  position: absolute;
+  left: 0; right: 0;
+  top: 54%;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 0 3.5% max(6px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  pointer-events: none; /* children re-enable */
+  font-family: Manrope, system-ui, -apple-system, PingFang SC, sans-serif;
+  color: #fff;
+  gap: 0.8vh;
+}
+.ol-hud > * { pointer-events: auto; }
+
+/* --- win box (centered, prominent) --- */
+.ol-win-box {
+  align-self: center;
+  margin-top: 0.4vh;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 20px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.35) 100%);
+  box-shadow: 0 2px 10px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,215,120,.35);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+.ol-win-label {
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: 600;
+  letter-spacing: .5px;
+  color: #ffe6a0;
+  opacity: .9;
+}
+.ol-win-amount {
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: 800;
+  letter-spacing: -.3px;
+  color: #ffd86a;
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- info row: balance / bet / round win --- */
+.ol-info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  background: rgba(0,0,0,.32);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.ol-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  gap: 1px;
+}
+.ol-info-item i {
+  font-size: clamp(14px, 3.6vw, 17px);
+  color: #ffd86a;
+  opacity: .95;
+}
+.ol-info-label {
+  font-size: clamp(9px, 2.4vw, 11px);
+  font-weight: 600;
+  letter-spacing: .4px;
+  color: rgba(255,255,255,.72);
+  text-transform: uppercase;
+}
+.ol-info-value {
+  font-size: clamp(11px, 3vw, 14px);
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* --- action row: buy / spin block / ante --- */
+.ol-actions {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0.3vh;
+}
+
+/* buy free spins (left) */
+.ol-buy-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 8px 8px;
+  border: 1.5px solid rgba(255,215,120,.55);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(74,20,12,.75), rgba(40,10,6,.85));
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .1s, background .15s;
+  font-family: inherit;
+  min-width: 0;
+}
+.ol-buy-btn:active { transform: scale(.96); }
+.ol-buy-label {
+  font-size: clamp(10px, 2.6vw, 12px);
+  font-weight: 600;
+  color: #ffe6a0;
+  white-space: nowrap;
+}
+.ol-buy-price {
+  font-size: clamp(12px, 3.2vw, 15px);
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* spin block: minus | spin | plus */
+.ol-spin-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ol-bet-step {
+  width: clamp(28px, 8vw, 36px);
+  height: clamp(28px, 8vw, 36px);
+  border: 0; border-radius: 50%;
+  background: rgba(255,255,255,.14);
+  color: #fff;
+  font-size: clamp(16px, 4vw, 20px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .15s, transform .1s;
+}
+.ol-bet-step:hover { background: rgba(255,255,255,.25); }
+.ol-bet-step:active { transform: scale(.9); }
+.ol-spin-btn {
+  width: clamp(56px, 16vw, 72px);
+  height: clamp(56px, 16vw, 72px);
+  border: 0; border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #ffe28a 0%, #e5a92b 45%, #a86c10 100%);
+  color: #4a2400;
+  font-size: clamp(26px, 7vw, 34px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 12px rgba(0,0,0,.45), inset 0 -2px 0 rgba(0,0,0,.25);
+  transition: transform .1s, box-shadow .15s;
+}
+.ol-spin-btn:active { transform: scale(.94); }
+.ol-spin-btn.is-spinning i { animation: ol-spin 0.9s linear infinite; }
+@keyframes ol-spin { to { transform: rotate(360deg); } }
+.ol-spin-btn.is-auto {
+  background: radial-gradient(circle at 30% 25%, #a8ffca 0%, #2fb36c 45%, #0c6b39 100%);
+  color: #052b16;
+}
+
+/* ante bet toggle (right) */
+.ol-ante {
+  display: flex; flex-direction: column; gap: 3px;
+  align-items: stretch;
+}
+.ol-ante-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(74,20,12,.75), rgba(40,10,6,.85));
+  border: 1.5px solid rgba(255,215,120,.45);
+}
+.ol-ante-title {
+  font-size: clamp(11px, 2.8vw, 13px);
+  font-weight: 700;
+  color: #ffe6a0;
+  white-space: nowrap;
+}
+.ol-ante-sub {
+  font-size: clamp(9px, 2.3vw, 11px);
+  font-weight: 600;
+  color: rgba(255,255,255,.75);
+  text-align: center;
+  letter-spacing: .3px;
+}
+
+/* pill switch */
+.ol-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px; height: 20px;
+  flex-shrink: 0;
+}
+.ol-switch input { display: none; }
+.ol-switch-slider {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,.22);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.ol-switch-slider::before {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+.ol-switch input:checked + .ol-switch-slider { background: #2fb36c; }
+.ol-switch input:checked + .ol-switch-slider::before { transform: translateX(16px); }
+
+/* --- bottom row: auto (left) / speed (right) --- */
+.ol-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-bottom: 2px;
+}
+.ol-auto-btn,
+.ol-speed-btn {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0,0,0,.42);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  transition: background .15s, transform .1s, color .15s;
+}
+.ol-auto-btn {
+  width: 42px; height: 42px;
+  font-size: 20px;
+}
+.ol-auto-btn.is-on { background: #2fb36c; color: #052b16; }
+.ol-speed-btn {
+  padding: 8px 14px;
+  font-size: 16px;
+  min-width: 62px;
+}
+.ol-speed-btn:hover, .ol-auto-btn:hover { background: rgba(0,0,0,.6); }
+.ol-speed-btn:active, .ol-auto-btn:active { transform: scale(.93); }
+.ol-speed-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ol-spin-btn.is-spinning i { animation: none; }
+  .ol-menu-btn, .ol-buy-btn, .ol-bet-step, .ol-spin-btn,
+  .ol-switch-slider, .ol-switch-slider::before,
+  .ol-auto-btn, .ol-speed-btn { transition: none !important; }
+}
