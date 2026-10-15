@@ -161,6 +161,7 @@
       // phase A: show the pre-removal board
       paintBoard(h.board, h.values);
       // mark wins + spawn swirl per winning cell
+      var sawMult = false, sawScatter = false;
       for (var c = 0; c < 6; c++) {
         for (var s = 0; s < liveCols[c].syms.length; s++) {
           var sym = liveCols[c].syms[s];
@@ -170,8 +171,14 @@
               LX.swirlCell(c, sym.row, { color: 'gold', life: 620 });
             }
           }
-          else if (isMultId(sym.id)) sym.el.classList.add('is-mult');
-          else if (sym.id === 'sym-12') sym.el.classList.add('is-scatter');
+          else if (isMultId(sym.id)) {
+            sym.el.classList.add('is-mult');
+            if (!sawMult) { sawMult = true; if (AU && AU.multiplier) AU.multiplier(); }
+          }
+          else if (sym.id === 'sym-12') {
+            sym.el.classList.add('is-scatter');
+            if (!sawScatter) { sawScatter = true; if (AU && AU.scatter) AU.scatter(); }
+          }
         }
       }
       i++;
@@ -319,6 +326,7 @@
     if (el.spin) {
       el.spin.classList.toggle("is-spinning", state.spinning);
       el.spin.classList.toggle("is-auto", state.auto);
+      el.spin.classList.toggle("is-stop", state.spinning && !state.auto);
     }
     renderSpeed();
   }

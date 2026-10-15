@@ -154,7 +154,8 @@
     state.remaining--;
     state.spinsPlayed++;
     state.totalWin += r.winX;
-    if (r.scatters >= opts.paytable.SCATTER_TRIGGER) {
+    var rt = opts.paytable.RETRIGGER_TRIGGER || 3;
+    if (r.scatters >= rt) {
       state.retriggers++;
       state.remaining += 5;
     }

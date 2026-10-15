@@ -756,3 +756,14 @@ html, body {
   .ol-fs-summary-hint { animation: none !important; }
   .ol-fs-intro-inner, .ol-fs-summary-inner { transition: none !important; }
 }
+
+/* spin button in STOP state: hide refresh icon, show a white square */
+.ol-spin-btn.is-stop i { display: none; }
+.ol-spin-btn.is-stop::after {
+  content: '';
+  display: block;
+  width: 30%; height: 30%;
+  background: #4a2400;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0,0,0,.3) inset;
+}

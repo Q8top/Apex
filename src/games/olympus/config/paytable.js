@@ -13,7 +13,8 @@ window.OlympusPaytable = Object.freeze({
   // Each row [8, 9, 10, 11, 12+] is read from symbols.js sym-N.pay
 
   // --- free spins ---
-  SCATTER_TRIGGER: 4,       // 4+ scatter triggers free spins
+  SCATTER_TRIGGER: 4,
+  RETRIGGER_TRIGGER: 3,   // FS 期间 3+ scatter 触发 +5       // 4+ scatter triggers free spins
   FREE_SPINS_AWARD: {
     4: 15,
     5: 20,
