@@ -4,7 +4,8 @@
 
   var MAP = {
     'sweet':       '/sweet-demo.html',
-    'sugar-rush':  '/sugar-rush.html'
+    'sugar-rush':  '/sugar-rush.html',
+    'olympus':     '/olympus.html'
   };
   var FALLBACK = '/coming-soon.html';
 

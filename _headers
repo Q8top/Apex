@@ -148,6 +148,12 @@
 /coming-soon
   Cache-Control: no-store
 
+/olympus.html
+  Cache-Control: no-store
+
+/olympus
+  Cache-Control: no-store
+
 /sugar-rush
   Cache-Control: no-store
 
