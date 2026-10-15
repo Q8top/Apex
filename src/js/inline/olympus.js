@@ -160,11 +160,16 @@
       }
       // phase A: show the pre-removal board
       paintBoard(h.board, h.values);
-      // mark wins
+      // mark wins + spawn swirl per winning cell
       for (var c = 0; c < 6; c++) {
         for (var s = 0; s < liveCols[c].syms.length; s++) {
           var sym = liveCols[c].syms[s];
-          if (winKeys[sym.row + '-' + c]) sym.el.classList.add('is-win');
+          if (winKeys[sym.row + '-' + c]) {
+            sym.el.classList.add('is-win');
+            if (LX && LX.swirlCell) {
+              LX.swirlCell(c, sym.row, { color: 'gold', life: 620 });
+            }
+          }
           else if (isMultId(sym.id)) sym.el.classList.add('is-mult');
           else if (sym.id === 'sym-12') sym.el.classList.add('is-scatter');
         }

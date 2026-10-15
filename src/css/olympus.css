@@ -410,14 +410,14 @@ html, body {
 .ol-top-banner {
   position: absolute;
   left: 50%;
-  top: 17.6%;
+  top: 19.8%;
   transform: translateX(-50%);
   width: min(82vw, 480px);
-  height: 6.2%;
+  height: 5.2%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0;
   pointer-events: none;
   z-index: 3;
   font-family: inherit;
@@ -432,12 +432,15 @@ html, body {
   opacity: .92;
 }
 .ol-top-banner-amount {
-  font-size: clamp(18px, 5.4vw, 28px);
-  font-weight: 800;
+  font-size: clamp(22px, 6.8vw, 34px);
+  font-weight: 900;
   letter-spacing: -.3px;
   color: #ffd86a;
   font-variant-numeric: tabular-nums;
   transition: color .18s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85),
+               0 0 16px rgba(255,220,140,.85),
+               0 0 4px rgba(255,255,255,.55);
 }
 .ol-top-banner.is-win .ol-top-banner-amount {
   color: #fff;
