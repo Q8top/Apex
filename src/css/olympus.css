@@ -1,4 +1,4 @@
-/* Apex Olympus - wider board, larger symbols */
+/* Apex Olympus - precise grid, symbols at 90% cell height */
 
 html, body {
   margin: 0; padding: 0; background: #000; color: #fff;
@@ -25,41 +25,38 @@ html, body {
   pointer-events: none; z-index: 2;
 }
 
-/* Board: left 3.5% / right 2.5% (was 4.44/3.33). Column widths
-   recomputed for the 94% board width: col1 12.22/94=13.0%,
-   col2-5 16.67/94=17.73%, col6 13.33/94=14.18%. */
+/* Board rect from red-line preview4: top 23%, bottom 53% (top-down),
+   left 3%, right 2.5%.  CSS bottom is distance from bottom edge so
+   bottom = 100 - 53 = 47. Column widths from the same preview. */
 .ol-grid-inner {
   position: absolute;
-  left: 3.5%;
+  left: 3.0%;
   right: 2.5%;
-  top: 25.2%;
-  bottom: 51.9%;
+  top: 23.0%;
+  bottom: 47.0%;
   display: grid;
   grid-template-columns:
-    13.00%
-    17.73%
-    17.73%
-    17.73%
-    17.73%
-    14.18%;
-  gap: 0;
-  box-sizing: border-box;
+    15.30%
+    17.35%
+    17.86%
+    17.86%
+    17.86%
+    13.77%;
+  gap: 0; box-sizing: border-box;
 }
 .ol-cell {
   display: flex; align-items: center; justify-content: center;
   min-width: 0; min-height: 0;
-  overflow: hidden;
-  box-sizing: border-box;
+  overflow: hidden; box-sizing: border-box;
 }
-/* Symbol canvas at 110% cell height: content inside the 200x200 canvas
-   occupies ~90%, so visible art now covers ~99% of cell height and
-   overflows slightly. The cell clips the transparent overhang,
-   producing a larger look with a clean boundary. */
+/* Symbols are regenerated at a fixed height of 240px, so setting img
+   height to 90% makes every symbol the same visual height regardless
+   of source aspect ratio. Width scales by the original aspect. */
 .ol-cell img {
   display: block;
-  height: 110%;
+  height: 90%;
   width: auto;
-  max-width: 130%;
+  max-width: 100%;
   object-fit: contain;
   object-position: center;
   -webkit-user-drag: none; user-select: none; pointer-events: none;
