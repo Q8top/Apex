@@ -8,7 +8,7 @@
 <title>奥林匹斯</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
-<link rel="stylesheet" href="/src/css/olympus.css?v=11">
+<link rel="stylesheet" href="/src/css/olympus.css?v=12">
 </head>
 <body class="ol-body">
 <div class="ol-stage">
@@ -39,44 +39,38 @@
         <b class="ol-info-value" id="olRoundWin">¥0.00</b>
       </div>
     </div>
-    <div class="ol-actions">
-      <button class="ol-buy-btn" id="olBuy">
-        <span class="ol-buy-label">购买免费旋转</span>
-        <span class="ol-buy-price">¥100.00</span>
+    <div class="ol-action-cards">
+      <button class="ol-action-card" id="olBuy">
+        <span class="ol-action-title">购买 免费旋转</span>
+        <span class="ol-action-price" id="olBuyPrice">¥100.00</span>
       </button>
-      <div class="ol-spin-control">
-        <button class="ol-bet-step" id="olBetMinus" aria-label="减小下注">
-          <i class="ri-subtract-line" aria-hidden="true"></i>
-        </button>
-        <button class="ol-spin-btn" id="olSpin" aria-label="旋转">
-          <i class="ri-refresh-line" aria-hidden="true"></i>
-        </button>
-        <button class="ol-bet-step" id="olBetPlus" aria-label="增大下注">
-          <i class="ri-add-line" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="ol-ante">
-        <div class="ol-ante-row">
-          <span class="ol-ante-title">赌注</span>
-          <label class="ol-switch">
-            <input type="checkbox" id="olAnte">
-            <span class="ol-switch-slider" aria-hidden="true"></span>
-          </label>
-        </div>
-        <div class="ol-ante-sub">胜率翻倍功能</div>
-      </div>
+      <button class="ol-action-card ol-action-card--toggle" id="olAnte">
+        <span class="ol-action-title">赌注</span>
+        <span class="ol-action-price" id="olAntePrice">¥1.25</span>
+        <span class="ol-action-sub">胜率翻倍功能</span>
+      </button>
     </div>
-    <div class="ol-bottom-row">
-      <button class="ol-auto-btn" id="olAuto" aria-label="自动旋转">
+    <div class="ol-controls-row">
+      <button class="ol-round-btn" id="olAuto" aria-label="自动旋转">
         <i class="ri-loop-right-line" aria-hidden="true"></i>
       </button>
-      <button class="ol-speed-btn" id="olSpeed" aria-label="加速">
-        <i class="ri-flashlight-line" aria-hidden="true"></i>
-        <span class="ol-speed-label" id="olSpeedLabel">1x</span>
+      <button class="ol-round-btn ol-bet-step" id="olBetMinus" aria-label="减小下注">
+        <i class="ri-subtract-line" aria-hidden="true"></i>
+      </button>
+      <button class="ol-spin-btn" id="olSpin" aria-label="旋转">
+        <i class="ri-refresh-line" aria-hidden="true"></i>
+      </button>
+      <button class="ol-round-btn ol-bet-step" id="olBetPlus" aria-label="增大下注">
+        <i class="ri-add-line" aria-hidden="true"></i>
+      </button>
+      <button class="ol-round-btn ol-speed-btn" id="olSpeed" aria-label="极速模式">
+        <span class="ol-speed-icons" id="olSpeedIcons">
+          <i class="ri-flashlight-fill"></i>
+        </span>
       </button>
     </div>
   </div>
 </div>
-<script src="/src/js/inline/olympus.js?v=1"></script>
+<script src="/src/js/inline/olympus.js?v=2"></script>
 </body>
 </html>
