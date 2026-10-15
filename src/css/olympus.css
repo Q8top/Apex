@@ -267,16 +267,7 @@ html, body {
 
 /* ==================== board animations ==================== */
 
-/* winning cell: golden glow + slight scale, fades out */
-.ol-cell.is-win img {
-  animation: ol-win-pop .45s ease-out both;
-  filter: drop-shadow(0 0 12px rgba(255,215,90,.95)) drop-shadow(0 0 4px rgba(255,255,255,.85));
-}
-@keyframes ol-win-pop {
-  0%   { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(255,215,90,0)); }
-  40%  { transform: scale(1.14); filter: drop-shadow(0 0 14px rgba(255,215,90,.95)) drop-shadow(0 0 5px rgba(255,255,255,.9)); }
-  100% { transform: scale(0.6);  filter: drop-shadow(0 0 6px rgba(255,200,60,.5)); opacity: 0; }
-}
+
 
 /* multiplier gem: pulsing halo */
 .ol-cell.is-mult img {
@@ -298,14 +289,7 @@ html, body {
   transition: transform .18s ease, opacity .18s ease, filter .18s ease;
 }
 
-/* during tumble: new symbols fall in */
-.ol-cell.is-new img {
-  animation: ol-drop-in .32s cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes ol-drop-in {
-  0%   { transform: translateY(-120%); opacity: 0; }
-  100% { transform: translateY(0);     opacity: 1; }
-}
+
 
 @media (prefers-reduced-motion: reduce) {
   .ol-cell.is-win img,
@@ -358,4 +342,66 @@ html, body {
   user-select: none;
   pointer-events: none;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+/* ==================== tumble: per-symbol physics ==================== */
+/* symbols are absolutely positioned inside each .ol-col; each one
+   carries a --y (its row top in px). JS mutates transform, browser
+   interpolates. This is the ONLY reliable way to show real falls. */
+.ol-col {
+  position: relative;
+}
+.ol-sym {
+  position: absolute;
+  left: 0; right: 0;
+  height: var(--slot-h, 20%);
+  top: 0;
+  transform: translateY(calc(var(--y, 0) * var(--slot-h, 20%)));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1%;
+  box-sizing: border-box;
+  transition: transform .34s cubic-bezier(.34,1.3,.64,1);
+  will-change: transform;
+}
+.ol-sym img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+.ol-sym.is-win img {
+  animation: sym-explode .42s ease-out forwards;
+}
+@keyframes sym-explode {
+  0%   { transform: scale(1);   filter: drop-shadow(0 0 0 rgba(255,215,90,0)); }
+  35%  { transform: scale(1.18); filter: drop-shadow(0 0 16px rgba(255,220,90,1)) drop-shadow(0 0 5px #fff); }
+  100% { transform: scale(.35);  filter: drop-shadow(0 0 6px rgba(255,200,60,.4)); opacity: 0; }
+}
+.ol-sym.is-entering img {
+  animation: sym-fall-in .38s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes sym-fall-in {
+  0%   { transform: translateY(-160%); opacity: 0; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+.ol-sym.is-mult img {
+  animation: sym-mult-pulse 1.1s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255,180,60,.85)) drop-shadow(0 0 3px rgba(255,255,255,.65));
+}
+@keyframes sym-mult-pulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 6px rgba(255,180,60,.6)); }
+  50%      { transform: scale(1.06); filter: drop-shadow(0 0 14px rgba(255,190,70,1)); }
+}
+.ol-sym.is-scatter img {
+  filter: drop-shadow(0 0 8px rgba(90,150,255,.85)) drop-shadow(0 0 3px rgba(255,255,255,.7));
+}
+@media (prefers-reduced-motion: reduce) {
+  .ol-sym, .ol-sym.is-win img, .ol-sym.is-entering img, .ol-sym.is-mult img {
+    transition: none !important;
+    animation: none !important;
+  }
 }

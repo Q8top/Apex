@@ -63,88 +63,185 @@
     gridEl.innerHTML = "";
     var inner = document.createElement("div");
     inner.className = "ol-grid-inner";
-    liveCells = [];
     liveCols = [];
-    for (var r = 0; r < 5; r++) liveCells[r] = [];
     for (var c = 0; c < 6; c++) {
-      var col = document.createElement("div");
+      var col = document.createElement("col");
       col.className = "ol-col";
-      var track = document.createElement("div");
-      track.className = "ol-col-track";
-      var slots = [];
-      for (var k = 0; k < SLOTS_PER_COL; k++) {
-        var slot = document.createElement("div");
-        slot.className = "ol-slot";
-        var img = document.createElement("img");
-        img.alt = ""; img.draggable = false;
-        slot.appendChild(img);
-        track.appendChild(slot);
-        slots.push({ cell: slot, img: img });
-      }
-      col.appendChild(track);
       inner.appendChild(col);
-      liveCols.push({ el: col, track: track, slots: slots });
-      for (var r2 = 0; r2 < 5; r2++) liveCells[r2][c] = slots[r2];
+      liveCols.push({ el: col, syms: [] });
     }
     gridEl.appendChild(inner);
     layoutCols();
   }
 
+  function layoutCols() {
+    if (!liveCols.length) return;
+    var colH = liveCols[0].el.clientHeight;
+    if (colH <= 0) return;
+    var slotH = colH / 5;
+    for (var i = 0; i < liveCols.length; i++) {
+      liveCols[i].el.style.setProperty('--slot-h', slotH + 'px');
+    }
+  }
+
+  function symIdToSrc(id) {
+    return '/assets/symbols/' + id + '.webp?v=1';
+  }
+
+  // full repaint: destroy everything in each column and rebuild
   function paintBoard(board) {
-    if (!liveCells) buildBoardDom();
-    for (var r = 0; r < board.length; r++) {
-      for (var c = 0; c < board[r].length; c++) {
+    if (!liveCols.length) buildBoardDom();
+    for (var c = 0; c < 6; c++) {
+      var col = liveCols[c];
+      // remove all symbols
+      while (col.el.firstChild) col.el.removeChild(col.el.firstChild);
+      col.syms = [];
+      for (var r = 0; r < 5; r++) {
         var id = board[r][c];
-        var slot = liveCells[r][c];
-        slot.img.src = id ? symSrc(id) : "";
-        slot.cell.className = "ol-cell";
+        if (!id) continue;
+        var el = document.createElement('div');
+        el.className = 'ol-sym';
+        el.style.setProperty('--y', String(r));
+        var img = document.createElement('img');
+        img.src = symIdToSrc(id);
+        img.alt = ''; img.draggable = false;
+        el.appendChild(img);
+        col.el.appendChild(el);
+        col.syms.push({ el: el, img: img, row: r, id: id });
       }
     }
   }
 
-  function markClass(r, c, cls) {
-    if (!liveCells || !liveCells[r] || !liveCells[r][c]) return;
-    liveCells[r][c].cell.classList.add(cls);
+  // animation step: from one board to next
+  function animateStep(fromBoard, toBoard, onDone) {
+    if (!liveCols.length) buildBoardDom();
+    // phase 1: mark wins, remove losers
+    var winCells = {};
+    for (var w = 0; w < (arguments.length > 3 ? 0 : 0); w++) {}
+    onDone();
   }
 
-  function clearMarks() {
-    if (!liveCells) return;
-    for (var r = 0; r < 5; r++)
-      for (var c = 0; c < 6; c++)
-        liveCells[r][c].cell.className = "ol-cell";
-  }
-
-  /* ---- playback: apply history step by step ---- */
+  // play history frame-by-frame with real tumble physics
   function playHistory(history, onDone) {
     if (!history || !history.length) { onDone(); return; }
     var i = 0;
     function nextFrame() {
       if (i >= history.length) { onDone(); return; }
-      if (AU) AU.tumble();
       var h = history[i];
-      clearMarks();
-      paintBoard(h.board);
-      // mark winning cells
+      if (AU) AU.tumble();
+      // build win lookup keyed by r-c
+      var winKeys = {};
       for (var w = 0; w < h.wins.length; w++) {
         var cells = h.wins[w].cells;
-        for (var k = 0; k < cells.length; k++) markClass(cells[k].r, cells[k].c, "is-win");
+        for (var k = 0; k < cells.length; k++) {
+          winKeys[cells[k].r + '-' + cells[k].c] = true;
+        }
       }
-      // mark multipliers + scatter that are on this frame board
-      for (var r = 0; r < h.board.length; r++) {
-        for (var c = 0; c < h.board[r].length; c++) {
-          var id = h.board[r][c];
-          if (!id) continue;
-          if (id === "sym-0" || id === "sym-1" || id === "sym-2" || id === "sym-3") markClass(r, c, "is-mult");
-          if (id === "sym-12") markClass(r, c, "is-scatter");
+      // phase A: show the pre-removal board
+      paintBoard(h.board);
+      // mark wins
+      for (var c = 0; c < 6; c++) {
+        for (var s = 0; s < liveCols[c].syms.length; s++) {
+          var sym = liveCols[c].syms[s];
+          if (winKeys[sym.row + '-' + c]) sym.el.classList.add('is-win');
+          else if (sym.id === 'sym-0' || sym.id === 'sym-1' ||
+                   sym.id === 'sym-2' || sym.id === 'sym-3') sym.el.classList.add('is-mult');
+          else if (sym.id === 'sym-12') sym.el.classList.add('is-scatter');
         }
       }
       i++;
-      var stepMs = Math.max(180, 520 / state.speed);
-      setTimeout(nextFrame, stepMs);
+      var explodeMs = Math.max(280, 420 / state.speed);
+      setTimeout(function () {
+        // phase B: move remaining symbols and drop new ones
+        if (i < history.length) {
+          var next = history[i];
+          applyTumble(h.board, next.board);
+          setTimeout(nextFrame, Math.max(340, 420 / state.speed));
+        } else {
+          // last frame: settle final board from the engine's final state
+          nextFrame();
+        }
+      }, explodeMs);
     }
     nextFrame();
   }
 
+  // Given two consecutive boards, animate symbols moving down and new
+  // symbols entering. Strategy per column: read old column as list of
+  // ids top to bottom. Read new column same way. Then: for each id in
+  // the NEW column (bottom-up), find the latest unmatched occurrence in
+  // the OLD column; keep its DOM node and change --y. Ids in new but
+  // not matched -> create new .ol-sym entering from above.
+  function applyTumble(fromBoard, toBoard) {
+    if (!liveCols.length) return;
+    for (var c = 0; c < 6; c++) {
+      var col = liveCols[c];
+      // collect old symbols still present in DOM (win ones are exploding)
+      var old = [];
+      for (var s = 0; s < col.syms.length; s++) {
+        var sym = col.syms[s];
+        if (sym.el.classList.contains('is-win')) continue;
+        old.push({ id: sym.id, row: sym.row, el: sym.el, img: sym.img, used: false });
+      }
+      // new column top->bottom
+      var newIds = [];
+      for (var r = 0; r < 5; r++) newIds.push(toBoard[r][c]);
+      // keep exploding win nodes aside
+      var exploding = [];
+      for (var s2 = 0; s2 < col.syms.length; s2++) {
+        if (col.syms[s2].el.classList.contains('is-win')) exploding.push(col.syms[s2].el);
+      }
+      // rebuild col DOM: clear, re-append exploding nodes (they will
+      // fade), then place kept + entering nodes
+      col.el.innerHTML = '';
+      for (var e = 0; e < exploding.length; e++) col.el.appendChild(exploding[e]);
+      var newSyms = [];
+      for (var r2 = 4; r2 >= 0; r2--) {
+        var wantId = newIds[r2];
+        if (!wantId) continue;
+        // find latest old symbol with this id
+        var pick = -1;
+        for (var o = old.length - 1; o >= 0; o--) {
+          if (!old[o].used && old[o].id === wantId) { pick = o; break; }
+        }
+        if (pick >= 0) {
+          // reuse: update --y and id bookkeeping
+          var oldSym = old[pick];
+          oldSym.used = true;
+          oldSym.el.style.setProperty('--y', String(r2));
+          oldSym.row = r2;
+          if (oldSym.el.parentNode !== col.el) col.el.appendChild(oldSym.el);
+          newSyms.push({ el: oldSym.el, img: oldSym.img, row: r2, id: wantId });
+        } else {
+          // new symbol from above
+          var nel = document.createElement('div');
+          nel.className = 'ol-sym is-entering';
+          nel.style.setProperty('--y', String(r2 - 1));
+          var nimg = document.createElement('img');
+          nimg.src = symIdSrc(wantId);
+          nimg.alt = ''; nimg.draggable = false;
+          nel.appendChild(nimg);
+          col.el.appendChild(nel);
+          void nel.offsetHeight;
+          nel.style.setProperty('--y', String(r2));
+          setTimeout(function (x) { x.classList.remove('is-entering'); }, 400, nel);
+          newSyms.push({ el: nel, img: nimg, row: r2, id: wantId });
+        }
+      }
+      // mark multipliers / scatter on settled nodes
+      for (var n = 0; n < newSyms.length; n++) {
+        var id = newSyms[n].id;
+        if (id === 'sym-0' || id === 'sym-1' || id === 'sym-2' || id === 'sym-3') newSyms[n].el.classList.add('is-mult');
+        if (id === 'sym-12') newSyms[n].el.classList.add('is-scatter');
+      }
+      newSyms.sort(function (a, b) { return a.row - b.row; });
+      col.syms = newSyms;
+    }
+  }
+
+  function symIdSrc(id) {
+    return '/assets/symbols/' + id + '.webp?v=1';
+  }
   /* ---- state ---- */
   var BET_STEPS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var state = {
