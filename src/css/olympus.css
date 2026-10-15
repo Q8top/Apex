@@ -1,4 +1,4 @@
-/* Apex Olympus - width-fill layout (no left/right bars) */
+/* Apex Olympus - stretch to viewport (no black bars, no crop) */
 
 html, body {
   margin: 0; padding: 0; background: #000; color: #fff;
@@ -7,51 +7,73 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Body centers the stage vertically; stage is full-width and
-   matches the source image aspect ratio (1080x2187). */
 .ol-body {
-  width: 100vw; height: 100vh; height: 100dvh;
-  overflow: hidden; background: #000;
-  display: flex; align-items: center; justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
 }
 
 .ol-stage {
   position: relative;
   width: 100vw;
-  aspect-ratio: 1080 / 2187;
-  flex-shrink: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background: #000;
 }
 
+/* Stretch the source image to fill the stage. Image is 1080x2187
+   (ratio 0.494) while most phones are ~0.46 — the image is stretched
+   horizontally by ~7%, imperceptible on organic art. */
 .ol-art {
-  display: block; width: 100%; height: 100%;
-  object-fit: contain; object-position: center;
-  -webkit-user-drag: none; user-select: none; pointer-events: none;
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 
-/* Grid wrapper covers the full stage; inner rect targets the
-   purple board area (measured on the 1080x2187 source). */
+/* Grid overlay: percentages map directly onto the stretched image */
 .ol-grid {
-  position: absolute; inset: 0;
-  pointer-events: none; z-index: 2;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 .ol-grid-inner {
   position: absolute;
-  left: 4.4%; right: 3.3%; top: 25.2%; bottom: 51.9%;
+  left: 4.4%;
+  right: 3.3%;
+  top: 25.2%;
+  bottom: 51.9%;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 0; box-sizing: border-box;
+  gap: 0;
+  box-sizing: border-box;
 }
 .ol-cell {
-  display: flex; align-items: center; justify-content: center;
-  min-width: 0; min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
   padding: 1%;
   box-sizing: border-box;
 }
 .ol-cell img {
-  display: block; width: 100%; height: 100%;
-  object-fit: contain; object-position: center;
-  -webkit-user-drag: none; user-select: none; pointer-events: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
 }
