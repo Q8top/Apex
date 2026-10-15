@@ -164,17 +164,16 @@ function renderCatContent(content, catKey){
       +'<span class="apex-game-card-name">'+g.n+'</span>'
       +'</div>';
   });
-  html+='</div>';
-  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
+  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="\u66F4\u591A\u70ED\u95E8\u6E38\u620F">\u66F4\u591A\u70ED\u95E8\u6E38\u620F<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
   content.innerHTML=html;
+  content.querySelectorAll('.apex-more-btn').forEach(function(el){
+    el.addEventListener('click', function(){
+      alert('\u66F4\u591A\u70ED\u95E8\u6E38\u620F \u00B7 \u656C\u8BF7\u671F\u5F85');
+    });
+  });
   content.querySelectorAll(".apex-game-card").forEach(function(el){
     el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
     el.addEventListener("dragstart", function(e){ e.preventDefault(); });
-  });
-  content.querySelectorAll('.apex-more-btn').forEach(function(el){
-    el.addEventListener('click', function(){
-      location.href = '/hot-games.html';
-    });
   });
   content.querySelectorAll(".apex-game-card--live").forEach(function(el){
     function go(){
@@ -186,12 +185,7 @@ function renderCatContent(content, catKey){
         location.href = g.url;
         return;
       }
-      // Mode picker: demo vs real. Shows for any live card; demo
-      // delegates to ApexWaijaHome.launch(waijaId) when available.
-      if (window.ApexModePicker && typeof window.ApexModePicker.open === 'function') {
-        window.ApexModePicker.open({ game: g });
-        return;
-      }
+      // Live cards fall through to sweet modal (or entry=page nav above).
       if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
         window.ApexSweetModal.open({
           cover: g.src,

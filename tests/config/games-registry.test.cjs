@@ -34,9 +34,9 @@ t('all have src', srcOk);
 
 // live games
 var live = R.GAMES.filter(function(g){ return !!g.live; });
-t('exactly 8 live', live.length === 8, 'got ' + live.length);
+t('exactly 0 live', live.length === 0, 'got ' + live.length);
 var liveIds = live.map(function(g){ return g.id; }).sort();
-t('live id list', JSON.stringify(liveIds) === JSON.stringify(['bass','buffalo','dog','fruit','olympus','sugar-rush','sweet','wolf']), liveIds.join(','));
+t('live id list empty', liveIds.length === 0, liveIds.join(','));
 
 // entry enum + page requires url
 var entryBad = [], pageNoUrl = [];
@@ -54,7 +54,7 @@ t('validate() -> true', vOk === true, String(vOk));
 
 // getById semantics
 t('getById(sweet).id=sweet', R.getById('sweet').id === 'sweet');
-t('getById(sugar-rush).url present', R.getById('sugar-rush').url === '/sugar-rush.html');
+t('getById(sugar-rush).url undefined', R.getById('sugar-rush').url === undefined);
 t('getById(unknown) -> null', R.getById('__never__') === null);
 t('getById(null) -> null', R.getById(null) === null);
 
