@@ -404,6 +404,7 @@
     if (el.topBanner) el.topBanner.classList.remove('is-win', 'is-big');
     if (BW) BW.hide();
     if (FS) FS.hideAll();
+    if (LX && LX.isAuraOn && LX.isAuraOn()) LX.setAura(false);
 
     var profile = MP.DEMO;
     var r = playBase(profile);
@@ -473,6 +474,7 @@
     var st = RD.startFreeSpins({ paytable: P, count: count, tumble: TB });
     var safety = 0;
     var collected = [];
+    if (LX) LX.setAura(true);
     if (FS) FS.showPanel();
     if (FS) FS.updatePanel(st.remaining, 0, collected);
 
@@ -497,6 +499,7 @@
     function tick() {
       if (st.remaining <= 0 || safety >= 200) {
         var totalWin = st.totalWin;
+        if (LX) LX.setAura(false);
         if (FS) FS.hidePanel();
         if (FS) {
           FS.showSummary(totalWin, function () {

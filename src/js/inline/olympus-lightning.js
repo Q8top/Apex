@@ -4,6 +4,8 @@
 var canvas = null, ctx = null, raf = 0;
 var bolts = [];
 var swirls = [];
+var auraOn = false;
+var auraT0 = 0;
 var startTime = 0;
 var DPR = 1;
 function rnd() {
@@ -178,6 +180,83 @@ ctx.restore();
 }
 }
 
+function drawAura(now, W, H) {
+if (!auraOn) return;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var x0 = left * W, x1 = right * W;
+var y0 = top * H, y1 = bottom * H;
+var cw = (x1 - x0) / 6;
+var ch = (y1 - y0) / 5;
+var t = now * 0.001;
+ctx.save();
+ctx.globalCompositeOperation = 'lighter';
+// outer frame glow
+ctx.lineWidth = 2.4;
+ctx.strokeStyle = 'rgba(255,200,60,0.55)';
+ctx.shadowColor = '#ffe680';
+ctx.shadowBlur = 18;
+roundRect(x0 - 2, y0 - 2, (x1 - x0) + 4, (y1 - y0) + 4, 6);
+ctx.stroke();
+// 6 vertical jitter columns
+for (var c = 0; c <= 6; c++) {
+var x = x0 + cw * c;
+var jitter = Math.sin(t * 6 + c * 1.7) * 2;
+goldWire(x + jitter, y0, x + Math.sin(t * 4 + c) * 2, y1, 2);
+}
+// 6 horizontal jitter rows
+for (var r = 0; r <= 5; r++) {
+var y = y0 + ch * r;
+var jitter = Math.cos(t * 5 + r * 2.1) * 2;
+goldWire(x0, y + jitter, x1, y + Math.cos(t * 3.4 + r) * 2, 2);
+}
+// node halos: at each internal intersection
+for (var ci = 1; ci < 6; ci++) {
+for (var ri = 1; ri < 5; ri++) {
+var nx = x0 + cw * ci;
+var ny = y0 + ch * ri;
+var pulse = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * 8 + ci * 2 + ri * 3));
+ctx.globalAlpha = pulse * 0.55;
+ctx.beginPath();
+ctx.arc(nx, ny, 4 + pulse * 3, 0, Math.PI * 2);
+ctx.fillStyle = 'rgba(255,220,120,0.85)';
+ctx.shadowColor = '#ffe680';
+ctx.shadowBlur = 14;
+ctx.fill();
+}
+}
+ctx.restore();
+}
+function goldWire(x1, y1, x2, y2, w) {
+var segs = 5;
+ctx.beginPath();
+ctx.moveTo(x1, y1);
+for (var i = 1; i < segs; i++) {
+var f = i / segs;
+var mx = x1 + (x2 - x1) * f + (rnd() - 0.5) * 5;
+var my = y1 + (y2 - y1) * f + (rnd() - 0.5) * 5;
+ctx.lineTo(mx, my);
+}
+ctx.lineTo(x2, y2);
+ctx.lineWidth = w;
+ctx.strokeStyle = 'rgba(255,215,90,0.78)';
+ctx.shadowColor = '#ffe680';
+ctx.shadowBlur = 12;
+ctx.stroke();
+}
+function roundRect(x, y, w, h, r) {
+ctx.beginPath();
+ctx.moveTo(x + r, y);
+ctx.lineTo(x + w - r, y);
+ctx.arcTo(x + w, y, x + w, y + r, r);
+ctx.lineTo(x + w, y + h - r);
+ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+ctx.lineTo(x + r, y + h);
+ctx.arcTo(x, y + h, x, y + h - r, r);
+ctx.lineTo(x, y + r);
+ctx.arcTo(x, y, x + r, y, r);
+ctx.closePath();
+}
+
 function tick() {
 if (!ctx) return;
 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -202,8 +281,10 @@ aliveSwirls.push(swirls[j]);
 }
 }
 swirls = aliveSwirls;
+// aura layer (persistent during FS)
+if (auraOn) drawAura(now, canvas.width / DPR, canvas.height / DPR);
 ctx.restore();
-if (bolts.length > 0 || swirls.length > 0) {
+if (bolts.length > 0 || swirls.length > 0 || auraOn) {
 raf = requestAnimationFrame(tick);
 } else {
 raf = 0;
@@ -241,6 +322,18 @@ global.OlympusLightning = Object.freeze({
 strike: strike,
 strikeCell: strikeCell,
 init: initCanvas,
+setAura: function (on) {
+if (!initCanvas()) return;
+var was = auraOn;
+auraOn = !!on;
+if (auraOn) {
+if (canvas) canvas.classList.add('on');
+if (!raf) raf = requestAnimationFrame(tick);
+} else if (was && !raf && bolts.length === 0 && swirls.length === 0) {
+if (canvas) canvas.classList.remove('on');
+}
+},
+isAuraOn: function () { return auraOn; },
 swirlAt: function (cx, cy, opts) {
 if (!initCanvas()) return;
 if (canvas) canvas.classList.add('on');
