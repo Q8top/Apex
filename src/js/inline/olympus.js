@@ -12,6 +12,12 @@
   var TB = window.OlympusTumble;
   var RD = window.OlympusRound;
   var AU = window.OlympusAudio;
+  var LX = window.OlympusLightning;
+  function rnd() {
+    var buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0] / 4294967296;
+  }
 
   if (!S || !P || !W || !MP || !R || !M || !Mu || !TB || !RD) {
     console.error('[olympus] engine modules missing');
@@ -264,7 +270,9 @@
     spin:      document.getElementById("olSpin"),
     autoBtn:   document.getElementById("olAuto"),
     speedBtn:  document.getElementById("olSpeed"),
-    speedIcons: document.getElementById("olSpeedIcons")
+    speedIcons: document.getElementById("olSpeedIcons"),
+    topBanner:  document.querySelector(".ol-top-banner"),
+    topAmount:  document.getElementById("olTopAmount")
   };
 
   function fmt(n) { return '\u00A5' + n.toFixed(2); }
@@ -281,6 +289,7 @@
 
   function render() {
     if (el.win) el.win.textContent = fmt(state.roundWin);
+    if (el.topAmount) el.topAmount.textContent = fmt(state.roundWin);
     if (el.balance) el.balance.textContent = fmt(state.balance);
     if (el.bet) el.bet.textContent = fmt(effectiveBet());
     if (el.roundWin) el.roundWin.textContent = fmt(state.roundWin);
@@ -373,6 +382,7 @@
     state.roundWin = 0;
     render();
     if (AU) { AU.unlock(); AU.startBgm(); AU.spin(); }
+    if (el.topBanner) el.topBanner.classList.remove('is-win', 'is-big');
 
     var profile = MP.DEMO;
     var r = playBase(profile);
@@ -383,12 +393,47 @@
         state.roundWin = r.winX;
         state.balance += r.winX;
         render();
+        if (el.topBanner) {
+          el.topBanner.classList.remove('is-win', 'is-big');
+          if (r.winX > 0) { void el.topBanner.offsetWidth; el.topBanner.classList.add('is-win'); }
+          if (r.winX >= 50) el.topBanner.classList.add('is-big');
+        }
+        if (LX && r.winX > 0) {
+          var strikes = 1;
+          if (r.winX >= 50) strikes = 6;
+          else if (r.winX >= 10) strikes = 3;
+          else strikes = 1;
+          for (var li = 0; li < strikes; li++) {
+            (function (n) {
+              setTimeout(function () {
+                var rr = (rnd() * 5) | 0;
+                var cc = (rnd() * 6) | 0;
+                LX.strikeCell(cc, rr);
+              }, n * 90);
+            })(li);
+          }
+        }
         if (AU && r.winX > 0) {
           if (r.winX >= 50) { AU.winBig(); AU.playPayout(); }
           else if (r.winX >= 10) { AU.winMid(); AU.playPayout(); }
           else { AU.winSmall(); }
         }
-        if (r.triggerFS) { if (AU) AU.fsTrigger(); runFreeSpins(profile, r.fsAward); }
+        if (r.triggerFS) {
+          if (AU) AU.fsTrigger();
+          if (LX) {
+            for (var fi = 0; fi < 8; fi++) {
+              (function (n) {
+                setTimeout(function () {
+                  LX.strike({ fromX: 0.42, fromY: 0.10,
+                              toX: 0.1 + rnd() * 0.8,
+                              toY: 0.24 + rnd() * 0.24,
+                              count: 1 });
+                }, n * 70);
+              })(fi);
+            }
+          }
+          runFreeSpins(profile, r.fsAward);
+        }
         else { state.spinning = false; render(); }
       });
     });
@@ -414,6 +459,11 @@
         state.balance += fr.win;
         render();
         if (AU && fr.win > 0) AU.winSmall();
+        if (LX && fr.win > 0) {
+          var rr = (rnd() * 5) | 0;
+          var cc = (rnd() * 6) | 0;
+          LX.strikeCell(cc, rr);
+        }
       }
       safety++;
       setTimeout(tick, 700 / state.speed);

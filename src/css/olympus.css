@@ -405,3 +405,69 @@ html, body {
     animation: none !important;
   }
 }
+/* ==================== top banner (win amount) ==================== */
+/* Sits over the red gold-framed plate at the top of the bg. */
+.ol-top-banner {
+  position: absolute;
+  left: 50%;
+  top: 17.6%;
+  transform: translateX(-50%);
+  width: min(82vw, 480px);
+  height: 6.2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 3;
+  font-family: inherit;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85), 0 0 12px rgba(255,220,140,.55);
+}
+.ol-top-banner-label {
+  font-size: clamp(11px, 3.1vw, 15px);
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #ffe6a0;
+  opacity: .92;
+}
+.ol-top-banner-amount {
+  font-size: clamp(18px, 5.4vw, 28px);
+  font-weight: 800;
+  letter-spacing: -.3px;
+  color: #ffd86a;
+  font-variant-numeric: tabular-nums;
+  transition: color .18s ease;
+}
+.ol-top-banner.is-win .ol-top-banner-amount {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85), 0 0 18px rgba(255,235,150,1), 0 0 6px rgba(255,255,255,.9);
+  animation: top-banner-pulse .65s ease-out both;
+}
+.ol-top-banner.is-big .ol-top-banner-amount {
+  animation: top-banner-pulse 1.1s ease-out infinite;
+}
+@keyframes top-banner-pulse {
+  0%   { transform: scale(1);    filter: brightness(1); }
+  35%  { transform: scale(1.16); filter: brightness(1.4); }
+  100% { transform: scale(1);    filter: brightness(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ol-top-banner.is-win .ol-top-banner-amount,
+  .ol-top-banner.is-big .ol-top-banner-amount { animation: none !important; }
+}
+/* ==================== Zeus lightning strike ==================== */
+.ol-lightning {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity .08s linear;
+}
+.ol-lightning.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .ol-lightning { display: none; }
+}
