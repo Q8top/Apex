@@ -1,4 +1,4 @@
-/* Apex Olympus - symbols fill the cell, small gaps */
+/* Apex Olympus - real purple column widths, centered symbols */
 
 html, body {
   margin: 0; padding: 0; background: #000; color: #fff;
@@ -24,30 +24,41 @@ html, body {
   position: absolute; inset: 0;
   pointer-events: none; z-index: 2;
 }
+
+/* Board area: left 4.44% / right 3.33% of stage; inside that,
+   column widths mirror the real purple cells (12.22 / 16.67*4 / 13.33
+   of stage -> divide by 92.23% to get grid-relative widths). */
 .ol-grid-inner {
   position: absolute;
-  left: 4.4%; right: 3.3%; top: 25.2%; bottom: 51.9%;
+  left: 4.44%;
+  right: 3.33%;
+  top: 25.2%;
+  bottom: 51.9%;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 0; box-sizing: border-box;
+  grid-template-columns:
+    13.25%   /* col 1: stage 12.22% */
+    18.07%   /* col 2: stage 16.67% */
+    18.07%   /* col 3 */
+    18.07%   /* col 4 */
+    18.07%   /* col 5 */
+    14.45%;  /* col 6: stage 13.33% */
+  gap: 0;
+  box-sizing: border-box;
 }
 .ol-cell {
-  position: relative;
   display: flex; align-items: center; justify-content: center;
   min-width: 0; min-height: 0;
   overflow: hidden;
   box-sizing: border-box;
 }
-/* Render the 200x200 symbol canvas at 130% of cell height.
-   Content inside the canvas (about 90% of 200) then occupies
-   roughly 117% of cell height, leaving a small visible gap
-   between rows and columns. */
+/* 200x200 symbol canvas rendered at 95% cell height: content inside
+   the canvas sits at ~90% so visible art covers ~85% of the cell
+   with a clear gap between rows and columns. */
 .ol-cell img {
   display: block;
-  height: 130%;
+  height: 95%;
   width: auto;
-  max-width: 200%;
+  max-width: 100%;
   object-fit: contain;
   object-position: center;
   -webkit-user-drag: none; user-select: none; pointer-events: none;
