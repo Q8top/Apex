@@ -173,7 +173,9 @@
           }
           else if (isMultId(sym.id)) {
             sym.el.classList.add('is-mult');
+            state.collected++;
             if (!sawMult) { sawMult = true; if (AU && AU.multiplier) AU.multiplier(); }
+            if (LX && LX.rippleCell) LX.rippleCell(c, sym.row, { hue: 'gold', life: 720, radius: 56 });
           }
           else if (sym.id === 'sym-12') {
             sym.el.classList.add('is-scatter');
@@ -182,7 +184,7 @@
         }
       }
       i++;
-      var explodeMs = Math.max(280, 420 / state.speed);
+      var explodeMs = state.skipAnim ? 30 : Math.max(280, 420 / state.speed);
       setTimeout(function () {
         // phase B: move remaining symbols and drop new ones
         if (i < history.length) {
@@ -278,7 +280,9 @@
   var BET_STEPS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var state = {
     balance: 1000.00, betIdx: 2, roundWin: 0,
-    ante: false, spinning: false, auto: false, autoTimer: 0, speed: 1
+    ante: false, spinning: false, auto: false, autoTimer: 0, speed: 1,
+    skipAnim: false,
+    collected: 0
   };
 
   var el = {
@@ -298,7 +302,10 @@
     speedBtn:  document.getElementById("olSpeed"),
     speedIcons: document.getElementById("olSpeedIcons"),
     topBanner:  document.querySelector(".ol-top-banner"),
-    topAmount:  document.getElementById("olTopAmount")
+    topAmount:  document.getElementById("olTopAmount"),
+    collectPanel: document.getElementById("olCollectPanel"),
+    collectCount: document.getElementById("olCollectCount"),
+    collectTotal: document.getElementById("olCollectTotal")
   };
 
   function fmt(n) { return '\u00A5' + n.toFixed(2); }
@@ -319,6 +326,8 @@
     if (el.balance) el.balance.textContent = fmt(state.balance);
     if (el.bet) el.bet.textContent = fmt(effectiveBet());
     if (el.roundWin) el.roundWin.textContent = fmt(state.roundWin);
+    if (el.collectCount) el.collectCount.textContent = String(state.collected);
+    if (el.collectTotal) el.collectTotal.textContent = fmt(state.roundWin);
     if (el.buyPrice) el.buyPrice.textContent = fmt(baseBet() * 100);
     if (el.antePrice) el.antePrice.textContent = fmt(effectiveBet());
     if (el.ante) el.ante.classList.toggle("is-on", state.ante);
@@ -375,7 +384,7 @@
       void col.track.offsetHeight;
       col.el.classList.add('is-rolling');
     }
-    var baseDelay = Math.max(420, 750 / state.speed);
+    var baseDelay = state.skipAnim ? 60 : Math.max(420, 750 / state.speed);
     var colDelay = Math.max(70, 110 / state.speed);
     for (var k = 0; k < liveCols.length; k++) {
       (function (idx) {
@@ -413,9 +422,12 @@
     if (BW) BW.hide();
     if (FS) FS.hideAll();
     if (LX && LX.isAuraOn && LX.isAuraOn()) LX.setAura(false);
+    state.collected = 0;
+    if (el.collectPanel) el.collectPanel.classList.add('on');
 
     var profile = MP.DEMO;
     var r = playBase(profile);
+    state.skipAnim = false;
 
     realSpin(profile, function () {
       playHistory(r.history, function () {
@@ -566,6 +578,8 @@
 
   /* ---- wire ---- */
   if (el.spin) el.spin.addEventListener("click", function () {
+    if (AU) AU.button();
+    if (state.spinning) { state.skipAnim = true; return; }
     if (state.auto) { stopAuto(); return; }
     doSpin();
   });
@@ -597,6 +611,17 @@
   if (el.buy) el.buy.addEventListener("click", function () {
     if (AU) AU.button();
     alert('\u8D2D\u4E70\u514D\u8D39\u65CB\u8F6C \u00B7 \u656C\u8BF7\u671F\u5F85');
+  });
+
+  /* ---- keyboard ---- */
+  document.addEventListener('keydown', function (e) {
+    if (e.code !== 'Space' && e.key !== ' ') return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    e.preventDefault();
+    if (state.spinning) { state.skipAnim = true; return; }
+    if (state.auto) { stopAuto(); return; }
+    doSpin();
   });
 
   /* ---- init ---- */

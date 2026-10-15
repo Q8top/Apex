@@ -5,6 +5,7 @@ var canvas = null, ctx = null, raf = 0;
 var bolts = [];
 var swirls = [];
 var auraOn = false;
+var ripples = [];
 var auraT0 = 0;
 var startTime = 0;
 var DPR = 1;
@@ -180,6 +181,53 @@ ctx.restore();
 }
 }
 
+function spawnRipple(cx, cy, opts) {
+opts = opts || {};
+ripples.push({
+cx: cx, cy: cy,
+t0: performance.now(),
+life: opts.life || 620,
+radius: opts.radius || 46,
+hue: opts.hue || 'gold'
+});
+}
+function drawRipple(r, age) {
+var t = age / r.life;
+if (t >= 1) return;
+var ease = 1 - Math.pow(1 - t, 2.2);
+var rad = 8 + r.radius * ease;
+var fade = 1 - t;
+var palette = r.hue === 'blue'
+? ['#8ec7ff', '#4a90ff', '#ffffff']
+: ['#ffe680', '#ffc93c', '#ffffff'];
+ctx.save();
+ctx.globalCompositeOperation = 'lighter';
+// 3 expanding rings, staggered
+for (var k = 0; k < 3; k++) {
+var rk = rad * (1 - k * 0.18);
+if (rk <= 1) continue;
+ctx.globalAlpha = fade * (0.85 - k * 0.22);
+ctx.beginPath();
+ctx.arc(r.cx, r.cy, rk, 0, Math.PI * 2);
+ctx.strokeStyle = palette[k % palette.length];
+ctx.lineWidth = 3 - k * 0.6;
+ctx.shadowColor = palette[k];
+ctx.shadowBlur = 16 - k * 4;
+ctx.stroke();
+}
+// center light
+ctx.globalAlpha = fade * 0.9;
+var g = ctx.createRadialGradient(r.cx, r.cy, 0, r.cx, r.cy, rad * 0.6);
+g.addColorStop(0, 'rgba(255,255,255,0.95)');
+g.addColorStop(0.4, 'rgba(255,235,160,0.55)');
+g.addColorStop(1, 'rgba(255,180,40,0)');
+ctx.fillStyle = g;
+ctx.beginPath();
+ctx.arc(r.cx, r.cy, rad * 0.6, 0, Math.PI * 2);
+ctx.fill();
+ctx.restore();
+}
+
 function drawAura(now, W, H) {
 if (!auraOn) return;
 var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
@@ -281,10 +329,20 @@ aliveSwirls.push(swirls[j]);
 }
 }
 swirls = aliveSwirls;
+// ripples (multiplier landing)
+var aliveRipples = [];
+for (var ri = 0; ri < ripples.length; ri++) {
+var ageR = now - ripples[ri].t0;
+if (ageR < ripples[ri].life) {
+drawRipple(ripples[ri], ageR);
+aliveRipples.push(ripples[ri]);
+}
+}
+ripples = aliveRipples;
 // aura layer (persistent during FS)
 if (auraOn) drawAura(now, canvas.width / DPR, canvas.height / DPR);
 ctx.restore();
-if (bolts.length > 0 || swirls.length > 0 || auraOn) {
+if (bolts.length > 0 || swirls.length > 0 || ripples.length > 0 || auraOn) {
 raf = requestAnimationFrame(tick);
 } else {
 raf = 0;
@@ -322,6 +380,19 @@ global.OlympusLightning = Object.freeze({
 strike: strike,
 strikeCell: strikeCell,
 init: initCanvas,
+rippleCell: function (col, row, opts) {
+if (!initCanvas()) return;
+var w = canvas.clientWidth || window.innerWidth;
+var h = canvas.clientHeight || window.innerHeight;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var cw = (right - left) / 6;
+var ch = (bottom - top) / 5;
+var cx = (left + cw * (col + 0.5)) * w;
+var cy = (top + ch * (row + 0.5)) * h;
+if (canvas) canvas.classList.add('on');
+spawnRipple(cx, cy, opts);
+if (!raf) raf = requestAnimationFrame(tick);
+},
 setAura: function (on) {
 if (!initCanvas()) return;
 var was = auraOn;
