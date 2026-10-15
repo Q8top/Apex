@@ -42,8 +42,21 @@
   /* ---- board render ---- */
   var gridEl = document.getElementById("olGrid");
   var liveCells = null;
+  var liveCols = [];
+  var SLOTS_PER_COL = 10;
 
   function symSrc(id) { return "/assets/symbols/sym-" + id.slice(4) + ".webp?v=1"; }
+
+  function layoutCols() {
+    if (!liveCols.length) return;
+    var colH = liveCols[0].el.clientHeight;
+    if (colH <= 0) return;
+    var slotH = colH / 5;
+    for (var i = 0; i < liveCols.length; i++) {
+      liveCols[i].track.style.setProperty('--slot-h', slotH + 'px');
+      liveCols[i].track.style.setProperty('--roll-h', (slotH * 5) + 'px');
+    }
+  }
 
   function buildBoardDom() {
     if (!gridEl) return;
@@ -51,19 +64,30 @@
     var inner = document.createElement("div");
     inner.className = "ol-grid-inner";
     liveCells = [];
-    for (var r = 0; r < 5; r++) {
-      liveCells[r] = [];
-      for (var c = 0; c < 6; c++) {
-        var cell = document.createElement("div");
-        cell.className = "ol-cell";
+    liveCols = [];
+    for (var r = 0; r < 5; r++) liveCells[r] = [];
+    for (var c = 0; c < 6; c++) {
+      var col = document.createElement("div");
+      col.className = "ol-col";
+      var track = document.createElement("div");
+      track.className = "ol-col-track";
+      var slots = [];
+      for (var k = 0; k < SLOTS_PER_COL; k++) {
+        var slot = document.createElement("div");
+        slot.className = "ol-slot";
         var img = document.createElement("img");
         img.alt = ""; img.draggable = false;
-        cell.appendChild(img);
-        inner.appendChild(cell);
-        liveCells[r][c] = { cell: cell, img: img };
+        slot.appendChild(img);
+        track.appendChild(slot);
+        slots.push({ cell: slot, img: img });
       }
+      col.appendChild(track);
+      inner.appendChild(col);
+      liveCols.push({ el: col, track: track, slots: slots });
+      for (var r2 = 0; r2 < 5; r2++) liveCells[r2][c] = slots[r2];
     }
     gridEl.appendChild(inner);
+    layoutCols();
   }
 
   function paintBoard(board) {
@@ -184,6 +208,65 @@
     });
   }
 
+  function refillScrollingSlots() {
+    for (var c = 0; c < liveCols.length; c++) {
+      for (var k = 5; k < SLOTS_PER_COL; k++) {
+        var buf = new Uint8Array(1);
+        crypto.getRandomValues(buf);
+        var id = 'sym-' + (buf[0] % 13);
+        liveCols[c].slots[k].img.src = '/assets/symbols/' + id + '.webp?v=1';
+      }
+    }
+  }
+
+  function readTrackY(track) {
+    var m = getComputedStyle(track).transform;
+    if (!m || m === 'none') return 0;
+    var mm = m.match(/matrix\(([^)]+)\)/);
+    if (!mm) return 0;
+    var parts = mm[1].split(',');
+    var v = parseFloat(parts[5]);
+    return isFinite(v) ? v : 0;
+  }
+
+  function realSpin(profile, cb) {
+    if (!liveCols.length) buildBoardDom();
+    layoutCols();
+    refillScrollingSlots();
+    for (var c = 0; c < liveCols.length; c++) {
+      var col = liveCols[c];
+      col.el.classList.remove('is-rolling');
+      col.track.style.animation = '';
+      col.track.style.transition = '';
+      col.track.style.transform = '';
+      void col.track.offsetHeight;
+      col.el.classList.add('is-rolling');
+    }
+    var baseDelay = Math.max(420, 750 / state.speed);
+    var colDelay = Math.max(70, 110 / state.speed);
+    for (var k = 0; k < liveCols.length; k++) {
+      (function (idx) {
+        setTimeout(function () {
+          var col = liveCols[idx];
+          var curY = readTrackY(col.track);
+          col.el.classList.remove('is-rolling');
+          col.track.style.animation = 'none';
+          col.track.style.transform = 'translateY(' + curY + 'px)';
+          void col.track.offsetHeight;
+          col.track.style.transition = 'transform 0.42s cubic-bezier(.22,1.6,.36,1)';
+          col.track.style.transform = 'translateY(0)';
+          if (AU) AU.stop();
+          setTimeout(function () {
+            col.track.style.transition = '';
+            col.track.style.animation = '';
+            col.track.style.transform = '';
+          }, 460);
+        }, baseDelay + idx * colDelay);
+      })(k);
+    }
+    var total = baseDelay + 6 * colDelay + 480;
+    setTimeout(cb, total);
+  }
   function doSpin() {
     if (state.spinning) return;
     var bet = effectiveBet();
@@ -195,8 +278,9 @@
     if (AU) { AU.unlock(); AU.startBgm(); AU.spin(); }
 
     var profile = MP.DEMO;
-    setTimeout(function () {
-      var r = playBase(profile);
+    var r = playBase(profile);
+
+    realSpin(profile, function () {
       playHistory(r.history, function () {
         paintBoard(r.board);
         state.roundWin = r.winX;
@@ -210,7 +294,7 @@
         if (r.triggerFS) { if (AU) AU.fsTrigger(); runFreeSpins(profile, r.fsAward); }
         else { state.spinning = false; render(); }
       });
-    }, 220 / state.speed);
+    });
   }
 
   /* ---- free spins ---- */
@@ -306,4 +390,15 @@
   }
   document.addEventListener('pointerdown', tryUnlockAudio, { once: true });
   document.addEventListener('touchstart', tryUnlockAudio, { once: true });
+  var resizeTimer = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(layoutCols, 160);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(layoutCols, 160);
+    });
+  }
 })();
