@@ -5,7 +5,7 @@
 window.OlympusMathProfile = (function () {
   'use strict';
   var DEMO = Object.freeze({
-    payScale: 1.83,
+    payScale: 0.74,
     maxWinX: 25000,
     pityRate: 0.45,
     pityTargetCount: 8,

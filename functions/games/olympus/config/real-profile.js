@@ -11,7 +11,7 @@
 window.OlympusRealProfile = (function () {
   'use strict';
   var REAL = Object.freeze({
-    payScale: 1.71,
+    payScale: 0.80,
     maxWinX: 5000,
     pityRate: 0.05,
     pityTargetCount: 8,
