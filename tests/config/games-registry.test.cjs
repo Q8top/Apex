@@ -58,10 +58,10 @@ t('getById(sugar-rush).url undefined', R.getById('sugar-rush').url === undefined
 t('getById(unknown) -> null', R.getById('__never__') === null);
 t('getById(null) -> null', R.getById(null) === null);
 
-// source: no apex-app hardcoded game url
+// source: apex-app calls ApexModePicker for every game card
 var app = fs.readFileSync(ROOT + '/src/js/inline/apex-app.js', 'utf8');
-t('apex-app honors g.entry', app.indexOf('g.entry') !== -1);
-t('apex-app honors location.href for page', app.indexOf('location.href = g.url') !== -1);
+t('apex-app calls ApexModePicker', app.indexOf('ApexModePicker') !== -1);
+t('apex-app does not hardcode entry=page nav', app.indexOf('location.href = g.url') === -1);
 
 console.log('');
 console.log('========== config/games-registry ==========');

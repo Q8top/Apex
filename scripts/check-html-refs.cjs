@@ -5,7 +5,8 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const HTMLS = ['index.html','sweet-demo.html','sugar-rush.html',
   'announcements.html','privacy.html','terms.html',
-  'status.html','404.html'];
+  'status.html','404.html',
+  'loading.html','coming-soon.html'];
 const SKIP = ['http://','https://','//','data:','mailto:',
   '#','tel:','javascript:'];
 const RE = /(?:src|href)\s*=\s*["']([^"']+)["']/gi;

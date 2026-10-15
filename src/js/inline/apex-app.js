@@ -154,21 +154,20 @@ function renderCatContent(content, catKey){
     return;
   }
   var GAMES = (window.ApexGamesRegistry && window.ApexGamesRegistry.GAMES) || [];
-  var html='<div class="apex-game-grid apex-game-placeholder">';
+  var html='<div class="apex-game-grid">';
   GAMES.forEach(function(g){
-    var isLive = !!g.live;
-    var cls = isLive ? ' apex-game-card--live' : '';
-    var attr = isLive ? ' role="button" tabindex="0" aria-label="'+g.n+'" data-game="'+g.id+'"' : '';
-    html+='<div class="apex-game-card'+cls+'"'+attr+'>'
+    html+='<div class="apex-game-card apex-game-card--live"'
+      + ' role="button" tabindex="0" aria-label="'+g.n+'" data-game="'+g.id+'">'
       +'<span class="apex-game-card-icon"><img src="'+g.src+'" alt="" loading="lazy" draggable="false"></span>'
       +'<span class="apex-game-card-name">'+g.n+'</span>'
       +'</div>';
   });
-  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="\u66F4\u591A\u70ED\u95E8\u6E38\u620F">\u66F4\u591A\u70ED\u95E8\u6E38\u620F<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
+  html+='</div>';
+  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
   content.innerHTML=html;
   content.querySelectorAll('.apex-more-btn').forEach(function(el){
     el.addEventListener('click', function(){
-      alert('\u66F4\u591A\u70ED\u95E8\u6E38\u620F \u00B7 \u656C\u8BF7\u671F\u5F85');
+      alert('更多热门游戏 · 敬请期待');
     });
   });
   content.querySelectorAll(".apex-game-card").forEach(function(el){
@@ -179,21 +178,9 @@ function renderCatContent(content, catKey){
     function go(){
       var gid = el.dataset.game;
       var g = window.ApexGamesRegistry && window.ApexGamesRegistry.getById(gid);
-      if (!g || !g.live) return;
-      // entry='page' -> direct navigation; default 'modal' -> picker
-      if (g.entry === 'page' && typeof g.url === 'string' && g.url) {
-        location.href = g.url;
-        return;
-      }
-      // Live cards fall through to sweet modal (or entry=page nav above).
-      if (window.ApexSweetModal && typeof window.ApexSweetModal.open === 'function') {
-        window.ApexSweetModal.open({
-          cover: g.src,
-          title: g.n,
-          subtitle: g.subtitle || '\u9009\u62E9\u6E38\u620F\u6A21\u5F0F',
-          brand: g.brand || '',
-          target: g.url || '/sweet-demo.html'
-        });
+      if (!g) return;
+      if (window.ApexModePicker && typeof window.ApexModePicker.open === 'function') {
+        window.ApexModePicker.open({ game: g });
       }
     }
     el.addEventListener("click", go);

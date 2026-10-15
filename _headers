@@ -136,6 +136,18 @@
 /sugar-rush.html
   Cache-Control: no-store
 
+/loading.html
+  Cache-Control: no-store
+
+/loading
+  Cache-Control: no-store
+
+/coming-soon.html
+  Cache-Control: no-store
+
+/coming-soon
+  Cache-Control: no-store
+
 /sugar-rush
   Cache-Control: no-store
 

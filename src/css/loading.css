@@ -1,0 +1,77 @@
+/* Apex Loading Screen - fullscreen black, red eye, red progress bar */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+  font-family: 'Manrope', system-ui, -apple-system, 'PingFang SC', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ld-body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ld-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.ld-eye {
+  display: block;
+  max-width: min(92vw, 520px);
+  max-height: 68dvh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 0 40px rgba(216,27,38,.25));
+}
+
+.ld-bar {
+  position: relative;
+  width: min(72vw, 300px);
+  height: 4px;
+  background: rgba(255,255,255,.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ld-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6a0f1a 0%, #b81520 40%, #d81b26 70%, #ff3a4a 100%);
+  box-shadow: 0 0 14px rgba(255,58,74,.75),
+              0 0 4px rgba(255,58,74,.9) inset;
+  border-radius: 2px;
+  transition: width .22s cubic-bezier(.4,.0,.2,1);
+}
+
+.ld-pct {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.35);
+  margin-top: -6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-fill { transition: none; }
+}
