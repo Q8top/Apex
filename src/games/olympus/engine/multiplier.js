@@ -1,29 +1,48 @@
-// Apex Olympus - multiplier symbol handler
-// Values come from symbols.js (sym-0..sym-3).
-// A multiplier symbol sits on the board but does NOT participate in
-// matches. At the end of the tumble sequence, all live multiplier
-// values on the board are summed and applied to the round win.
-
+// Apex Olympus - multiplier picker (15 tiers across 4 buckets).
 (function (global) {
   'use strict';
 
-  // weights for picking a multiplier value (index matched to the
-  // four multiplier symbols: 2x, 5x, 10x, 25x). Tune via config.
-  var DEFAULT_PICK = [60, 25, 10, 5];  // 2x most common, 25x rare
+  // Per-bucket face-value weights (bucket index -> value -> weight).
+  var VALUES = {
+    0: [[2, 35], [3, 25], [4, 20], [5, 15]],
+    1: [[6, 40], [8, 25], [10, 20], [12, 10]],
+    2: [[15, 40], [20, 25], [25, 20], [50, 10]],
+    3: [[100, 50], [250, 30], [500, 15]]
+  };
+  var BUCKET_WEIGHT = [55, 28, 12, 5];
 
-  function pick(rng) {
+  function pickBucket(rng) {
     var total = 0, i;
-    for (i = 0; i < DEFAULT_PICK.length; i++) total += DEFAULT_PICK[i];
+    for (i = 0; i < BUCKET_WEIGHT.length; i++) total += BUCKET_WEIGHT[i];
     var roll = rng() * total;
-    for (i = 0; i < DEFAULT_PICK.length; i++) {
-      roll -= DEFAULT_PICK[i];
-      if (roll <= 0) return "sym-" + i;
+    for (i = 0; i < BUCKET_WEIGHT.length; i++) {
+      roll -= BUCKET_WEIGHT[i];
+      if (roll <= 0) return i;
     }
-    return "sym-0";
+    return 0;
   }
 
-  // scan a board, return list of { r, c, id, value } for multiplier
-  // symbols currently visible
+  function pickValue(bucket, rng) {
+    var arr = VALUES[bucket] || VALUES[0];
+    var total = 0, i;
+    for (i = 0; i < arr.length; i++) total += arr[i][1];
+    var roll = rng() * total;
+    for (i = 0; i < arr.length; i++) {
+      roll -= arr[i][1];
+      if (roll <= 0) return arr[i][0];
+    }
+    return arr[0][0];
+  }
+
+  // Returns { id, value } so round.js can use the face value.
+  function pick(rng) {
+    var bucket = pickBucket(rng);
+    var value = pickValue(bucket, rng);
+    return { id: "sym-" + bucket, value: value };
+  }
+
+  // Collect multipliers from a board. Each cell may carry a value
+  // stored separately in multMap; here we only return cell positions.
   function collect(board, symbols) {
     var byId = {};
     for (var i = 0; i < symbols.length; i++) byId[symbols[i].id] = symbols[i];
@@ -32,10 +51,8 @@
       for (var c = 0; c < board[r].length; c++) {
         var id = board[r][c];
         if (!id) continue;
-        var def = byId[id];
-        if (def && def.type === "multiplier") {
-          out.push({ r: r, c: c, id: id, value: def.value || 0 });
-        }
+        var d = byId[id];
+        if (d && d.type === "multiplier") out.push({ r: r, c: c, id: id });
       }
     }
     return out;
@@ -48,9 +65,7 @@
   }
 
   global.OlympusMultiplier = Object.freeze({
-    pick: pick,
-    collect: collect,
-    sum: sum,
-    DEFAULT_PICK: DEFAULT_PICK
+    pick: pick, collect: collect, sum: sum,
+    VALUES: VALUES, BUCKET_WEIGHT: BUCKET_WEIGHT
   });
 })(typeof window !== "undefined" ? window : globalThis);

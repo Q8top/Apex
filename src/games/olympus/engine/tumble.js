@@ -1,47 +1,63 @@
-// Apex Olympus - tumble: remove winning cells, drop, refill from strips.
-// Multiplier symbols appear during refill (chance + weights in
-// config/tumble-config.js). They never participate in a match.
-
+// Apex Olympus - tumble: board + parallel values grid.
+// board[r][c] = symbol id string or null
+// values[r][c] = multiplier face value for a ball at that cell,
+//               0 for normal symbols / empty cells.
 (function (global) {
   'use strict';
-
   var ROWS = 5, COLS = 6;
 
-  // remove the positions of a list of wins; returns a new board
-  function removeWins(board, wins) {
+  function emptyValues() {
+    var m = [];
+    for (var r = 0; r < ROWS; r++) {
+      var row = []; for (var c = 0; c < COLS; c++) row.push(0);
+      m.push(row);
+    }
+    return m;
+  }
+
+  function cloneV(v) { return v.map(function (row) { return row.slice(); }); }
+
+  function removeWins(board, values, wins) {
     var g = board.map(function (row) { return row.slice(); });
+    var v = cloneV(values);
     for (var i = 0; i < wins.length; i++) {
       var cells = wins[i].cells;
       for (var j = 0; j < cells.length; j++) {
         g[cells[j].r][cells[j].c] = null;
+        v[cells[j].r][cells[j].c] = 0;
       }
     }
-    return g;
+    return { board: g, values: v };
   }
 
-  // drop existing symbols down within each column
-  function drop(board) {
+  function drop(board, values) {
     var g = board.map(function (row) { return row.slice(); });
+    var v = cloneV(values);
     for (var c = 0; c < COLS; c++) {
-      var col = [];
+      var colIds = [], colVals = [];
       for (var r = ROWS - 1; r >= 0; r--) {
-        if (g[r][c] != null) col.push(g[r][c]);
+        if (g[r][c] != null) {
+          colIds.push(g[r][c]);
+          colVals.push(v[r][c]);
+        }
       }
-      // col now holds non-null symbols from bottom upward
       for (var r2 = ROWS - 1, k = 0; r2 >= 0; r2--, k++) {
-        g[r2][c] = k < col.length ? col[k] : null;
+        if (k < colIds.length) {
+          g[r2][c] = colIds[k];
+          v[r2][c] = colVals[k];
+        } else {
+          g[r2][c] = null;
+          v[r2][c] = 0;
+        }
       }
     }
-    return g;
+    return { board: g, values: v };
   }
 
-  // refill empty cells from the top of each column strip.
-  // strips[col] = flat array; use a rotating pointer per call so the
-  // same symbol is not re-used inside one refill.
-  // multChance: per-cell probability to place a multiplier instead
-  //             of a normal symbol. multPick: function(rng) -> sym id
-  function refill(board, strips, multChance, multPick, rng) {
+  // refill empty cells. multPick(rng) => { id, value } | null
+  function refill(board, values, strips, multChance, multPick, rng) {
     var g = board.map(function (row) { return row.slice(); });
+    var v = cloneV(values);
     for (var c = 0; c < COLS; c++) {
       var strip = strips[c];
       var start = Math.floor(rng() * strip.length);
@@ -49,19 +65,21 @@
       for (var r = 0; r < ROWS; r++) {
         if (g[r][c] != null) continue;
         if (multPick && rng() < multChance) {
-          g[r][c] = multPick(rng);
+          var m = multPick(rng);
+          g[r][c] = m.id;
+          v[r][c] = m.value;
         } else {
           g[r][c] = strip[cursor % strip.length];
+          v[r][c] = 0;
           cursor++;
         }
       }
     }
-    return g;
+    return { board: g, values: v };
   }
 
   global.OlympusTumble = Object.freeze({
-    removeWins: removeWins,
-    drop: drop,
-    refill: refill
+    emptyValues: emptyValues,
+    removeWins: removeWins, drop: drop, refill: refill
   });
 })(typeof window !== "undefined" ? window : globalThis);

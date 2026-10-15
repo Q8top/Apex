@@ -558,3 +558,23 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .ol-bigwin-inner, .ol-bigwin-text { transition: none !important; animation: none !important; }
 }
+
+/* ============== multiplier value overlay on gem ============== */
+.ol-sym-value {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: clamp(14px, 4.2vw, 22px);
+  font-weight: 900;
+  letter-spacing: -.5px;
+  color: #fff;
+  text-shadow:
+    0 0 8px rgba(255,220,90,1),
+    0 0 14px rgba(255,180,40,.9),
+    0 2px 2px rgba(0,0,0,.85);
+  pointer-events: none;
+  z-index: 2;
+  font-variant-numeric: tabular-nums;
+}
+.ol-sym.is-mult { position: relative; }

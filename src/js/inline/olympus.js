@@ -96,11 +96,14 @@
   }
 
   // full repaint: destroy everything in each column and rebuild
-  function paintBoard(board) {
+  function isMultId(id) {
+    return id === 'sym-0' || id === 'sym-1' || id === 'sym-2' || id === 'sym-3';
+  }
+
+  function paintBoard(board, values) {
     if (!liveCols.length) buildBoardDom();
     for (var c = 0; c < 6; c++) {
       var col = liveCols[c];
-      // remove all symbols
       while (col.el.firstChild) col.el.removeChild(col.el.firstChild);
       col.syms = [];
       for (var r = 0; r < 5; r++) {
@@ -113,8 +116,18 @@
         img.src = symIdToSrc(id);
         img.alt = ''; img.draggable = false;
         el.appendChild(img);
+        var val = (values && values[r] && values[r][c]) || 0;
+        if (isMultId(id)) {
+          el.classList.add('is-mult');
+          if (val > 0) {
+            var lbl = document.createElement('span');
+            lbl.className = 'ol-sym-value';
+            lbl.textContent = val + '\u00D7';
+            el.appendChild(lbl);
+          }
+        }
         col.el.appendChild(el);
-        col.syms.push({ el: el, img: img, row: r, id: id });
+        col.syms.push({ el: el, img: img, row: r, id: id, value: val });
       }
     }
   }
@@ -145,14 +158,13 @@
         }
       }
       // phase A: show the pre-removal board
-      paintBoard(h.board);
+      paintBoard(h.board, h.values);
       // mark wins
       for (var c = 0; c < 6; c++) {
         for (var s = 0; s < liveCols[c].syms.length; s++) {
           var sym = liveCols[c].syms[s];
           if (winKeys[sym.row + '-' + c]) sym.el.classList.add('is-win');
-          else if (sym.id === 'sym-0' || sym.id === 'sym-1' ||
-                   sym.id === 'sym-2' || sym.id === 'sym-3') sym.el.classList.add('is-mult');
+          else if (isMultId(sym.id)) sym.el.classList.add('is-mult');
           else if (sym.id === 'sym-12') sym.el.classList.add('is-scatter');
         }
       }
@@ -162,7 +174,7 @@
         // phase B: move remaining symbols and drop new ones
         if (i < history.length) {
           var next = history[i];
-          applyTumble(h.board, next.board);
+          applyTumble(h.board, next.board, h.values, next.values);
           setTimeout(nextFrame, Math.max(340, 420 / state.speed));
         } else {
           // last frame: settle final board from the engine's final state
@@ -179,7 +191,7 @@
   // the NEW column (bottom-up), find the latest unmatched occurrence in
   // the OLD column; keep its DOM node and change --y. Ids in new but
   // not matched -> create new .ol-sym entering from above.
-  function applyTumble(fromBoard, toBoard) {
+  function applyTumble(fromBoard, toBoard, fromValues, toValues) {
     if (!liveCols.length) return;
     for (var c = 0; c < 6; c++) {
       var col = liveCols[c];
@@ -225,7 +237,7 @@
           nel.className = 'ol-sym is-entering';
           nel.style.setProperty('--y', String(r2 - 1));
           var nimg = document.createElement('img');
-          nimg.src = symIdSrc(wantId);
+          nimg.src = symIdToSrc(wantId);
           nimg.alt = ''; nimg.draggable = false;
           nel.appendChild(nimg);
           col.el.appendChild(nel);
@@ -246,7 +258,7 @@
     }
   }
 
-  function symIdSrc(id) {
+  function symIdToSrc(id) {
     return '/assets/symbols/' + id + '.webp?v=1';
   }
   /* ---- state ---- */
@@ -391,7 +403,7 @@
 
     realSpin(profile, function () {
       playHistory(r.history, function () {
-        paintBoard(r.board);
+        paintBoard(r.board, r.values);
         state.roundWin = r.winX;
         state.balance += r.winX;
         render();
@@ -458,7 +470,7 @@
         rng: rng, profile: profile
       });
       if (fr) {
-        paintBoard(fr.board);
+        paintBoard(fr.board, fr.values);
         state.roundWin += fr.win;
         state.balance += fr.win;
         render();
