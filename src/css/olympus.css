@@ -3,8 +3,17 @@
 html, body {
   margin: 0; padding: 0; background: #000; color: #fff;
   overflow: hidden;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: none;
+  touch-action: manipulation;
   font-family: Manrope, system-ui, -apple-system, PingFang SC, sans-serif;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .ol-body {
   width: 100vw; height: 100vh; height: 100dvh;
@@ -410,7 +419,7 @@ html, body {
 .ol-top-banner {
   position: absolute;
   left: 50%;
-  top: 19.8%;
+  top: 18.6%;
   transform: translateX(-50%);
   width: min(82vw, 480px);
   height: 5.2%;
@@ -768,37 +777,3 @@ html, body {
   box-shadow: 0 0 8px rgba(0,0,0,.3) inset;
 }
 
-/* ============== collected counter (base game) ============== */
-.ol-collect-panel {
-  position: absolute;
-  left: 2.5%; top: 73.6%;
-  width: 17%; max-width: 130px; min-width: 88px;
-  padding: 6px 6px;
-  background: linear-gradient(180deg, rgba(30,15,50,.9), rgba(15,5,30,.94));
-  border: 1.5px solid rgba(255,215,120,.5);
-  border-radius: 10px;
-  color: #fff;
-  text-align: center;
-  display: none;
-  z-index: 5;
-  pointer-events: none;
-  box-shadow: 0 4px 14px rgba(0,0,0,.45);
-  font-family: inherit;
-}
-.ol-collect-panel.on { display: block; }
-.ol-collect-count {
-  font-size: clamp(14px, 4.4vw, 20px);
-  font-weight: 900;
-  color: #ffd86a;
-  text-shadow: 0 0 10px rgba(255,200,60,.9);
-  font-variant-numeric: tabular-nums;
-}
-.ol-collect-count::before { content: '\2295  '; color: #ffb300; }
-.ol-collect-total {
-  font-size: clamp(11px, 3vw, 14px);
-  font-weight: 700;
-  color: #fff;
-  margin-top: 2px;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 2px rgba(0,0,0,.6);
-}

@@ -1,7 +1,8 @@
-// Apex Olympus - tumble: board + parallel values grid.
-// board[r][c] = symbol id string or null
-// values[r][c] = multiplier face value for a ball at that cell,
-//               0 for normal symbols / empty cells.
+// Apex Olympus - tumble: board + INDEPENDENT values layer.
+// values[r][c] = persisted multiplier on that cell. It is NOT
+// tied to the symbol: during free spins the value stays put even
+// if the symbol on top of it moves or clears. New multiplier gems
+// landing on a cell with a value ADD to it.
 (function (global) {
   'use strict';
   var ROWS = 5, COLS = 6;
@@ -17,44 +18,38 @@
 
   function cloneV(v) { return v.map(function (row) { return row.slice(); }); }
 
+  // Only the board cells are cleared. values are left intact so
+  // the persisted multipliers survive the tumble sequence.
   function removeWins(board, values, wins) {
     var g = board.map(function (row) { return row.slice(); });
-    var v = cloneV(values);
     for (var i = 0; i < wins.length; i++) {
       var cells = wins[i].cells;
       for (var j = 0; j < cells.length; j++) {
         g[cells[j].r][cells[j].c] = null;
-        v[cells[j].r][cells[j].c] = 0;
       }
     }
-    return { board: g, values: v };
+    // values untouched
+    return { board: g, values: values };
   }
 
+  // Drop symbols only. values stay fixed in their cell.
   function drop(board, values) {
     var g = board.map(function (row) { return row.slice(); });
-    var v = cloneV(values);
     for (var c = 0; c < COLS; c++) {
-      var colIds = [], colVals = [];
+      var colIds = [];
       for (var r = ROWS - 1; r >= 0; r--) {
-        if (g[r][c] != null) {
-          colIds.push(g[r][c]);
-          colVals.push(v[r][c]);
-        }
+        if (g[r][c] != null) colIds.push(g[r][c]);
       }
       for (var r2 = ROWS - 1, k = 0; r2 >= 0; r2--, k++) {
-        if (k < colIds.length) {
-          g[r2][c] = colIds[k];
-          v[r2][c] = colVals[k];
-        } else {
-          g[r2][c] = null;
-          v[r2][c] = 0;
-        }
+        g[r2][c] = k < colIds.length ? colIds[k] : null;
       }
     }
-    return { board: g, values: v };
+    // values untouched
+    return { board: g, values: values };
   }
 
-  // refill empty cells. multPick(rng) => { id, value } | null
+  // Refill empty cells. If a multiplier gem drops, its value is
+  // ADDED to whatever is already stored on that cell.
   function refill(board, values, strips, multChance, multPick, rng) {
     var g = board.map(function (row) { return row.slice(); });
     var v = cloneV(values);
@@ -67,11 +62,11 @@
         if (multPick && rng() < multChance) {
           var m = multPick(rng);
           g[r][c] = m.id;
-          v[r][c] = m.value;
+          v[r][c] = (v[r][c] || 0) + m.value;
         } else {
           g[r][c] = strip[cursor % strip.length];
-          v[r][c] = 0;
           cursor++;
+          // value, if any, stays as-is
         }
       }
     }

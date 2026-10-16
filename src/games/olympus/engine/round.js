@@ -67,7 +67,8 @@
     var values;
     var persist = !!opts.multiplierMap;
     if (persist) {
-      values = opts.multiplierMap;
+      // deep-copy so the caller's grid is not mutated by this spin
+      values = opts.multiplierMap.map(function (row) { return row.slice(); });
     } else {
       values = tumble.emptyValues();
     }
@@ -151,6 +152,10 @@
     if (state.remaining <= 0) return null;
     if (state.spinsPlayed >= 200) { state.remaining = 0; return null; }
     var r = playSpin(Object.assign({}, opts, { multiplierMap: state.multMap }));
+    // write the final values grid back so the accumulated multiplier
+    // survives across FS spins. playSpin replaces `values` at each tumble,
+    // so without this the caller keeps pointing at the original object.
+    state.multMap = r.multMap;
     state.remaining--;
     state.spinsPlayed++;
     state.totalWin += r.winX;

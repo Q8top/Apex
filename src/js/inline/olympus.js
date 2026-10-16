@@ -53,18 +53,6 @@
   var liveCols = [];
   var SLOTS_PER_COL = 10;
 
-  function symSrc(id) { return "/assets/symbols/sym-" + id.slice(4) + ".webp?v=1"; }
-
-  function layoutCols() {
-    if (!liveCols.length) return;
-    var colH = liveCols[0].el.clientHeight;
-    if (colH <= 0) return;
-    var slotH = colH / 5;
-    for (var i = 0; i < liveCols.length; i++) {
-      liveCols[i].track.style.setProperty('--slot-h', slotH + 'px');
-      liveCols[i].track.style.setProperty('--roll-h', (slotH * 5) + 'px');
-    }
-  }
 
   function buildBoardDom() {
     if (!gridEl) return;
@@ -89,6 +77,7 @@
     var slotH = colH / 5;
     for (var i = 0; i < liveCols.length; i++) {
       liveCols[i].el.style.setProperty('--slot-h', slotH + 'px');
+      liveCols[i].track.style.setProperty('--roll-h', (slotH * 5) + 'px');
     }
   }
 
@@ -134,13 +123,6 @@
   }
 
   // animation step: from one board to next
-  function animateStep(fromBoard, toBoard, onDone) {
-    if (!liveCols.length) buildBoardDom();
-    // phase 1: mark wins, remove losers
-    var winCells = {};
-    for (var w = 0; w < (arguments.length > 3 ? 0 : 0); w++) {}
-    onDone();
-  }
 
   // play history frame-by-frame with real tumble physics
   function playHistory(history, onDone) {
@@ -173,7 +155,6 @@
           }
           else if (isMultId(sym.id)) {
             sym.el.classList.add('is-mult');
-            state.collected++;
             if (!sawMult) { sawMult = true; if (AU && AU.multiplier) AU.multiplier(); }
             if (LX && LX.rippleCell) LX.rippleCell(c, sym.row, { hue: 'gold', life: 720, radius: 56 });
           }
@@ -273,9 +254,6 @@
     }
   }
 
-  function symIdToSrc(id) {
-    return '/assets/symbols/' + id + '.webp?v=1';
-  }
   /* ---- state ---- */
   var BET_STEPS = [0.2, 0.5, 1, 2, 5, 10, 20, 50, 100];
   var state = {
@@ -302,10 +280,7 @@
     speedBtn:  document.getElementById("olSpeed"),
     speedIcons: document.getElementById("olSpeedIcons"),
     topBanner:  document.querySelector(".ol-top-banner"),
-    topAmount:  document.getElementById("olTopAmount"),
-    collectPanel: document.getElementById("olCollectPanel"),
-    collectCount: document.getElementById("olCollectCount"),
-    collectTotal: document.getElementById("olCollectTotal")
+    topAmount:  document.getElementById("olTopAmount")
   };
 
   function fmt(n) { return '\u00A5' + n.toFixed(2); }
@@ -326,8 +301,6 @@
     if (el.balance) el.balance.textContent = fmt(state.balance);
     if (el.bet) el.bet.textContent = fmt(effectiveBet());
     if (el.roundWin) el.roundWin.textContent = fmt(state.roundWin);
-    if (el.collectCount) el.collectCount.textContent = String(state.collected);
-    if (el.collectTotal) el.collectTotal.textContent = fmt(state.roundWin);
     if (el.buyPrice) el.buyPrice.textContent = fmt(baseBet() * 100);
     if (el.antePrice) el.antePrice.textContent = fmt(effectiveBet());
     if (el.ante) el.ante.classList.toggle("is-on", state.ante);
@@ -413,6 +386,7 @@
     if (state.spinning) return;
     var bet = effectiveBet();
     if (state.balance < bet) { stopAuto(); return; }
+    state.skipAnim = false;
     state.spinning = true;
     state.balance -= bet;
     state.roundWin = 0;
@@ -422,12 +396,9 @@
     if (BW) BW.hide();
     if (FS) FS.hideAll();
     if (LX && LX.isAuraOn && LX.isAuraOn()) LX.setAura(false);
-    state.collected = 0;
-    if (el.collectPanel) el.collectPanel.classList.add('on');
 
     var profile = MP.DEMO;
     var r = playBase(profile);
-    state.skipAnim = false;
 
     realSpin(profile, function () {
       playHistory(r.history, function () {
@@ -487,6 +458,17 @@
         else { state.spinning = false; render(); }
       });
     });
+    // safety: if spinning stuck >20s, force unlock
+    clearTimeout(state.__watchdog);
+    state.__watchdog = setTimeout(function () {
+      if (state.spinning) {
+        console.warn("[olympus] spin watchdog fired, forcing unlock");
+        state.spinning = false;
+        if (FS) FS.hideAll();
+        if (LX) LX.setAura(false);
+        render();
+      }
+    }, 20000);
   }
 
   /* ---- free spins ---- */
@@ -623,6 +605,35 @@
     if (state.auto) { stopAuto(); return; }
     doSpin();
   });
+
+  /* ---- background handling ---- */
+  // When the tab goes hidden, pause everything: audio, timers, animation.
+  // When it comes back, force-reset so the player sees a clean board.
+  function onHidden() {
+    if (AU && AU.stopBgm) AU.stopBgm();
+    if (state.spinning) {
+      // cancel auto loop
+      stopAuto();
+      // force-unlock; next user spin will reset the board
+      state.spinning = false;
+      state.skipAnim = false;
+      if (FS) FS.hideAll();
+      if (LX && LX.isAuraOn && LX.isAuraOn()) LX.setAura(false);
+      if (BW) BW.hide();
+      render();
+    }
+    // clear watchdog
+    if (state.__watchdog) { clearTimeout(state.__watchdog); state.__watchdog = 0; }
+    // stop any FS intro timeout
+    if (window.OlympusFs && FS && FS.__introTimer) {
+      clearTimeout(FS.__introTimer);
+    }
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) onHidden();
+    else if (AU && AU.startBgm) AU.startBgm();
+  });
+  window.addEventListener('pagehide', onHidden);
 
   /* ---- init ---- */
   buildBoardDom();

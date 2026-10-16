@@ -38,6 +38,12 @@ if (onContinue) onContinue();
 introEl.addEventListener('pointerdown', handler, { once: true });
 introEl.addEventListener('touchstart', handler, { once: true });
 introEl.addEventListener('click', handler, { once: true });
+// safety: auto-continue after 8s if user never taps
+clearTimeout(showIntro.__t);
+showIntro.__t = setTimeout(function () {
+if (onContinue) handler();
+}, 8000);
+if (global.OlympusFs) global.OlympusFs.__introTimer = showIntro.__t;
 }
 function showPanel() {
 if (!ensure()) return;
