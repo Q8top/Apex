@@ -241,7 +241,7 @@ ctx.restore();
 
 function drawAura(now, W, H) {
 if (!auraOn) return;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
 var x0 = left * W, x1 = right * W;
 var y0 = top * H, y1 = bottom * H;
 var cw = (x1 - x0) / 6;
@@ -381,7 +381,7 @@ function strikeCell(col, row) {
 if (!initCanvas()) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
 var cw = (right - left) / 6;
 var ch = (bottom - top) / 5;
 var toX = left + cw * (col + 0.5);
@@ -396,7 +396,7 @@ rippleCell: function (col, row, opts) {
 if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
 var cw = (right - left) / 6;
 var ch = (bottom - top) / 5;
 var cx = (left + cw * (col + 0.5)) * w;
@@ -428,7 +428,7 @@ swirlCell: function (col, row, opts) {
 if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
+var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
 var cw = (right - left) / 6;
 var ch = (bottom - top) / 5;
 var cx = (left + cw * (col + 0.5)) * w;

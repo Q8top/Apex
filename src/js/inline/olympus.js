@@ -329,7 +329,6 @@
     return RD.playBase({
       strips: strips, symbols: S.SYMBOLS, paytable: P,
       reels: R, matcher: M, tumble: TB, multiplier: Mu,
-      tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: profile.maxSteps || 40, APPLY_MULT: true },
       rng: rng, profile: profile
     });
   }
@@ -507,7 +506,6 @@ function realSpin(cb) {
       var fr = RD.nextFreeSpin(st, {
         strips: strips, symbols: S.SYMBOLS, paytable: P,
         reels: R, matcher: M, tumble: TB, multiplier: Mu,
-        tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: profile.maxSteps || 40, APPLY_MULT: true },
         rng: rng, profile: profile
       });
       if (fr) {

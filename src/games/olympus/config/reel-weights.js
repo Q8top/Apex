@@ -10,7 +10,7 @@ window.OlympusReelWeights = (function () {
   };
   function clone(o) { var r = {}; for (var k in o) r[k] = o[k]; return r; }
   function sumWeights(col) { var s = 0; for (var k in col) s += col[k]; return s; }
-  function columnsOf(profile) {
+  function columnsOf() {
     var out = [];
     for (var i = 0; i < 6; i++) out.push(clone(COMMON));
     out.forEach(function (c, idx) {
@@ -21,7 +21,6 @@ window.OlympusReelWeights = (function () {
   }
   return Object.freeze({
     STRIP_LEN: STRIP_LEN, COMMON: COMMON,
-    WEIGHTS: columnsOf('real'),
     columnsOf: columnsOf, sumWeights: sumWeights
   });
 })();

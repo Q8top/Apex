@@ -54,14 +54,16 @@
     var strips = opts.strips, symbols = opts.symbols, paytable = opts.paytable;
     var reels = opts.reels, matcher = opts.matcher, tumble = opts.tumble;
     var mult = opts.multiplier, rng = opts.rng, profile = opts.profile;
-    var tcfg = opts.tumbleConfig;
     var ROWS = paytable.ROWS, COLS = paytable.COLS;
-    var MAX = (profile && profile.maxSteps) || (tcfg && tcfg.MAX_STEPS) || 40;
+    var MAX = (profile && profile.maxSteps) || 40;
     var isBase = !opts.multiplierMap;
 
     var payScale = profile ? profile.payScale : 1;
     var S = scalePay(symbols, payScale);
-    var mc = (profile && profile.multChance) || (tcfg && tcfg.MULT_CHANCE) || 0;
+    var mc = (profile && profile.multChance) || 0;
+  var byId = {};
+  for (var bi = 0; bi < S.length; bi++) byId[S[bi].id] = S[bi];
+  function isMultId(id) { var d = byId[id]; return !!(d && d.type === 'multiplier'); }
 
     // values grid: persistent in FS, fresh in base
     var values;
@@ -105,7 +107,7 @@
         pay: pay
       });
       var r1 = tumble.removeWins(board, values, wins);
-      var r2 = tumble.drop(r1.board, r1.values);
+      var r2 = tumble.drop(r1.board, r1.values, isMultId);
       var r3 = tumble.refill(r2.board, r2.values, strips, mc, mult.pick, rng);
       board = r3.board;
       values = r3.values;
@@ -139,7 +141,8 @@
     var award = 0;
     if (trig) {
       var a = opts.paytable.FREE_SPINS_AWARD;
-      award = a[r.scatters] || a[4] || 15;
+      var n = r.scatters > 7 ? 7 : r.scatters;
+      award = a[n] || a[4] || 15;
     }
     return Object.assign({}, r, { baseWin: r.winX, triggerFS: trig, fsAward: award });
   }
@@ -163,6 +166,11 @@
     state.remaining--;
     state.spinsPlayed++;
     state.totalWin += r.winX;
+    if (opts.profile && opts.profile.maxWinX && state.totalWin > opts.profile.maxWinX) {
+      state.totalWin = opts.profile.maxWinX;
+      state.cappedAtMax = true;
+      state.remaining = 0;
+    }
     var rt = opts.paytable.RETRIGGER_TRIGGER || 3;
     if (r.scatters >= rt) {
       state.retriggers++;

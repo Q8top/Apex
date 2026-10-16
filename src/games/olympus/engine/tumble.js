@@ -33,18 +33,28 @@
   }
 
   // Drop symbols only. values stay fixed in their cell.
-  function drop(board, values) {
+  // If isMult is provided, multiplier symbols act as immovable anchors:
+  // they keep their row, and non-multiplier symbols fall around them.
+  function drop(board, values, isMult) {
     var g = board.map(function (row) { return row.slice(); });
     for (var c = 0; c < COLS; c++) {
-      var colIds = [];
-      for (var r = ROWS - 1; r >= 0; r--) {
-        if (g[r][c] != null) colIds.push(g[r][c]);
+      var anchorRows = [], movers = [], r;
+      for (r = 0; r < ROWS; r++) {
+        var id = board[r][c];
+        if (id == null) continue;
+        if (isMult && isMult(id)) anchorRows.push(r);
+        else movers.push(id);
       }
-      for (var r2 = ROWS - 1, k = 0; r2 >= 0; r2--, k++) {
-        g[r2][c] = k < colIds.length ? colIds[k] : null;
+      for (r = 0; r < ROWS; r++) g[r][c] = null;
+      for (var ai = 0; ai < anchorRows.length; ai++) {
+        var ar = anchorRows[ai];
+        g[ar][c] = board[ar][c];
+      }
+      var mi = movers.length - 1;
+      for (r = ROWS - 1; r >= 0 && mi >= 0; r--) {
+        if (g[r][c] == null) g[r][c] = movers[mi--];
       }
     }
-    // values untouched
     return { board: g, values: values };
   }
 

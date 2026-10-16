@@ -9,10 +9,10 @@
 
 window.OlympusSymbols = Object.freeze({
   SYMBOLS: [
-    { id: 'sym-0', src: '/assets/symbols/sym-0.webp', type: 'multiplier', bucket: 0, values: [2,3,4,5] },
-    { id: 'sym-1', src: '/assets/symbols/sym-1.webp', type: 'multiplier', bucket: 1, values: [6,8,10,12] },
-    { id: 'sym-2', src: '/assets/symbols/sym-2.webp', type: 'multiplier', bucket: 2, values: [15,20,25,50] },
-    { id: 'sym-3', src: '/assets/symbols/sym-3.webp', type: 'multiplier', bucket: 3, values: [100,250,500] },
+    { id: 'sym-0', src: '/assets/symbols/sym-0.webp', type: 'multiplier', values: [2,3,4,5] },
+    { id: 'sym-1', src: '/assets/symbols/sym-1.webp', type: 'multiplier', values: [6,8,10,12] },
+    { id: 'sym-2', src: '/assets/symbols/sym-2.webp', type: 'multiplier', values: [15,20,25,50] },
+    { id: 'sym-3', src: '/assets/symbols/sym-3.webp', type: 'multiplier', values: [100,250,500] },
     { id: 'sym-4',  src: '/assets/symbols/sym-4.webp',  type: 'mid',  pay: [0.5, 1.0, 1.5, 3.0, 5.0] },
     { id: 'sym-5',  src: '/assets/symbols/sym-5.webp',  type: 'mid',  pay: [0.5, 1.0, 2.0, 4.0, 10.0] },
     { id: 'sym-6',  src: '/assets/symbols/sym-6.webp',  type: 'mid',  pay: [0.75, 1.5, 3.0, 6.0, 15.0] },

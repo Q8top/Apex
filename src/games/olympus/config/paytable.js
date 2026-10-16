@@ -25,6 +25,7 @@ window.OlympusPaytable = Object.freeze({
   FREE_SPINS_AWARD: {
     4: 15,
     5: 20,
-    6: 100
+    6: 100,
+    7: 200
   }
 });

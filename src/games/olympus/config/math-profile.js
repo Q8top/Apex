@@ -1,12 +1,12 @@
 // Apex Olympus - DEMO math profile (client).
 // Real parameters live in functions/games/olympus/config/real-profile.js
 // (server-only). Enforced by check-no-secret-leak.cjs: no RTP targets,
-// no payScale bounds, no max-win values in client code.
+// no payScale bounds, no RTP target ranges in client code.
 window.OlympusMathProfile = (function () {
   'use strict';
 
   var DEMO = Object.freeze({
-    payScale: 0.74,
+    payScale: 0.510,
     maxWinX: 25000,
     pityRate: 0.45,
     pityTargetCount: 8,
