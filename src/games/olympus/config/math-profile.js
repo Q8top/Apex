@@ -1,24 +1,27 @@
-// Apex Olympus - math profile (CLIENT, demo only).
+// Apex Olympus - DEMO math profile (client).
 // Real parameters live in functions/games/olympus/config/real-profile.js
-// (server-only). The client engine must NOT contain real RTP targets,
-// payScale, or maxWin values - enforced by check-no-secret-leak.cjs.
+// (server-only). Enforced by check-no-secret-leak.cjs: no RTP targets,
+// no payScale bounds, no max-win values in client code.
 window.OlympusMathProfile = (function () {
   'use strict';
+
   var DEMO = Object.freeze({
     payScale: 0.74,
     maxWinX: 25000,
     pityRate: 0.45,
     pityTargetCount: 8,
     pitySymbol: 'sym-8',
-    multChance: 0.015
+    multChance: 0.015,
+    maxSteps: 40
   });
+
   function getProfile(mode) {
     if (mode === 'demo') return DEMO;
     if (mode === 'real') {
-      // Real parameters are server-only. Client must never receive them.
       throw new Error('OlympusMathProfile: real profile is server-only');
     }
     throw new Error('OlympusMathProfile: unknown mode ' + mode);
   }
+
   return Object.freeze({ DEMO: DEMO, getProfile: getProfile });
 })();

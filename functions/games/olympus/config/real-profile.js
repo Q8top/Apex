@@ -3,15 +3,18 @@
 // leak scanner (check-no-secret-leak.cjs). Under functions/ so it is
 // excluded from Cloudflare Pages static asset deployment.
 //
-// payScale history (5 seeds x 200k unless noted):
-//   1.70  5x80k   range [85.52, 90.65]  lower bound broke
-//   1.72  5x80k   range [86.52, 91.71]  lower bound broke
-//   1.75  5x200k  range [90.49, 94.42]  upper bound broke (94.42)
-//   1.71  5x200k  <-- current
+// payScale history (200k x 3 seeds unless noted):
+//   0.80  3x100k  range [99.78, 108.43] upper bound far over
+//   0.70  3x200k  range [85.82, 89.88]  lower bound broke
+//   0.73  3x200k  range [89.50, 93.73]  upper bound at 93.73
+//   0.72  3x200k  range [88.28, 92.45]  ok but only marginally
+//   0.61  3x200k  range [89.13, 91.57]  <-- current, after the
+//                 scatter timing fix (scatters now counted on the
+//                 final board, which lifted the FS trigger rate)
 window.OlympusRealProfile = (function () {
   'use strict';
   var REAL = Object.freeze({
-    payScale: 0.72,
+    payScale: 0.61,
     maxWinX: 5000,
     pityRate: 0.05,
     pityTargetCount: 8,

@@ -49,9 +49,7 @@
 
   /* ---- board render ---- */
   var gridEl = document.getElementById("olGrid");
-  var liveCells = null;
   var liveCols = [];
-  var SLOTS_PER_COL = 10;
 
 
   function buildBoardDom() {
@@ -61,7 +59,7 @@
     inner.className = "ol-grid-inner";
     liveCols = [];
     for (var c = 0; c < 6; c++) {
-      var col = document.createElement("col");
+      var col = document.createElement("div");
       col.className = "ol-col";
       inner.appendChild(col);
       liveCols.push({ el: col, syms: [] });
@@ -77,7 +75,6 @@
     var slotH = colH / 5;
     for (var i = 0; i < liveCols.length; i++) {
       liveCols[i].el.style.setProperty('--slot-h', slotH + 'px');
-      liveCols[i].track.style.setProperty('--roll-h', (slotH * 5) + 'px');
     }
   }
 
@@ -191,7 +188,7 @@
     if (!liveCols.length) return;
     for (var c = 0; c < 6; c++) {
       var col = liveCols[c];
-      // collect old symbols still present in DOM (win ones are exploding)
+      // collect old symbols still present (win ones are exploding away)
       var old = [];
       for (var s = 0; s < col.syms.length; s++) {
         var sym = col.syms[s];
@@ -201,34 +198,32 @@
       // new column top->bottom
       var newIds = [];
       for (var r = 0; r < 5; r++) newIds.push(toBoard[r][c]);
-      // keep exploding win nodes aside
+      // keep exploding nodes aside
       var exploding = [];
       for (var s2 = 0; s2 < col.syms.length; s2++) {
         if (col.syms[s2].el.classList.contains('is-win')) exploding.push(col.syms[s2].el);
       }
-      // rebuild col DOM: clear, re-append exploding nodes (they will
-      // fade), then place kept + entering nodes
       col.el.innerHTML = '';
       for (var e = 0; e < exploding.length; e++) col.el.appendChild(exploding[e]);
       var newSyms = [];
       for (var r2 = 4; r2 >= 0; r2--) {
         var wantId = newIds[r2];
         if (!wantId) continue;
-        // find latest old symbol with this id
+        var val = (toValues && toValues[r2] && toValues[r2][c]) || 0;
         var pick = -1;
         for (var o = old.length - 1; o >= 0; o--) {
           if (!old[o].used && old[o].id === wantId) { pick = o; break; }
         }
         if (pick >= 0) {
-          // reuse: update --y and id bookkeeping
-          var oldSym = old[pick];
-          oldSym.used = true;
-          oldSym.el.style.setProperty('--y', String(r2));
-          oldSym.row = r2;
-          if (oldSym.el.parentNode !== col.el) col.el.appendChild(oldSym.el);
-          newSyms.push({ el: oldSym.el, img: oldSym.img, row: r2, id: wantId });
+          var os = old[pick];
+          os.used = true;
+          os.el.style.setProperty('--y', String(r2));
+          os.el.classList.remove('is-entering');
+          // refresh the value badge on reused node
+          refreshValueBadge(os.el, wantId, val);
+          if (os.el.parentNode !== col.el) col.el.appendChild(os.el);
+          newSyms.push({ el: os.el, img: os.img, row: r2, id: wantId, value: val });
         } else {
-          // new symbol from above
           var nel = document.createElement('div');
           nel.className = 'ol-sym is-entering';
           nel.style.setProperty('--y', String(r2 - 1));
@@ -236,21 +231,38 @@
           nimg.src = symIdToSrc(wantId);
           nimg.alt = ''; nimg.draggable = false;
           nel.appendChild(nimg);
+          refreshValueBadge(nel, wantId, val);
           col.el.appendChild(nel);
           void nel.offsetHeight;
           nel.style.setProperty('--y', String(r2));
           setTimeout(function (x) { x.classList.remove('is-entering'); }, 400, nel);
-          newSyms.push({ el: nel, img: nimg, row: r2, id: wantId });
+          newSyms.push({ el: nel, img: nimg, row: r2, id: wantId, value: val });
         }
       }
-      // mark multipliers / scatter on settled nodes
+      // glow states for settled nodes
       for (var n = 0; n < newSyms.length; n++) {
-        var id = newSyms[n].id;
-        if (id === 'sym-0' || id === 'sym-1' || id === 'sym-2' || id === 'sym-3') newSyms[n].el.classList.add('is-mult');
-        if (id === 'sym-12') newSyms[n].el.classList.add('is-scatter');
+        var sid = newSyms[n].id;
+        if (isMultId(sid)) newSyms[n].el.classList.add('is-mult');
+        if (sid === 'sym-12') newSyms[n].el.classList.add('is-scatter');
       }
       newSyms.sort(function (a, b) { return a.row - b.row; });
       col.syms = newSyms;
+    }
+  }
+
+  // Adds, updates, or removes the gold value label on a symbol.
+  function refreshValueBadge(el, id, val) {
+    var existing = el.querySelector('.ol-sym-value');
+    if (isMultId(id) && val > 0) {
+      if (existing) { existing.textContent = val + '\u00D7'; }
+      else {
+        var sp = document.createElement('span');
+        sp.className = 'ol-sym-value';
+        sp.textContent = val + '\u00D7';
+        el.appendChild(sp);
+      }
+    } else if (existing) {
+      el.removeChild(existing);
     }
   }
 
@@ -259,8 +271,7 @@
   var state = {
     balance: 1000.00, betIdx: 2, roundWin: 0,
     ante: false, spinning: false, auto: false, autoTimer: 0, speed: 1,
-    skipAnim: false,
-    collected: 0
+    skipAnim: false
   };
 
   var el = {
@@ -297,7 +308,7 @@
 
   function render() {
     if (el.win) el.win.textContent = fmt(state.roundWin);
-    if (el.topAmount) el.topAmount.textContent = fmt(state.roundWin);
+    // topAmount is owned by playHistory (per-step TUMBLE WIN), not render()
     if (el.balance) el.balance.textContent = fmt(state.balance);
     if (el.bet) el.bet.textContent = fmt(effectiveBet());
     if (el.roundWin) el.roundWin.textContent = fmt(state.roundWin);
@@ -318,71 +329,49 @@
     return RD.playBase({
       strips: strips, symbols: S.SYMBOLS, paytable: P,
       reels: R, matcher: M, tumble: TB, multiplier: Mu,
-      tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: 40, APPLY_MULT: true },
+      tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: profile.maxSteps || 40, APPLY_MULT: true },
       rng: rng, profile: profile
     });
   }
 
   function refillScrollingSlots() {
-    for (var c = 0; c < liveCols.length; c++) {
-      for (var k = 5; k < SLOTS_PER_COL; k++) {
-        var buf = new Uint8Array(1);
-        crypto.getRandomValues(buf);
-        var id = 'sym-' + (buf[0] % 13);
-        liveCols[c].slots[k].img.src = '/assets/symbols/' + id + '.webp?v=1';
-      }
+  for (var c = 0; c < 6; c++) {
+    for (var r = 0; r < 5; r++) {
+      var sym = liveCols[c].syms[r];
+      if (!sym || !sym.img) continue;
+      var buf = new Uint8Array(1);
+      crypto.getRandomValues(buf);
+      sym.img.src = '/assets/symbols/sym-' + (buf[0] % 13) + '.webp?v=1';
     }
   }
+}
 
-  function readTrackY(track) {
-    var m = getComputedStyle(track).transform;
-    if (!m || m === 'none') return 0;
-    var mm = m.match(/matrix\(([^)]+)\)/);
-    if (!mm) return 0;
-    var parts = mm[1].split(',');
-    var v = parseFloat(parts[5]);
-    return isFinite(v) ? v : 0;
+function realSpin(cb) {
+  if (!liveCols.length) buildBoardDom();
+  layoutCols();
+  var swapTimer = setInterval(function () { refillScrollingSlots(); }, Math.max(28, 45 / state.speed));
+  for (var c = 0; c < 6; c++) liveCols[c].el.classList.add('is-rolling');
+  var baseDelay = state.skipAnim ? 60 : Math.max(420, 750 / state.speed);
+  var colDelay = Math.max(70, 110 / state.speed);
+  for (var k = 0; k < 6; k++) {
+    (function (idx) {
+      setTimeout(function () {
+        liveCols[idx].el.classList.remove('is-rolling');
+        liveCols[idx].el.classList.add('is-stopped');
+        if (AU) AU.stop();
+        setTimeout(function () { liveCols[idx].el.classList.remove('is-stopped'); }, 240);
+      }, baseDelay + idx * colDelay);
+    })(k);
   }
+  var total = baseDelay + 6 * colDelay + 300;
+  setTimeout(function () {
+    clearInterval(swapTimer);
+    for (var j = 0; j < 6; j++) liveCols[j].el.classList.remove('is-rolling', 'is-stopped');
+    try { cb(); } catch (e) { console.error('[olympus] spin cb failed', e); }
+  }, total);
+}
 
-  function realSpin(profile, cb) {
-    if (!liveCols.length) buildBoardDom();
-    layoutCols();
-    refillScrollingSlots();
-    for (var c = 0; c < liveCols.length; c++) {
-      var col = liveCols[c];
-      col.el.classList.remove('is-rolling');
-      col.track.style.animation = '';
-      col.track.style.transition = '';
-      col.track.style.transform = '';
-      void col.track.offsetHeight;
-      col.el.classList.add('is-rolling');
-    }
-    var baseDelay = state.skipAnim ? 60 : Math.max(420, 750 / state.speed);
-    var colDelay = Math.max(70, 110 / state.speed);
-    for (var k = 0; k < liveCols.length; k++) {
-      (function (idx) {
-        setTimeout(function () {
-          var col = liveCols[idx];
-          var curY = readTrackY(col.track);
-          col.el.classList.remove('is-rolling');
-          col.track.style.animation = 'none';
-          col.track.style.transform = 'translateY(' + curY + 'px)';
-          void col.track.offsetHeight;
-          col.track.style.transition = 'transform 0.42s cubic-bezier(.22,1.6,.36,1)';
-          col.track.style.transform = 'translateY(0)';
-          if (AU) AU.stop();
-          setTimeout(function () {
-            col.track.style.transition = '';
-            col.track.style.animation = '';
-            col.track.style.transform = '';
-          }, 460);
-        }, baseDelay + idx * colDelay);
-      })(k);
-    }
-    var total = baseDelay + 6 * colDelay + 480;
-    setTimeout(cb, total);
-  }
-  function doSpin() {
+    function doSpin() {
     if (state.spinning) return;
     var bet = effectiveBet();
     if (state.balance < bet) { stopAuto(); return; }
@@ -400,7 +389,7 @@
     var profile = MP.DEMO;
     var r = playBase(profile);
 
-    realSpin(profile, function () {
+    realSpin(function () {
       playHistory(r.history, function () {
         paintBoard(r.board, r.values);
         state.roundWin = r.winX;
@@ -431,7 +420,7 @@
           else if (r.winX >= 10) { AU.winMid(); AU.playPayout(); }
           else { AU.winSmall(); }
         }
-        if (BW && r.winX >= 10) BW.play(r.winX, r.winX);
+        if (BW && r.winX >= 10) BW.play(r.winX);
         else if (BW) BW.hide();
         if (r.triggerFS) {
           if (AU) AU.fsTrigger();
@@ -518,13 +507,14 @@
       var fr = RD.nextFreeSpin(st, {
         strips: strips, symbols: S.SYMBOLS, paytable: P,
         reels: R, matcher: M, tumble: TB, multiplier: Mu,
-        tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: 40, APPLY_MULT: true },
+        tumbleConfig: { MULT_CHANCE: profile.multChance, MAX_STEPS: profile.maxSteps || 40, APPLY_MULT: true },
         rng: rng, profile: profile
       });
       if (fr) {
         paintBoard(fr.board, fr.values);
         state.roundWin += fr.win;
         state.balance += fr.win;
+        if (el.topAmount) el.topAmount.textContent = fmt(fr.win);
         render();
         if (AU && fr.win > 0) AU.winSmall();
         if (LX && fr.win > 0) {
@@ -625,13 +615,15 @@
     // clear watchdog
     if (state.__watchdog) { clearTimeout(state.__watchdog); state.__watchdog = 0; }
     // stop any FS intro timeout
-    if (window.OlympusFs && FS && FS.__introTimer) {
-      clearTimeout(FS.__introTimer);
-    }
+    if (FS && FS.pauseTimer) FS.pauseTimer();
   }
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) onHidden();
-    else if (AU && AU.startBgm) AU.startBgm();
+    if (document.hidden) {
+      onHidden();
+    } else {
+      if (AU && AU.resume) AU.resume();
+      if (AU && AU.startBgm) AU.startBgm();
+    }
   });
   window.addEventListener('pagehide', onHidden);
 

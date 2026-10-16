@@ -318,16 +318,6 @@ html, body {
   height: 100%;
   min-width: 0;
 }
-.ol-col-track {
-  display: flex;
-  flex-direction: column;
-  will-change: transform;
-  transform: translateY(0);
-  backface-visibility: hidden;
-}
-.ol-col.is-rolling .ol-col-track {
-  animation: col-roll 0.5s linear infinite;
-}
 @keyframes col-roll {
   from { transform: translateY(0); }
   to   { transform: translateY(calc(-1 * var(--roll-h, 0px))); }
@@ -777,3 +767,27 @@ html, body {
   box-shadow: 0 0 8px rgba(0,0,0,.3) inset;
 }
 
+/* ============== reel spin: el-level blur + jitter ============== */
+.ol-col.is-rolling .ol-sym {
+  animation: sym-flicker .09s linear infinite;
+  filter: blur(1.5px) brightness(.95);
+}
+.ol-col.is-rolling .ol-sym:nth-child(odd) { animation-delay: 12ms; }
+.ol-col.is-rolling .ol-sym:nth-child(even) { animation-delay: 24ms; }
+@keyframes sym-flicker {
+  0%   { transform: translateY(-6px) scale(1); }
+  50%  { transform: translateY(4px)  scale(.98); }
+  100% { transform: translateY(-6px) scale(1); }
+}
+.ol-col.is-stopped .ol-sym {
+  animation: sym-stop .28s cubic-bezier(.22,1.6,.36,1) both;
+}
+@keyframes sym-stop {
+  0%   { transform: translateY(-14px); filter: blur(1px); }
+  60%  { transform: translateY(4px);  filter: blur(0); }
+  100% { transform: translateY(0);    filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ol-col.is-rolling .ol-sym,
+  .ol-col.is-stopped .ol-sym { animation: none !important; }
+}

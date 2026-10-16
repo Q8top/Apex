@@ -24,7 +24,7 @@ amountEl = overlay.querySelector('.ol-bigwin-amount');
 return true;
 }
 function fmt(n) { return '\u00A5' + n.toFixed(2); }
-function play(winX, betX) {
+function play(winX) {
 if (!ensure()) return;
 var tier = tierFor(winX);
 if (!tier) return;

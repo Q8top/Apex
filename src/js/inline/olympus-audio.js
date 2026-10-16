@@ -47,10 +47,13 @@ data[i] = n * Math.pow(1 - t, decay);
 return buf;
 }
 function unlock() {
-if (unlocked) return;
 var ctx = ensureCtx();
 if (!ctx) return;
-if (ctx.state === 'suspended') ctx.resume();
+// iOS / Android suspend ctx when the tab goes hidden; always try.
+if (ctx.state === 'suspended') {
+var r = ctx.resume();
+if (r && r.catch) r.catch(function () {});
+}
 unlocked = true;
 }
 function fmBell(freq, dur, vol, delay, brightness) {
@@ -226,12 +229,26 @@ try { payoutEl.currentTime = 0; payoutEl.play().catch(function(){}); } catch (e)
 }
 function setMuted(v) {
 muted = !!v;
-if (master) master.gain.value = muted ? 0 : 1;
+if (master && actx) {
+var target = muted ? 0.0001 : 1;
+master.gain.setTargetAtTime(target, actx.currentTime, 0.06);
+} else if (master) {
+master.gain.value = muted ? 0 : 1;
+}
 if (bgmEl) bgmEl.muted = muted;
 if (payoutEl) payoutEl.muted = muted;
 }
+function resume() {
+var ctx = ensureCtx();
+if (!ctx) return;
+if (ctx.state === 'suspended') {
+var r = ctx.resume();
+if (r && r.catch) r.catch(function () {});
+}
+}
 global.OlympusAudio = Object.freeze({
 unlock: unlock,
+resume: resume,
 startBgm: startBgm, stopBgm: stopBgm,
 playPayout: playPayout,
 spin: sfxSpin, stop: sfxStop,

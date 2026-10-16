@@ -6,9 +6,8 @@ var bolts = [];
 var swirls = [];
 var auraOn = false;
 var ripples = [];
-var auraT0 = 0;
-var startTime = 0;
 var DPR = 1;
+var resizeBound = false;
 function rnd() {
 var buf = new Uint32Array(1);
 crypto.getRandomValues(buf);
@@ -20,14 +19,25 @@ canvas = document.getElementById('olLightning');
 if (!canvas) return false;
 ctx = canvas.getContext('2d');
 resize();
-window.addEventListener('resize', resize);
+if (!resizeBound) {
+  resizeBound = true;
+  window.addEventListener('resize', resize);
+}
 return true;
 }
 function resize() {
 if (!canvas) return;
-DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-canvas.width = Math.floor(canvas.clientWidth * DPR);
-canvas.height = Math.floor(canvas.clientHeight * DPR);
+var nextDPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+var cw = canvas.clientWidth, ch = canvas.clientHeight;
+if (cw <= 0 || ch <= 0) return;
+var nw = Math.floor(cw * nextDPR);
+var nh = Math.floor(ch * nextDPR);
+// setting width/height clears the canvas - only do it when it really changes
+if (canvas.width !== nw || canvas.height !== nh) {
+  DPR = nextDPR;
+  canvas.width = nw;
+  canvas.height = nh;
+}
 }
 function makeBolt(sx, sy, ex, ey) {
 var segs = 14 + Math.floor(rnd() * 6);
@@ -46,9 +56,11 @@ return pts;
 }
 function branches(pts) {
 var out = [];
+if (!pts || pts.length < 10) return out;
 var n = 2 + Math.floor(rnd() * 2);
 for (var b = 0; b < n; b++) {
 var idx = 3 + Math.floor(rnd() * (pts.length - 6));
+if (idx < 0 || idx >= pts.length) continue;
 var base = pts[idx];
 var dir = rnd() < 0.5 ? 1 : -1;
 var br = [{ x: base.x, y: base.y }];
@@ -128,7 +140,6 @@ function drawSwirl(s, age) {
 var t = age / s.life;
 if (t >= 1) return;
 var fade = 1 - t;
-var ease = Math.pow(1 - t, 2);
 var easeIn = Math.pow(t, 0.6);
 var ps = s.particles;
 // core glow
@@ -367,6 +378,7 @@ canvas.classList.add('on');
 if (!raf) raf = requestAnimationFrame(tick);
 }
 function strikeCell(col, row) {
+if (!initCanvas()) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
 var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
@@ -381,7 +393,7 @@ strike: strike,
 strikeCell: strikeCell,
 init: initCanvas,
 rippleCell: function (col, row, opts) {
-if (!initCanvas()) return;
+if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
 var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;
@@ -400,7 +412,7 @@ auraOn = !!on;
 if (auraOn) {
 if (canvas) canvas.classList.add('on');
 if (!raf) raf = requestAnimationFrame(tick);
-} else if (was && !raf && bolts.length === 0 && swirls.length === 0) {
+} else if (was && !raf && bolts.length === 0 && swirls.length === 0 && ripples.length === 0) {
 if (canvas) canvas.classList.remove('on');
 }
 },
@@ -413,7 +425,7 @@ if (!raf) raf = requestAnimationFrame(tick);
 },
 // convenience: given a board cell (col, row), compute canvas px
 swirlCell: function (col, row, opts) {
-if (!initCanvas()) return;
+if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
 var left = 0.044, right = 0.967, top = 0.230, bottom = 0.481;

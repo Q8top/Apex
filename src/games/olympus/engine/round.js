@@ -56,12 +56,12 @@
     var mult = opts.multiplier, rng = opts.rng, profile = opts.profile;
     var tcfg = opts.tumbleConfig;
     var ROWS = paytable.ROWS, COLS = paytable.COLS;
-    var MAX = tcfg.MAX_STEPS;
+    var MAX = (profile && profile.maxSteps) || (tcfg && tcfg.MAX_STEPS) || 40;
     var isBase = !opts.multiplierMap;
 
     var payScale = profile ? profile.payScale : 1;
     var S = scalePay(symbols, payScale);
-    var mc = profile ? profile.multChance : tcfg.MULT_CHANCE;
+    var mc = (profile && profile.multChance) || (tcfg && tcfg.MULT_CHANCE) || 0;
 
     // values grid: persistent in FS, fresh in base
     var values;
@@ -84,7 +84,6 @@
         }
       }
     }
-    var scatters = countScatters(board, S);
 
     var totalPayX = 0;
     var step = 0;
@@ -113,7 +112,12 @@
       step++;
     }
 
-    var multSum = sumValues(values);
+    // Scatters never participate in tumble, so the final board count
+  // equals every scatter that landed during the whole sequence -
+  // this is what the original uses for the FS trigger.
+  var scatters = countScatters(board, S);
+
+  var multSum = sumValues(values);
     var factor = multSum > 0 ? multSum : 1;
     var rawWin = totalPayX * factor;
     var capped = false;
