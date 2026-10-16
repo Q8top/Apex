@@ -30,14 +30,6 @@ html, body {
   -webkit-user-drag: none; user-select: none; pointer-events: none;
 }
 .ol-grid { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
-.ol-grid-inner {
-  position: absolute;
-  left: 3.0%; right: 2.5%; top: 23.0%; bottom: 47.0%;
-  display: grid;
-  grid-template-columns: 15.30% 17.35% 17.86% 17.86% 17.86% 13.77%;
-  gap: 0; box-sizing: border-box;
-}
-
 
 
 /* ==================== HUD ==================== */
@@ -270,22 +262,6 @@ html, body {
 
 
 
-/* multiplier gem: pulsing halo */
-
-@keyframes ol-mult-pulse {
-  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 6px rgba(255,180,60,.6)); }
-  50%      { transform: scale(1.06); filter: drop-shadow(0 0 14px rgba(255,190,70,1)) drop-shadow(0 0 6px rgba(255,255,255,.7)); }
-}
-
-/* scatter: subtle blue glow */
-
-
-/* transition on board cells for the drop / refill steps */
-
-
-
-
-
 /* ============== reel spin: per-column vertical track ============== */
 .ol-grid-inner {
   display: grid !important;
@@ -299,19 +275,11 @@ html, body {
   height: 100%;
   min-width: 0;
 }
-@keyframes col-roll {
-  from { transform: translateY(0); }
-  to   { transform: translateY(calc(-1 * var(--roll-h, 0px))); }
-}
-
 
 /* ==================== tumble: per-symbol physics ==================== */
 /* symbols are absolutely positioned inside each .ol-col; each one
    carries a --y (its row top in px). JS mutates transform, browser
    interpolates. This is the ONLY reliable way to show real falls. */
-.ol-col {
-  position: relative;
-}
 .ol-sym {
   position: absolute;
   left: 0; right: 0;
@@ -719,7 +687,7 @@ html, body {
   .ol-fs-intro-inner, .ol-fs-summary-inner { transition: none !important; }
 }
 
-/* spin button in STOP state: hide refresh icon, show a white square */
+/* spin button in STOP state: hide refresh icon, show a square */
 .ol-spin-btn.is-stop i { display: none; }
 .ol-spin-btn.is-stop::after {
   content: '';

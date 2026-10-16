@@ -5,6 +5,14 @@ var introEl = null, panelEl = null, summaryEl = null;
 var countEl = null, leftEl = null, multEl = null, collectedEl = null, summaryAmtEl = null;
 var onContinue = null;
 var introTimer = 0;
+var introHandler = null, summaryHandler = null;
+
+function unbindAll(el, h) {
+if (!el || !h) return;
+el.removeEventListener('pointerdown', h);
+el.removeEventListener('touchstart', h);
+el.removeEventListener('click', h);
+}
 
 function ensure() {
 if (introEl) return true;
@@ -30,6 +38,8 @@ el.addEventListener('click', handler, { once: true });
 
 function showIntro(spins, cb) {
 if (!ensure()) { if (cb) cb(); return; }
+unbindAll(introEl, introHandler);
+introHandler = null;
 if (countEl) countEl.textContent = String(spins);
 introEl.classList.remove('on');
 void introEl.offsetWidth;
@@ -41,11 +51,11 @@ clearIntroTimer();
 if (cb) cb();
 };
 var handler = function () {
-introEl.removeEventListener('pointerdown', handler);
-introEl.removeEventListener('touchstart', handler);
-introEl.removeEventListener('click', handler);
+unbindAll(introEl, handler);
+introHandler = null;
 if (onContinue) onContinue();
 };
+introHandler = handler;
 bindOnce(introEl, handler);
 clearIntroTimer();
 introTimer = setTimeout(function () { if (onContinue) handler(); }, 8000);
@@ -70,22 +80,26 @@ collectedEl.appendChild(sp);
 function showSummary(totalWin, cb) {
 if (!ensure()) { if (cb) cb(); return; }
 hidePanel();
+unbindAll(summaryEl, summaryHandler);
+summaryHandler = null;
 if (summaryAmtEl) summaryAmtEl.textContent = fmt(totalWin);
 summaryEl.classList.remove('on');
 void summaryEl.offsetWidth;
 summaryEl.classList.add('on');
 var handler = function () {
-summaryEl.removeEventListener('pointerdown', handler);
-summaryEl.removeEventListener('touchstart', handler);
-summaryEl.removeEventListener('click', handler);
+unbindAll(summaryEl, handler);
+summaryHandler = null;
 summaryEl.classList.remove('on');
 if (cb) cb();
 };
+summaryHandler = handler;
 bindOnce(summaryEl, handler);
 }
 function hideAll() {
 clearIntroTimer();
 onContinue = null;
+unbindAll(introEl, introHandler); introHandler = null;
+unbindAll(summaryEl, summaryHandler); summaryHandler = null;
 if (introEl) introEl.classList.remove('on');
 if (panelEl) panelEl.classList.remove('on');
 if (summaryEl) summaryEl.classList.remove('on');

@@ -2,6 +2,7 @@
 (function (global) {
 'use strict';
 var overlay = null, textEl = null, amountEl = null, hideTimer = 0;
+var rollSeq = 0;
 var TIERS = [
 { min: 5000, label: 'MAX WIN',   cls: 'is-max' },
 { min: 100,  label: 'EPIC WIN',  cls: 'is-epic' },
@@ -28,6 +29,8 @@ function play(winX) {
 if (!ensure()) return;
 var tier = tierFor(winX);
 if (!tier) return;
+rollSeq++;
+var mySeq = rollSeq;
 // reset
 overlay.className = 'ol-bigwin';
 void overlay.offsetWidth;
@@ -38,6 +41,7 @@ var dur = 1200;
 var start = performance.now();
 var from = 0, to = winX;
 function roll(now) {
+if (rollSeq !== mySeq) return;
 var t = Math.min(1, (now - start) / dur);
 var e = 1 - Math.pow(1 - t, 3);
 amountEl.textContent = fmt(from + (to - from) * e);
@@ -50,6 +54,7 @@ var stay = tier.cls === 'is-max' ? 4200 : (tier.cls === 'is-epic' ? 3600 : 2800)
 hideTimer = setTimeout(hide, stay);
 }
 function hide() {
+rollSeq++;
 if (!overlay) return;
 overlay.classList.remove('on');
 if (hideTimer) { clearTimeout(hideTimer); hideTimer = 0; }

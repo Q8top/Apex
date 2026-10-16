@@ -8,10 +8,18 @@ var auraOn = false;
 var ripples = [];
 var DPR = 1;
 var resizeBound = false;
-function rnd() {
-var buf = new Uint32Array(1);
+var BOARD = { L: 0.044, R: 0.967, T: 0.230, B: 0.530 };
+var rndState = 0;
+var NOISE = (function () {
+var buf = new Uint32Array(256);
 crypto.getRandomValues(buf);
-return buf[0] / 4294967296;
+var out = new Float64Array(256);
+for (var i = 0; i < 256; i++) out[i] = buf[i] / 4294967296;
+return out;
+})();
+function rnd() {
+rndState = (rndState + 1) & 255;
+return NOISE[rndState];
 }
 function initCanvas() {
 if (canvas) return true;
@@ -22,6 +30,9 @@ resize();
 if (!resizeBound) {
   resizeBound = true;
   window.addEventListener('resize', resize);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resize);
+  }
 }
 return true;
 }
@@ -32,9 +43,9 @@ var cw = canvas.clientWidth, ch = canvas.clientHeight;
 if (cw <= 0 || ch <= 0) return;
 var nw = Math.floor(cw * nextDPR);
 var nh = Math.floor(ch * nextDPR);
+DPR = nextDPR;
 // setting width/height clears the canvas - only do it when it really changes
 if (canvas.width !== nw || canvas.height !== nh) {
-  DPR = nextDPR;
   canvas.width = nw;
   canvas.height = nh;
 }
@@ -241,9 +252,8 @@ ctx.restore();
 
 function drawAura(now, W, H) {
 if (!auraOn) return;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
-var x0 = left * W, x1 = right * W;
-var y0 = top * H, y1 = bottom * H;
+var x0 = BOARD.L * W, x1 = BOARD.R * W;
+var y0 = BOARD.T * H, y1 = BOARD.B * H;
 var cw = (x1 - x0) / 6;
 var ch = (y1 - y0) / 5;
 var t = now * 0.001;
@@ -381,11 +391,10 @@ function strikeCell(col, row) {
 if (!initCanvas()) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
-var cw = (right - left) / 6;
-var ch = (bottom - top) / 5;
-var toX = left + cw * (col + 0.5);
-var toY = top + ch * (row + 0.5);
+var cw = (BOARD.R - BOARD.L) / 6;
+var ch = (BOARD.B - BOARD.T) / 5;
+var toX = BOARD.L + cw * (col + 0.5);
+var toY = BOARD.T + ch * (row + 0.5);
 strike({ toX: toX, toY: toY, count: 1 });
 }
 global.OlympusLightning = Object.freeze({
@@ -396,11 +405,10 @@ rippleCell: function (col, row, opts) {
 if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
-var cw = (right - left) / 6;
-var ch = (bottom - top) / 5;
-var cx = (left + cw * (col + 0.5)) * w;
-var cy = (top + ch * (row + 0.5)) * h;
+var cw = (BOARD.R - BOARD.L) / 6;
+var ch = (BOARD.B - BOARD.T) / 5;
+var cx = (BOARD.L + cw * (col + 0.5)) * w;
+var cy = (BOARD.T + ch * (row + 0.5)) * h;
 if (canvas) canvas.classList.add('on');
 spawnRipple(cx, cy, opts);
 if (!raf) raf = requestAnimationFrame(tick);
@@ -428,11 +436,10 @@ swirlCell: function (col, row, opts) {
 if (!initCanvas() || !canvas) return;
 var w = canvas.clientWidth || window.innerWidth;
 var h = canvas.clientHeight || window.innerHeight;
-var left = 0.044, right = 0.967, top = 0.230, bottom = 0.530;
-var cw = (right - left) / 6;
-var ch = (bottom - top) / 5;
-var cx = (left + cw * (col + 0.5)) * w;
-var cy = (top + ch * (row + 0.5)) * h;
+var cw = (BOARD.R - BOARD.L) / 6;
+var ch = (BOARD.B - BOARD.T) / 5;
+var cx = (BOARD.L + cw * (col + 0.5)) * w;
+var cy = (BOARD.T + ch * (row + 0.5)) * h;
 this.swirlAt(cx, cy, opts);
 }
 });

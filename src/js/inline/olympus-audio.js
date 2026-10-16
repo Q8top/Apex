@@ -34,12 +34,12 @@ function impulseResponse(duration, decay) {
 var rate = actx.sampleRate;
 var len = Math.floor(rate * duration);
 var buf = actx.createBuffer(2, len, rate);
-var r = new Uint8Array(2);
+var r = new Uint8Array(2048), ri = 2048;
 for (var ch = 0; ch < 2; ch++) {
 var data = buf.getChannelData(ch);
 for (var i = 0; i < len; i++) {
-if (i % 2 === 0) crypto.getRandomValues(r);
-var n = (r[i % 2] / 127.5) - 1;
+if (ri >= 2048) { crypto.getRandomValues(r); ri = 0; }
+var n = (r[ri++] / 127.5) - 1;
 var t = i / len;
 data[i] = n * Math.pow(1 - t, decay);
 }
@@ -126,10 +126,10 @@ var t0 = ctx.currentTime + (delay || 0);
 var n = Math.floor(ctx.sampleRate * dur);
 var buf = ctx.createBuffer(1, n, ctx.sampleRate);
 var d = buf.getChannelData(0);
-var r = new Uint8Array(2);
+var r = new Uint8Array(2048), ri = 2048;
 for (var i = 0; i < n; i++) {
-if (i % 2 === 0) crypto.getRandomValues(r);
-d[i] = (r[i % 2] / 127.5) - 1;
+if (ri >= 2048) { crypto.getRandomValues(r); ri = 0; }
+d[i] = (r[ri++] / 127.5) - 1;
 }
 var src = ctx.createBufferSource(); src.buffer = buf;
 var flt = ctx.createBiquadFilter();

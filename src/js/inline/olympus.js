@@ -40,12 +40,7 @@
   var rng = makeRng(seedBuf[0]);
 
   /* ---- strips ---- */
-  var stripCfg = {
-    STRIP_LEN: W.STRIP_LEN,
-    WEIGHTS: W.columnsOf('demo'),
-    sumWeights: W.sumWeights
-  };
-  var strips = R.buildStrips(stripCfg, rng);
+  var strips = R.buildStrips({ WEIGHTS: W.columnsOf() }, rng);
 
   /* ---- board render ---- */
   var gridEl = document.getElementById("olGrid");
@@ -125,7 +120,10 @@
   function playHistory(history, onDone) {
     if (!history || !history.length) { onDone(); return; }
     var i = 0;
+    var rippled = {};
+    var mySeq = state.spinSeq;
     function nextFrame() {
+      if (state.spinSeq !== mySeq) return;
       if (i >= history.length) { onDone(); return; }
       var h = history[i];
       if (AU) AU.tumble();
@@ -153,7 +151,11 @@
           else if (isMultId(sym.id)) {
             sym.el.classList.add('is-mult');
             if (!sawMult) { sawMult = true; if (AU && AU.multiplier) AU.multiplier(); }
-            if (LX && LX.rippleCell) LX.rippleCell(c, sym.row, { hue: 'gold', life: 720, radius: 56 });
+            var rkey = c + '-' + sym.row;
+            if (!rippled[rkey]) {
+              rippled[rkey] = true;
+              if (LX && LX.rippleCell) LX.rippleCell(c, sym.row, { hue: 'gold', life: 720, radius: 56 });
+            }
           }
           else if (sym.id === 'sym-12') {
             sym.el.classList.add('is-scatter');
@@ -164,13 +166,13 @@
       i++;
       var explodeMs = state.skipAnim ? 30 : Math.max(280, 420 / state.speed);
       setTimeout(function () {
-        // phase B: move remaining symbols and drop new ones
+        if (state.spinSeq !== mySeq) return;
         if (i < history.length) {
           var next = history[i];
           applyTumble(h.board, next.board, h.values, next.values);
-          setTimeout(nextFrame, Math.max(340, 420 / state.speed));
+          var gap = state.skipAnim ? 40 : Math.max(340, 420 / state.speed);
+          setTimeout(nextFrame, gap);
         } else {
-          // last frame: settle final board from the engine's final state
           nextFrame();
         }
       }, explodeMs);
@@ -271,7 +273,7 @@
   var state = {
     balance: 1000.00, betIdx: 2, roundWin: 0,
     ante: false, spinning: false, auto: false, autoTimer: 0, speed: 1,
-    skipAnim: false
+    skipAnim: false, spinSeq: 0, fsTimer: 0
   };
 
   var el = {
@@ -346,25 +348,34 @@
 }
 
 function realSpin(cb) {
+  var mySeq = state.spinSeq;
   if (!liveCols.length) buildBoardDom();
   layoutCols();
-  var swapTimer = setInterval(function () { refillScrollingSlots(); }, Math.max(28, 45 / state.speed));
+  var swapTimer = setInterval(function () {
+    if (state.spinSeq !== mySeq) { clearInterval(swapTimer); return; }
+    refillScrollingSlots();
+  }, Math.max(28, 45 / state.speed));
   for (var c = 0; c < 6; c++) liveCols[c].el.classList.add('is-rolling');
   var baseDelay = state.skipAnim ? 60 : Math.max(420, 750 / state.speed);
   var colDelay = Math.max(70, 110 / state.speed);
   for (var k = 0; k < 6; k++) {
     (function (idx) {
       setTimeout(function () {
+        if (state.spinSeq !== mySeq) return;
         liveCols[idx].el.classList.remove('is-rolling');
         liveCols[idx].el.classList.add('is-stopped');
         if (AU) AU.stop();
-        setTimeout(function () { liveCols[idx].el.classList.remove('is-stopped'); }, 240);
+        setTimeout(function () {
+          if (state.spinSeq !== mySeq) return;
+          liveCols[idx].el.classList.remove('is-stopped');
+        }, 240);
       }, baseDelay + idx * colDelay);
     })(k);
   }
   var total = baseDelay + 6 * colDelay + 300;
   setTimeout(function () {
     clearInterval(swapTimer);
+    if (state.spinSeq !== mySeq) return;
     for (var j = 0; j < 6; j++) liveCols[j].el.classList.remove('is-rolling', 'is-stopped');
     try { cb(); } catch (e) { console.error('[olympus] spin cb failed', e); }
   }, total);
@@ -374,6 +385,7 @@ function realSpin(cb) {
     if (state.spinning) return;
     var bet = effectiveBet();
     if (state.balance < bet) { stopAuto(); return; }
+    state.spinSeq++;
     state.skipAnim = false;
     state.spinning = true;
     state.balance -= bet;
@@ -422,6 +434,7 @@ function realSpin(cb) {
         if (BW && r.winX >= 10) BW.play(r.winX);
         else if (BW) BW.hide();
         if (r.triggerFS) {
+          clearTimeout(state.__watchdog); state.__watchdog = 0;
           if (AU) AU.fsTrigger();
           if (LX) {
             for (var fi = 0; fi < 8; fi++) {
@@ -461,6 +474,7 @@ function realSpin(cb) {
 
   /* ---- free spins ---- */
   function runFreeSpins(profile, count) {
+    var mySeq = state.spinSeq;
     var st = RD.startFreeSpins({ paytable: P, count: count, tumble: TB });
     var safety = 0;
     var collected = [];
@@ -487,6 +501,11 @@ function realSpin(cb) {
     }
 
     function tick() {
+      if (state.spinSeq !== mySeq) {
+        if (LX) LX.setAura(false);
+        if (FS) FS.hidePanel();
+        return;
+      }
       if (st.remaining <= 0 || safety >= 200) {
         var totalWin = st.totalWin;
         if (LX) LX.setAura(false);
@@ -524,9 +543,10 @@ function realSpin(cb) {
         if (FS) FS.updatePanel(st.remaining, multSum, collected);
       }
       safety++;
-      setTimeout(tick, 700 / state.speed);
+      var delay = state.skipAnim ? 100 : 700;
+      state.fsTimer = setTimeout(tick, delay / state.speed);
     }
-    setTimeout(tick, 700 / state.speed);
+    state.fsTimer = setTimeout(tick, 700 / state.speed);
   }
 
   /* ---- auto ---- */
@@ -599,10 +619,10 @@ function realSpin(cb) {
   // When it comes back, force-reset so the player sees a clean board.
   function onHidden() {
     if (AU && AU.stopBgm) AU.stopBgm();
+    state.spinSeq++;
+    if (state.fsTimer) { clearTimeout(state.fsTimer); state.fsTimer = 0; }
     if (state.spinning) {
-      // cancel auto loop
       stopAuto();
-      // force-unlock; next user spin will reset the board
       state.spinning = false;
       state.skipAnim = false;
       if (FS) FS.hideAll();
@@ -610,9 +630,7 @@ function realSpin(cb) {
       if (BW) BW.hide();
       render();
     }
-    // clear watchdog
     if (state.__watchdog) { clearTimeout(state.__watchdog); state.__watchdog = 0; }
-    // stop any FS intro timeout
     if (FS && FS.pauseTimer) FS.pauseTimer();
   }
   document.addEventListener('visibilitychange', function () {
