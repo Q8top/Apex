@@ -264,6 +264,9 @@ html, body {
 
 /* ============== reel spin: per-column vertical track ============== */
 .ol-grid-inner {
+  position: absolute;
+  left: 3.0%; right: 2.5%; top: 23.0%; bottom: 47.0%;
+  box-sizing: border-box;
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
   grid-template-rows: 1fr !important;
@@ -340,10 +343,10 @@ html, body {
 .ol-top-banner {
   position: absolute;
   left: 50%;
-  top: 18.6%;
+  top: 22.0%;
   transform: translateX(-50%);
   width: min(82vw, 480px);
-  height: 5.2%;
+  height: 7.5%;
   display: flex;
   align-items: center;
   justify-content: center;
