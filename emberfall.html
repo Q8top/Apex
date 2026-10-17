@@ -27,17 +27,16 @@
   <a href="/" id="home-btn">← 返回首页</a>
   <main id="game-root"></main>
   
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+  <script src="/src/js/lib/phaser.min.js"></script>
   <script>
     const SYMBOLS = ['dragon', 'seal', 'wild', 'phoenix', 'lotus', 'crown', 'feather', 'bell', 'ingot', 'coin', 'jade'];
+    const WEIGHTS = [2, 5, 3, 8, 10, 8, 15, 15, 20, 20, 20];
 
     function secureRandom() {
       const buf = new Uint32Array(1);
       crypto.getRandomValues(buf);
       return buf[0] / 4294967296;
     }
-    // 权重：越往后越容易出
-    const WEIGHTS = [2, 5, 3, 8, 10, 8, 15, 15, 20, 20, 20];
 
     function getRandomSymbol() {
       const total = WEIGHTS.reduce((a, b) => a + b, 0);
@@ -52,9 +51,7 @@
     class BootScene extends Phaser.Scene {
       constructor() { super('BootScene'); }
       preload() {
-        // 加载背景
         this.load.image('bg', '/assets/emberfall/bg.webp');
-        // 加载所有符号
         SYMBOLS.forEach(sym => {
           this.load.image(sym, `/assets/emberfall/${sym}.webp`);
         });
@@ -70,11 +67,9 @@
         this.W = this.scale.width;
         this.H = this.scale.height;
         
-        // 背景
         this.bg = this.add.image(this.W/2, this.H/2, 'bg');
         this.bg.setDisplaySize(this.W, this.H);
 
-        // 积分面板
         this.balance = 10000;
         this.balanceText = this.add.text(this.W/2, this.H * 0.1, `积分: ${this.balance}`, {
           fontFamily: 'sans-serif', fontSize: '32px', color: '#FFE7A0', fontStyle: 'bold'
@@ -84,7 +79,6 @@
           fontFamily: 'sans-serif', fontSize: '24px', color: '#FFF4DC'
         }).setOrigin(0.5);
 
-        // 卷轴区域
         this.cols = 5;
         this.rows = 3;
         this.symbolSize = Math.min(this.W / 6, this.H / 8);
@@ -93,11 +87,9 @@
         this.startX = (this.W - this.gridW) / 2 + this.symbolSize / 2;
         this.startY = (this.H - this.gridH) / 2 + this.symbolSize / 2;
 
-        // 绘制网格背景
         this.add.rectangle(this.W/2, this.H/2, this.gridW + 20, this.gridH + 20, 0x171019, 0.8)
           .setStrokeStyle(4, 0xD9A441);
 
-        // 生成初始盘面
         this.gridSprites = [];
         for (let r = 0; r < this.rows; r++) {
           for (let c = 0; c < this.cols; c++) {
@@ -110,7 +102,6 @@
           }
         }
 
-        // 旋转按钮
         this.spinBtn = this.add.container(this.W/2, this.H * 0.92);
         const btnBg = this.add.circle(0, 0, 45, 0x791F28).setStrokeStyle(3, 0xD9A441);
         const btnText = this.add.text(0, 0, '旋转', {
@@ -121,9 +112,6 @@
 
         this.spinning = false;
         this.spinBtn.on('pointerdown', () => this.doSpin());
-
-        // 响应式
-        this.scale.on('resize', this.resize, this);
       }
 
       doSpin() {
@@ -138,14 +126,12 @@
         this.updateBalance();
         this.statusText.setText('转动中...');
 
-        // 简单动画：每个 Sprite 往下掉，切换图片
         let animationsDone = 0;
         this.gridSprites.forEach((sprite, index) => {
           const col = index % this.cols;
           const row = Math.floor(index / this.cols);
           const targetY = this.startY + row * this.symbolSize;
           
-          // 每次向下的偏移
           sprite.y = targetY - this.symbolSize;
 
           this.tweens.add({
@@ -154,11 +140,8 @@
             duration: 800 + col * 150,
             ease: 'Bounce.easeOut',
             onComplete: () => {
-              // 动画结束，更换为新符号
               sprite.setTexture(getRandomSymbol());
-              // 重置大小
               sprite.setDisplaySize(this.symbolSize * 0.85, this.symbolSize * 0.85);
-              
               animationsDone++;
               if (animationsDone === this.gridSprites.length) {
                 this.finishSpin();
@@ -170,25 +153,18 @@
 
       finishSpin() {
         this.spinning = false;
-        
-        // 简单的判定逻辑：如果中间一行前三个相同，或者任意地方有 dragon，就赢分
         let win = 0;
         const row1 = [this.gridSprites[5].texture.key, this.gridSprites[6].texture.key, this.gridSprites[7].texture.key];
-        if (row1[0] === row1[1] && row1[1] === row1[2]) {
-          win += 500;
-        }
+        if (row1[0] === row1[1] && row1[1] === row1[2]) win += 500;
         
         const dragons = this.gridSprites.filter(s => s.texture.key === 'dragon').length;
-        if (dragons >= 3) {
-          win += 1000;
-        }
+        if (dragons >= 3) win += 1000;
 
         if (win > 0) {
           this.balance += win;
           this.updateBalance();
           this.statusText.setText(`中奖! 获得 ${win} 积分`);
           this.statusText.setColor('#FFE7A0');
-          // 简单的闪烁特效
           this.cameras.main.flash(500, 255, 200, 100);
         } else {
           this.statusText.setText('未中奖，再试一次');
@@ -196,15 +172,7 @@
         }
       }
 
-      updateBalance() {
-        this.balanceText.setText(`积分: ${this.balance}`);
-      }
-
-      resize(gameSize) {
-        this.W = gameSize.width;
-        this.H = gameSize.height;
-        // 简单处理，实际商业项目需要重新排版所有元素
-      }
+      updateBalance() { this.balanceText.setText(`积分: ${this.balance}`); }
     }
 
     const config = {
