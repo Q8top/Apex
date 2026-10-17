@@ -32,6 +32,7 @@
  *            for any future runtime that builds a catalog adapter.
  */
 var GAMES = Object.freeze([
+  {id:"emberfall", n:"Emberfall Dynasty", src:"/assets/games/emberfall.webp"},
   {id:"olympus", n:"\u5965\u6797\u5339\u65af", src:"/assets/games/olympus.webp"},
   {id:"sweet", n:"\u7cd6\u679c\u8fde\u8fde\u7206", src:"/assets/games/sweet.webp"},
   {id:"sugar-rush", n:"\u751c\u871c\u7206\u5956", src:"/assets/games/sugar.webp"},
