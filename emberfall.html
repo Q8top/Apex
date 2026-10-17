@@ -185,5 +185,19 @@
     
     new Phaser.Game(config);
   </script>
+
+  <div id="err-box" style="display:none; position:fixed; inset:20px; background:rgba(255,0,0,0.9); color:white; padding:20px; z-index:9999; font-family:monospace; font-size:14px; word-break:break-all; border-radius:10px; overflow:auto;"></div>
+  <script>
+    window.onerror = function(msg, url, line) {
+      var box = document.getElementById('err-box');
+      box.style.display = 'block';
+      box.innerHTML += '<b>Error:</b> ' + msg + '<br><b>Line:</b> ' + line + '<br><b>URL:</b> ' + url + '<br><br>';
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+      var box = document.getElementById('err-box');
+      box.style.display = 'block';
+      box.innerHTML += '<b>Promise Error:</b> ' + (e.reason ? e.reason.message || e.reason : 'Unknown') + '<br><br>';
+    });
+  </script>
 </body>
 </html>
