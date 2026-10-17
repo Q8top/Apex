@@ -153,7 +153,16 @@ function renderCatContent(content, catKey){
     content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
     return;
   }
-  var GAMES = (window.ApexGamesRegistry && window.ApexGamesRegistry.GAMES) || [];
+  var allGames = (window.ApexGamesRegistry && window.ApexGamesRegistry.GAMES) || [];
+  // 核心过滤逻辑：热门不看 slot，电子只看 slot
+  var GAMES = allGames.filter(function(g) {
+    if (catKey === 'slot') return g.cat === 'slot';
+    return g.cat !== 'slot';
+  });
+  if (GAMES.length === 0) {
+    content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
+    return;
+  }
   var html='<div class="apex-game-grid">';
   GAMES.forEach(function(g){
     html+='<div class="apex-game-card apex-game-card--live"'
