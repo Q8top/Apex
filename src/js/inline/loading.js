@@ -5,7 +5,7 @@ var MAP = {
 'sweet':       '/sweet-demo.html',
 'sugar-rush':  '/sugar-rush.html',
 'olympus':     '/olympus.html',
-  'emberfall':   '/coming-soon.html'
+  'emberfall':   '/emberfall.html'
 };
 var FALLBACK = '/coming-soon.html';
 
@@ -13,6 +13,20 @@ var FALLBACK = '/coming-soon.html';
    concatenation, audio via new Audio()). Static HTML never mentions
    them, so we list them per game. */
 var EXTRA = {
+  'emberfall': [
+    '/assets/emberfall/bg.webp',
+    '/assets/emberfall/dragon.webp',
+    '/assets/emberfall/seal.webp',
+    '/assets/emberfall/wild.webp',
+    '/assets/emberfall/phoenix.webp',
+    '/assets/emberfall/lotus.webp',
+    '/assets/emberfall/crown.webp',
+    '/assets/emberfall/feather.webp',
+    '/assets/emberfall/bell.webp',
+    '/assets/emberfall/ingot.webp',
+    '/assets/emberfall/coin.webp',
+    '/assets/emberfall/jade.webp'
+  ],
 'olympus': [
 '/assets/games/olympus-bg.jpeg',
 '/assets/audio/olympus-bgm.mp3',
