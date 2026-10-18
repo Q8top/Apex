@@ -149,58 +149,7 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
-  content.innerHTML = '<div class="apex-cats-empty" style="padding: 50px 20px; text-align: center; color: #888;"><p style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">全新赛道开发中</p><p>敬请期待...</p></div>';
-  return;
-  /*
-
-  if (catKey !== 'hot' && catKey !== 'slot') {
-    content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
-    return;
-  }
-  var allGames = (window.ApexGamesRegistry && window.ApexGamesRegistry.GAMES) || [];
-  // 核心过滤逻辑：热门不看 slot，电子只看 slot
-  var GAMES = allGames.filter(function(g) {
-    if (catKey === 'slot') return g.cat === 'slot';
-    return g.cat !== 'slot';
-  });
-  if (GAMES.length === 0) {
-    content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
-    return;
-  }
-  var html='<div class="apex-game-grid">';
-  GAMES.forEach(function(g){
-    html+='<div class="apex-game-card apex-game-card--live"'
-      + ' role="button" tabindex="0" aria-label="'+g.n+'" data-game="'+g.id+'">'
-      +'<span class="apex-game-card-icon"><img src="'+g.src+'" alt="" loading="lazy" draggable="false"></span>'
-      +'<span class="apex-game-card-name">'+g.n+'</span>'
-      +'</div>';
-  });
-  html+='</div>';
-  html+='<button type="button" class="apex-more-btn" data-action="hot-games" aria-label="更多热门游戏">更多热门游戏<i class="ri-arrow-right-s-line" aria-hidden="true"></i></button>';
-  content.innerHTML=html;
-  content.querySelectorAll('.apex-more-btn').forEach(function(el){
-    el.addEventListener('click', function(){
-      alert('更多热门游戏 · 敬请期待');
-    });
-  });
-  content.querySelectorAll(".apex-game-card").forEach(function(el){
-    el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
-    el.addEventListener("dragstart", function(e){ e.preventDefault(); });
-  });
-  content.querySelectorAll(".apex-game-card--live").forEach(function(el){
-    function go(){
-      var gid = el.dataset.game;
-      var g = window.ApexGamesRegistry && window.ApexGamesRegistry.getById(gid);
-      if (!g) return;
-      if (window.ApexModePicker && typeof window.ApexModePicker.open === 'function') {
-        window.ApexModePicker.open({ game: g });
-      }
-    }
-    el.addEventListener("click", go);
-    el.addEventListener("keydown", function(e){
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
-    });
-  });
+  content.innerHTML = '<div class="apex-cats-empty" style="padding: 60px 20px; text-align: center; color: #888;"><p style="font-size: 22px; font-weight: bold; margin-bottom: 12px; color: #ffd86a;">全新赛道开发中</p><p style="font-size: 14px;">敬请期待...</p></div>';
 }
 */
 }
