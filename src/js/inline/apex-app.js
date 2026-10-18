@@ -149,6 +149,10 @@ function initAnnounce(app){
 
 
 function renderCatContent(content, catKey){
+  content.innerHTML = '<div class="apex-cats-empty" style="padding: 50px 20px; text-align: center; color: #888;"><p style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">全新赛道开发中</p><p>敬请期待...</p></div>';
+  return;
+  /*
+
   if (catKey !== 'hot' && catKey !== 'slot') {
     content.innerHTML = '<div class="apex-cats-empty"><p>暂无游戏</p></div>';
     return;
@@ -197,6 +201,8 @@ function renderCatContent(content, catKey){
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
     });
   });
+}
+*/
 }
 function makeCats(){
   var CATS=[
