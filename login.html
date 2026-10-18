@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>ApexTop</title>
+  <link rel="stylesheet" href="/src/css/mobile-app-auth.css?v=1">
+</head>
+<body>
+
+  <div class="top-nav">
+    <div class="logo">
+      <svg viewBox="0 0 64 64"><path d="M32 2L38.5 25.5L62 32L38.5 38.5L32 62L25.5 38.5L2 32L25.5 25.5L32 2Z"/></svg>
+      ApexTop
+    </div>
+    <div class="lang-btn" id="langBtn"><span id="curFlag">🇨🇳</span> <span id="curText">简体中文</span></div>
+    <div class="lang-menu" id="langMenu">
+      <div class="lang-item" data-lang="zh">🇨🇳 简体中文</div>
+      <div class="lang-item" data-lang="en">🇺🇸 English</div>
+      <div class="lang-item" data-lang="ja">🇯🇵 日本語</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- 登录 -->
+    <div id="view-login" class="view active">
+      <div class="card">
+        <div class="header"><h1 data-i18n="welcome">欢迎回来</h1><p data-i18n="login_desc">登录以继续访问 ApexTop</p></div>
+        <div class="input-group" id="login-acc-group">
+          <input type="text" id="login-acc" data-i18n-ph="acc" placeholder="账号 / 邮箱">
+          <div class="error-msg" data-i18n="err_empty">请输入账号</div>
+        </div>
+        <div class="input-group" id="login-pwd-group">
+          <input type="password" id="login-pwd" data-i18n-ph="pwd" placeholder="密码">
+          <div class="error-msg" data-i18n="err_pwd">密码不能少于6位</div>
+        </div>
+        <div class="actions">
+          <a id="go-register" data-i18n="no_acc">没有账号？注册</a>
+          <a id="go-forgot" data-i18n="forgot">忘记密码？</a>
+        </div>
+        <button class="btn btn-primary" id="btn-submit-login"><span class="btn-text" data-i18n="btn_login">登录</span></button>
+        <div class="divider" data-i18n="or">或</div>
+        <button class="btn btn-outline" id="btn-passkey"><span data-i18n="passkey">Passkey 登录</span></button>
+      </div>
+    </div>
+
+    <!-- 注册 -->
+    <div id="view-register" class="view">
+      <div class="card">
+        <div class="header"><h1 data-i18n="create_acc">创建账号</h1><p data-i18n="reg_desc">加入全球数字智能平台</p></div>
+        <div class="input-group" id="reg-acc-group">
+          <input type="text" id="reg-acc" data-i18n-ph="acc" placeholder="设置账号 / 邮箱">
+          <div class="error-msg" data-i18n="err_empty">请输入账号</div>
+        </div>
+        <div class="input-group" id="reg-pwd-group">
+          <input type="password" id="reg-pwd" data-i18n-ph="pwd" placeholder="设置密码 (至少6位)">
+          <div class="error-msg" data-i18n="err_pwd">密码不能少于6位</div>
+        </div>
+        <div class="input-group" id="reg-pwd2-group">
+          <input type="password" id="reg-pwd2" data-i18n-ph="pwd2" placeholder="确认密码">
+          <div class="error-msg" data-i18n="err_mismatch">两次密码不一致</div>
+        </div>
+        <div class="actions" style="justify-content: flex-start;"><a id="go-login-from-reg" data-i18n="has_acc">已有账号？去登录</a></div>
+        <button class="btn btn-primary" id="btn-submit-reg"><span class="btn-text" data-i18n="btn_reg">注册</span></button>
+      </div>
+    </div>
+
+    <!-- 忘记密码 -->
+    <div id="view-forgot" class="view">
+      <div class="card">
+        <div class="header"><h1 data-i18n="reset_pwd">重置密码</h1><p data-i18n="reset_desc">我们将向您的邮箱发送链接</p></div>
+        <div class="input-group" id="forgot-acc-group">
+          <input type="text" id="forgot-acc" data-i18n-ph="acc" placeholder="请输入注册邮箱">
+          <div class="error-msg" data-i18n="err_empty">请输入邮箱</div>
+        </div>
+        <div class="actions" style="justify-content: flex-start;"><a id="go-login-from-forgot" data-i18n="back_login">返回登录</a></div>
+        <button class="btn btn-primary" id="btn-submit-forgot"><span class="btn-text" data-i18n="btn_send">发送重置链接</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a class="open-drawer" data-target="terms" data-i18n="terms">用户协议</a>
+    <a class="open-drawer" data-target="privacy" data-i18n="privacy">隐私政策</a>
+    <a class="open-drawer" data-target="help" data-i18n="help">帮助中心</a>
+  </div>
+
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-title" id="drawerTitle">标题</div>
+      <button class="drawer-close" id="drawerClose">×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody">内容...</div>
+  </div>
+
+  <!-- 引入独立的 JS -->
+  <script src="/src/js/auth-logic.js?v=1"></script>
+</body>
+</html>

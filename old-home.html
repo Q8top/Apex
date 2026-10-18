@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="liquid-lens" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="soft"/>
+    <feOffset in="soft" dx="6" dy="0" result="sxp"/>
+    <feOffset in="soft" dx="-6" dy="0" result="sxn"/>
+    <feComposite in="sxp" in2="sxn" operator="arithmetic" k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gx"/>
+    <feOffset in="soft" dx="0" dy="6" result="syp"/>
+    <feOffset in="soft" dx="0" dy="-6" result="syn"/>
+    <feComposite in="syp" in2="syn" operator="arithmetic" k1="0" k2="-2.5" k3="2.5" k4="0.5" result="gy"/>
+    <feColorMatrix in="gx" type="matrix" values="0 0 0 1 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1" result="mx"/>
+    <feColorMatrix in="gy" type="matrix" values="0 0 0 0 0  0 0 0 1 0  0 0 0 0 0  0 0 0 0 1" result="my"/>
+    <feComposite in="mx" in2="my" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="base_map"/>
+    <feComponentTransfer in="base_map" result="map">
+      <feFuncR type="linear" slope="1.05" intercept="-0.025"/>
+      <feFuncG type="linear" slope="1.05" intercept="-0.025"/>
+    </feComponentTransfer>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="64" xChannelSelector="R" yChannelSelector="G" result="dispR"/>
+    <feColorMatrix in="dispR" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyR"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="72" xChannelSelector="R" yChannelSelector="G" result="dispG"/>
+    <feColorMatrix in="dispG" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="onlyG"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="80" xChannelSelector="R" yChannelSelector="G" result="dispB"/>
+    <feColorMatrix in="dispB" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="onlyB"/>
+    <feComposite in="onlyR" in2="onlyG" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="rg"/>
+    <feComposite in="rg" in2="onlyB" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="rgb"/>
+  </filter>
+</svg>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <title>ApexTop | 全球数字智能基础设施</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <link rel="stylesheet" href="/src/css/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css">
+  <link rel="stylesheet" href="/src/css/apex-app.css">
+    
+
+<!-- APEX-PRELOAD-START -->
+  
+  <link rel="preload" href="/fonts/fonts.css" as="style">
+<!-- APEX-PRELOAD-END -->
+<!-- APEX-SEO-START -->
+<!--
+  注意：以下域名硬编码是刻意设计，不是遗漏。
+  - 搜索引擎爬虫（Googlebot / Bingbot）不执行 JavaScript
+  - SEO / OG / JSON-LD 元信息必须在 HTML 源码中静态可见
+  - 切换到自定义域名时，请全局替换此区块内的 apextop.cc.cd
+  - 后端逻辑（API / 邮件链接）使用 env.PUBLIC_BASE_URL，不依赖此处
+-->
+  <meta name="description" content="Apex Entertainment - 全球娱乐游戏平台。一站式体验，玩法丰富，公平公正，极速存取。">
+  <meta name="keywords" content="Apex,娱乐游戏平台,在线娱乐,全球游戏平台,电子游艺,真人娱乐,体育竞猜">
+  <meta name="author" content="Apex Global Entertainment">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://apextop.cc.cd/">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Apex - Global Entertainment">
+  <meta property="og:description" content="全球娱乐游戏平台 · 一站式体验·玩法丰富·公平公正·极速存取">
+  <meta property="og:url" content="https://apextop.cc.cd/">
+  <meta property="og:image" content="https://apextop.cc.cd/splash-top.webp">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="500">
+  <meta property="og:image:type" content="image/webp">
+  <meta property="og:locale" content="zh_CN">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Apex - Global Entertainment">
+  <meta name="twitter:description" content="全球娱乐游戏平台">
+  <meta name="twitter:image" content="https://apextop.cc.cd/splash-top.webp">
+  
+  <!-- JSON-LD 结构化数据 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Apex Global Entertainment",
+    "url": "https://apextop.cc.cd/",
+    "logo": "https://apextop.cc.cd/logo.webp",
+    "description": "全球娱乐游戏平台",
+    "sameAs": []
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Apex Global Entertainment",
+    "url": "https://apextop.cc.cd/",
+    "inLanguage": "zh-CN",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://apextop.cc.cd/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Apex Global Entertainment",
+    "operatingSystem": "Web",
+    "applicationCategory": "GameApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+<!-- APEX-SEO-END -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180">
+  <link rel="apple-touch-icon" sizes="192x192">
+  <link rel="apple-touch-icon" sizes="512x512">
+<!-- APEX-BOOTING -->
+<link rel="stylesheet" href="/src/css/apex-boot.css">
+<script src="/src/js/inline/apex-boot.js?v=1" defer></script>
+  <link rel="stylesheet" href="/src/css/auth-redesign.css?v=2">
+</head>
+<body class="apex-booting">
+<div class="apex-loader" id="apex-loader"><div class="apex-loader-spin"></div></div>
+
+
+<!-- apex-refresh-banner: 提示用户清理旧 SW -->
+<div id="apex-refresh-banner" style="display:none;position:fixed;top:0;left:0;right:0;background:#d4af37;color:#000;padding:10px 16px;text-align:center;font-size:13px;z-index:9999999;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+  <strong>🔄 检测到旧版本缓存</strong> — 请点击
+  <button  data-apex-action="sw-reset"
+    style="background:#000;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-weight:bold;cursor:pointer;margin-left:8px;">
+    立即刷新
+  </button>
+</div>
+<script src="/src/js/inline/block-01.js?v=1"></script>
+
+  <script src="/src/js/apiClient.js?v=20260927e"></script>
+  <script src="/src/js/passwordPolicy.js?v=20260927b"></script>
+  <script src="/src/js/passkey.js?v=20260927b"></script>
+  <script src="/src/js/captcha.v2.js?v=1"></script>
+
+  
+  
+  </div>
+
+  <!-- ============ Hero 区 ============ -->
+    <div class="hero" id="apex-hero">
+      <!-- 纯 CSS 粒子/网格背景 -->
+      <div class="hero-grid-bg"></div>
+      <div class="hero-glow"></div>
+      
+      <div class="hero-content" style="z-index: 2;">
+        <!-- 纯 SVG Logo，0 外部图片 -->
+        <div class="logo-wrapper">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 4L8 56H20L32 28L44 56H56L32 4Z" fill="#111"/>
+            <path d="M32 28L20 56H44L32 28Z" fill="url(#paint0_linear)"/>
+            <defs>
+              <linearGradient id="paint0_linear" x1="32" y1="28" x2="32" y2="56" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#2563EB"/>
+                <stop offset="1" stop-color="#7C3AED"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        
+        <h1 class="main-title">ApexTop</h1>
+        <p class="sub-title">全球数字智能基础设施</p>
+        
+        <!-- 动态轮播文字区 (由 JS 生成) -->
+        <div class="dynamic-badge-container">
+          <div class="dynamic-badge" id="dynamic-badge">
+            <span class="dot"></span>
+            <span class="text" id="feature-text">下一代 AI 生产力工具</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 卡片区 ============ -->
+  <div class="card-section">
+    <div class="auth-card">
+      <div class="tabs" id="auth-tabs">
+        <button class="tab active" id="tab-login" data-i18n="tab.login">登录</button>
+        <button class="tab" id="tab-register" data-i18n="tab.register">注册</button>
+      </div>
+      <!-- ============ 登录表单 ============ -->
+      <!-- 登录方式选择 -->
+      <div id="login-method-picker">
+        <div class="method-card" id="pick-login-password" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">账号密码登录</div>
+            <div class="method-desc">使用账号和密码</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+        <div class="method-card" id="pick-login-passkey" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><path d="M7 3H5a2 2 0 0 0-2 2v2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M17 21h2a2 2 0 0 0 2-2v-2"/><path d="M9 10v1"/><path d="M15 10v1"/><path d="M9 15s1.2 1.2 3 1.2 3-1.2 3-1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">Passkey 登录</div>
+            <div class="method-desc">使用面容 / 指纹 / PIN</div>
+            <div class="method-warn">⚠️ 当前设备或浏览器不支持 Passkey</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+
+
+        <div class="checkbox-group" style="margin-top:12px;margin-bottom:0;font-size:12px;">
+          <input type="checkbox" id="login-agreement" checked>
+          <label for="login-agreement">我已阅读并同意 <a href="/terms"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy"  data-apex-action="stop-prop">《隐私政策》</a></label>
+        </div>
+      </div>
+
+      <!-- 注册方式选择 -->
+      <div id="register-method-picker" style="display:none;">
+        <div class="method-card" id="pick-register-password" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">账号密码注册</div>
+            <div class="method-desc">创建账号并设置密码</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+        <div class="method-card" id="pick-register-passkey" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><path d="M7 3H5a2 2 0 0 0-2 2v2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M17 21h2a2 2 0 0 0 2-2v-2"/><path d="M9 10v1"/><path d="M15 10v1"/><path d="M9 15s1.2 1.2 3 1.2 3-1.2 3-1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">Passkey 注册</div>
+            <div class="method-desc">使用面容 / 指纹 / PIN（无需密码）</div>
+            <div class="method-warn">⚠️ 当前设备或浏览器不支持 Passkey</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+
+        <div class="checkbox-group" style="margin-top:16px;margin-bottom:0;font-size:12px;">
+          <input type="checkbox" id="reg-agreement" checked>
+          <label for="reg-agreement">我已阅读并同意 <a href="/terms"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy"  data-apex-action="stop-prop">《隐私政策》</a></label>
+        </div>
+      </div>
+
+      <!-- Passkey 注册表单 -->
+      <div id="passkey-signup-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="passkey-signup-back">← 返回</a></div>
+
+        <div class="input-group">
+          <label>账号</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+            <input type="text" id="signup-username" autocomplete="username" spellcheck="false" autocapitalize="off" placeholder="请输入账号">
+          </div>
+          <div class="form-tip">6-20 位字符，支持字母、数字、下划线</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="input-group">
+          <label>邮箱</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
+            <input type="email" id="signup-email" autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="off" placeholder="请输入邮箱">
+          </div>
+          <div class="form-tip" style="color:#e63946;">⚠️ 必须填写真实邮箱，以便于密码找回</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div data-purpose="register" class="apex-captcha-box" id="signup-captcha"  data-apex-action="start-captcha">
+          <div class="apex-captcha-content">
+            <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="apex-captcha-text">点击进行人机验证</div>
+            <div class="apex-captcha-percent">0%</div>
+          </div>
+          <div class="apex-captcha-footer">Apex 安全防护</div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="signup-agreement" checked>
+          <label for="signup-agreement">我已阅读并同意 <a href="/terms"  data-apex-action="stop-prop">《用户协议》</a> 与 <a href="/privacy"  data-apex-action="stop-prop">《隐私政策》</a></label>
+        </div>
+
+        <button class="btn-primary" id="btn-passkey-signup">🔐 使用 Passkey 创建账号</button>
+      </div>
+
+      <div id="login-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="login-back">← 返回</a></div>
+
+        <div class="input-group">
+          <label>账号</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+            <input type="text" id="login-account" autocomplete="username" spellcheck="false" autocapitalize="off" data-i18n-placeholder="placeholder.account" placeholder="请输入账号">
+          </div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+        <div class="input-group">
+          <label>登录密码</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+            <input type="password" id="login-password" autocomplete="current-password" spellcheck="false" data-i18n-placeholder="placeholder.password" placeholder="请输入密码">
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
+          </div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- 人机验证 -->
+        <div data-purpose="login" class="apex-captcha-box" id="login-captcha"  data-apex-action="start-captcha">
+          <div class="apex-captcha-content">
+            <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="apex-captcha-text">点击进行人机验证</div>
+            <div class="apex-captcha-percent">0%</div>
+          </div>
+          <div class="apex-captcha-footer">Apex 安全防护</div>
+        </div>
+
+        <button class="btn-primary" id="btn-login" data-i18n="btn.login">登 录</button>
+      </div>
+
+      <!-- ============ 注册表单 ============ -->
+      <div id="register-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="register-back">← 返回</a></div>
+
+        <div class="input-group">
+          <label>账号</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+            <input type="text" id="reg-username" autocomplete="username" spellcheck="false" autocapitalize="off" data-i18n-placeholder="placeholder.account" placeholder="请输入账号">
+          </div>
+          <div class="form-tip">6-20 位字符，支持字母、数字、下划线</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+        <div class="input-group">
+          <label>邮箱</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
+            <input type="email" id="reg-email" autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="off" data-i18n-placeholder="placeholder.email" placeholder="请输入邮箱">
+          </div>
+          <div class="form-tip" style="color:#e63946;">⚠️ 必须填写真实邮箱且长期使用的邮箱，以便于密码找回</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+        <div class="input-group">
+          <label>密码</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+            <input type="password" id="reg-password" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.password" placeholder="请输入密码">
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
+          </div>
+          <div class="pwd-strength" id="reg-strength"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            <div class="pwd-checklist" id="reg-pwd-checklist"></div>
+          <div class="form-tip">至少 12 位，含大小写字母、数字和特殊字符</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+        <div class="input-group">
+          <label>确认密码</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+            <input type="password" id="reg-confirm" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.confirmPassword" placeholder="请再次输入密码">
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
+          </div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- 人机验证 -->
+        <div data-purpose="register" class="apex-captcha-box" id="reg-captcha"  data-apex-action="start-captcha">
+          <div class="apex-captcha-content">
+            <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="apex-captcha-text">点击进行人机验证</div>
+            <div class="apex-captcha-percent">0%</div>
+          </div>
+          <div class="apex-captcha-footer">Apex 安全防护</div>
+        </div>
+
+
+        <button class="btn-primary" id="btn-register" data-i18n="btn.register">注 册</button>
+      </div>
+      <!-- 忘记密码 · 选择找回方式 -->
+      <div id="forgot-method-picker" style="display:none;">
+        <div class="forgot-top"><a href="#" id="forgot-picker-back">← 返回</a></div>
+
+        <div style="text-align:center;color:#888;font-size:13px;margin-bottom:20px;">选择找回方式</div>
+
+        <div class="method-card" id="pick-forgot-password" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">账号密码找回</div>
+            <div class="method-desc">重置账号的登录密码</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+
+        <div class="method-card" id="pick-forgot-passkey" role="button" tabindex="0">
+          <div class="method-icon">
+            <svg viewBox="0 0 24 24"><path d="M7 3H5a2 2 0 0 0-2 2v2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M17 21h2a2 2 0 0 0 2-2v-2"/><path d="M9 10v1"/><path d="M15 10v1"/><path d="M9 15s1.2 1.2 3 1.2 3-1.2 3-1.2"/></svg>
+          </div>
+          <div class="method-text">
+            <div class="method-title">Passkey 找回</div>
+            <div class="method-desc">设备丢失？用邮箱 + 新设备重新绑定</div>
+            <div class="method-warn">⚠️ 当前设备或浏览器不支持 Passkey</div>
+          </div>
+          <div class="method-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- ============ Passkey 找回表单 ============ -->
+      <div id="passkey-recover-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="passkey-recover-back">← 返回</a></div>
+
+        <div class="form-tip" style="color:#888;margin-bottom:16px;line-height:1.6;">
+          设备丢失？输入绑定的邮箱，验证后可在新设备重新绑定 Passkey。
+          <span style="color:#e63946;">旧设备的 Passkey 将全部失效。</span>
+        </div>
+
+        <div class="input-group">
+          <label>邮箱</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
+            <input type="email" id="recover-email" autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="off" placeholder="请输入绑定的邮箱">
+          </div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="input-group">
+          <label>邮箱验证码</label>
+          <div class="code-row">
+            <div class="code-boxes" id="recover-code-boxes">
+              <input aria-label="验证码第 1 位"  type="text" maxlength="1"><input aria-label="验证码第 2 位"  type="text" maxlength="1"><input aria-label="验证码第 3 位"  type="text" maxlength="1">
+              <input aria-label="验证码第 4 位"  type="text" maxlength="1"><input aria-label="验证码第 5 位"  type="text" maxlength="1"><input aria-label="验证码第 6 位"  type="text" maxlength="1">
+            </div>
+            <button class="btn-send-code" id="btn-recover-send-code">发送验证码</button>
+          </div>
+          <div class="field-error" id="recover-code-error" role="alert" aria-live="polite"></div>
+          <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
+        </div>
+
+        <div data-purpose="reset-password" class="apex-captcha-box" id="recover-captcha"  data-apex-action="start-captcha">
+          <div class="apex-captcha-content">
+            <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="apex-captcha-text">点击进行人机验证</div>
+            <div class="apex-captcha-percent">0%</div>
+          </div>
+          <div class="apex-captcha-footer">Apex 安全防护</div>
+        </div>
+
+        <button class="btn-primary" id="btn-passkey-recover">🔐 用新设备重新绑定 Passkey</button>
+      </div>
+
+      <!-- ============ 忘记密码表单 ============ -->
+      <div id="forgot-form" style="display:none;">
+        <div class="forgot-top"><a href="#" id="forgot-back">← 返回</a></div>
+
+        <div class="input-group">
+          <label>输入邮箱</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
+            <input type="email" id="forgot-email" autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="off" data-i18n-placeholder="placeholder.email" placeholder="请输入邮箱">
+          </div>
+          <div class="form-tip" style="color:#e63946;">⚠️ 填写注册账号时所绑定的邮箱</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="input-group">
+          <label>新密码</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+            <input type="password" id="forgot-newpwd" data-i18n-placeholder="placeholder.newPassword" placeholder="请输入新密码">
+            <div class="pwd-checklist" id="forgot-pwd-checklist"></div>
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
+          </div>
+          <div class="form-tip">至少 12 位，含大小写字母、数字和特殊字符</div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="input-group">
+          <label>确认密码</label>
+          <div class="input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+            <input type="password" id="forgot-confirm" autocomplete="new-password" spellcheck="false" data-i18n-placeholder="placeholder.confirmPassword" placeholder="请再次输入新密码">
+            <div class="pwd-actions"><span class="btn-toggle"  role="button" tabindex="0" aria-label="显示或隐藏密码" data-apex-action="toggle-pwd"></span></div>
+          </div>
+          <div class="field-error" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="input-group">
+          <label>邮箱验证码</label>
+          <div class="code-row">
+            <div class="code-boxes" id="code-boxes">
+              <input aria-label="验证码第 7 位"  type="text" maxlength="1"><input aria-label="验证码第 8 位"  type="text" maxlength="1"><input aria-label="验证码第 9 位"  type="text" maxlength="1">
+              <input aria-label="验证码第 10 位"  type="text" maxlength="1"><input aria-label="验证码第 11 位"  type="text" maxlength="1"><input aria-label="验证码第 12 位"  type="text" maxlength="1">
+            </div>
+            <button class="btn-send-code" id="btn-send-code" data-i18n="btn.sendCode">发送验证码</button>
+          </div>
+          <div class="field-error" id="code-boxes-error" role="alert" aria-live="polite"></div>
+          <div class="form-tip">未收到邮件？请前往垃圾邮件查看。</div>
+        </div>
+
+        <div data-purpose="reset-password" class="apex-captcha-box" id="forgot-captcha"  data-apex-action="start-captcha">
+          <div class="apex-captcha-content">
+            <div class="apex-captcha-checkbox"><svg class="apex-checkmark" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="apex-captcha-text">点击进行人机验证</div>
+            <div class="apex-captcha-percent">0%</div>
+          </div>
+          <div class="apex-captcha-footer">Apex 安全防护</div>
+        </div>
+
+        <button class="btn-primary" id="btn-reset" data-i18n="btn.resetPassword">重置密码</button>
+      </div>
+
+    </div><!-- /.auth-card -->
+  </div><!-- /.card-section -->
+
+  <!-- 在线客服 / 忘记密码（框外）-->
+  <div class="link-row" style="width:100%;max-width:480px;margin:0 auto;padding:0 20px;margin-top:22px;margin-bottom:12px;box-sizing:border-box;">
+    <a href="#" id="online-support"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg><span data-i18n="link.onlineSupport">在线客服</span></a>
+    <a href="#" id="forgot-pwd"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.15-7.15"/><path d="M18 6h3v3"/></svg><span data-i18n="link.forgotPassword">忘记密码？</span></a>
+  </div>
+
+  <div class="footer"><div style="text-align:center;padding:20px 0;font-size:11px;color:#555;">
+    <a href="/privacy" style="color:#888;text-decoration:none;margin:0 8px;">隐私政策</a>
+    <a href="/terms" style="color:#888;text-decoration:none;margin:0 8px;">用户协议</a>
+    <a href="/status" style="color:#888;text-decoration:none;margin:0 8px;">系统状态</a>
+    
+  </div></div>
+
+  <script src="/src/js/inline/block-02.js?v=1"></script>
+
+  <script src="/src/js/inline/block-03.js?v=1"></script>
+
+  <script src="/src/js/inline/block-04.js?v=20260927e"></script>
+
+  <script src="/src/js/inline/block-05.js?v=1"></script>
+
+  <script src="/src/js/inline/block-06-apex-monitoring.js?v=1" id="apex-monitoring"></script>
+
+
+
+<script src="/src/js/inline/apex-app.js?v=202610171700"></script>
+  <script src="/src/js/inline/block-07-apex-auth.js?v=1"></script>
+
+
+  
+  <script src="/src/js/inline/block-08-apex-a11y.js?v=1" id="apex-a11y"></script>
+
+
+  
+
+
+  <script src="/src/js/inline/block-09.js?v=1"></script>
+<script src="/src/js/inline/event-bindings.js?v=1"></script>
+
+  <div id="apex-logged-in" style="display:none; max-width:480px; margin:80px auto; padding:32px 24px; text-align:center; color:#fff; font-family:Manrope,system-ui,sans-serif;">
+    <div style="font-size:56px; margin-bottom:16px;">&#10003;</div>
+    <div style="font-size:20px; font-weight:700; margin-bottom:8px;">已登录</div>
+    <div style="font-size:14px; color:#888; margin-bottom:28px;">欢迎，<span id="apex-logged-in-user">用户</span></div>
+    <button id="apex-logged-in-logout" style="padding:12px 32px; background:#111; color:#fff; border:1px solid #333; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">登出</button>
+  </div>
+
+<script src="/src/js/inline/apex-loader.js?v=1"></script>
+  <script src="/src/js/auth-redesign.js?v=1"></script>
+</body>
+</html>

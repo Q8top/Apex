@@ -277,3 +277,52 @@ body {
   font-size: 12px;
   color: var(--text-muted);
 }
+
+/* =========================================================
+   强制覆盖旧的 main.css (!important 炸弹)
+   ========================================================= */
+
+/* 恢复被隐藏的 Hero 内容 */
+#apex-hero .hero-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  z-index: 10 !important;
+}
+
+/* 修复 Hero 高度和背景 */
+#apex-hero {
+  height: 380px !important;
+  min-height: 380px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  overflow: hidden !important;
+}
+
+/* 干掉旧的黑底遮罩 */
+#apex-hero::before {
+  display: none !important;
+}
+
+/* 修复卡片悬浮位置 */
+.card-section {
+  margin-top: -40px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 让主标题文字可见 */
+#apex-hero .main-title {
+  color: #0f172a !important;
+  font-size: 36px !important;
+  background: none !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+/* 修正卡片样式，让它更现代 */
+.auth-card {
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.6) !important;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1) !important;
+}
