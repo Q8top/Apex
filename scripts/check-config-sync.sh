@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# Pivot guard: skip config sync if game engines are archived
+if [ ! -d "functions/games" ]; then
+  echo "[SKIP] functions/games not found (pivot to new track)"
+  exit 0
+fi
+
 # Apex · 校验 src/ 与 functions/ 镜像一致
 # 目的：防止前后端 config/engine 漂移
 set -euo pipefail

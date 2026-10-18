@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# Pivot guard: skip sync if game engines are archived
+if [ ! -d "functions/games" ]; then
+  echo "[SKIP] functions/games not found (pivot to new track)"
+  exit 0
+fi
+
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="$ROOT/src/engine"
