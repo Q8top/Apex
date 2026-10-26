@@ -45,7 +45,7 @@
     "check:deployex": "node scripts/check-deploy-excludes.cjs"
   },
   "devDependencies": {
-    "wrangler": "^4.144.0"
+    "wrangler": "^4.152.0"
   },
   "overrides": {
     "sharp": "0.35.5"
